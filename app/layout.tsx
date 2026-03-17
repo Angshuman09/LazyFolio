@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ClerkProvider} from '@clerk/nextjs'
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+import { Playfair_Display, DM_Sans } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfair = Playfair_Display({
   subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
   subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -26,11 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
+    <html lang="en" className={cn("font-sans", playfair.variable)}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${dmSans.variable} ${playfair.variable} antialiased`}
       >
+        <ClerkProvider>
         {children}
+        </ClerkProvider>
       </body>
     </html>
   );
