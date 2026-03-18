@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { ClerkProvider} from '@clerk/nextjs'
+import { ClerkProvider } from "@clerk/nextjs";
 
-import { Playfair_Display, DM_Sans } from "next/font/google";
+import { Inter, Instrument_Serif } from "next/font/google";
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-});
-
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["300", "400", "500"],
+});
+
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  variable: "--font-serif",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -29,13 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", playfair.variable)}>
-      <body
-        className={`${dmSans.variable} ${playfair.variable} antialiased`}
-      >
-        <ClerkProvider>
-        {children}
-        </ClerkProvider>
+    <html lang="en" className={cn("font-sans", serif.variable)} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(localStorage.getItem("lf-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className={`${inter.variable} ${serif.variable} antialiased`}>
+        <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>
   );
