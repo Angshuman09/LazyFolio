@@ -36,7 +36,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${serif.variable} antialiased`}>
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider  publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} dynamic>{children}</ClerkProvider>
       </body>
     </html>
   );

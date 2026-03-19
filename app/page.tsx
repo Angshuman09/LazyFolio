@@ -4,31 +4,43 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MoonIcon, SunIcon } from "@/components/assets/svgs";
-const NAV_LEFT = ["Services", "Features", "Blog", "Services"];
-const NAV_RIGHT = ["About", "Pricing", "Contact"];
+import { UserButton, useUser } from "@clerk/nextjs";
+import { Github } from "lucide-react";
+import Link from "next/link";
+import { useThemeStore } from "@/lib/theme-store";
+
+const NAV_LEFT = ["Features", "Templates", "Blog"];
+// const NAV_RIGHT = ["About", "Pricing", "Contact"];
 
 export default function LazyfolioLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [dark, setDark] = useState(false);
   const router = useRouter();
+  const { user } = useUser();
+  const [stars, setStars] = useState<number | null>(null);
+  const theme = useThemeStore((state) => state.theme);
+  const setTheme = useThemeStore((state) => state.setTheme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const dark = theme === "dark";
 
-  // Read saved theme on mount
+  // After mount, sync the global store with the actual document theme (set by RootLayout script)
   useEffect(() => {
-    setDark(localStorage.getItem("lf-theme") === "dark");
+    if (typeof document === "undefined") return;
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+  }, [setTheme]);
+
+  useEffect(() => {
+    fetch("https://api.github.com/repos/Angshuman09/lazyfolio")
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data.stargazers_count === "number") {
+          setStars(data.stargazers_count);
+          console.log(data.stargazers_count);
+        }
+      })
+      .catch(console.error);
   }, []);
-
-  // Toggle .dark class + persist
-  useEffect(() => {
-    const root = document.documentElement;
-    if (dark) {
-      root.classList.add("dark");
-      localStorage.setItem("lf-theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("lf-theme", "light");
-    }
-  }, [dark]);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20);
@@ -115,38 +127,42 @@ export default function LazyfolioLanding() {
           </span>
 
           <div className="hidden md:flex items-center gap-6">
-            {NAV_RIGHT.map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="text-[0.82rem] text-(--lf-muted) font-medium hover:text-(--lf-ink) transition-colors"
-              >
-                {l}
-              </a>
-            ))}
+            <Link
+              href="https://github.com/Angshuman09/lazyfolio"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-1.5 text-[0.8rem] font-medium text-(--lf-ink) transition-colors hover:bg-(--lf-border) ml-2"
+            >
+              <Github className="h-3.5 w-3.5" />
+              <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
+            </Link>
+
             <button
               className="theme-toggle"
-              onClick={() => setDark(!dark)}
+              onClick={toggleTheme}
               aria-label="Toggle dark mode"
             >
               {dark ? <SunIcon /> : <MoonIcon />}
             </button>
-            {}
-            <button
-              onClick={() => router.push("/sign-in")}
-              className="bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-semibold px-5 py-2.5 rounded-full hover:opacity-85 transition-opacity flex items-center gap-2"
-            >
-              Get started
-              <span className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none">
-                ↗
-              </span>
-            </button>
+            {user ? (
+              <UserButton />
+            ) : (
+              <button
+                onClick={() => router.push("/sign-in")}
+                className="bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-semibold px-5 py-2.5 rounded-full hover:opacity-85 transition-opacity flex items-center gap-2"
+              >
+                Get started
+                <span className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none">
+                  ↗
+                </span>
+              </button>
+            )}
           </div>
 
           <div className="md:hidden flex items-center gap-2 ml-auto">
             <button
               className="theme-toggle"
-              onClick={() => setDark(!dark)}
+              onClick={toggleTheme}
               aria-label="Toggle dark mode"
             >
               {dark ? <SunIcon /> : <MoonIcon />}
@@ -171,22 +187,18 @@ export default function LazyfolioLanding() {
         <div
           className={`md:hidden absolute top-full left-0 right-0 bg-(--lf-bg) border-b border-(--lf-border-alpha) flex flex-col gap-4 px-6 overflow-hidden transition-all duration-300 ${menuOpen ? "py-5 max-h-80 opacity-100" : "max-h-0 py-0 opacity-0"}`}
         >
-          {[
-            ...NAV_LEFT.filter((v, i, a) => a.indexOf(v) === i),
-            ...NAV_RIGHT,
-          ].map((l) => (
-            <a
-              key={l}
-              href="#"
-              className="text-sm font-medium text-(--lf-muted)"
-              onClick={() => setMenuOpen(false)}
-            >
-              {l}
-            </a>
-          ))}
+          <Link
+            href="https://github.com/Angshuman09/lazyfolio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.82rem] font-medium text-(--lf-ink) transition-colors hover:bg-(--lf-border)"
+          >
+            <Github className="h-4 w-4" />
+            <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
+          </Link>
           <button
             onClick={() => router.push("/sign-in")}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-bg) px-5 py-3 rounded-full mt-1"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-bg) px-5 py-3 rounded-full mt-1 hover:opacity-85 transition-opacity flex items-center justify-center gap-2"
           >
             Get started
           </button>
