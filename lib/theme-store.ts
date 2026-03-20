@@ -22,7 +22,6 @@ const applyThemeToDocument = (theme: Theme) => {
 };
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
-  // Important for SSR: keep this static so server and initial client render match.
   theme: "light",
   setTheme: (theme) => {
     applyThemeToDocument(theme);

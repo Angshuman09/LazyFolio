@@ -5,12 +5,11 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MoonIcon, SunIcon } from "@/components/assets/svgs";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Github } from "lucide-react";
+import { Cross, CrossIcon, Github, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useThemeStore } from "@/lib/theme-store";
-
+import { Button } from "@/components/ui/button";
 const NAV_LEFT = ["Features", "Templates", "Blog"];
-// const NAV_RIGHT = ["About", "Pricing", "Contact"];
 
 export default function LazyfolioLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,7 +22,6 @@ export default function LazyfolioLanding() {
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const dark = theme === "dark";
 
-  // After mount, sync the global store with the actual document theme (set by RootLayout script)
   useEffect(() => {
     if (typeof document === "undefined") return;
     const isDark = document.documentElement.classList.contains("dark");
@@ -145,7 +143,10 @@ export default function LazyfolioLanding() {
               {dark ? <SunIcon /> : <MoonIcon />}
             </button>
             {user ? (
+              <>
+              <Button onClick={()=>router.push('/dashboard')} className="rounded-full">Dashboard</Button>
               <UserButton />
+              </>
             ) : (
               <button
                 onClick={() => router.push("/sign-in")}
@@ -168,18 +169,10 @@ export default function LazyfolioLanding() {
               {dark ? <SunIcon /> : <MoonIcon />}
             </button>
             <button
-              className="flex flex-col gap-[5px] p-1"
+              className="flex flex-col gap-1.25 p-1"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              <span
-                className={`block w-5 h-0.5 bg-(--lf-ink) rounded transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-(--lf-ink) rounded transition-opacity ${menuOpen ? "opacity-0" : ""}`}
-              />
-              <span
-                className={`block w-5 h-0.5 bg-(--lf-ink) rounded transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`}
-              />
+              {menuOpen ? <X className=""/> : <Menu className=""/>}
             </button>
           </div>
         </div>
@@ -219,16 +212,15 @@ export default function LazyfolioLanding() {
         <p className="fade-up fade-up-3 text-[1.05rem] text-(--lf-muted) leading-relaxed max-w-md mx-auto mb-10">
           No deployment. No setup. Just create and share.
         </p>
-        <a
-          href="#"
+        <button
           onClick={() => router.push("/sign-in")}
-          className="fade-up fade-up-3 inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.95rem] font-semibold px-8 py-4 rounded-full border-2 border-(--lf-ink) hover:bg-(--lf-bg) hover:text-(--lf-ink) transition-all duration-300 card-shadow-lg"
+          className="fade-up fade-up-3 inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.95rem] font-semibold px-5 py-4 rounded-full border-2 border-(--lf-ink) hover:bg-(--lf-bg) hover:text-(--lf-ink) transition-all duration-300 card-shadow-lg"
         >
           Get started for Free
           <span className="btn-arrow w-6 h-6 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-xs font-bold leading-none">
             ↗
           </span>
-        </a>
+        </button>
       </section>
 
       <div className="max-w-5xl mx-auto px-6">
@@ -267,7 +259,7 @@ export default function LazyfolioLanding() {
               <h3 className="font-serif-display text-[1.3rem] font-bold mb-1">
                 Built-In Team Chat
               </h3>
-              <p className="text-[0.78rem] text-white/70 leading-relaxed max-w-[220px]">
+              <p className="text-[0.78rem] text-white/70 leading-relaxed max-w-55">
                 Communicate instantly within any project. Keep conversations and
                 work in one place.
               </p>
@@ -352,7 +344,7 @@ export default function LazyfolioLanding() {
         </div>
       </section>
 
-      <section className="max-w-[760px] mx-auto px-4 md:px-6 mb-28">
+      <section className="max-w-190 mx-auto px-4 md:px-6 mb-28">
         <div className="bg-(--lf-ink) text-(--lf-bg) rounded-[32px] px-8 py-20 text-center card-shadow-lg">
           <h2 className="font-serif-display text-[clamp(2rem,5vw,3.2rem)] font-bold leading-tight mb-5">
             Your Portfolio,
