@@ -1,15 +1,76 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, type PointerEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { MoonIcon, SunIcon } from "@/components/assets/svgs";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Cross, CrossIcon, Github, Menu, X } from "lucide-react";
+import { Github, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useThemeStore } from "@/lib/theme-store";
 import { Button } from "@/components/ui/button";
-const NAV_LEFT = ["Features", "Templates", "Blog"];
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+
+const NAV_LEFT = [
+  { label: "Features", href: "#features" },
+  { label: "Templates", href: "#" },
+  { label: "Blog", href: "#" },
+];
+
+function GlowCard({
+  className,
+  style,
+  children,
+  glowColor = "rgba(255,255,255,0.22)",
+}: {
+  className: string;
+  style?: React.CSSProperties;
+  children: ReactNode;
+  glowColor?: string;
+}) {
+  const mx = useMotionValue(110);
+  const my = useMotionValue(110);
+  const glowOpacity = useMotionValue(0);
+
+  const sx = useSpring(mx, { stiffness: 420, damping: 42, mass: 0.35 });
+  const sy = useSpring(my, { stiffness: 420, damping: 42, mass: 0.35 });
+  const so = useSpring(glowOpacity, { stiffness: 260, damping: 30, mass: 0.4 });
+
+  const glowBackground = useMotionTemplate`radial-gradient(260px circle at ${sx}px ${sy}px, ${glowColor}, rgba(255,255,255,0.06) 32%, transparent 72%)`;
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    mx.set(event.clientX - rect.left);
+    my.set(event.clientY - rect.top);
+    glowOpacity.set(1);
+  };
+
+  return (
+    <motion.div
+      className={`relative isolate overflow-hidden ${className}`}
+      style={style}
+      onPointerMove={handlePointerMove}
+      onPointerEnter={handlePointerMove}
+      onPointerLeave={() => glowOpacity.set(0)}
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22, mass: 0.8 }}
+    >
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-0 rounded-[inherit]"
+        style={{
+          opacity: so,
+          backgroundImage: glowBackground,
+          filter: "blur(18px)",
+        }}
+      />
+      <div className="relative z-10 h-full">{children}</div>
+    </motion.div>
+  );
+}
 
 export default function LazyfolioLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -111,10 +172,13 @@ export default function LazyfolioLanding() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <ul className="hidden md:flex gap-7 text-[0.82rem] text-(--lf-muted) font-medium">
-            {NAV_LEFT.map((l, i) => (
-              <li key={`${l}-${i}`}>
-                <a href="#" className="hover:text-(--lf-ink) transition-colors">
-                  {l}
+            {NAV_LEFT.map((item, i) => (
+              <li key={`${item.label}-${i}`}>
+                <a
+                  href={item.href}
+                  className="hover:text-(--lf-ink) transition-colors"
+                >
+                  {item.label}
                 </a>
               </li>
             ))}
@@ -144,8 +208,13 @@ export default function LazyfolioLanding() {
             </button>
             {user ? (
               <>
-              <Button onClick={()=>router.push('/dashboard')} className="rounded-full">Dashboard</Button>
-              <UserButton />
+                <Button
+                  onClick={() => router.push("/dashboard")}
+                  className="rounded-full"
+                >
+                  Dashboard
+                </Button>
+                <UserButton />
               </>
             ) : (
               <button
@@ -172,7 +241,7 @@ export default function LazyfolioLanding() {
               className="flex flex-col gap-1.25 p-1"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              {menuOpen ? <X className=""/> : <Menu className=""/>}
+              {menuOpen ? <X className="" /> : <Menu className="" />}
             </button>
           </div>
         </div>
@@ -207,7 +276,7 @@ export default function LazyfolioLanding() {
             Build your portfolio{" "}
           </span>
           <br />
-          <strong className="font-serif-display font-bold">in a minute</strong>
+          <strong className="font-serif-display font-bold">in minutes</strong>
         </h1>
         <p className="fade-up fade-up-3 text-[1.05rem] text-(--lf-muted) leading-relaxed max-w-md mx-auto mb-10">
           No deployment. No setup. Just create and share.
@@ -222,125 +291,71 @@ export default function LazyfolioLanding() {
           </span>
         </button>
       </section>
-
+      {/* 
       <div className="max-w-5xl mx-auto px-6">
         <div className="h-px bg-(--lf-border)" />
-      </div>
+      </div> */}
+
+      <section className="max-w-5xl mx-auto px-4 md:px-6 pb-24">
+        <h2 className="font-serif-display text-[clamp(2rem,4.5vw,3rem)] font-bold leading-tight tracking-tight mb-4 flex justify-center">
+          How to use?
+        </h2>
+        Video will be uploaded after the project is done :)
+      </section>
 
       <section
         id="features"
-        className="max-w-3xl mx-auto px-6 pt-20 pb-12 text-center"
+        className="max-w-5xl mx-auto px-4 md:px-6 pb-24 scroll-mt-24"
       >
-        <h2 className="font-serif-display text-[clamp(2rem,4.5vw,3rem)] font-bold leading-tight tracking-tight mb-4">
-          Everything Your Team Needs to
-          <br />
-          Work Smarter
+        <h2 className="font-serif-display text-[clamp(2rem,4.5vw,3rem)] font-bold leading-tight tracking-tight mb-4 flex justify-center">
+          Simple, Clear, Useful for
         </h2>
-        <p className="text-[0.88rem] text-(--lf-muted) leading-relaxed max-w-sm mx-auto">
-          From task tracking to real-time chat, our features are built to keep
-          your team connected, organised, and moving forward — together.
-        </p>
-      </section>
-
-      <section className="max-w-5xl mx-auto px-4 md:px-6 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            className="hover-lift relative rounded-[24px] overflow-hidden card-shadow-lg"
-            style={{ minHeight: "360px" }}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 justify-items-center max-w-4xl mx-auto">
+          <GlowCard
+            className="w-[170px] rounded-3xl card-shadow-lg border border-white/10 bg-(--lf-surface) p-4 flex flex-col justify-start items-start text-left"
+            glowColor="rgba(255,255,255,0.18)"
           >
-            <Image
-              src="/team_chat_feature.png"
-              alt="Built-In Team Chat"
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-7 text-white">
-              <h3 className="font-serif-display text-[1.3rem] font-bold mb-1">
-                Built-In Team Chat
-              </h3>
-              <p className="text-[0.78rem] text-white/70 leading-relaxed max-w-55">
-                Communicate instantly within any project. Keep conversations and
-                work in one place.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div
-              className="hover-lift bg-(--lf-surface) rounded-[24px] p-7 flex flex-col justify-center card-shadow"
-              style={{ minHeight: "168px" }}
-            >
-              <h3 className="text-[1.1rem] font-bold text-(--lf-ink) mb-2">
-                Task Assignment
-              </h3>
-              <p className="text-[0.8rem] text-(--lf-muted) leading-relaxed">
-                Easily create, assign, and track tasks to keep everyone aligned
-                and accountable.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 flex-1">
-              <div
-                className="hover-lift rounded-[24px] p-6 flex flex-col justify-end card-shadow"
-                style={{ background: "var(--lf-tan)", minHeight: "188px" }}
-              >
-                <h3 className="text-[0.95rem] font-bold text-(--lf-ink) mb-1.5">
-                  Real-Time Scheduling
-                </h3>
-                <p className="text-[0.72rem] text-(--lf-tan-text) leading-relaxed">
-                  Plan meetings, set deadlines, and sync calendars so your team
-                  stays on the same page.
-                </p>
-              </div>
-
-              <div
-                className="hover-lift relative rounded-[24px] overflow-hidden card-shadow-lg"
-                style={{ minHeight: "188px" }}
-              >
-                <Image
-                  src="/progress_tracking_feature.png"
-                  alt="Progress Tracking"
-                  fill
-                  className="object-cover object-top"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-[#4A6741]/90 via-[#4A6741]/30 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                  <h3 className="text-[0.95rem] font-bold mb-1">
-                    Progress Tracking
-                  </h3>
-                  <p className="text-[0.68rem] text-white/75 leading-relaxed">
-                    Visualise team performance with dashboards that highlight
-                    what's done and what's next.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="max-w-3xl mx-auto px-6 pb-16 text-center">
-        <h2 className="font-serif-display text-[clamp(2rem,4.5vw,3rem)] font-bold leading-tight tracking-tight mb-4">
-          Proven Results, Real Impact
-        </h2>
-        <p className="text-[0.88rem] text-(--lf-muted) leading-relaxed max-w-sm mx-auto mb-12">
-          See how teams around the world are working faster, communicating
-          better, and getting more done with our all-in-one management platform.
-        </p>
-
-        <div
-          className="relative rounded-[24px] overflow-hidden card-shadow-lg"
-          style={{ height: "220px" }}
-        >
-          <Image
-            src="/social_proof_thumbnails.png"
-            alt="Team results and impact"
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-y-0 left-0 w-16 bg-linear-to-r from-(--lf-bg) to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-16 bg-linear-to-l from-(--lf-bg) to-transparent" />
+            <h3 className="font-serif-display text-[1.1rem] font-bold mb-1.5 text-(--lf-ink) leading-tight">
+              Beautiful Templates
+            </h3>
+            <p className="text-[0.66rem] text-(--lf-muted) leading-relaxed">
+              Modern and developer-focused designs.
+            </p>
+          </GlowCard>
+          <GlowCard
+            className="w-[170px] bg-(--lf-surface) rounded-3xl p-4 flex flex-col justify-start items-start text-left card-shadow border border-(--lf-border-alpha)"
+            glowColor="rgba(255,255,255,0.18)"
+          >
+            <h3 className="text-[0.9rem] font-bold text-(--lf-ink) mb-1.5 leading-tight">
+              Built-in Analytics
+            </h3>
+            <p className="text-[0.66rem] text-(--lf-muted) leading-relaxed">
+              Track visitors, clicks, and engagement.
+            </p>
+          </GlowCard>
+          <GlowCard
+            className="w-[170px] rounded-3xl p-4 flex flex-col justify-start items-start text-left card-shadow border border-(--lf-border-alpha)"
+            style={{ background: "var(--lf-tan)" }}
+            glowColor="rgba(255,255,255,0.14)"
+          >
+            <h3 className="text-[0.9rem] font-bold text-(--lf-ink) mb-1.5 leading-tight">
+              One-Click Publish
+            </h3>
+            <p className="text-[0.66rem] text-(--lf-tan-text) leading-relaxed">
+              Go live instantly with a shareable link.
+            </p>
+          </GlowCard>
+          <GlowCard
+            className="w-[170px] bg-(--lf-surface) rounded-3xl p-4 flex flex-col justify-start items-start text-left card-shadow border border-(--lf-border-alpha)"
+            glowColor="rgba(255,255,255,0.2)"
+          >
+            <h3 className="text-[0.9rem] font-bold text-(--lf-ink) mb-1.5 leading-tight">
+              Fast Custom Domain
+            </h3>
+            <p className="text-[0.66rem] text-(--lf-muted) leading-relaxed">
+              Connect your domain in minutes easily.
+            </p>
+          </GlowCard>
         </div>
       </section>
 
