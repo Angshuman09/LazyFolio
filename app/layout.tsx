@@ -2,18 +2,19 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
+import { DM_Sans, Instrument_Serif } from "next/font/google";
 
-import { Inter, Instrument_Serif } from "next/font/google";
-
-const inter = Inter({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-sans-body",
+  weight: ["400", "500", "600"],
 });
 
 const serif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-serif",
+  variable: "--font-serif-display",
   weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", serif.variable)} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={cn(dmSans.variable, serif.variable)}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -35,8 +40,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} ${serif.variable} antialiased`}>
-        <ClerkProvider  publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} dynamic>{children}</ClerkProvider>
+      <body className={cn(dmSans.variable, serif.variable, "antialiased")}>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} dynamic>
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );
