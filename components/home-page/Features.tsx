@@ -1,7 +1,7 @@
 'use client'
 
 import { GlowCard } from "./card-component"
-import { FEATURES } from "../assets/icons"
+import { FEATURES } from "../assets/icons-features"
 
 const Features = () => {
   return (
@@ -42,8 +42,6 @@ const Features = () => {
                   {f.tag}
                 </span>
               </div>
-
-              {/* Bottom row: title + desc */}
               <div className="mt-8">
                 <h3
                   className={[

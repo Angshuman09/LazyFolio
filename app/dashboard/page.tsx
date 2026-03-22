@@ -1,8 +1,16 @@
-import React from 'react'
+import { getOrCreateUser } from "@/lib/getOrCreateUser"
+import { redirect } from "next/navigation"
 
-const Dashboard = () => {
+const Dashboard = async () => {
+  const user = await getOrCreateUser();
+  if(!user) redirect("/sign-in");
+
+    if (!user.onboarded) {
+    redirect("/user-detail")
+  }
+  
   return (
-    <div>Dashboard</div>
+    <div className='bg-red-300 w-full h-screen'>Dashboard</div>
   )
 }
 

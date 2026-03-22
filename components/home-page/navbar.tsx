@@ -87,7 +87,7 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Button onClick={() => router.push("/dashboard")} className="rounded-full text-sm px-5">
+                <Button onClick={() => router.push("/dashboard")} className="bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold px-5 py-2 rounded-full hover:opacity-80 transition-opacity flex items-center gap-1.5">
                   Dashboard
                 </Button>
                 <UserButton />

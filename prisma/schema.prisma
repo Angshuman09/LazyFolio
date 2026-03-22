@@ -12,15 +12,30 @@ datasource db {
   provider = "postgresql"
 }
 
-model User{
-id String @id @default(cuid())
-clerkId String @unique
-email String @unique
-name String
-imageUrl String
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  username String?
+  name      String?
+  avatar    String?
+  onboarded Boolean  @default(false)
+
+  profile Profile?
+
+  createdAt DateTime @default(now())
 }
 
-model Portfolio{
-id String @id @default(cuid())
-userId String @unique
+
+model Profile {
+  id    String @id @default(cuid())
+  userId String @unique
+  bio String?
+  skils String[]
+  github String?
+  twitter String?
+  linkedin String?
+  theme String? @default("default")
+
+  user User @relation(fields: [userId], references: [id])
 }

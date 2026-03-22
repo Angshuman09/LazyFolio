@@ -10,7 +10,7 @@ export const FEATURES = [
     title: "Beautiful Templates",
     desc: "Modern, developer-focused designs that make your work shine — no design skills required.",
     span: "md:col-span-7",
-    accent: false,
+    accent: true,
   },
   {
     icon: (
@@ -22,7 +22,7 @@ export const FEATURES = [
     title: "Built-in Analytics",
     desc: "Track visitors, clicks, and engagement — all in one dashboard.",
     span: "md:col-span-5",
-    accent: false,
+    accent: true,
   },
   {
     icon: (
@@ -49,6 +49,6 @@ export const FEATURES = [
     title: "Fast Custom Domain",
     desc: "Connect your own domain in minutes — no DNS headaches, no waiting.",
     span: "md:col-span-7",
-    accent: false,
+    accent: true,
   },
 ];
