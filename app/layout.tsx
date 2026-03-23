@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
-
+import Providers from "./providers";
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans-body",
@@ -41,9 +40,9 @@ export default function RootLayout({
         />
       </head>
       <body className={cn(dmSans.variable, serif.variable, "antialiased")}>
-        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} dynamic>
+        <Providers>
           {children}
-        </ClerkProvider>
+        </Providers>
       </body>
     </html>
   );

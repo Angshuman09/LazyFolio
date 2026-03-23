@@ -5,16 +5,11 @@ const Hero = () => {
   const router = useRouter();
   return (
     <section className="hero-gradient max-w-3xl mx-auto px-6 pt-28 pb-32 text-center">
-      <p className="fade-up fade-up-1 text-(--lf-muted) text-[0.78rem] uppercase tracking-[0.14em] font-semibold mb-5">
-        Level Up Your Journey
-      </p>
       <h1 className="fade-up fade-up-2 font-serif-display text-[clamp(3rem,7vw,4.8rem)] font-normal leading-[1.07] tracking-tight mb-6 text-(--lf-ink)">
         Build your portfolio <br />
         <strong className="font-serif-display font-bold">
           in{" "}
-          <span 
-            className="inline-block drop-shadow-glow transition-all duration-300 hover:brightness-125"
-          >
+          <span className="inline-block text-(--lf-glow) drop-shadow-[0_0_18px_rgba(245,158,11,0.8)] animate-pulse transition-all duration-5 hover:drop-shadow-[0_0_25px_rgba(245,158,11,1)]">
             minutes
           </span>
         </strong>

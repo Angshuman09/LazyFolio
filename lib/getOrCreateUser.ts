@@ -1,11 +1,8 @@
-// lib/getOrCreateUser.ts
-
-import { auth } from "@clerk/nextjs/server"
+import { auth, currentUser } from "@clerk/nextjs/server"
 import { prisma } from "@/lib/prisma"
 
 export async function getOrCreateUser() {
   const { userId } = await auth()
-
   if (!userId) return null
 
   let user = await prisma.user.findUnique({
@@ -13,10 +10,14 @@ export async function getOrCreateUser() {
   })
 
   if (!user) {
+    const clerkUser = await currentUser()
+
     user = await prisma.user.create({
       data: {
         clerkId: userId,
-        email: "", // optional (you can fetch from Clerk)
+        email: clerkUser?.emailAddresses[0]?.emailAddress || "",
+        name: clerkUser?.fullName || "",
+        avatar: clerkUser?.imageUrl,
         onboarded: false
       }
     })

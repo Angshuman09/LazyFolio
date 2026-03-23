@@ -1,16 +1,14 @@
 import { getOrCreateUser } from "@/lib/getOrCreateUser"
+import { Sidebar } from "lucide-react"
 import { redirect } from "next/navigation"
 
 const Dashboard = async () => {
-  const user = await getOrCreateUser();
-  if(!user) redirect("/sign-in");
 
-    if (!user.onboarded) {
-    redirect("/user-detail")
-  }
-  
   return (
-    <div className='bg-red-300 w-full h-screen'>Dashboard</div>
+    <div className='bg-red-300 w-full h-screen'>
+      <Sidebar/>
+      hello
+    </div>
   )
 }
 
