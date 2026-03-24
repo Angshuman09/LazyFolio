@@ -9,7 +9,7 @@ const Hero = () => {
         Build your portfolio <br />
         <strong className="font-serif-display font-bold">
           in{" "}
-          <span className="inline-block text-(--lf-glow) drop-shadow-[0_0_18px_rgba(245,158,11,0.8)] animate-pulse transition-all duration-5 hover:drop-shadow-[0_0_25px_rgba(245,158,11,1)]">
+          <span className="inline-block text-fuchsia-400 animate-[glow_2s_ease-in-out_infinite]">
             minutes
           </span>
         </strong>
