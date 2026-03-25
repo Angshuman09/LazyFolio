@@ -1,7 +1,7 @@
 'use client'
 
 import { UserButton } from "@clerk/nextjs";
-import { Github, Menu, MoonIcon, SunIcon, X } from "lucide-react";
+import { Github, Menu, Moon, Sun, X } from "lucide-react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import { Button } from "../ui/button";
@@ -71,23 +71,23 @@ const Navbar = () => {
               href="https://github.com/Angshuman09/lazyfolio"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-1.5 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
+              className="flex items-center gap-1.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
             >
               <Github className="h-3.5 w-3.5" />
               <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
             </Link>
 
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle dark mode"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-all duration-150"
-            >
-              {dark ? <SunIcon /> : <MoonIcon />}
-            </button>
+          <button
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {dark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
 
             {user ? (
               <>
-                <Button onClick={() => router.push("/dashboard")} className="bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold px-5 py-2 rounded-full hover:opacity-80 transition-opacity flex items-center gap-1.5">
+                <Button onClick={() => router.push("/dashboard")} className="bg-(--lf-ink) text-(--lf-bg) hover:bg-(--lf-bg) hover:text-(--lf-ink) border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5">
                   Dashboard
                 </Button>
                 <UserButton />
@@ -95,7 +95,7 @@ const Navbar = () => {
             ) : (
               <button
                 onClick={() => router.push("/sign-in")}
-                className="bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold px-5 py-2 rounded-full hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] hover:bg-(--lf-bg) hover:text-(--lf-ink) border-2 border-(--lf-ink) font-semibold px-4 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Get started
                 <span className="btn-arrow w-4 h-4 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[9px] font-bold leading-none">
@@ -107,13 +107,13 @@ const Navbar = () => {
 
           {/* Mobile controls */}
           <div className="md:hidden flex items-center gap-2 ml-auto">
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle dark mode"
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-all"
-            >
-              {dark ? <SunIcon /> : <MoonIcon />}
-            </button>
+          <button
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {dark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
             <button className="p-1 text-(--lf-muted)" onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <X /> : <Menu />}
             </button>
@@ -148,7 +148,7 @@ const Navbar = () => {
           </Link>
           <button
             onClick={() => router.push("/sign-in")}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-bg) px-5 py-3 rounded-full hover:opacity-80 transition-opacity"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-bg) hover:bg-(--lf-bg) border-2 border-(--lf-ink) hover:text-(--lf-ink) px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
           >
             Get started
           </button>

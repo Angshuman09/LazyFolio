@@ -15,7 +15,7 @@ const CTA = () => {
           </p>
           <a
             href="#"
-            className="inline-flex items-center gap-2 bg-(--lf-bg) text-(--lf-ink) text-[0.88rem] font-semibold px-7 py-3.5 rounded-full hover:opacity-80 transition-opacity"
+            className="inline-flex items-center gap-2 bg-(--lf-bg) text-(--lf-ink) hover:bg-(--lf-ink) border-2 hover:text-(--lf-bg) text-[0.88rem] font-semibold px-6 py-3.5 rounded-2xl hover:opacity-80 transition-opacity"
           >
             Start for free
             <span className="btn-arrow w-5 h-5 bg-(--lf-ink) text-(--lf-bg) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none">

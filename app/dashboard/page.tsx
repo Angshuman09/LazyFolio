@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 import {
   Sun,
   Moon,
@@ -25,9 +26,11 @@ import {
   BarChart3,
 } from "lucide-react";
 
+import { useRouter } from "next/navigation";
+import Templates from "../(template)/template/page";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Tab =
-  | "overview"
   | "profile"
   | "links"
   | "experience"
@@ -69,7 +72,6 @@ const TEMPLATES = [
 ];
 
 const NAV: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: "overview", label: "Overview", icon: <BarChart3 size={14} /> },
   { id: "profile", label: "Profile", icon: <User size={14} /> },
   { id: "links", label: "Links", icon: <Link2 size={14} /> },
   { id: "experience", label: "Experience", icon: <Briefcase size={14} /> },
@@ -95,7 +97,7 @@ const MOCK_SKILLS = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const [tab, setTab] = useState<Tab>("overview");
+  const [tab, setTab] = useState<Tab>("profile");
   const [dark, setDark] = useState(false);
   const [templateOpen, setTemplateOpen] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState("minimal");
@@ -104,6 +106,8 @@ export default function DashboardPage() {
   const username = "angshuman09";
 
   const [mounted, setMounted] = useState(false);
+
+  const router = useRouter();
 
   // Sync theme with localStorage and document class
   useEffect(() => {
@@ -140,28 +144,23 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen flex flex-col bg-(--lf-bg) text-(--lf-ink) font-sans transition-colors duration-200">
       {/* ═══════════════ DASHBOARD HEADER ═══════════════ */}
-      <header className="sticky top-0 z-40 h-[52px] flex items-center justify-between px-6 bg-(--lf-bg)/88 backdrop-blur-lg border-b border-(--lf-border-alpha) transition-colors duration-200">
+      <header className="sticky top-0 z-40 h-13 flex items-center justify-between px-6 bg-(--lf-bg)/88 backdrop-blur-lg border-b border-(--lf-border-alpha) transition-colors duration-200">
         <div className="flex items-center">
-          <span className="font-serif text-[1.15rem] font-normal tracking-tight text-(--lf-ink) select-none">
+          <span onClick={()=> router.push('/')} className="font-serif text-[1.15rem] font-normal tracking-tight text-(--lf-ink) select-none">
             Lazyfolio
           </span>
-          <div className="flex items-center gap-[5px] text-[0.75rem] text-(--lf-muted) ml-3">
-            <span>Dashboard</span>
-            {tab !== "overview" && (
-              <>
+          <div className="flex items-center gap-1.25 text-[0.75rem] text-(--lf-muted) ml-3">
                 <ChevronRight size={11} className="opacity-35" />
                 <span className="text-(--lf-ink) font-medium">
                   {NAV.find((n) => n.id === tab)?.label}
                 </span>
-              </>
-            )}
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Template picker */}
           <button
-            className="inline-flex items-center gap-[7px] px-3.5 h-[34px] rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+            className="inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
             onClick={() => setTemplateOpen(true)}
           >
             <Layers size={13} />
@@ -173,19 +172,19 @@ export default function DashboardPage() {
 
           {/* Theme toggle — same pattern as Navbar */}
           <button
-            className="inline-flex items-center justify-center w-[34px] h-[34px] rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={() => setDark(!dark)}
             aria-label="Toggle theme"
           >
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-          <button className="inline-flex items-center gap-1.5 px-3 h-[30px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap">
+          <button className="inline-flex items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
           </button>
 
-          <button className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap">
+          <button className="inline-flex items-center gap-1.5 px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap">
             Save changes
           </button>
         </div>
@@ -194,7 +193,7 @@ export default function DashboardPage() {
       {/* ═══════════════ BODY ═══════════════ */}
       <div className="flex flex-1">
         {/* ─── Sidebar ─── */}
-        <aside className="w-[200px] shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-[2px] sticky top-[52px] h-[calc(100vh-52px)] overflow-y-auto">
+        <aside className="w-50 shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-0.5 sticky top-13 h-[calc(100vh-52px)] overflow-y-auto">
           {NAV.map((n) => (
             <button
               key={n.id}
@@ -232,156 +231,7 @@ export default function DashboardPage() {
         </aside>
 
         {/* ─── Main ─── */}
-        <main className="flex-1 py-8 px-10 max-w-[860px] overflow-y-auto">
-          {/* ══ OVERVIEW ══════════════════════════════════════════ */}
-          {tab === "overview" && (
-            <>
-              <h1 className="font-serif text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
-                Good morning ✦
-              </h1>
-              <p className="text-[0.78rem] text-(--lf-muted) mb-7">
-                Your portfolio is live at lazyfolio/{username}
-              </p>
-
-              {/* profile strip */}
-              <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-5 flex items-center gap-[18px] transition-colors duration-150 hover:border-(--lf-muted)">
-                <div className="w-[62px] h-[62px] rounded-full bg-(--lf-border) flex items-center justify-center font-serif text-[1.5rem] text-(--lf-muted) shrink-0 border-2 border-(--lf-border)">
-                  A
-                </div>
-                <div className="flex-1">
-                  <div className="font-serif text-[1rem] font-medium mb-1 text-(--lf-ink)">
-                    Angshuman Kalita
-                  </div>
-                  <div className="text-[0.78rem] text-(--lf-muted) mb-2">
-                    Full Stack Developer · Assam, India
-                  </div>
-                  <div className="flex gap-1.25 flex-wrap">
-                    {["Next.js", "TypeScript", "Go"].map((s) => (
-                      <span
-                        key={s}
-                        className="inline-flex items-center bg-(--lf-accent-soft) border border-(--lf-border) rounded-[5px] px-2 py-0.5 text-[0.7rem] text-(--lf-muted) font-mono"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-[0.75rem] text-(--lf-muted) px-3.5 py-1.5 rounded-[20px] border border-(--lf-border) whitespace-nowrap">
-                  🔥 Open to work
-                </div>
-              </div>
-
-              {/* stats */}
-              <div className="grid grid-cols-4 gap-3 mb-7">
-                {[
-                  { l: "Links", v: 3 },
-                  { l: "Projects", v: 2 },
-                  { l: "Experience", v: 2 },
-                  { l: "Blogs", v: 2 },
-                ].map((s) => (
-                  <div
-                    key={s.l}
-                    className="border border-(--lf-border) rounded-xl px-[18px] py-4 bg-(--lf-surface)"
-                  >
-                    <div className="font-serif text-[1.9rem] font-medium text-(--lf-ink) leading-none">
-                      {s.v}
-                    </div>
-                    <div className="text-[0.68rem] text-(--lf-muted) mt-1.25 font-mono tracking-widest uppercase">
-                      {s.l}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* GitHub */}
-              <div className="flex items-center justify-between mb-3.5">
-                <span className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono">
-                  GitHub Stats
-                </span>
-                <span className="text-[0.68rem] text-(--lf-muted) font-mono">
-                  synced 2m ago
-                </span>
-              </div>
-              <div className="border border-(--lf-border) rounded-xl px-5 py-[18px] bg-(--lf-surface) mb-6">
-                <div className="flex items-center gap-2">
-                  <Github size={14} className="text-(--lf-muted)" />
-                  <span className="text-[0.8rem] text-(--lf-muted) font-mono">
-                    github.com/
-                    <strong className="text-(--lf-ink)">{username}</strong>
-                  </span>
-                </div>
-                <div className="grid grid-cols-5 gap-3.5 mt-4">
-                  {[
-                    { l: "Repos", v: 34 },
-                    { l: "Stars", v: 412 },
-                    { l: "Forks", v: 89 },
-                    { l: "Followers", v: 203 },
-                    { l: "Contribs", v: "1.2k" },
-                  ].map((s) => (
-                    <div key={s.l}>
-                      <div className="font-serif text-[1.35rem] font-medium text-(--lf-ink)">
-                        {s.v}
-                      </div>
-                      <div className="text-[0.66rem] text-(--lf-muted) font-mono uppercase tracking-widest mt-[3px]">
-                        {s.l}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-[3px] flex-wrap mt-[18px]">
-                  {Array.from({ length: 56 }).map((_, i) => {
-                    // Use a simple deterministic "random" value based on index to avoid hydration mismatch
-                    const seed = (i * 149) % 100;
-                    const a = seed > 40 ? ((seed / 100) * 0.55 + 0.15).toFixed(2) : "0.05";
-                    return (
-                      <div
-                        key={i}
-                        className="w-2.5 h-2.5 rounded-[2px]"
-                        style={{
-                          background: `rgba(${dark ? "240,240,235" : "17,17,16"},${a})`,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* recent projects */}
-              <div className="flex items-center justify-between mb-3.5">
-                <span className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono">
-                  Recent Projects
-                </span>
-                <button
-                  className="inline-flex items-center gap-1.5 px-3 h-[30px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap"
-                  onClick={() => setTab("projects")}
-                >
-                  <ExternalLink size={11} />
-                  See all
-                </button>
-              </div>
-              {[
-                { t: "LazyFolio", d: "No-deploy portfolio builder", s: 128 },
-                { t: "CodeSnap", d: "Code screenshot generator", s: 64 },
-              ].map((p) => (
-                <div
-                  key={p.t}
-                  className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) flex items-center gap-3.5"
-                >
-                  <Code2 size={15} className="text-(--lf-muted) shrink-0" />
-                  <div className="flex-1">
-                    <div className="text-[0.85rem] font-semibold">{p.t}</div>
-                    <div className="text-[0.75rem] text-(--lf-muted) mt-0.5">
-                      {p.d}
-                    </div>
-                  </div>
-                  <span className="flex items-center gap-1 text-[0.72rem] text-(--lf-muted) font-mono">
-                    <Star size={11} /> {p.s}
-                  </span>
-                </div>
-              ))}
-            </>
-          )}
-
+        <main className="flex-2 py-8 px-10 max-w-215 overflow-y-auto">
           {/* ══ PROFILE ═══════════════════════════════════════════ */}
           {tab === "profile" && (
             <>
@@ -878,6 +728,10 @@ export default function DashboardPage() {
             </>
           )}
         </main>
+
+        <div className="flex-1">
+          <Templates/>
+        </div>
       </div>
 
       {/* ═══════════════ TEMPLATE MODAL ═══════════════ */}
@@ -887,7 +741,7 @@ export default function DashboardPage() {
           onClick={() => setTemplateOpen(false)}
         >
           <div
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-[420px] shadow-2xl overflow-hidden p-6 animate-in fade-in zoom-in duration-200"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-105 shadow-2xl overflow-hidden p-6 animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-serif text-[1.25rem] font-medium text-(--lf-ink) mb-1.5 leading-tight">
@@ -928,13 +782,13 @@ export default function DashboardPage() {
 
             <div className="flex items-center justify-end gap-2.5 mt-7">
               <button
-                className="inline-flex items-center gap-1.5 px-4 h-[36px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap"
                 onClick={() => setTemplateOpen(false)}
               >
                 Cancel
               </button>
               <button
-                className="inline-flex items-center gap-2 px-5 h-[36px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-bold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-5 h-9 rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-bold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap"
                 onClick={() => setTemplateOpen(false)}
               >
                 <Check size={12} strokeWidth={3} />
