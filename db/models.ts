@@ -10,4 +10,7 @@
  */
 export type * from './models/User'
 export type * from './models/Profile'
+export type * from './models/Experience'
+export type * from './models/Project'
+export type * from './models/Blog'
 export type * from './commonInputTypes'

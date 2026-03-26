@@ -16,26 +16,62 @@ model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   email     String   @unique
-  username String?
-  name      String?
-  avatar    String?
-  onboarded Boolean  @default(false)
-
-  profile Profile?
-
+  profile   Profile?
   createdAt DateTime @default(now())
 }
 
-
 model Profile {
-  id    String @id @default(cuid())
-  userId String @unique
-  bio String?
-  skils String[]
-  github String?
-  twitter String?
-  linkedin String?
-  theme String? @default("default")
+  id          String       @id @default(cuid())
+  avatar      String?
+  banner      String?
+  name        String?
+  age         Int?
+  location    String?
+  userId      String       @unique
+  username    String?
+  bio         String?
+  skils       String[]
+  experiences Experience[]
+  projects    Project[]
+  blogs       Blog[]
+  github      String?
+  twitter     String?
+  linkedin    String?
+  themeId     String?
+  resume      String?
+  bookAcall   String? //cal.com link
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  companyName String?
+  role        String?
+  date        String?
+  description String?
+  profileId   String?
+  profile     Profile? @relation(fields: [profileId], references: [id])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  date        String?
+  profileId   String?
+  githubLink  String?
+  projectLink String?
+  techstack   String[]
+  profile     Profile? @relation(fields: [profileId], references: [id])
+}
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  date        String?
+  blogLink    String?
+  profileId   String?
+  profile     Profile? @relation(fields: [profileId], references: [id])
 }

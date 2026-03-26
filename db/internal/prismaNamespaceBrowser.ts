@@ -52,7 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Profile: 'Profile'
+  Profile: 'Profile',
+  Experience: 'Experience',
+  Project: 'Project',
+  Blog: 'Blog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,10 +78,6 @@ export const UserScalarFieldEnum = {
   id: 'id',
   clerkId: 'clerkId',
   email: 'email',
-  username: 'username',
-  name: 'name',
-  avatar: 'avatar',
-  onboarded: 'onboarded',
   createdAt: 'createdAt'
 } as const
 
@@ -87,16 +86,62 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const ProfileScalarFieldEnum = {
   id: 'id',
+  avatar: 'avatar',
+  banner: 'banner',
+  name: 'name',
+  age: 'age',
+  location: 'location',
   userId: 'userId',
+  username: 'username',
   bio: 'bio',
   skils: 'skils',
   github: 'github',
   twitter: 'twitter',
   linkedin: 'linkedin',
-  theme: 'theme'
+  themeId: 'themeId',
+  resume: 'resume',
+  bookAcall: 'bookAcall'
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const ExperienceScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  role: 'role',
+  date: 'date',
+  description: 'description',
+  profileId: 'profileId'
+} as const
+
+export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  date: 'date',
+  profileId: 'profileId',
+  githubLink: 'githubLink',
+  projectLink: 'projectLink',
+  techstack: 'techstack'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const BlogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  date: 'date',
+  blogLink: 'blogLink',
+  profileId: 'profileId'
+} as const
+
+export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
 
 
 export const SortOrder = {

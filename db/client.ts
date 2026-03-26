@@ -51,3 +51,18 @@ export type User = Prisma.UserModel
  * 
  */
 export type Profile = Prisma.ProfileModel
+/**
+ * Model Experience
+ * 
+ */
+export type Experience = Prisma.ExperienceModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel
+/**
+ * Model Blog
+ * 
+ */
+export type Blog = Prisma.BlogModel

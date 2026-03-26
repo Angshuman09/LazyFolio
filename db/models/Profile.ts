@@ -20,72 +20,138 @@ export type ProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$Profile
 
 export type AggregateProfile = {
   _count: ProfileCountAggregateOutputType | null
+  _avg: ProfileAvgAggregateOutputType | null
+  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
 }
 
+export type ProfileAvgAggregateOutputType = {
+  age: number | null
+}
+
+export type ProfileSumAggregateOutputType = {
+  age: number | null
+}
+
 export type ProfileMinAggregateOutputType = {
   id: string | null
+  avatar: string | null
+  banner: string | null
+  name: string | null
+  age: number | null
+  location: string | null
   userId: string | null
+  username: string | null
   bio: string | null
   github: string | null
   twitter: string | null
   linkedin: string | null
-  theme: string | null
+  themeId: string | null
+  resume: string | null
+  bookAcall: string | null
 }
 
 export type ProfileMaxAggregateOutputType = {
   id: string | null
+  avatar: string | null
+  banner: string | null
+  name: string | null
+  age: number | null
+  location: string | null
   userId: string | null
+  username: string | null
   bio: string | null
   github: string | null
   twitter: string | null
   linkedin: string | null
-  theme: string | null
+  themeId: string | null
+  resume: string | null
+  bookAcall: string | null
 }
 
 export type ProfileCountAggregateOutputType = {
   id: number
+  avatar: number
+  banner: number
+  name: number
+  age: number
+  location: number
   userId: number
+  username: number
   bio: number
   skils: number
   github: number
   twitter: number
   linkedin: number
-  theme: number
+  themeId: number
+  resume: number
+  bookAcall: number
   _all: number
 }
 
 
+export type ProfileAvgAggregateInputType = {
+  age?: true
+}
+
+export type ProfileSumAggregateInputType = {
+  age?: true
+}
+
 export type ProfileMinAggregateInputType = {
   id?: true
+  avatar?: true
+  banner?: true
+  name?: true
+  age?: true
+  location?: true
   userId?: true
+  username?: true
   bio?: true
   github?: true
   twitter?: true
   linkedin?: true
-  theme?: true
+  themeId?: true
+  resume?: true
+  bookAcall?: true
 }
 
 export type ProfileMaxAggregateInputType = {
   id?: true
+  avatar?: true
+  banner?: true
+  name?: true
+  age?: true
+  location?: true
   userId?: true
+  username?: true
   bio?: true
   github?: true
   twitter?: true
   linkedin?: true
-  theme?: true
+  themeId?: true
+  resume?: true
+  bookAcall?: true
 }
 
 export type ProfileCountAggregateInputType = {
   id?: true
+  avatar?: true
+  banner?: true
+  name?: true
+  age?: true
+  location?: true
   userId?: true
+  username?: true
   bio?: true
   skils?: true
   github?: true
   twitter?: true
   linkedin?: true
-  theme?: true
+  themeId?: true
+  resume?: true
+  bookAcall?: true
   _all?: true
 }
 
@@ -127,6 +193,18 @@ export type ProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ProfileAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ProfileSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProfileMinAggregateInputType
@@ -157,20 +235,32 @@ export type ProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ProfileCountAggregateInputType | true
+  _avg?: ProfileAvgAggregateInputType
+  _sum?: ProfileSumAggregateInputType
   _min?: ProfileMinAggregateInputType
   _max?: ProfileMaxAggregateInputType
 }
 
 export type ProfileGroupByOutputType = {
   id: string
+  avatar: string | null
+  banner: string | null
+  name: string | null
+  age: number | null
+  location: string | null
   userId: string
+  username: string | null
   bio: string | null
   skils: string[]
   github: string | null
   twitter: string | null
   linkedin: string | null
-  theme: string | null
+  themeId: string | null
+  resume: string | null
+  bookAcall: string | null
   _count: ProfileCountAggregateOutputType | null
+  _avg: ProfileAvgAggregateOutputType | null
+  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
 }
@@ -195,25 +285,47 @@ export type ProfileWhereInput = {
   OR?: Prisma.ProfileWhereInput[]
   NOT?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
   id?: Prisma.StringFilter<"Profile"> | string
+  avatar?: Prisma.StringNullableFilter<"Profile"> | string | null
+  banner?: Prisma.StringNullableFilter<"Profile"> | string | null
+  name?: Prisma.StringNullableFilter<"Profile"> | string | null
+  age?: Prisma.IntNullableFilter<"Profile"> | number | null
+  location?: Prisma.StringNullableFilter<"Profile"> | string | null
   userId?: Prisma.StringFilter<"Profile"> | string
+  username?: Prisma.StringNullableFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableFilter<"Profile"> | string | null
   skils?: Prisma.StringNullableListFilter<"Profile">
   github?: Prisma.StringNullableFilter<"Profile"> | string | null
   twitter?: Prisma.StringNullableFilter<"Profile"> | string | null
   linkedin?: Prisma.StringNullableFilter<"Profile"> | string | null
-  theme?: Prisma.StringNullableFilter<"Profile"> | string | null
+  themeId?: Prisma.StringNullableFilter<"Profile"> | string | null
+  resume?: Prisma.StringNullableFilter<"Profile"> | string | null
+  bookAcall?: Prisma.StringNullableFilter<"Profile"> | string | null
+  experiences?: Prisma.ExperienceListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
+  blogs?: Prisma.BlogListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type ProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  banner?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   skils?: Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   twitter?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
-  theme?: Prisma.SortOrderInput | Prisma.SortOrder
+  themeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  resume?: Prisma.SortOrderInput | Prisma.SortOrder
+  bookAcall?: Prisma.SortOrderInput | Prisma.SortOrder
+  experiences?: Prisma.ExperienceOrderByRelationAggregateInput
+  projects?: Prisma.ProjectOrderByRelationAggregateInput
+  blogs?: Prisma.BlogOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -223,27 +335,48 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
   OR?: Prisma.ProfileWhereInput[]
   NOT?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
+  avatar?: Prisma.StringNullableFilter<"Profile"> | string | null
+  banner?: Prisma.StringNullableFilter<"Profile"> | string | null
+  name?: Prisma.StringNullableFilter<"Profile"> | string | null
+  age?: Prisma.IntNullableFilter<"Profile"> | number | null
+  location?: Prisma.StringNullableFilter<"Profile"> | string | null
+  username?: Prisma.StringNullableFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableFilter<"Profile"> | string | null
   skils?: Prisma.StringNullableListFilter<"Profile">
   github?: Prisma.StringNullableFilter<"Profile"> | string | null
   twitter?: Prisma.StringNullableFilter<"Profile"> | string | null
   linkedin?: Prisma.StringNullableFilter<"Profile"> | string | null
-  theme?: Prisma.StringNullableFilter<"Profile"> | string | null
+  themeId?: Prisma.StringNullableFilter<"Profile"> | string | null
+  resume?: Prisma.StringNullableFilter<"Profile"> | string | null
+  bookAcall?: Prisma.StringNullableFilter<"Profile"> | string | null
+  experiences?: Prisma.ExperienceListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
+  blogs?: Prisma.BlogListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
 
 export type ProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  avatar?: Prisma.SortOrderInput | Prisma.SortOrder
+  banner?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  age?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
+  username?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   skils?: Prisma.SortOrder
   github?: Prisma.SortOrderInput | Prisma.SortOrder
   twitter?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedin?: Prisma.SortOrderInput | Prisma.SortOrder
-  theme?: Prisma.SortOrderInput | Prisma.SortOrder
+  themeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  resume?: Prisma.SortOrderInput | Prisma.SortOrder
+  bookAcall?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProfileCountOrderByAggregateInput
+  _avg?: Prisma.ProfileAvgOrderByAggregateInput
   _max?: Prisma.ProfileMaxOrderByAggregateInput
   _min?: Prisma.ProfileMinOrderByAggregateInput
+  _sum?: Prisma.ProfileSumOrderByAggregateInput
 }
 
 export type ProfileScalarWhereWithAggregatesInput = {
@@ -251,89 +384,165 @@ export type ProfileScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProfileScalarWhereWithAggregatesInput | Prisma.ProfileScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Profile"> | string
+  avatar?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  banner?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  name?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  age?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
+  username?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   skils?: Prisma.StringNullableListFilter<"Profile">
   github?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   twitter?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   linkedin?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
-  theme?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  themeId?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  resume?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  bookAcall?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
 }
 
 export type ProfileCreateInput = {
   id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
   bio?: string | null
   skils?: Prisma.ProfileCreateskilsInput | string[]
   github?: string | null
   twitter?: string | null
   linkedin?: string | null
-  theme?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
 }
 
 export type ProfileUncheckedCreateInput = {
   id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
   userId: string
+  username?: string | null
   bio?: string | null
   skils?: Prisma.ProfileCreateskilsInput | string[]
   github?: string | null
   twitter?: string | null
   linkedin?: string | null
-  theme?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
 }
 
 export type ProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
 }
 
 export type ProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
 }
 
 export type ProfileCreateManyInput = {
   id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
   userId: string
+  username?: string | null
   bio?: string | null
   skils?: Prisma.ProfileCreateskilsInput | string[]
   github?: string | null
   twitter?: string | null
   linkedin?: string | null
-  theme?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
 }
 
 export type ProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfileNullableScalarRelationFilter = {
@@ -351,33 +560,65 @@ export type StringNullableListFilter<$PrismaModel = never> = {
 
 export type ProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  banner?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  age?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   skils?: Prisma.SortOrder
   github?: Prisma.SortOrder
   twitter?: Prisma.SortOrder
   linkedin?: Prisma.SortOrder
-  theme?: Prisma.SortOrder
+  themeId?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
+  bookAcall?: Prisma.SortOrder
+}
+
+export type ProfileAvgOrderByAggregateInput = {
+  age?: Prisma.SortOrder
 }
 
 export type ProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  banner?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  age?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   github?: Prisma.SortOrder
   twitter?: Prisma.SortOrder
   linkedin?: Prisma.SortOrder
-  theme?: Prisma.SortOrder
+  themeId?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
+  bookAcall?: Prisma.SortOrder
 }
 
 export type ProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  avatar?: Prisma.SortOrder
+  banner?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  age?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   github?: Prisma.SortOrder
   twitter?: Prisma.SortOrder
   linkedin?: Prisma.SortOrder
-  theme?: Prisma.SortOrder
+  themeId?: Prisma.SortOrder
+  resume?: Prisma.SortOrder
+  bookAcall?: Prisma.SortOrder
+}
+
+export type ProfileSumOrderByAggregateInput = {
+  age?: Prisma.SortOrder
 }
 
 export type ProfileCreateNestedOneWithoutUserInput = {
@@ -416,29 +657,111 @@ export type ProfileCreateskilsInput = {
   set: string[]
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type ProfileUpdateskilsInput = {
   set?: string[]
   push?: string | string[]
 }
 
+export type ProfileCreateNestedOneWithoutExperiencesInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutExperiencesInput, Prisma.ProfileUncheckedCreateWithoutExperiencesInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutExperiencesInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneWithoutExperiencesNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutExperiencesInput, Prisma.ProfileUncheckedCreateWithoutExperiencesInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutExperiencesInput
+  upsert?: Prisma.ProfileUpsertWithoutExperiencesInput
+  disconnect?: Prisma.ProfileWhereInput | boolean
+  delete?: Prisma.ProfileWhereInput | boolean
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutExperiencesInput, Prisma.ProfileUpdateWithoutExperiencesInput>, Prisma.ProfileUncheckedUpdateWithoutExperiencesInput>
+}
+
+export type ProfileCreateNestedOneWithoutProjectsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutProjectsInput, Prisma.ProfileUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutProjectsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneWithoutProjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutProjectsInput, Prisma.ProfileUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutProjectsInput
+  upsert?: Prisma.ProfileUpsertWithoutProjectsInput
+  disconnect?: Prisma.ProfileWhereInput | boolean
+  delete?: Prisma.ProfileWhereInput | boolean
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutProjectsInput, Prisma.ProfileUpdateWithoutProjectsInput>, Prisma.ProfileUncheckedUpdateWithoutProjectsInput>
+}
+
+export type ProfileCreateNestedOneWithoutBlogsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutBlogsInput, Prisma.ProfileUncheckedCreateWithoutBlogsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutBlogsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneWithoutBlogsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutBlogsInput, Prisma.ProfileUncheckedCreateWithoutBlogsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutBlogsInput
+  upsert?: Prisma.ProfileUpsertWithoutBlogsInput
+  disconnect?: Prisma.ProfileWhereInput | boolean
+  delete?: Prisma.ProfileWhereInput | boolean
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutBlogsInput, Prisma.ProfileUpdateWithoutBlogsInput>, Prisma.ProfileUncheckedUpdateWithoutBlogsInput>
+}
+
 export type ProfileCreateWithoutUserInput = {
   id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
   bio?: string | null
   skils?: Prisma.ProfileCreateskilsInput | string[]
   github?: string | null
   twitter?: string | null
   linkedin?: string | null
-  theme?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
 }
 
 export type ProfileUncheckedCreateWithoutUserInput = {
   id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
   bio?: string | null
   skils?: Prisma.ProfileCreateskilsInput | string[]
   github?: string | null
   twitter?: string | null
   linkedin?: string | null
-  theme?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
 }
 
 export type ProfileCreateOrConnectWithoutUserInput = {
@@ -459,76 +782,485 @@ export type ProfileUpdateToOneWithWhereWithoutUserInput = {
 
 export type ProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
 }
 
 export type ProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skils?: Prisma.ProfileUpdateskilsInput | string[]
   github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  theme?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
 }
 
+export type ProfileCreateWithoutExperiencesInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  user: Prisma.UserCreateNestedOneWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutExperiencesInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  userId: string
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutExperiencesInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutExperiencesInput, Prisma.ProfileUncheckedCreateWithoutExperiencesInput>
+}
+
+export type ProfileUpsertWithoutExperiencesInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutExperiencesInput, Prisma.ProfileUncheckedUpdateWithoutExperiencesInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutExperiencesInput, Prisma.ProfileUncheckedCreateWithoutExperiencesInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutExperiencesInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutExperiencesInput, Prisma.ProfileUncheckedUpdateWithoutExperiencesInput>
+}
+
+export type ProfileUpdateWithoutExperiencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutExperiencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileCreateWithoutProjectsInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  user: Prisma.UserCreateNestedOneWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutProjectsInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  userId: string
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutProjectsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutProjectsInput, Prisma.ProfileUncheckedCreateWithoutProjectsInput>
+}
+
+export type ProfileUpsertWithoutProjectsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutProjectsInput, Prisma.ProfileUncheckedUpdateWithoutProjectsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutProjectsInput, Prisma.ProfileUncheckedCreateWithoutProjectsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutProjectsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutProjectsInput, Prisma.ProfileUncheckedUpdateWithoutProjectsInput>
+}
+
+export type ProfileUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileCreateWithoutBlogsInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  user: Prisma.UserCreateNestedOneWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutBlogsInput = {
+  id?: string
+  avatar?: string | null
+  banner?: string | null
+  name?: string | null
+  age?: number | null
+  location?: string | null
+  userId: string
+  username?: string | null
+  bio?: string | null
+  skils?: Prisma.ProfileCreateskilsInput | string[]
+  github?: string | null
+  twitter?: string | null
+  linkedin?: string | null
+  themeId?: string | null
+  resume?: string | null
+  bookAcall?: string | null
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutBlogsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutBlogsInput, Prisma.ProfileUncheckedCreateWithoutBlogsInput>
+}
+
+export type ProfileUpsertWithoutBlogsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutBlogsInput, Prisma.ProfileUncheckedUpdateWithoutBlogsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutBlogsInput, Prisma.ProfileUncheckedCreateWithoutBlogsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutBlogsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutBlogsInput, Prisma.ProfileUncheckedUpdateWithoutBlogsInput>
+}
+
+export type ProfileUpdateWithoutBlogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutBlogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skils?: Prisma.ProfileUpdateskilsInput | string[]
+  github?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twitter?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  themeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+
+/**
+ * Count Type ProfileCountOutputType
+ */
+
+export type ProfileCountOutputType = {
+  experiences: number
+  projects: number
+  blogs: number
+}
+
+export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  experiences?: boolean | ProfileCountOutputTypeCountExperiencesArgs
+  projects?: boolean | ProfileCountOutputTypeCountProjectsArgs
+  blogs?: boolean | ProfileCountOutputTypeCountBlogsArgs
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProfileCountOutputType
+   */
+  select?: Prisma.ProfileCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountExperiencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExperienceWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountBlogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlogWhereInput
+}
 
 
 export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  avatar?: boolean
+  banner?: boolean
+  name?: boolean
+  age?: boolean
+  location?: boolean
   userId?: boolean
+  username?: boolean
   bio?: boolean
   skils?: boolean
   github?: boolean
   twitter?: boolean
   linkedin?: boolean
-  theme?: boolean
+  themeId?: boolean
+  resume?: boolean
+  bookAcall?: boolean
+  experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
+  projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
+  blogs?: boolean | Prisma.Profile$blogsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  avatar?: boolean
+  banner?: boolean
+  name?: boolean
+  age?: boolean
+  location?: boolean
   userId?: boolean
+  username?: boolean
   bio?: boolean
   skils?: boolean
   github?: boolean
   twitter?: boolean
   linkedin?: boolean
-  theme?: boolean
+  themeId?: boolean
+  resume?: boolean
+  bookAcall?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  avatar?: boolean
+  banner?: boolean
+  name?: boolean
+  age?: boolean
+  location?: boolean
   userId?: boolean
+  username?: boolean
   bio?: boolean
   skils?: boolean
   github?: boolean
   twitter?: boolean
   linkedin?: boolean
-  theme?: boolean
+  themeId?: boolean
+  resume?: boolean
+  bookAcall?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectScalar = {
   id?: boolean
+  avatar?: boolean
+  banner?: boolean
+  name?: boolean
+  age?: boolean
+  location?: boolean
   userId?: boolean
+  username?: boolean
   bio?: boolean
   skils?: boolean
   github?: boolean
   twitter?: boolean
   linkedin?: boolean
-  theme?: boolean
+  themeId?: boolean
+  resume?: boolean
+  bookAcall?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "bio" | "skils" | "github" | "twitter" | "linkedin" | "theme", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "banner" | "name" | "age" | "location" | "userId" | "username" | "bio" | "skils" | "github" | "twitter" | "linkedin" | "themeId" | "resume" | "bookAcall", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
+  projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
+  blogs?: boolean | Prisma.Profile$blogsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -540,17 +1272,28 @@ export type ProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Profile"
   objects: {
+    experiences: Prisma.$ExperiencePayload<ExtArgs>[]
+    projects: Prisma.$ProjectPayload<ExtArgs>[]
+    blogs: Prisma.$BlogPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    avatar: string | null
+    banner: string | null
+    name: string | null
+    age: number | null
+    location: string | null
     userId: string
+    username: string | null
     bio: string | null
     skils: string[]
     github: string | null
     twitter: string | null
     linkedin: string | null
-    theme: string | null
+    themeId: string | null
+    resume: string | null
+    bookAcall: string | null
   }, ExtArgs["result"]["profile"]>
   composites: {}
 }
@@ -945,6 +1688,9 @@ readonly fields: ProfileFieldRefs;
  */
 export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  experiences<T extends Prisma.Profile$experiencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  projects<T extends Prisma.Profile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blogs<T extends Prisma.Profile$blogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$blogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -976,13 +1722,21 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
  */
 export interface ProfileFieldRefs {
   readonly id: Prisma.FieldRef<"Profile", 'String'>
+  readonly avatar: Prisma.FieldRef<"Profile", 'String'>
+  readonly banner: Prisma.FieldRef<"Profile", 'String'>
+  readonly name: Prisma.FieldRef<"Profile", 'String'>
+  readonly age: Prisma.FieldRef<"Profile", 'Int'>
+  readonly location: Prisma.FieldRef<"Profile", 'String'>
   readonly userId: Prisma.FieldRef<"Profile", 'String'>
+  readonly username: Prisma.FieldRef<"Profile", 'String'>
   readonly bio: Prisma.FieldRef<"Profile", 'String'>
   readonly skils: Prisma.FieldRef<"Profile", 'String[]'>
   readonly github: Prisma.FieldRef<"Profile", 'String'>
   readonly twitter: Prisma.FieldRef<"Profile", 'String'>
   readonly linkedin: Prisma.FieldRef<"Profile", 'String'>
-  readonly theme: Prisma.FieldRef<"Profile", 'String'>
+  readonly themeId: Prisma.FieldRef<"Profile", 'String'>
+  readonly resume: Prisma.FieldRef<"Profile", 'String'>
+  readonly bookAcall: Prisma.FieldRef<"Profile", 'String'>
 }
     
 
@@ -1381,6 +2135,78 @@ export type ProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Profiles to delete.
    */
   limit?: number
+}
+
+/**
+ * Profile.experiences
+ */
+export type Profile$experiencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Experience
+   */
+  select?: Prisma.ExperienceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Experience
+   */
+  omit?: Prisma.ExperienceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExperienceInclude<ExtArgs> | null
+  where?: Prisma.ExperienceWhereInput
+  orderBy?: Prisma.ExperienceOrderByWithRelationInput | Prisma.ExperienceOrderByWithRelationInput[]
+  cursor?: Prisma.ExperienceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExperienceScalarFieldEnum | Prisma.ExperienceScalarFieldEnum[]
+}
+
+/**
+ * Profile.projects
+ */
+export type Profile$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * Profile.blogs
+ */
+export type Profile$blogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Blog
+   */
+  select?: Prisma.BlogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Blog
+   */
+  omit?: Prisma.BlogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlogInclude<ExtArgs> | null
+  where?: Prisma.BlogWhereInput
+  orderBy?: Prisma.BlogOrderByWithRelationInput | Prisma.BlogOrderByWithRelationInput[]
+  cursor?: Prisma.BlogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlogScalarFieldEnum | Prisma.BlogScalarFieldEnum[]
 }
 
 /**
