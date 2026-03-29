@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useCreateUser } from "@/hooks/user";
+import { useCreateUser, useGetUser } from "@/hooks/user";
 
 import {
   Sun,
@@ -104,16 +104,8 @@ export default function DashboardPage() {
   const { user } = useUser();
   console.log(user);
 
-  const createUser = useCreateUser();
-
-  useEffect(() => {
-    if (user) {
-      createUser.mutate({
-        clerkId: user.id,
-        email: user.emailAddresses[0].emailAddress,
-      });
-    }
-  }, [user]);
+  const getUser = useGetUser(user?.id);
+  console.log(getUser);
 
   const router = useRouter();
 

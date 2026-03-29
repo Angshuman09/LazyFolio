@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useCreateUser = () => {
   const mutation = useMutation({
@@ -21,4 +21,21 @@ export const useCreateUser = () => {
   });
 
   return mutation;
+};
+
+export const useGetUser = (clerkId?: string) => {
+  const query = useQuery({
+    queryKey: ["user", clerkId],
+    queryFn: async () => {
+      const res = await fetch(`/api/user?clerkId=${clerkId}`, {
+        method: "GET",
+      });
+      if (!res.ok) throw new Error("Failed to get user");
+
+      return res.json();
+    },
+    enabled: !!clerkId,
+  });
+
+  return query;
 };

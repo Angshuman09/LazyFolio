@@ -8,7 +8,8 @@ import HowToUse from "@/components/home-page/how-to-use";
 import Features from "@/components/home-page/Features";
 import CTA from "@/components/home-page/CTA";
 import Footer from "@/components/home-page/footer";
-
+import { useUser } from "@clerk/nextjs";
+import { useCreateUser } from "@/hooks/user";
 export default function LazyfolioLanding() {
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
@@ -17,6 +18,21 @@ export default function LazyfolioLanding() {
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
+
+  const {user} = useUser();
+  console.log(user);
+
+    const createUser = useCreateUser();
+  
+    useEffect(() => {
+      if (user) {
+        createUser.mutate({
+          clerkId: user.id,
+          email: user.emailAddresses[0].emailAddress,
+        });
+      }
+    }, [user]);
+
 
   return (
    <div className="font-sans-body min-h-screen bg-(--lf-bg) text-(--lf-ink)">
