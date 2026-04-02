@@ -1,25 +1,27 @@
 'use client'
 
-import { UserButton } from "@clerk/nextjs";
 import { Github, Menu, Moon, Sun, X } from "lucide-react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import { Button } from "../ui/button";
-import { useUser } from "@clerk/nextjs";
 import { useState, useEffect} from "react";
 import { useThemeStore } from "@/lib/theme-store";
+import { authClient } from "@/lib/auth-client";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "./user-avatar";
+import { signOut } from "@/lib/auth-client";
+import ProfileMenuOpen from "./profile-menu-open";
 
 const NAV_LEFT = [
   { label: "Features", href: "#features" },
   { label: "Templates", href: "#" },
-  { label: "Blog", href: "#" },
 ];
 
 const Navbar = () => {
     const router = useRouter();
-    const { user } = useUser();
+    const {data: session, isPending} = authClient.useSession();
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
     const [stars, setStars] = useState<number | null>(null);
     const toggleTheme = useThemeStore((s) => s.toggleTheme);
     // console.log(toggleTheme)
@@ -85,16 +87,31 @@ const Navbar = () => {
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-            {user ? (
+            {session?.user ? (
               <>
-                <Button onClick={() => router.push("/dashboard")} className="bg-(--lf-ink) text-(--lf-bg) hover:bg-(--lf-bg) hover:text-(--lf-ink) border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5">
+                <Button onClick={() => router.push("/dashboard")} 
+                className="bg-(--lf-ink) text-(--lf-bg) hover:bg-(--lf-bg) hover:text-(--lf-ink) border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5">
                   Dashboard
                 </Button>
-                <UserButton />
+                <button
+                onClick={()=> setProfileMenuOpen(!profileMenuOpen)}
+                >
+                      <UserAvatar user={session.user} />
+                </button>
+
+                 {profileMenuOpen && (
+                  <ProfileMenuOpen 
+                    session={session} 
+                    setProfileMenuOpen={setProfileMenuOpen} 
+                    signOut={signOut} 
+                    router={router} 
+                  />
+                )}
+
               </>
             ) : (
               <button
-                onClick={() => router.push("/sign-in")}
+                onClick={() => router.push("/auth")}
                 className="bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] hover:bg-(--lf-bg) hover:text-(--lf-ink) border-2 border-(--lf-ink) font-semibold px-4 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Get started
@@ -147,7 +164,7 @@ const Navbar = () => {
             <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
           </Link>
           <button
-            onClick={() => router.push("/sign-in")}
+            onClick={() => router.push("/auth")}
             className="text-sm font-semibold bg-(--lf-ink) text-(--lf-bg) hover:bg-(--lf-bg) border-2 border-(--lf-ink) hover:text-(--lf-ink) px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
           >
             Get started

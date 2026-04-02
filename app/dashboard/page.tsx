@@ -1,9 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
-import { useCreateUser, useGetUser } from "@/hooks/user";
-
 import {
   Sun,
   Moon,
@@ -101,18 +98,12 @@ export default function DashboardPage() {
   const username = "angshuman09";
 
   const [mounted, setMounted] = useState(false);
-  const { user } = useUser();
-  console.log(user);
 
-  const getUser = useGetUser(user?.id);
-  console.log(getUser);
 
   const router = useRouter();
 
-  // Sync theme with localStorage and document class
   useEffect(() => {
     if (typeof document === "undefined") return;
-    // Initial mount: Check current class or localStorage
     const isDark =
       document.documentElement.classList.contains("dark") ||
       localStorage.getItem("lf-theme") === "dark";
@@ -121,7 +112,6 @@ export default function DashboardPage() {
     setMounted(true);
   }, []);
 
-  // Update theme whenever 'dark' state changes, but only after mount
   useEffect(() => {
     if (!mounted || typeof document === "undefined") return;
 
@@ -145,10 +135,8 @@ export default function DashboardPage() {
 
   return (
     <div className="h-screen flex flex-col bg-(--lf-bg) text-(--lf-ink) font-sans-body transition-colors duration-200">
-      {/* ═══════════════ DASHBOARD HEADER ═══════════════ */}
       <header className="sticky top-0 z-40 h-13 flex items-center justify-between px-4 md:px-6 bg-(--lf-bg)/88 backdrop-blur-lg border-b border-(--lf-border-alpha) transition-colors duration-200">
         <div className="flex items-center gap-2">
-          {/* Mobile sidebar toggle */}
           <button
             className="md:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -171,7 +159,6 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-1.5 md:gap-2">
-          {/* Template picker */}
           <button
             className="hidden sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
             onClick={() => setTemplateOpen(true)}
@@ -183,7 +170,6 @@ export default function DashboardPage() {
             </span>
           </button>
 
-          {/* Mobile template button */}
           <button
             className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
             onClick={() => setTemplateOpen(true)}
@@ -192,7 +178,6 @@ export default function DashboardPage() {
             <Layers size={13} />
           </button>
 
-          {/* Theme toggle — same pattern as Navbar */}
           <button
             className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={() => setDark(!dark)}
@@ -213,7 +198,6 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
           className="md:hidden fixed inset-0 z-30 bg-black/30 backdrop-blur-sm"
@@ -221,9 +205,7 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* ═══════════════ BODY ═══════════════ */}
       <div className="flex flex-1 overflow-hidden min-h-0">
-        {/* ─── Sidebar ─── */}
         <aside
           className={`${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -270,9 +252,7 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        {/* ─── Main ─── */}
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
-          {/* ══ PROFILE ═══════════════════════════════════════════ */}
           {tab === "profile" && (
             <>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
@@ -366,9 +346,7 @@ export default function DashboardPage() {
                       Email
                     </label>
                     <input
-                      value={
-                        (user && user?.emailAddresses[0]?.emailAddress) || ""
-                      }
+                    
                       onChange={(e) => {
                         console.log(e.target.value);
                       }}
@@ -390,7 +368,6 @@ export default function DashboardPage() {
             </>
           )}
 
-          {/* ══ LINKS ═════════════════════════════════════════════ */}
           {tab === "links" && (
             <>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
@@ -481,7 +458,6 @@ export default function DashboardPage() {
             </>
           )}
 
-          {/* ══ EXPERIENCE ════════════════════════════════════════ */}
           {tab === "experience" && (
             <>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
@@ -550,7 +526,6 @@ export default function DashboardPage() {
             </>
           )}
 
-          {/* ══ PROJECTS ══════════════════════════════════════════ */}
           {tab === "projects" && (
             <>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
@@ -628,7 +603,6 @@ export default function DashboardPage() {
             </>
           )}
 
-          {/* ══ SKILLS ════════════════════════════════════════════ */}
           {tab === "skills" && (
             <>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
@@ -764,7 +738,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ═══════════════ TEMPLATE MODAL ═══════════════ */}
       {templateOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm transition-opacity duration-200"
