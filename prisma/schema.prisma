@@ -22,7 +22,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  profile   Profile?
+  profile       Profile?
 
   @@unique([email])
   @@map("user")
@@ -81,6 +81,7 @@ model Profile {
   avatar      String?
   banner      String?
   name        String?
+  email       String?
   age         Int?
   location    String?
   userId      String       @unique
@@ -131,4 +132,3 @@ model Blog {
   profileId   String?
   profile     Profile? @relation(fields: [profileId], references: [id])
 }
-

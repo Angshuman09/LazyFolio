@@ -140,6 +140,7 @@ export const ProfileScalarFieldEnum = {
   avatar: 'avatar',
   banner: 'banner',
   name: 'name',
+  email: 'email',
   age: 'age',
   location: 'location',
   userId: 'userId',

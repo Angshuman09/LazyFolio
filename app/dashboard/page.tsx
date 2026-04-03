@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import {
   Sun,
   Moon,
-  LayoutTemplate,
   Github,
   Globe,
   Trash2,
@@ -24,11 +23,13 @@ import {
   User,
   BarChart3,
 } from "lucide-react";
+import { signOut, authClient } from "@/lib/auth-client";
 
 import { useRouter } from "next/navigation";
 import Templates from "../(template)/template/page";
+import { UserAvatar } from "@/components/home-page/user-avatar";
+import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 type Tab = "profile" | "links" | "experience" | "projects" | "skills" | "blogs";
 
 const TEMPLATES = [
@@ -96,9 +97,11 @@ export default function DashboardPage() {
   const [activeTemplate, setActiveTemplate] = useState("minimal");
   const [copied, setCopied] = useState(false);
   const username = "angshuman09";
+  const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
 
   const [mounted, setMounted] = useState(false);
 
+  const { data: session, isPending } = authClient.useSession();
 
   const router = useRouter();
 
@@ -195,6 +198,20 @@ export default function DashboardPage() {
             <span className="hidden sm:inline">Save changes</span>
             <span className="sm:hidden">Save</span>
           </button>
+          {!isPending && (
+            <button onClick={() => setProfileMenuOpen(true)}>
+              <UserAvatar user={session?.user} />
+            </button>
+          )}
+
+          {profileMenuOpen && (
+            <ProfileMenuOpen
+              session={session}
+              setProfileMenuOpen={setProfileMenuOpen}
+              signOut={signOut}
+              router={router}
+            />
+          )}
         </div>
       </header>
 
@@ -346,7 +363,6 @@ export default function DashboardPage() {
                       Email
                     </label>
                     <input
-                    
                       onChange={(e) => {
                         console.log(e.target.value);
                       }}
