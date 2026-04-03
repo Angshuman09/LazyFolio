@@ -23,7 +23,7 @@ const ProfileMenuOpen = ({ session, setProfileMenuOpen, signOut, router }: any) 
                             fetchOptions: { onSuccess: () => router.push("/") },
                           });
                         }}
-                        className="w-full flex items-center justify-start rounded-md px-3 py-2 text-sm font-medium text-slate-600 bg-red-100 hover:bg-red-200 hover:text-red-600 transition-colors"
+                        className="w-full hover:cursor-pointer flex items-center justify-start rounded-md px-3 py-2 text-sm font-medium text-slate-600 bg-red-100 hover:bg-red-200 hover:text-red-600 transition-colors"
                       >
                         Logout
                       </button>

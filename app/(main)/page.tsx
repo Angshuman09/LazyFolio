@@ -17,16 +17,38 @@ export default function LazyfolioLanding() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-
-
   return (
-   <div className="font-sans-body min-h-screen bg-(--lf-bg) text-(--lf-ink)">
-      <Navbar />
-      <Hero/>
-      <HowToUse/>
-      <Features/>
-      <CTA/>
-      <Footer/>
+    <div className="font-sans-body min-h-screen bg-(--lf-surface) text-(--lf-ink) relative">
+      {/* Decorative background grid */}
+      <div className="pointer-events-none fixed inset-0 opacity-[0.03] dark:opacity-10 z-0">
+        <svg width="100%" height="100%">
+          <defs>
+            <pattern
+              id="main-grid"
+              width="40"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 40 0 L 0 0 0 40"
+                fill="none"
+                stroke="var(--lf-ink)"
+                strokeWidth="1"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#main-grid)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 block">
+        <Navbar />
+        <Hero />
+        <HowToUse />
+        <Features />
+        <CTA />
+        <Footer />
+      </div>
     </div>
   );
 }

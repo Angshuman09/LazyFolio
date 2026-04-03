@@ -8,11 +8,11 @@ export function UserAvatar({ user }: { user: any }) {
           <img
             src={user.image}
             alt="avatar"
-            className="w-9 h-9 rounded-full"
+            className="w-8 h-8 rounded-full"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center">
             {user.name?.[0] || "U"}
           </div>
         )}

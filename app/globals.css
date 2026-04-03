@@ -145,8 +145,7 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
     radial-gradient(ellipse 40% 30% at 50% 0%,
       rgba(212, 59, 246, 0.08) 0%,
       transparent 50%
-    ),
-    var(--lf-bg);
+    );
 }
 
 .dark .hero-gradient {
@@ -159,8 +158,7 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
     radial-gradient(ellipse 40% 30% at 50% 0%,
       rgba(212, 59, 246, 0.06) 0%,
       transparent 50%
-    ),
-    var(--lf-bg);
+    );
 }
 
  body{
