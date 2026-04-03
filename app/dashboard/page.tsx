@@ -24,9 +24,10 @@ import {
   BarChart3,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth-client";
+import { useUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
-import Templates from "../(template)/template/page";
+import Template from "../[username]/page";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 
@@ -102,6 +103,7 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
+  const {data:profile, isLoading } = useUserProfile(session?.user?.id);
 
   const router = useRouter();
 
@@ -749,7 +751,7 @@ export default function DashboardPage() {
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">
           <div className="w-full h-full overflow-y-auto overflow-x-hidden">
-            <Templates />
+            <Template user={session?.user} profile={profile} />
           </div>
         </div>
       </div>

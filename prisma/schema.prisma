@@ -78,24 +78,24 @@ model Verification {
 
 model Profile {
   id          String       @id @default(cuid())
-  avatar      String?
-  banner      String?
-  name        String?
-  email       String?
-  age         Int?
-  location    String?
+  avatar      String?   @default("https://i.pinimg.com/736x/dc/92/1e/dc921ec2e07f9437dc51f2a10694578d.jpg")
+  banner      String?      @default("https://images.unsplash.com/photo-1503264116251-35a269479413")
+  name        String?      @default("Wamiqa Gabbi")
+  email       String?      @default("angshumankashyap69yap69@gmail.com")
+  age         Int?       @default(21)
+  location    String?     @default("India")
   userId      String       @unique
-  username    String?
-  bio         String?
-  skils       String[]
-  experiences Experience[]
+  username    String?      @unique @default("angshuman69")
+  bio         String?     @default("I am a software developer with a passion for creating innovative solutions. I have experience in various programming languages and frameworks, and I enjoy working on both frontend and backend development. In my free time, I like to contribute to open source projects and write technical blogs.")
+  skills       String[]    @default(["JavaScript", "TypeScript", "React", "Node.js", "Python"])
+  experiences Experience[]  
   projects    Project[]
   blogs       Blog[]
-  github      String?
-  twitter     String?
-  linkedin    String?
-  themeId     String?
-  resume      String?
+  github      String?      @default("https://github.com/Angshuman09")
+  twitter     String?      @default("https://x.com/angshuhere")
+  linkedin    String?      @default("https://www.linkedin.com/in/angshuman-kashyap-65a573379/")   
+  themeId     String       @default("1")
+  resume      String?      
   bookAcall   String? //cal.com link
 
   user User @relation(fields: [userId], references: [id])
@@ -103,32 +103,32 @@ model Profile {
 
 model Experience {
   id          String   @id @default(cuid())
-  companyName String?
-  role        String?
-  date        String?
-  description String?
+  companyName String?  @default("Company Name")
+  role        String?  @default("Role")
+  date        String?  @default("Date")
+  description String?  @default("Description")
   profileId   String?
   profile     Profile? @relation(fields: [profileId], references: [id])
 }
 
 model Project {
   id          String   @id @default(cuid())
-  title       String?
-  description String?
-  date        String?
+  title       String?  @default("Project Title")
+  description String?  @default("Project Description")
+  date        String?  @default("Date")
   profileId   String?
-  githubLink  String?
-  projectLink String?
-  techstack   String[]
+  githubLink  String?  @default("https://github.com/Angshuman09/LazyFolio")
+  projectLink String?  @default("https://github.com/Angshuman09/LazyFolio")
+  techstack   String[] @default(["JavaScript", "TypeScript", "React", "Node.js", "Python"])
   profile     Profile? @relation(fields: [profileId], references: [id])
 }
 
 model Blog {
   id          String   @id @default(cuid())
-  title       String?
-  description String?
-  date        String?
-  blogLink    String?
+  title       String?  @default("Blog Title")
+  description String?  @default("Blog Description")
+  date        String?  @default("Date")
+  blogLink    String?  @default("https://medium.com/@angshumankashyap69yap69/what-really-happens-inside-a-database-531256185ddf")
   profileId   String?
   profile     Profile? @relation(fields: [profileId], references: [id])
 }

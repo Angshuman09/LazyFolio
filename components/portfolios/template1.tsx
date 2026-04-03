@@ -126,10 +126,12 @@ const StatusBadge = ({ status }: { status: string }) => (
 );
 
 // ─── PAGE ────────────────────────────────────────────────────────────────────
-export function Template1() {
+export function Template1({user, profile}: {user: any; profile: any}) {
   const [activeTab, setActiveTab] = useState<"projects" | "blogs" | "stack">(
     "projects"
   );
+
+  console.log(profile);
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white font-[family-name:var(--font-geist-sans,ui-sans-serif)]">
@@ -175,11 +177,11 @@ export function Template1() {
 
           <div className="space-y-2 mb-5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-              {DATA.name}
+              {user && user?.name} <span className="text-indigo-400">| {DATA.role}</span>
             </h1>
             <p className="text-zinc-500 text-sm font-mono">{DATA.handle}</p>
             <p className="text-zinc-300 text-sm leading-relaxed max-w-md">
-              {DATA.tagline}
+              {profile && profile?.bio}
             </p>
           </div>
 
