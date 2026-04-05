@@ -23,28 +23,3 @@ export async function GET(request: NextRequest){
     }
 }
 
-export async function POST(request: NextRequest) {
-    const { userId, name, bio } = await request.json();
-
-    if (!userId || !name) {
-        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    try {
-        const existingProfile = await prisma.profile.findUnique({ where: { userId } });
-        if (existingProfile) {
-            return NextResponse.json({ error: "Profile already exists for this user" }, { status: 400 });
-        }
-        
-        const profile = await prisma.profile.create({
-            data: {
-                userId,
-                name,
-                bio,
-            },
-        });
-        return NextResponse.json(profile, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ error: "Failed to create profile" }, { status: 500 });
-    }
-}

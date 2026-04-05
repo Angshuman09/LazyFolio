@@ -19,7 +19,8 @@ const DATA = {
   tagline: "22 · engineer · developer · builder",
   bio: "I build from zero. Whether it's frontend, backend, full-stack applications, or AI-powered experiences, I work across the entire development lifecycle. From UI/UX to deployment to user feedback — I care less about technology debates and more about shipping things people love using.",
   calLink: "https://cal.com",
-  avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=alexrivers2026&backgroundColor=b6e3f4",
+  avatar:
+    "https://api.dicebear.com/9.x/notionists/svg?seed=alexrivers2026&backgroundColor=b6e3f4",
 
   experience: [
     {
@@ -49,7 +50,8 @@ const DATA = {
   projects: [
     {
       name: "Arc Labs",
-      description: "AI-powered job tools — resume builder, mock interviews, job tracker.",
+      description:
+        "AI-powered job tools — resume builder, mock interviews, job tracker.",
       tags: ["Next.js", "TypeScript", "Redis", "Prisma"],
       github: "https://github.com",
       demo: "https://github.com",
@@ -57,7 +59,8 @@ const DATA = {
     },
     {
       name: "ASCII Studio",
-      description: "Turn videos into ASCII frame animations that play smoothly in sequence.",
+      description:
+        "Turn videos into ASCII frame animations that play smoothly in sequence.",
       tags: ["Next.js", "TypeScript", "GSAP"],
       github: "https://github.com",
       demo: "https://github.com",
@@ -65,7 +68,8 @@ const DATA = {
     },
     {
       name: "Pixel Perfect",
-      description: "A React component library for modern web apps. 160+ GitHub stars.",
+      description:
+        "A React component library for modern web apps. 160+ GitHub stars.",
       tags: ["Next.js", "Tailwind CSS", "Framer Motion"],
       github: "https://github.com",
       demo: "https://github.com",
@@ -73,7 +77,8 @@ const DATA = {
     },
     {
       name: "Rune Icon",
-      description: "All-in-one icon library for modern apps — clean, consistent, scalable.",
+      description:
+        "All-in-one icon library for modern apps — clean, consistent, scalable.",
       tags: ["Next.js", "TypeScript", "Figma"],
       github: "https://github.com",
       demo: null,
@@ -89,7 +94,8 @@ const DATA = {
     },
     {
       name: "CrabGit",
-      description: "Git built from scratch in Rust with content-addressable storage.",
+      description:
+        "Git built from scratch in Rust with content-addressable storage.",
       tags: ["Rust", "CLI"],
       github: "https://github.com",
       demo: null,
@@ -99,7 +105,8 @@ const DATA = {
 
   blogs: [
     {
-      title: "Building a Text-to-Speech System for 25K Users (Without Melting a Server)",
+      title:
+        "Building a Text-to-Speech System for 25K Users (Without Melting a Server)",
       readTime: "11 min read",
       url: "#",
     },
@@ -147,7 +154,9 @@ const DATA = {
 const Divider = () => <div className="w-full h-px bg-zinc-800/80 my-10" />;
 
 const SectionHeading = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-sm font-semibold text-white mb-6 tracking-tight">{children}</h2>
+  <h2 className="text-sm font-semibold text-white mb-6 tracking-tight">
+    {children}
+  </h2>
 );
 
 const statusStyle: Record<string, string> = {
@@ -161,8 +170,8 @@ function StackTicker() {
   const items = [...DATA.stack, ...DATA.stack];
   return (
     <div className="relative overflow-hidden py-1">
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-[#0e0e0e] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-[#0e0e0e] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-linear-to-r from-[#0e0e0e] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-linear-to-l from-[#0e0e0e] to-transparent" />
       <div
         className="flex gap-3 w-max"
         style={{ animation: "ticker 30s linear infinite" }}
@@ -170,15 +179,19 @@ function StackTicker() {
         {items.map((tech, i) => (
           <div
             key={i}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 flex-shrink-0"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 shrink-0"
           >
             <img
               src={tech.icon}
               alt={tech.name}
               className="w-3.5 h-3.5 object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
             />
-            <span className="text-[11px] text-zinc-500 whitespace-nowrap">{tech.name}</span>
+            <span className="text-[11px] text-zinc-500 whitespace-nowrap">
+              {tech.name}
+            </span>
           </div>
         ))}
       </div>
@@ -187,7 +200,7 @@ function StackTicker() {
 }
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
-export  function Template3() {
+export function Template3() {
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? DATA.projects : DATA.projects.slice(0, 4);
 
@@ -202,7 +215,6 @@ export  function Template3() {
 
       <main className="min-h-screen bg-[#0e0e0e] text-zinc-300 antialiased">
         <div className="max-w-[640px] mx-auto px-5 py-16 sm:py-20">
-
           {/* QUOTE */}
           <div className="mb-12 border-l-2 border-zinc-700 pl-4">
             <p className="text-xs text-zinc-500 italic leading-relaxed">
@@ -215,7 +227,9 @@ export  function Template3() {
             <h1 className="text-xl font-bold text-white mb-1 tracking-tight">
               {DATA.name}
             </h1>
-            <p className="text-xs text-zinc-600 font-mono mb-5">{DATA.tagline}</p>
+            <p className="text-xs text-zinc-600 font-mono mb-5">
+              {DATA.tagline}
+            </p>
             <p className="text-sm text-zinc-400 leading-[1.8]">{DATA.bio}</p>
           </section>
 
@@ -261,18 +275,28 @@ export  function Template3() {
                         className="group inline-flex items-center gap-1 text-sm font-semibold text-white hover:text-zinc-300 transition-colors"
                       >
                         {exp.company}
-                        <MoveUpRight size={10} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                        <MoveUpRight
+                          size={10}
+                          className="text-zinc-600 group-hover:text-zinc-400 transition-colors"
+                        />
                       </a>
-                      <p className="text-[11px] text-zinc-600 mt-0.5">{exp.role}</p>
+                      <p className="text-[11px] text-zinc-600 mt-0.5">
+                        {exp.role}
+                      </p>
                     </div>
-                    <span className="text-[10px] font-mono text-zinc-600 flex-shrink-0 pt-0.5">
+                    <span className="text-[10px] font-mono text-zinc-600 shrink-0 pt-0.5">
                       {exp.period}
                     </span>
                   </div>
                   <ul className="space-y-1.5">
                     {exp.bullets.map((b, i) => (
-                      <li key={i} className="flex gap-2.5 text-[13px] text-zinc-400 leading-relaxed">
-                        <span className="text-zinc-700 flex-shrink-0 select-none mt-0.5">•</span>
+                      <li
+                        key={i}
+                        className="flex gap-2.5 text-[13px] text-zinc-400 leading-relaxed"
+                      >
+                        <span className="text-zinc-700 shrink-0 select-none mt-0.5">
+                          •
+                        </span>
                         {b}
                       </li>
                     ))}
@@ -294,7 +318,7 @@ export  function Template3() {
                   className="group flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800/60 transition-all duration-150"
                 >
                   {/* Monogram */}
-                  <div className="w-7 h-7 rounded-md bg-zinc-800 border border-zinc-700/60 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-md bg-zinc-800 border border-zinc-700/60 flex items-center justify-center shrink-0 mt-0.5">
                     <span className="text-[10px] font-bold text-zinc-500 select-none">
                       {p.name[0]}
                     </span>
@@ -302,7 +326,9 @@ export  function Template3() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <span className="text-[13px] font-medium text-zinc-200">{p.name}</span>
+                      <span className="text-[13px] font-medium text-zinc-200">
+                        {p.name}
+                      </span>
                       <span
                         className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusStyle[p.status] ?? ""}`}
                       >
@@ -314,19 +340,32 @@ export  function Template3() {
                     </p>
                     <div className="flex flex-wrap gap-1">
                       {p.tags.map((t) => (
-                        <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-600">
+                        <span
+                          key={t}
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800/80 text-zinc-600"
+                        >
                           {t}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="flex gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 mt-0.5">
-                    <a href={p.github} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-zinc-300 transition-colors">
+                  <div className="flex gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 mt-0.5">
+                    <a
+                      href={p.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-600 hover:text-zinc-300 transition-colors"
+                    >
                       <Github size={12} />
                     </a>
                     {p.demo && (
-                      <a href={p.demo} target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-zinc-300 transition-colors">
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-zinc-600 hover:text-zinc-300 transition-colors"
+                      >
                         <ExternalLink size={12} />
                       </a>
                     )}
@@ -360,14 +399,22 @@ export  function Template3() {
                   <p className="text-[13px] text-zinc-400 group-hover:text-zinc-200 transition-colors leading-snug pr-4">
                     {b.title}
                   </p>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-[10px] font-mono text-zinc-700">{b.readTime}</span>
-                    <ArrowRight size={10} className="text-zinc-700 group-hover:text-zinc-500 group-hover:translate-x-0.5 transition-all" />
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] font-mono text-zinc-700">
+                      {b.readTime}
+                    </span>
+                    <ArrowRight
+                      size={10}
+                      className="text-zinc-700 group-hover:text-zinc-500 group-hover:translate-x-0.5 transition-all"
+                    />
                   </div>
                 </a>
               ))}
             </div>
-            <a href="#" className="mt-3 ml-3 inline-block text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors">
+            <a
+              href="#"
+              className="mt-3 ml-3 inline-block text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors"
+            >
               View All →
             </a>
           </section>
@@ -378,7 +425,8 @@ export  function Template3() {
           <section>
             <SectionHeading>Stack I use</SectionHeading>
             <p className="text-[12px] text-zinc-600 mb-4 leading-relaxed">
-              Technologies I work with to build products that solve real problems.
+              Technologies I work with to build products that solve real
+              problems.
             </p>
             <StackTicker />
           </section>
@@ -404,7 +452,10 @@ export  function Template3() {
               <span className="text-[13px] text-zinc-400 group-hover:text-white transition-colors">
                 Book a Free Call
               </span>
-              <ArrowRight size={11} className="text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight
+                size={11}
+                className="text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all"
+              />
             </a>
           </section>
 
@@ -413,7 +464,9 @@ export  function Template3() {
           {/* CONNECT */}
           <section>
             <SectionHeading>Let's connect</SectionHeading>
-            <p className="text-[12px] text-zinc-600 mb-4">Find me on these platforms</p>
+            <p className="text-[12px] text-zinc-600 mb-4">
+              Find me on these platforms
+            </p>
             <div className="space-y-0.5">
               {DATA.connect.map(({ label, icon: Icon, href }) => (
                 <a
@@ -424,12 +477,18 @@ export  function Template3() {
                   className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800/60 transition-all duration-150"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon size={13} className="text-zinc-600 group-hover:text-zinc-400 transition-colors" />
+                    <Icon
+                      size={13}
+                      className="text-zinc-600 group-hover:text-zinc-400 transition-colors"
+                    />
                     <span className="text-[13px] text-zinc-500 group-hover:text-zinc-200 transition-colors">
                       {label}
                     </span>
                   </div>
-                  <MoveUpRight size={11} className="text-zinc-700 group-hover:text-zinc-500 transition-colors" />
+                  <MoveUpRight
+                    size={11}
+                    className="text-zinc-700 group-hover:text-zinc-500 transition-colors"
+                  />
                 </a>
               ))}
             </div>
@@ -444,7 +503,6 @@ export  function Template3() {
               built with <span className="text-zinc-600">lazyfolio</span>
             </p>
           </div>
-
         </div>
       </main>
     </>

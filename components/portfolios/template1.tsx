@@ -22,7 +22,8 @@ const DATA = {
   role: "Full-Stack Developer",
   tagline:
     "i build fast, ship faster — full-stack dev obsessed with great UX & clean systems.",
-  avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=alexrivers&backgroundColor=b6e3f4",
+  avatar:
+    "https://api.dicebear.com/9.x/notionists/svg?seed=alexrivers&backgroundColor=b6e3f4",
   links: {
     github: "https://github.com",
     twitter: "https://twitter.com",
@@ -57,7 +58,8 @@ const DATA = {
     },
     {
       name: "GoDis",
-      description: "Redis clone built from scratch in Go — pure learning project.",
+      description:
+        "Redis clone built from scratch in Go — pure learning project.",
       url: "https://github.com",
       tags: ["Go", "Networking"],
       status: "Open Source",
@@ -84,9 +86,18 @@ const DATA = {
     },
   ],
   stack: [
-    "Next.js", "TypeScript", "React", "Rust", "Go",
-    "Node.js", "PostgreSQL", "Redis", "Tailwind CSS",
-    "Docker", "AWS", "Supabase",
+    "Next.js",
+    "TypeScript",
+    "React",
+    "Rust",
+    "Go",
+    "Node.js",
+    "PostgreSQL",
+    "Redis",
+    "Tailwind CSS",
+    "Docker",
+    "AWS",
+    "Supabase",
   ],
 };
 
@@ -107,7 +118,10 @@ const SocialLink = ({
     aria-label={label}
     className="group flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors duration-200 text-sm"
   >
-    <Icon size={15} className="group-hover:scale-110 transition-transform duration-200" />
+    <Icon
+      size={15}
+      className="group-hover:scale-110 transition-transform duration-200"
+    />
     <span className="hidden sm:inline">{label}</span>
   </a>
 );
@@ -126,39 +140,31 @@ const StatusBadge = ({ status }: { status: string }) => (
 );
 
 // ─── PAGE ────────────────────────────────────────────────────────────────────
-export function Template1({user, profile}: {user: any; profile: any}) {
+export function Template1({ user, profile }: { user: any; profile: any }) {
   const [activeTab, setActiveTab] = useState<"projects" | "blogs" | "stack">(
-    "projects"
+    "projects",
   );
 
   console.log(profile);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white font-[family-name:var(--font-geist-sans,ui-sans-serif)]">
-      {/* Subtle grid background */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
+    <main className="relative min-h-screen bg-[#09090b] text-white font-(family-name:--font-geist-sans,ui-sans-serif) z-0">
+      {/* Premium metal black background effect */}
+      <div className="absolute top-0 z-[-1] h-full w-full bg-[#09090b] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] pointer-events-none" />
 
       {/* Glow blob */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       <div className="relative max-w-2xl mx-auto px-5 py-16 sm:py-24">
-
         {/* ── HERO ── */}
         <section className="mb-16">
           <div className="flex items-start justify-between gap-4 mb-6">
             {/* Avatar */}
-            <div className="relative flex-shrink-0">
+            <div className="relative shrink-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-1 ring-white/10 bg-zinc-900">
                 <img
-                  src={DATA.avatar}
-                  alt={DATA.name}
+                  src={profile?.avatar || DATA.avatar}
+                  alt={profile?.name || DATA.name}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -168,18 +174,37 @@ export function Template1({user, profile}: {user: any; profile: any}) {
 
             {/* Social links */}
             <div className="flex items-center gap-3 pt-1">
-              <SocialLink href={DATA.links.github} icon={Github} label="GitHub" />
-              <SocialLink href={DATA.links.twitter} icon={Twitter} label="Twitter" />
-              <SocialLink href={DATA.links.linkedin} icon={Linkedin} label="LinkedIn" />
-              <SocialLink href={DATA.links.website} icon={Globe} label="Website" />
+              <SocialLink
+                href={profile?.github || DATA.links.github}
+                icon={Github}
+                label="GitHub"
+              />
+              <SocialLink
+                href={profile?.twitter || DATA.links.twitter}
+                icon={Twitter}
+                label="Twitter"
+              />
+              <SocialLink
+                href={profile?.linkedin || DATA.links.linkedin}
+                icon={Linkedin}
+                label="LinkedIn"
+              />
+              <SocialLink
+                href={DATA.links.website}
+                icon={Globe}
+                label="Website"
+              />
             </div>
           </div>
 
           <div className="space-y-2 mb-5">
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
-              {user && user?.name} <span className="text-indigo-400">| {DATA.role}</span>
+              {user && user?.name}{" "}
+              <span className="text-indigo-400">| {DATA.role}</span>
             </h1>
-            <p className="text-zinc-500 text-sm font-mono">{DATA.handle}</p>
+            <p className="text-zinc-500 text-sm font-mono">
+              {profile?.username || DATA.handle}
+            </p>
             <p className="text-zinc-300 text-sm leading-relaxed max-w-md">
               {profile && profile?.bio}
             </p>
@@ -188,14 +213,14 @@ export function Template1({user, profile}: {user: any; profile: any}) {
           {/* CTA buttons */}
           <div className="flex flex-wrap gap-3">
             <a
-              href={DATA.links.email}
+              href={profile?.email || DATA.links.email}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black text-sm font-medium hover:bg-zinc-100 transition-colors duration-200"
             >
               <Mail size={14} />
               Email me
             </a>
             <a
-              href={DATA.links.twitter}
+              href={profile?.twitter || DATA.links.twitter}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-700/60 text-sm font-medium hover:border-zinc-500 hover:bg-zinc-800 transition-all duration-200"
@@ -207,7 +232,7 @@ export function Template1({user, profile}: {user: any; profile: any}) {
         </section>
 
         {/* ── DIVIDER ── */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent mb-10" />
+        <div className="w-full h-px bg-linear-to-r from-transparent via-zinc-700/50 to-transparent mb-10" />
 
         {/* ── TABS ── */}
         <div className="flex items-center gap-1 mb-8 bg-zinc-900/60 border border-zinc-800 rounded-xl p-1 w-fit">
@@ -285,7 +310,9 @@ export function Template1({user, profile}: {user: any; profile: any}) {
                     {b.title}
                   </p>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-zinc-600 text-xs font-mono">{b.date}</span>
+                    <span className="text-zinc-600 text-xs font-mono">
+                      {b.date}
+                    </span>
                     {b.tags.map((t) => (
                       <Tag key={t} text={t} />
                     ))}
@@ -293,7 +320,7 @@ export function Template1({user, profile}: {user: any; profile: any}) {
                 </div>
                 <ChevronRight
                   size={15}
-                  className="flex-shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all duration-200"
+                  className="shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all duration-200"
                 />
               </a>
             ))}
@@ -322,11 +349,10 @@ export function Template1({user, profile}: {user: any; profile: any}) {
         {/* ── FOOTER ── */}
         <footer className="mt-20 pt-8 border-t border-zinc-800/60 flex items-center justify-between">
           <p className="text-zinc-600 text-xs font-mono">
-            built with{" "}
-            <span className="text-indigo-400">lazyfolio</span>
+            built with <span className="text-indigo-400">lazyfolio</span>
           </p>
           <a
-            href={DATA.links.github}
+            href={profile?.github || DATA.links.github}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 text-zinc-600 hover:text-zinc-300 text-xs transition-colors duration-200"

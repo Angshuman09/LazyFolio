@@ -90,17 +90,17 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 
-  /* Lazyfolio dark palette — deep blue-black with violet accents */
-  --lf-bg: #0a0a0f;
-  --lf-surface: #0e0e16;
-  --lf-border: #1c1c2e;
-  --lf-ink: #edeef3;
-  --lf-muted: #8b8da5;
-  --lf-dimmed: #6b6d85;
-  --lf-sub: #55576e;
-  --lf-tan: #151525;
-  --lf-tan-text: #b0b2cc;
-  --lf-nav-shadow: rgba(0, 0, 0, 0.45);
+  /* Lazyfolio dark palette — premium metal black */
+  --lf-bg: #09090b; /* zinc-950 */
+  --lf-surface: #18181b; /* zinc-900 */
+  --lf-border: #27272a; /* zinc-800 */
+  --lf-ink: #fafafa;
+  --lf-muted: #a1a1aa;
+  --lf-dimmed: #71717a;
+  --lf-sub: #52525b;
+  --lf-tan: #18181b;
+  --lf-tan-text: #d4d4d8;
+  --lf-nav-shadow: rgba(0, 0, 0, 0.5);
   --lf-border-alpha: rgba(255, 255, 255, 0.06);
   --lf-accent-soft: rgba(139, 92, 246, 0.08);
   --lf-glow: #c084fc;

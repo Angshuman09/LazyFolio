@@ -146,13 +146,17 @@ export const ProfileScalarFieldEnum = {
   userId: 'userId',
   username: 'username',
   bio: 'bio',
-  skils: 'skils',
+  skills: 'skills',
   github: 'github',
   twitter: 'twitter',
   linkedin: 'linkedin',
   themeId: 'themeId',
   resume: 'resume',
-  bookAcall: 'bookAcall'
+  tagline: 'tagline',
+  bookAcall: 'bookAcall',
+  views: 'views',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
@@ -162,9 +166,12 @@ export const ExperienceScalarFieldEnum = {
   id: 'id',
   companyName: 'companyName',
   role: 'role',
-  date: 'date',
+  startdate: 'startdate',
+  enddate: 'enddate',
   description: 'description',
-  profileId: 'profileId'
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ExperienceScalarFieldEnum = (typeof ExperienceScalarFieldEnum)[keyof typeof ExperienceScalarFieldEnum]
@@ -174,11 +181,15 @@ export const ProjectScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  date: 'date',
-  profileId: 'profileId',
+  enddate: 'enddate',
   githubLink: 'githubLink',
   projectLink: 'projectLink',
-  techstack: 'techstack'
+  live: 'live',
+  techstack: 'techstack',
+  order: 'order',
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -188,9 +199,11 @@ export const BlogScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  date: 'date',
+  enddate: 'enddate',
   blogLink: 'blogLink',
-  profileId: 'profileId'
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]

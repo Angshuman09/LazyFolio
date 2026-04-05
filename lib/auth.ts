@@ -15,5 +15,21 @@ export const auth = betterAuth({
         clientId: process.env.GOOGLE_CLIENT_ID as string,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                after: async (user) => {
+                    await prisma.profile.create({
+                        data: {
+                            userId: user.id,
+                            name: user.name ?? undefined,
+                            email: user.email ?? undefined,
+                            avatar: user.image ?? undefined,
+                        }
+                    })
+                }
+            }
+        }
     }
 });

@@ -28,27 +28,33 @@ export type BlogMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  date: string | null
+  enddate: Date | null
   blogLink: string | null
   profileId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type BlogMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  date: string | null
+  enddate: Date | null
   blogLink: string | null
   profileId: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type BlogCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  date: number
+  enddate: number
   blogLink: number
   profileId: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -57,27 +63,33 @@ export type BlogMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  enddate?: true
   blogLink?: true
   profileId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type BlogMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  enddate?: true
   blogLink?: true
   profileId?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type BlogCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  date?: true
+  enddate?: true
   blogLink?: true
   profileId?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -157,9 +169,11 @@ export type BlogGroupByOutputType = {
   id: string
   title: string | null
   description: string | null
-  date: string | null
+  enddate: Date | null
   blogLink: string | null
   profileId: string | null
+  createdAt: Date
+  updatedAt: Date
   _count: BlogCountAggregateOutputType | null
   _min: BlogMinAggregateOutputType | null
   _max: BlogMaxAggregateOutputType | null
@@ -187,9 +201,11 @@ export type BlogWhereInput = {
   id?: Prisma.StringFilter<"Blog"> | string
   title?: Prisma.StringNullableFilter<"Blog"> | string | null
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  date?: Prisma.StringNullableFilter<"Blog"> | string | null
+  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
   profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }
 
@@ -197,9 +213,11 @@ export type BlogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  date?: Prisma.SortOrderInput | Prisma.SortOrder
+  enddate?: Prisma.SortOrderInput | Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
 }
 
@@ -210,9 +228,11 @@ export type BlogWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BlogWhereInput | Prisma.BlogWhereInput[]
   title?: Prisma.StringNullableFilter<"Blog"> | string | null
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  date?: Prisma.StringNullableFilter<"Blog"> | string | null
+  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
   profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }, "id">
 
@@ -220,9 +240,11 @@ export type BlogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  date?: Prisma.SortOrderInput | Prisma.SortOrder
+  enddate?: Prisma.SortOrderInput | Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.BlogCountOrderByAggregateInput
   _max?: Prisma.BlogMaxOrderByAggregateInput
   _min?: Prisma.BlogMinOrderByAggregateInput
@@ -235,17 +257,21 @@ export type BlogScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Blog"> | string
   title?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
-  date?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  enddate?: Prisma.DateTimeNullableWithAggregatesFilter<"Blog"> | Date | string | null
   blogLink?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
   profileId?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Blog"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Blog"> | Date | string
 }
 
 export type BlogCreateInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   profile?: Prisma.ProfileCreateNestedOneWithoutBlogsInput
 }
 
@@ -253,17 +279,21 @@ export type BlogUncheckedCreateInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
   profileId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BlogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.ProfileUpdateOneWithoutBlogsNestedInput
 }
 
@@ -271,35 +301,43 @@ export type BlogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlogCreateManyInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
   profileId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BlogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlogListRelationFilter = {
@@ -316,27 +354,33 @@ export type BlogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
+  enddate?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type BlogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
+  enddate?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type BlogMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  date?: Prisma.SortOrder
+  enddate?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type BlogCreateNestedManyWithoutProfileInput = {
@@ -385,16 +429,20 @@ export type BlogCreateWithoutProfileInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BlogUncheckedCreateWithoutProfileInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BlogCreateOrConnectWithoutProfileInput = {
@@ -430,41 +478,51 @@ export type BlogScalarWhereInput = {
   id?: Prisma.StringFilter<"Blog"> | string
   title?: Prisma.StringNullableFilter<"Blog"> | string | null
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  date?: Prisma.StringNullableFilter<"Blog"> | string | null
+  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
   profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
 }
 
 export type BlogCreateManyProfileInput = {
   id?: string
   title?: string | null
   description?: string | null
-  date?: string | null
+  enddate?: Date | string | null
   blogLink?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type BlogUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlogUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BlogUncheckedUpdateManyWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  date?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -473,9 +531,11 @@ export type BlogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  enddate?: boolean
   blogLink?: boolean
   profileId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
@@ -483,9 +543,11 @@ export type BlogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  enddate?: boolean
   blogLink?: boolean
   profileId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
@@ -493,9 +555,11 @@ export type BlogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  enddate?: boolean
   blogLink?: boolean
   profileId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
@@ -503,12 +567,14 @@ export type BlogSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  date?: boolean
+  enddate?: boolean
   blogLink?: boolean
   profileId?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "date" | "blogLink" | "profileId", ExtArgs["result"]["blog"]>
+export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "enddate" | "blogLink" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["blog"]>
 export type BlogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
 }
@@ -528,9 +594,11 @@ export type $BlogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     title: string | null
     description: string | null
-    date: string | null
+    enddate: Date | null
     blogLink: string | null
     profileId: string | null
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["blog"]>
   composites: {}
 }
@@ -958,9 +1026,11 @@ export interface BlogFieldRefs {
   readonly id: Prisma.FieldRef<"Blog", 'String'>
   readonly title: Prisma.FieldRef<"Blog", 'String'>
   readonly description: Prisma.FieldRef<"Blog", 'String'>
-  readonly date: Prisma.FieldRef<"Blog", 'String'>
+  readonly enddate: Prisma.FieldRef<"Blog", 'DateTime'>
   readonly blogLink: Prisma.FieldRef<"Blog", 'String'>
   readonly profileId: Prisma.FieldRef<"Blog", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Blog", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Blog", 'DateTime'>
 }
     
 
@@ -1184,7 +1254,7 @@ export type BlogCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   /**
    * The data needed to create a Blog.
    */
-  data?: Prisma.XOR<Prisma.BlogCreateInput, Prisma.BlogUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.BlogCreateInput, Prisma.BlogUncheckedCreateInput>
 }
 
 /**

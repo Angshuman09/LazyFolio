@@ -78,57 +78,70 @@ model Verification {
 
 model Profile {
   id          String       @id @default(cuid())
-  avatar      String?   @default("https://i.pinimg.com/736x/dc/92/1e/dc921ec2e07f9437dc51f2a10694578d.jpg")
-  banner      String?      @default("https://images.unsplash.com/photo-1503264116251-35a269479413")
-  name        String?      @default("Wamiqa Gabbi")
-  email       String?      @default("angshumankashyap69yap69@gmail.com")
-  age         Int?       @default(21)
-  location    String?     @default("India")
+  avatar      String?
+  banner      String?
+  name        String?
+  email       String?
+  age         Int?
+  location    String?
   userId      String       @unique
-  username    String?      @unique @default("angshuman69")
-  bio         String?     @default("I am a software developer with a passion for creating innovative solutions. I have experience in various programming languages and frameworks, and I enjoy working on both frontend and backend development. In my free time, I like to contribute to open source projects and write technical blogs.")
-  skills       String[]    @default(["JavaScript", "TypeScript", "React", "Node.js", "Python"])
-  experiences Experience[]  
+  username    String?      @unique
+  bio         String?
+  skills      String[]
+  experiences Experience[]
   projects    Project[]
   blogs       Blog[]
-  github      String?      @default("https://github.com/Angshuman09")
-  twitter     String?      @default("https://x.com/angshuhere")
-  linkedin    String?      @default("https://www.linkedin.com/in/angshuman-kashyap-65a573379/")   
+  github      String?
+  twitter     String?
+  linkedin    String?
   themeId     String       @default("1")
-  resume      String?      
+  resume      String?
+  tagline     String?
   bookAcall   String? //cal.com link
+  views       Int          @default(0)
 
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Experience {
-  id          String   @id @default(cuid())
-  companyName String?  @default("Company Name")
-  role        String?  @default("Role")
-  date        String?  @default("Date")
-  description String?  @default("Description")
+  id          String    @id @default(cuid())
+  companyName String?
+  role        String?
+  startdate   DateTime?
+  enddate     DateTime?
+  description String?
   profileId   String?
-  profile     Profile? @relation(fields: [profileId], references: [id])
+  profile     Profile?  @relation(fields: [profileId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  title       String?  @default("Project Title")
-  description String?  @default("Project Description")
-  date        String?  @default("Date")
-  profileId   String?
-  githubLink  String?  @default("https://github.com/Angshuman09/LazyFolio")
-  projectLink String?  @default("https://github.com/Angshuman09/LazyFolio")
-  techstack   String[] @default(["JavaScript", "TypeScript", "React", "Node.js", "Python"])
-  profile     Profile? @relation(fields: [profileId], references: [id])
+  id          String    @id @default(cuid())
+  title       String?
+  description String?
+  enddate     DateTime?
+  githubLink  String?
+  projectLink String?
+  live        Boolean?
+  techstack   String[]
+  order       Int?
+  profileId   String
+  profile     Profile?  @relation(fields: [profileId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Blog {
-  id          String   @id @default(cuid())
-  title       String?  @default("Blog Title")
-  description String?  @default("Blog Description")
-  date        String?  @default("Date")
-  blogLink    String?  @default("https://medium.com/@angshumankashyap69yap69/what-really-happens-inside-a-database-531256185ddf")
+  id          String    @id @default(cuid())
+  title       String?
+  description String?
+  enddate     DateTime?
+  blogLink    String?
   profileId   String?
-  profile     Profile? @relation(fields: [profileId], references: [id])
+  profile     Profile?  @relation(fields: [profileId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

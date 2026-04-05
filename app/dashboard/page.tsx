@@ -99,11 +99,11 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
-
   const [mounted, setMounted] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
-  const {data:profile, isLoading } = useUserProfile(session?.user?.id);
+  const { data: profile, isLoading } = useUserProfile(session?.user?.id);
+  // console.log(profile);
 
   const router = useRouter();
 
