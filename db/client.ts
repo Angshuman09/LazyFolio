@@ -67,6 +67,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type Profile = Prisma.ProfileModel
 /**
+ * Model links
+ * 
+ */
+export type links = Prisma.linksModel
+/**
  * Model Experience
  * 
  */

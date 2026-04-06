@@ -113,7 +113,7 @@ export default function Auth() {
         <div className="w-full max-w-sm mx-auto relative z-10">
           <div className="mb-8 text-center md:text-left">
             <h2 className="font-serif-display text-4xl font-normal tracking-tight text-(--lf-ink) sm:text-5xl">
-              Welcome Twin
+              Welcome Senpai
             </h2>
             <p className="mt-3 text-base text-(--lf-muted) font-sans-body">
               Sign in to manage your portfolio and settings.

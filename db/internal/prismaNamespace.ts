@@ -389,6 +389,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Profile: 'Profile',
+  links: 'links',
   Experience: 'Experience',
   Project: 'Project',
   Blog: 'Blog'
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "profile" | "experience" | "project" | "blog"
+    modelProps: "user" | "session" | "account" | "verification" | "profile" | "links" | "experience" | "project" | "blog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -781,6 +782,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    links: {
+      payload: Prisma.$linksPayload<ExtArgs>
+      fields: Prisma.linksFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.linksFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.linksFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        findFirst: {
+          args: Prisma.linksFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.linksFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        findMany: {
+          args: Prisma.linksFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>[]
+        }
+        create: {
+          args: Prisma.linksCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        createMany: {
+          args: Prisma.linksCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.linksCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>[]
+        }
+        delete: {
+          args: Prisma.linksDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        update: {
+          args: Prisma.linksUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        deleteMany: {
+          args: Prisma.linksDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.linksUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.linksUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>[]
+        }
+        upsert: {
+          args: Prisma.linksUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$linksPayload>
+        }
+        aggregate: {
+          args: Prisma.LinksAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLinks>
+        }
+        groupBy: {
+          args: Prisma.linksGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinksGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.linksCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LinksCountAggregateOutputType> | number
+        }
+      }
+    }
     Experience: {
       payload: Prisma.$ExperiencePayload<ExtArgs>
       fields: Prisma.ExperienceFieldRefs
@@ -1112,9 +1187,6 @@ export const ProfileScalarFieldEnum = {
   username: 'username',
   bio: 'bio',
   skills: 'skills',
-  github: 'github',
-  twitter: 'twitter',
-  linkedin: 'linkedin',
   themeId: 'themeId',
   resume: 'resume',
   tagline: 'tagline',
@@ -1125,6 +1197,18 @@ export const ProfileScalarFieldEnum = {
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const LinksScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  url: 'url',
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LinksScalarFieldEnum = (typeof LinksScalarFieldEnum)[keyof typeof LinksScalarFieldEnum]
 
 
 export const ExperienceScalarFieldEnum = {
@@ -1366,6 +1450,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   profile?: Prisma.ProfileOmit
+  links?: Prisma.linksOmit
   experience?: Prisma.ExperienceOmit
   project?: Prisma.ProjectOmit
   blog?: Prisma.BlogOmit

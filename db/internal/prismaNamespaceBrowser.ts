@@ -56,6 +56,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Profile: 'Profile',
+  links: 'links',
   Experience: 'Experience',
   Project: 'Project',
   Blog: 'Blog'
@@ -147,9 +148,6 @@ export const ProfileScalarFieldEnum = {
   username: 'username',
   bio: 'bio',
   skills: 'skills',
-  github: 'github',
-  twitter: 'twitter',
-  linkedin: 'linkedin',
   themeId: 'themeId',
   resume: 'resume',
   tagline: 'tagline',
@@ -160,6 +158,18 @@ export const ProfileScalarFieldEnum = {
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const LinksScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  url: 'url',
+  profileId: 'profileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LinksScalarFieldEnum = (typeof LinksScalarFieldEnum)[keyof typeof LinksScalarFieldEnum]
 
 
 export const ExperienceScalarFieldEnum = {

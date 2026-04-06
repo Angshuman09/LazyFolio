@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth-client";
 import { useUserProfile } from "@/hooks/profile";
+import { useUpdateUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
 import Template from "../[username]/page";
@@ -103,6 +104,7 @@ export default function DashboardPage() {
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useUserProfile(session?.user?.id);
+  const updateProfile = useUpdateUserProfile();
   // console.log(profile);
 
   const router = useRouter();
@@ -137,6 +139,12 @@ export default function DashboardPage() {
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    console.log(Object.fromEntries(formData.entries()));
+  };
 
   return (
     <div className="h-screen flex flex-col bg-(--lf-bg) text-(--lf-ink) font-sans-body transition-colors duration-200">
@@ -273,7 +281,7 @@ export default function DashboardPage() {
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
           {tab === "profile" && (
-            <>
+            <form onSubmit={handleProfileSubmit}>
               <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
                 Profile
               </h1>
@@ -353,11 +361,11 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex flex-col gap-1.25 mb-3.5">
                     <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                      GitHub Username
+                      Age
                     </label>
                     <input
                       className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-                      defaultValue="Angshuman09"
+                      defaultValue={20}
                     />
                   </div>
                   <div className="flex flex-col gap-1.25 mb-3.5">
@@ -383,7 +391,7 @@ export default function DashboardPage() {
                   />
                 </div>
               </div>
-            </>
+            </form>
           )}
 
           {tab === "links" && (

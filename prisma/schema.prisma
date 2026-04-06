@@ -91,16 +91,23 @@ model Profile {
   experiences Experience[]
   projects    Project[]
   blogs       Blog[]
-  github      String?
-  twitter     String?
-  linkedin    String?
   themeId     String       @default("1")
   resume      String?
   tagline     String?
   bookAcall   String? //cal.com link
   views       Int          @default(0)
+  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  links       links[]
+}
 
-  user      User     @relation(fields: [userId], references: [id])
+model links {
+  id        String   @id @default(cuid())
+  label     String?
+  url       String?
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
