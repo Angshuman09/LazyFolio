@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
         experiences: true,
         projects: true,
         blogs: true,
+        links: true,
       },
     });
     return NextResponse.json(profile, { status: 200 });
@@ -30,26 +31,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+ export async function POST(request: NextRequest){
   try {
-    const {
-      userId,
-      name,
-      bio,
-      location,
-      email,
-      avatar,
-      banner,
-      username,
-      tagline,
-    } = await request.json();
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Missing userId parameter" },
-        { status: 400 },
-      );
+    const {userId, name, bio, location, email, avatar, banner, username, tagline} = await request.json();
+    if(!userId) return NextResponse.json({error: "Missing userId parameter"}, {status: 400})
+
+    if(username){
+      const existingUser = await prisma.profile.findUnique({
+        where: {username}
+      })
+      if(existingUser && existingUser.id != userId){
+        return NextResponse.json({error: "Username already taken"}, {status: 409})
+      }
     }
-    const profile = await prisma.profile.update({
+
+      const profile = await prisma.profile.update({
       where: { userId },
       data: {
         name: name ?? undefined,
@@ -63,12 +59,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(profile, { status: 201 });
+    return NextResponse.json(profile, { status: 200 });
+    
   } catch (error) {
-    console.error("Error updating profile:", error);
-    return NextResponse.json(
-      { error: "Failed to update profile" },
+        return NextResponse.json(
+      { error: "Failed to post profile" },
       { status: 500 },
-    );
+        )
   }
 }
