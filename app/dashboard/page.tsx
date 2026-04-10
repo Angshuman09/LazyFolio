@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Sun,
   Moon,
@@ -98,23 +98,14 @@ const MOCK_SKILLS = [
 
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
-  const [activeSubmit, setActiveSubmit] = useState<null | (() => void)>(null);
-  const registerActiveSubmit = (submitFn: (() => void) | null) => {
-    setActiveSubmit(submitFn);
-  };
-  const [dark, setDark] = useState(() => {
-    if (typeof document === "undefined") return false;
-    return (
-      document.documentElement.classList.contains("dark") ||
-      localStorage.getItem("lf-theme") === "dark"
-    );
-  });
+  const formRef = useRef<HTMLFormElement>(null);
+  const [dark, setDark] = useState(false);
   const [templateOpen, setTemplateOpen] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState("minimal");
   const [copied, setCopied] = useState(false);
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
-  const [mounted, setMounted] = useState(() => typeof document !== "undefined");
+  const [mounted, setMounted] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useUserProfile(session?.user?.id);
@@ -123,7 +114,15 @@ export default function DashboardPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!mounted || typeof document === "undefined") return;
+    setMounted(true);
+    const savedTheme = localStorage.getItem("lf-theme");
+    if (savedTheme === "dark" || document.documentElement.classList.contains("dark")) {
+      setDark(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
 
     const root = document.documentElement;
     if (dark) {
@@ -202,7 +201,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => activeSubmit?.()}
+            onClick={() => formRef.current?.requestSubmit()}
             className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
           >
             <span className="hidden sm:inline">Save changes</span>
@@ -249,7 +248,6 @@ export default function DashboardPage() {
                 }`}
                 onClick={() => {
                   setTab(n.id);
-                  setActiveSubmit(null);
                   setSidebarOpen(false);
                 }}
               >
@@ -282,26 +280,26 @@ export default function DashboardPage() {
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
           {tab === "profile" && (
-            <ProfileForm onSubmitReady={registerActiveSubmit} />
+            <ProfileForm formRef={formRef} />
           )}
 
           {tab === "links" && (
-            <LinksForm profile={profile} onSubmitReady={registerActiveSubmit} />
+            <LinksForm profile={profile} formRef={formRef} />
           )}
           {tab === "experience" && (
             <ExperienceForm
               profile={profile}
-              onSubmitReady={registerActiveSubmit}
+              formRef={formRef}
             />
           )}
           {tab === "projects" && (
-            <ProjectsForm profile={profile} onSubmitReady={registerActiveSubmit} />
+            <ProjectsForm profile={profile} formRef={formRef} />
           )}
           {tab === "skills" && (
-            <SkillsForm profile={profile} onSubmitReady={registerActiveSubmit} />
+            <SkillsForm profile={profile} formRef={formRef} />
           )}
           {tab === "blogs" && (
-            <BlogsForm profile={profile} onSubmitReady={registerActiveSubmit} />
+            <BlogsForm profile={profile} formRef={formRef} />
           )}
 
         </main>

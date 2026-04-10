@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useLayoutEffect } from "react";
 import { useForm } from "react-hook-form";
+import { RefObject } from "react";
 
 type ProfileFormValues = {
   name: string;
@@ -16,10 +16,10 @@ type ProfileFormValues = {
 };
 
 type Props = {
-  onSubmitReady: (submitFn: (() => void) | null) => void;
+  formRef: RefObject<HTMLFormElement | null>;
 };
 
-export default function ProfileForm({ onSubmitReady }: Props) {
+export default function ProfileForm({ formRef }: Props) {
   const { register, handleSubmit } = useForm<ProfileFormValues>({
     defaultValues: {
       name: "Angshuman Kalita",
@@ -32,22 +32,12 @@ export default function ProfileForm({ onSubmitReady }: Props) {
     },
   });
 
-  const onSubmit = useCallback((data: ProfileFormValues) => {
+  const onSubmit = (data: ProfileFormValues) => {
     console.log("profile", data);
-  }, []);
-
-  const submit = useCallback(() => {
-    // Trigger the RHF validation + data collection (without a DOM submit event).
-    void handleSubmit(onSubmit)();
-  }, [handleSubmit, onSubmit]);
-
-  useLayoutEffect(() => {
-    onSubmitReady(submit);
-    return () => onSubmitReady(null);
-  }, [onSubmitReady, submit]);
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Profile
       </h1>

@@ -139,27 +139,20 @@ const StatusBadge = ({ status }: { status: string }) => (
   </span>
 );
 
-// ─── PAGE ────────────────────────────────────────────────────────────────────
 export function Template1({ user, profile }: { user: any; profile: any }) {
   const [activeTab, setActiveTab] = useState<"projects" | "blogs" | "stack">(
     "projects",
   );
 
-  console.log(profile);
-
   return (
     <main className="relative min-h-screen bg-[#09090b] text-white font-(family-name:--font-geist-sans,ui-sans-serif) z-0">
-      {/* Premium metal black background effect */}
       <div className="absolute top-0 z-[-1] h-full w-full bg-[#09090b] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] pointer-events-none" />
 
-      {/* Glow blob */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       <div className="relative max-w-2xl mx-auto px-5 py-16 sm:py-24">
-        {/* ── HERO ── */}
         <section className="mb-16">
           <div className="flex items-start justify-between gap-4 mb-6">
-            {/* Avatar */}
             <div className="relative shrink-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden ring-1 ring-white/10 bg-zinc-900">
                 <img
@@ -168,11 +161,9 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Online dot */}
               <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0a0a0a]" />
             </div>
 
-            {/* Social links */}
             <div className="flex items-center gap-3 pt-1">
               <SocialLink
                 href={profile?.github || DATA.links.github}
@@ -210,7 +201,6 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
             </p>
           </div>
 
-          {/* CTA buttons */}
           <div className="flex flex-wrap gap-3">
             <a
               href={profile?.email || DATA.links.email}
@@ -231,10 +221,8 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
           </div>
         </section>
 
-        {/* ── DIVIDER ── */}
         <div className="w-full h-px bg-linear-to-r from-transparent via-zinc-700/50 to-transparent mb-10" />
 
-        {/* ── TABS ── */}
         <div className="flex items-center gap-1 mb-8 bg-zinc-900/60 border border-zinc-800 rounded-xl p-1 w-fit">
           {(
             [
@@ -258,7 +246,6 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
           ))}
         </div>
 
-        {/* ── PROJECTS ── */}
         {activeTab === "projects" && (
           <section className="space-y-3">
             {DATA.projects.map((p) => (
@@ -296,7 +283,6 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
           </section>
         )}
 
-        {/* ── BLOGS ── */}
         {activeTab === "blogs" && (
           <section className="space-y-2">
             {DATA.blogs.map((b) => (
@@ -327,7 +313,6 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
           </section>
         )}
 
-        {/* ── STACK ── */}
         {activeTab === "stack" && (
           <section>
             <p className="text-zinc-500 text-sm mb-5">
@@ -346,7 +331,6 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
           </section>
         )}
 
-        {/* ── FOOTER ── */}
         <footer className="mt-20 pt-8 border-t border-zinc-800/60 flex items-center justify-between">
           <p className="text-zinc-600 text-xs font-mono">
             built with <span className="text-indigo-400">lazyfolio</span>
