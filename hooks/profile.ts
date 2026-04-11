@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useUserProfile = (userId?: string) => {
+export const useGetUserProfile = (userId?: string) => {
 
     const query = useQuery({
         queryKey: ["profile", userId],

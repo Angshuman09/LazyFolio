@@ -18,7 +18,7 @@ import {
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const DATA = {
   name: "Alex Rivers",
-  handle: "@alexrivers",
+  // handle: "@alexrivers",
   role: "Full-Stack Developer",
   tagline:
     "i build fast, ship faster — full-stack dev obsessed with great UX & clean systems.",
@@ -193,9 +193,9 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
               {user && user?.name}{" "}
               <span className="text-indigo-400">| {DATA.role}</span>
             </h1>
-            <p className="text-zinc-500 text-sm font-mono">
+            {/* <p className="text-zinc-500 text-sm font-mono">
               {profile?.username || DATA.handle}
-            </p>
+            </p> */}
             <p className="text-zinc-300 text-sm leading-relaxed max-w-md">
               {profile && profile?.bio}
             </p>

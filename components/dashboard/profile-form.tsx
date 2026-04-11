@@ -1,7 +1,11 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { RefObject } from "react";
+import { RefObject, useEffect } from "react";
+import { useUpdateUserProfile } from "@/hooks/profile";
+import { useGetUserProfile } from "@/hooks/profile";
+import { authClient } from "@/lib/auth-client";
+import { profile } from "console";
 
 type ProfileFormValues = {
   name: string;
@@ -20,20 +24,47 @@ type Props = {
 };
 
 export default function ProfileForm({ formRef }: Props) {
-  const { register, handleSubmit } = useForm<ProfileFormValues>({
+
+    const {data: user} = authClient.useSession();
+
+  const updateProfile = useUpdateUserProfile();
+
+  const { data: profileData } = useGetUserProfile( user?.user?.id || "dkfldfkldajfdkjl");
+  console.log("profile data", profileData)
+
+  const { register, handleSubmit, reset } = useForm<ProfileFormValues>({
     defaultValues: {
-      name: "Angshuman Kalita",
-      username: "angshuman09",
-      tagline: "Full Stack Developer · Open to work",
-      location: "Assam, India",
-      age: 20,
-      email: "",
-      bio: "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
+      name: profileData && profileData?.name || "your name",
+      username: profileData && profileData?.username || "your username",
+      tagline: profileData && profileData?.tagline || "Full Stack Developer · Open to work",
+      location: profileData && profileData?.location || "Assam, India",
+      age: profileData && profileData?.age || 20,
+      email: profileData && profileData?.email || "",
+      bio: profileData && profileData?.bio || "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
     },
   });
 
+  useEffect(() => {
+  if (profileData) {
+    reset(profileData);
+  }
+}, [profileData, reset]);
+
+
+
   const onSubmit = (data: ProfileFormValues) => {
     console.log("profile", data);
+    const response = updateProfile.mutate({
+      userId: user?.user?.id || undefined,
+      name: data.name,
+      username: data.username,
+      tagline: data.tagline,
+      location: data.location,
+      age: data?.age,
+      email: data.email,
+      bio: data.bio,
+    });
+    // console.log("update response", response);
   };
 
   return (
@@ -105,6 +136,7 @@ export default function ProfileForm({ formRef }: Props) {
             </label>
             <input
               {...register("name")}
+              // defaultValue={profileData && profileData?.name || "your name"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
           </div>
@@ -114,6 +146,7 @@ export default function ProfileForm({ formRef }: Props) {
             </label>
             <input
               {...register("username")}
+              // defaultValue={ profileData && profileData?.username || "your username"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
           </div>
@@ -123,6 +156,7 @@ export default function ProfileForm({ formRef }: Props) {
             </label>
             <input
               {...register("tagline")}
+              // defaultValue={ profileData && profileData?.tagline || "your tagline"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
           </div>
@@ -132,6 +166,7 @@ export default function ProfileForm({ formRef }: Props) {
             </label>
             <input
               {...register("location")}
+              // defaultValue={ profileData && profileData?.location || "your location"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
           </div>
@@ -142,6 +177,7 @@ export default function ProfileForm({ formRef }: Props) {
             <input
               type="number"
               {...register("age", { valueAsNumber: true })}
+              // defaultValue={ profileData && profileData?.age || undefined}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
           </div>
@@ -151,6 +187,7 @@ export default function ProfileForm({ formRef }: Props) {
             </label>
             <input
               {...register("email")}
+              // defaultValue={ profileData && profileData?.email || "your email"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
               placeholder="enter your email address"
             />
@@ -162,6 +199,7 @@ export default function ProfileForm({ formRef }: Props) {
           </label>
           <textarea
             {...register("bio")}
+            // defaultValue={ profileData && profileData?.bio || "your bio"}
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
           />
         </div>

@@ -1201,6 +1201,7 @@ export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeo
 
 export const LinksScalarFieldEnum = {
   id: 'id',
+  type: 'type',
   label: 'label',
   url: 'url',
   profileId: 'profileId',
@@ -1334,6 +1335,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LinkType'
+ */
+export type EnumLinkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LinkType'>
+    
+
+
+/**
+ * Reference to a field of type 'LinkType[]'
+ */
+export type ListEnumLinkTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LinkType[]'>
     
 
 

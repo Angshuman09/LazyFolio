@@ -162,6 +162,7 @@ export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeo
 
 export const LinksScalarFieldEnum = {
   id: 'id',
+  type: 'type',
   label: 'label',
   url: 'url',
   profileId: 'profileId',

@@ -9,7 +9,12 @@
 * 🟢 You can import this file directly.
 */
 
+export const LinkType = {
+  X: 'X',
+  INSTAGRAM: 'INSTAGRAM',
+  GITHUB: 'GITHUB',
+  LINKEDIN: 'LINKEDIN',
+  CUSTOM: 'CUSTOM'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type LinkType = (typeof LinkType)[keyof typeof LinkType]

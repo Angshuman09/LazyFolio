@@ -24,7 +24,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth-client";
-import { useUserProfile } from "@/hooks/profile";
+import { useGetUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
 import Template from "../[username]/page";
@@ -108,7 +108,7 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
-  const { data: profile, isLoading } = useUserProfile(session?.user?.id);
+  const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
   // console.log(profile);
 
   const router = useRouter();

@@ -102,8 +102,17 @@ model Profile {
   links       links[]
 }
 
+enum LinkType {
+  X
+  INSTAGRAM
+  GITHUB
+  LINKEDIN
+  CUSTOM
+}
+
 model links {
   id        String   @id @default(cuid())
+  type     LinkType
   label     String?
   url       String?
   profileId String

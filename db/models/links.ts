@@ -26,6 +26,7 @@ export type AggregateLinks = {
 
 export type LinksMinAggregateOutputType = {
   id: string | null
+  type: $Enums.LinkType | null
   label: string | null
   url: string | null
   profileId: string | null
@@ -35,6 +36,7 @@ export type LinksMinAggregateOutputType = {
 
 export type LinksMaxAggregateOutputType = {
   id: string | null
+  type: $Enums.LinkType | null
   label: string | null
   url: string | null
   profileId: string | null
@@ -44,6 +46,7 @@ export type LinksMaxAggregateOutputType = {
 
 export type LinksCountAggregateOutputType = {
   id: number
+  type: number
   label: number
   url: number
   profileId: number
@@ -55,6 +58,7 @@ export type LinksCountAggregateOutputType = {
 
 export type LinksMinAggregateInputType = {
   id?: true
+  type?: true
   label?: true
   url?: true
   profileId?: true
@@ -64,6 +68,7 @@ export type LinksMinAggregateInputType = {
 
 export type LinksMaxAggregateInputType = {
   id?: true
+  type?: true
   label?: true
   url?: true
   profileId?: true
@@ -73,6 +78,7 @@ export type LinksMaxAggregateInputType = {
 
 export type LinksCountAggregateInputType = {
   id?: true
+  type?: true
   label?: true
   url?: true
   profileId?: true
@@ -155,6 +161,7 @@ export type linksGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type LinksGroupByOutputType = {
   id: string
+  type: $Enums.LinkType
   label: string | null
   url: string | null
   profileId: string
@@ -185,6 +192,7 @@ export type linksWhereInput = {
   OR?: Prisma.linksWhereInput[]
   NOT?: Prisma.linksWhereInput | Prisma.linksWhereInput[]
   id?: Prisma.StringFilter<"links"> | string
+  type?: Prisma.EnumLinkTypeFilter<"links"> | $Enums.LinkType
   label?: Prisma.StringNullableFilter<"links"> | string | null
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
@@ -195,6 +203,7 @@ export type linksWhereInput = {
 
 export type linksOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrder
@@ -208,6 +217,7 @@ export type linksWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.linksWhereInput | Prisma.linksWhereInput[]
   OR?: Prisma.linksWhereInput[]
   NOT?: Prisma.linksWhereInput | Prisma.linksWhereInput[]
+  type?: Prisma.EnumLinkTypeFilter<"links"> | $Enums.LinkType
   label?: Prisma.StringNullableFilter<"links"> | string | null
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
@@ -218,6 +228,7 @@ export type linksWhereUniqueInput = Prisma.AtLeast<{
 
 export type linksOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   label?: Prisma.SortOrderInput | Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrder
@@ -233,6 +244,7 @@ export type linksScalarWhereWithAggregatesInput = {
   OR?: Prisma.linksScalarWhereWithAggregatesInput[]
   NOT?: Prisma.linksScalarWhereWithAggregatesInput | Prisma.linksScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"links"> | string
+  type?: Prisma.EnumLinkTypeWithAggregatesFilter<"links"> | $Enums.LinkType
   label?: Prisma.StringNullableWithAggregatesFilter<"links"> | string | null
   url?: Prisma.StringNullableWithAggregatesFilter<"links"> | string | null
   profileId?: Prisma.StringWithAggregatesFilter<"links"> | string
@@ -242,6 +254,7 @@ export type linksScalarWhereWithAggregatesInput = {
 
 export type linksCreateInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   createdAt?: Date | string
@@ -251,6 +264,7 @@ export type linksCreateInput = {
 
 export type linksUncheckedCreateInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   profileId: string
@@ -260,6 +274,7 @@ export type linksUncheckedCreateInput = {
 
 export type linksUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -269,6 +284,7 @@ export type linksUpdateInput = {
 
 export type linksUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -278,6 +294,7 @@ export type linksUncheckedUpdateInput = {
 
 export type linksCreateManyInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   profileId: string
@@ -287,6 +304,7 @@ export type linksCreateManyInput = {
 
 export type linksUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -295,6 +313,7 @@ export type linksUpdateManyMutationInput = {
 
 export type linksUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -314,6 +333,7 @@ export type linksOrderByRelationAggregateInput = {
 
 export type linksCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   label?: Prisma.SortOrder
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
@@ -323,6 +343,7 @@ export type linksCountOrderByAggregateInput = {
 
 export type linksMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   label?: Prisma.SortOrder
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
@@ -332,6 +353,7 @@ export type linksMaxOrderByAggregateInput = {
 
 export type linksMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   label?: Prisma.SortOrder
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
@@ -381,8 +403,13 @@ export type linksUncheckedUpdateManyWithoutProfileNestedInput = {
   deleteMany?: Prisma.linksScalarWhereInput | Prisma.linksScalarWhereInput[]
 }
 
+export type EnumLinkTypeFieldUpdateOperationsInput = {
+  set?: $Enums.LinkType
+}
+
 export type linksCreateWithoutProfileInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   createdAt?: Date | string
@@ -391,6 +418,7 @@ export type linksCreateWithoutProfileInput = {
 
 export type linksUncheckedCreateWithoutProfileInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   createdAt?: Date | string
@@ -428,6 +456,7 @@ export type linksScalarWhereInput = {
   OR?: Prisma.linksScalarWhereInput[]
   NOT?: Prisma.linksScalarWhereInput | Prisma.linksScalarWhereInput[]
   id?: Prisma.StringFilter<"links"> | string
+  type?: Prisma.EnumLinkTypeFilter<"links"> | $Enums.LinkType
   label?: Prisma.StringNullableFilter<"links"> | string | null
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
@@ -437,6 +466,7 @@ export type linksScalarWhereInput = {
 
 export type linksCreateManyProfileInput = {
   id?: string
+  type: $Enums.LinkType
   label?: string | null
   url?: string | null
   createdAt?: Date | string
@@ -445,6 +475,7 @@ export type linksCreateManyProfileInput = {
 
 export type linksUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,6 +484,7 @@ export type linksUpdateWithoutProfileInput = {
 
 export type linksUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,6 +493,7 @@ export type linksUncheckedUpdateWithoutProfileInput = {
 
 export type linksUncheckedUpdateManyWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumLinkTypeFieldUpdateOperationsInput | $Enums.LinkType
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -471,6 +504,7 @@ export type linksUncheckedUpdateManyWithoutProfileInput = {
 
 export type linksSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  type?: boolean
   label?: boolean
   url?: boolean
   profileId?: boolean
@@ -481,6 +515,7 @@ export type linksSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 
 export type linksSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  type?: boolean
   label?: boolean
   url?: boolean
   profileId?: boolean
@@ -491,6 +526,7 @@ export type linksSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type linksSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  type?: boolean
   label?: boolean
   url?: boolean
   profileId?: boolean
@@ -501,6 +537,7 @@ export type linksSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type linksSelectScalar = {
   id?: boolean
+  type?: boolean
   label?: boolean
   url?: boolean
   profileId?: boolean
@@ -508,7 +545,7 @@ export type linksSelectScalar = {
   updatedAt?: boolean
 }
 
-export type linksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "label" | "url" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["links"]>
+export type linksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "label" | "url" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["links"]>
 export type linksInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
@@ -526,6 +563,7 @@ export type $linksPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    type: $Enums.LinkType
     label: string | null
     url: string | null
     profileId: string
@@ -956,6 +994,7 @@ export interface Prisma__linksClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface linksFieldRefs {
   readonly id: Prisma.FieldRef<"links", 'String'>
+  readonly type: Prisma.FieldRef<"links", 'LinkType'>
   readonly label: Prisma.FieldRef<"links", 'String'>
   readonly url: Prisma.FieldRef<"links", 'String'>
   readonly profileId: Prisma.FieldRef<"links", 'String'>
