@@ -19,6 +19,7 @@ type Props = {
     blogs?: ProfileBlog[];
   };
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 function BlogCard({

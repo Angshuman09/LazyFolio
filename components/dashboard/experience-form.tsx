@@ -20,6 +20,7 @@ type Props = {
     experiences?: ProfileExperience[];
   };
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 function ExperienceCard({

@@ -3,6 +3,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import Providers from "./providers";
+import { Toaster } from "react-hot-toast";
+
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans-body",
@@ -40,6 +42,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn(dmSans.variable, serif.variable, "antialiased")}>
+        <Toaster position="bottom-right" />
         <Providers>
           {children}
         </Providers>

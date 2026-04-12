@@ -2,10 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { RefObject, useEffect } from "react";
-import { useUpdateUserProfile } from "@/hooks/profile";
-import { useGetUserProfile } from "@/hooks/profile";
+import { useUpdateUserProfile, useGetUserProfile } from "@/hooks/profile";
 import { authClient } from "@/lib/auth-client";
-import { profile } from "console";
+import toast from "react-hot-toast";
 
 type ProfileFormValues = {
   name: string;
@@ -21,16 +20,17 @@ type ProfileFormValues = {
 
 type Props = {
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
-export default function ProfileForm({ formRef }: Props) {
+export default function ProfileForm({ formRef, onSavingChange }: Props) {
 
     const {data: user} = authClient.useSession();
 
   const updateProfile = useUpdateUserProfile();
 
   const { data: profileData } = useGetUserProfile( user?.user?.id || "dkfldfkldajfdkjl");
-  console.log("profile data", profileData)
+  // console.log("profile data", profileData)
 
   const { register, handleSubmit, reset } = useForm<ProfileFormValues>({
     defaultValues: {
@@ -52,19 +52,31 @@ export default function ProfileForm({ formRef }: Props) {
 
 
 
+  useEffect(() => {
+    onSavingChange?.(updateProfile.isPending);
+  }, [updateProfile.isPending, onSavingChange]);
+
   const onSubmit = (data: ProfileFormValues) => {
-    console.log("profile", data);
-    const response = updateProfile.mutate({
-      userId: user?.user?.id || undefined,
-      name: data.name,
-      username: data.username,
-      tagline: data.tagline,
-      location: data.location,
-      age: data?.age,
-      email: data.email,
-      bio: data.bio,
-    });
-    // console.log("update response", response);
+    updateProfile.mutate(
+      {
+        userId: user?.user?.id || undefined,
+        name: data.name,
+        username: data.username,
+        tagline: data.tagline,
+        location: data.location,
+        age: data?.age,
+        email: data.email,
+        bio: data.bio,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Profile updated successfully!");
+        },
+        onError: () => {
+          toast.error("Failed to update profile. Please try again.");
+        },
+      }
+    );
   };
 
   return (

@@ -1,16 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Sun,
   Moon,
-  Github,
-  Globe,
-  Trash2,
-  Pencil,
-  Plus,
   ExternalLink,
-  Star,
   Copy,
   Check,
   ChevronRight,
@@ -106,6 +100,11 @@ export default function DashboardPage() {
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSavingChange = (saving: boolean) => {
+    setIsSaving(saving);
+  }
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
@@ -116,7 +115,10 @@ export default function DashboardPage() {
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem("lf-theme");
-    if (savedTheme === "dark" || document.documentElement.classList.contains("dark")) {
+    if (
+      savedTheme === "dark" ||
+      document.documentElement.classList.contains("dark")
+    ) {
       setDark(true);
     }
   }, []);
@@ -202,11 +204,34 @@ export default function DashboardPage() {
 
           <button
             onClick={() => formRef.current?.requestSubmit()}
-            className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+            disabled={isSaving}
+            className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
-            <span className="hidden sm:inline">Save changes</span>
-            <span className="sm:hidden">Save</span>
+            {isSaving ? (
+              <>
+                <svg
+                  className="animate-spin"
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                </svg>
+                <span className="hidden sm:inline">Saving…</span>
+                <span className="sm:hidden">Saving</span>
+              </>
+            ) : (
+              <>
+                <span className="hidden sm:inline">Save changes</span>
+                <span className="sm:hidden">Save</span>
+              </>
+            )}
           </button>
+
           {!isPending && (
             <button onClick={() => setProfileMenuOpen(true)}>
               <UserAvatar user={session?.user} />
@@ -280,28 +305,47 @@ export default function DashboardPage() {
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
           {tab === "profile" && (
-            <ProfileForm formRef={formRef} />
+            <ProfileForm
+              formRef={formRef}
+              onSavingChange={handleSavingChange}
+            />
           )}
 
           {tab === "links" && (
-            <LinksForm profile={profile} formRef={formRef} />
+            <LinksForm
+              profile={profile}
+              formRef={formRef}
+              onSavingChange={handleSavingChange}
+            />
           )}
           {tab === "experience" && (
             <ExperienceForm
               profile={profile}
               formRef={formRef}
+              onSavingChange={handleSavingChange}
             />
           )}
           {tab === "projects" && (
-            <ProjectsForm profile={profile} formRef={formRef} />
+            <ProjectsForm
+              profile={profile}
+              formRef={formRef}
+              onSavingChange={handleSavingChange}
+            />
           )}
           {tab === "skills" && (
-            <SkillsForm profile={profile} formRef={formRef} />
+            <SkillsForm
+              profile={profile}
+              formRef={formRef}
+              onSavingChange={handleSavingChange}
+            />
           )}
           {tab === "blogs" && (
-            <BlogsForm profile={profile} formRef={formRef} />
+            <BlogsForm
+              profile={profile}
+              formRef={formRef}
+              onSavingChange={handleSavingChange}
+            />
           )}
-
         </main>
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">

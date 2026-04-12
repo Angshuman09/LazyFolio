@@ -21,6 +21,7 @@ type Props = {
     projects?: ProfileProject[];
   };
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 function ProjectCard({

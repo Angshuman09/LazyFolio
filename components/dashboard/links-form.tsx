@@ -17,6 +17,7 @@ type Props = {
     links?: ProfileLink[];
   };
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 function LinkCard({

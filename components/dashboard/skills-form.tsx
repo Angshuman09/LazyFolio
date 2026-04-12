@@ -12,6 +12,7 @@ type Props = {
     skills?: string[] | null;
   };
   formRef: RefObject<HTMLFormElement | null>;
+  onSavingChange?: (saving: boolean) => void;
 };
 
 function SkillCard({
