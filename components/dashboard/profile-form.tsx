@@ -20,10 +20,10 @@ type ProfileFormValues = {
 
 type Props = {
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit: (data: ProfileFormValues) => void;
 };
 
-export default function ProfileForm({ formRef, onSavingChange }: Props) {
+export default function ProfileForm({ formRef, onSubmit }: Props) {
 
     const {data: user} = authClient.useSession();
 
@@ -50,34 +50,6 @@ export default function ProfileForm({ formRef, onSavingChange }: Props) {
   }
 }, [profileData, reset]);
 
-
-
-  useEffect(() => {
-    onSavingChange?.(updateProfile.isPending);
-  }, [updateProfile.isPending, onSavingChange]);
-
-  const onSubmit = (data: ProfileFormValues) => {
-    updateProfile.mutate(
-      {
-        userId: user?.user?.id || undefined,
-        name: data.name,
-        username: data.username,
-        tagline: data.tagline,
-        location: data.location,
-        age: data?.age,
-        email: data.email,
-        bio: data.bio,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Profile updated successfully!");
-        },
-        onError: () => {
-          toast.error("Failed to update profile. Please try again.");
-        },
-      }
-    );
-  };
 
   return (
     <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>

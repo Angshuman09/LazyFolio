@@ -9,16 +9,11 @@ import {
   Check,
   ChevronRight,
   Layers,
-  Link2,
-  Briefcase,
-  Code2,
-  Sparkles,
-  BookOpen,
-  User,
+
   BarChart3,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth-client";
-import { useGetUserProfile } from "@/hooks/profile";
+import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
 import Template from "../[username]/page";
@@ -30,65 +25,11 @@ import ExperienceForm from "@/components/dashboard/experience-form";
 import ProjectsForm from "@/components/dashboard/projects-form";
 import SkillsForm from "@/components/dashboard/skills-form";
 import BlogsForm from "@/components/dashboard/blogs-form";
+import toast from "react-hot-toast";
+import { useCreateLinks } from "@/hooks/links";
+import { LinksFormValues, ProfileFormValues } from "@/lib/schema-types";
+import { TEMPLATES, MOCK_SKILLS, NAV, Tab} from "@/components/resources/dummy-values";
 
-type Tab = "profile" | "links" | "experience" | "projects" | "skills" | "blogs";
-
-const TEMPLATES = [
-  {
-    id: "minimal",
-    label: "Minimal",
-    emoji: "◻",
-    preview: "Clean lines, white space, typography-first",
-  },
-  {
-    id: "grid",
-    label: "Grid",
-    emoji: "⊞",
-    preview: "Bento-style card grid layout",
-  },
-  {
-    id: "terminal",
-    label: "Terminal",
-    emoji: "⌨",
-    preview: "Code-aesthetic, monospace, dark",
-  },
-  {
-    id: "magazine",
-    label: "Magazine",
-    emoji: "◈",
-    preview: "Editorial, large type, bold sections",
-  },
-  {
-    id: "glassmorphic",
-    label: "Glass",
-    emoji: "◉",
-    preview: "Frosted glass, blurs, soft gradients",
-  },
-];
-
-const NAV: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: "profile", label: "Profile", icon: <User size={14} /> },
-  { id: "links", label: "Links", icon: <Link2 size={14} /> },
-  { id: "experience", label: "Experience", icon: <Briefcase size={14} /> },
-  { id: "projects", label: "Projects", icon: <Code2 size={14} /> },
-  { id: "skills", label: "Skills", icon: <Sparkles size={14} /> },
-  { id: "blogs", label: "Blogs", icon: <BookOpen size={14} /> },
-];
-
-const MOCK_SKILLS = [
-  "TypeScript",
-  "Next.js",
-  "React",
-  "Node.js",
-  "Go",
-  "Prisma",
-  "PostgreSQL",
-  "Docker",
-  "Tailwind CSS",
-  "Redis",
-  "GraphQL",
-  "AWS",
-];
 
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
@@ -101,10 +42,6 @@ export default function DashboardPage() {
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
   const [mounted, setMounted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-
-  const handleSavingChange = (saving: boolean) => {
-    setIsSaving(saving);
-  }
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
@@ -141,6 +78,56 @@ export default function DashboardPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const updateProfile = useUpdateUserProfile();
+
+    const onProfileSubmit = (data: ProfileFormValues) => {
+      setIsSaving(true);
+    updateProfile.mutate(
+      {
+        userId: session?.user?.id || undefined,
+        name: data.name,
+        username: data.username,
+        tagline: data.tagline,
+        location: data.location,
+        age: data?.age,
+        email: data.email,
+        bio: data.bio,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Profile updated successfully!");
+          setIsSaving(false);
+        },
+        onError: () => {
+          toast.error("Failed to update profile. Please try again.");
+          setIsSaving(false);
+        },
+      }
+    );
+  };
+
+  const updateLinks = useCreateLinks();
+
+  const onLinksSubmit = (data: LinksFormValues)=>{
+    setIsSaving(true);
+
+    updateLinks.mutate({
+      label: data.label,
+      url: data.url
+    },
+  {
+    onSuccess: ()=>{
+      toast.success("Link updated successfully!"),
+      setIsSaving(false);
+    },
+    onError: ()=>{
+      toast.error("Failed to update links, Please try again.");
+      setIsSaving(false);
+    }
+  })
+    
+  }
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -307,7 +294,7 @@ export default function DashboardPage() {
           {tab === "profile" && (
             <ProfileForm
               formRef={formRef}
-              onSavingChange={handleSavingChange}
+              onSubmit= {onProfileSubmit}
             />
           )}
 
@@ -315,35 +302,31 @@ export default function DashboardPage() {
             <LinksForm
               profile={profile}
               formRef={formRef}
-              onSavingChange={handleSavingChange}
+              onSubmit = {onLinksSubmit}
             />
           )}
           {tab === "experience" && (
             <ExperienceForm
               profile={profile}
               formRef={formRef}
-              onSavingChange={handleSavingChange}
             />
           )}
           {tab === "projects" && (
             <ProjectsForm
               profile={profile}
               formRef={formRef}
-              onSavingChange={handleSavingChange}
             />
           )}
           {tab === "skills" && (
             <SkillsForm
               profile={profile}
               formRef={formRef}
-              onSavingChange={handleSavingChange}
             />
           )}
           {tab === "blogs" && (
             <BlogsForm
               profile={profile}
               formRef={formRef}
-              onSavingChange={handleSavingChange}
             />
           )}
         </main>

@@ -6,18 +6,14 @@ import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Link2 } from "lucide-react";
 import { linksSchema, LinksSchema } from "@/schemas/links";
-
-type ProfileLink = {
-  label?: string | null;
-  url?: string | null;
-};
+import { LinksFormValues } from "@/lib/schema-types";
 
 type Props = {
   profile?: {
-    links?: ProfileLink[];
+    links?: LinksFormValues[];
   };
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit: (data: LinksFormValues)=> void;
 };
 
 function LinkCard({
@@ -134,15 +130,15 @@ function LinkCard({
   );
 }
 
-export default function LinksForm({ profile, formRef }: Props) {
-  const defaultValues = useMemo<LinksSchema>(() => {
-    return {
-      links: (profile?.links ?? []).map((l) => ({
-        label: l.label ?? "",
-        url: l.url ?? "",
-      })),
-    };
-  }, [profile]);
+export default function LinksForm({ profile, formRef, onSubmit }: Props) {
+  // const defaultValues = useMemo<LinksSchema>(() => {
+  //   return {
+  //     links: (profile?.links ?? []).map((l) => ({
+  //       label: l.links[index]?.label ?? "",
+  //       url: l.links[index]?.url ?? "",
+  //     })),
+  //   };
+  // }, [profile]);
 
   const {
     register,
@@ -152,7 +148,7 @@ export default function LinksForm({ profile, formRef }: Props) {
     formState: { errors },
   } = useForm<LinksSchema>({
     resolver: zodResolver(linksSchema),
-    defaultValues,
+    // defaultValues,
     mode: "onSubmit",
   });
 
@@ -161,13 +157,10 @@ export default function LinksForm({ profile, formRef }: Props) {
     name: "links",
   });
 
-  useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+  // useEffect(() => {
+  //   reset(defaultValues);
+  // }, [defaultValues, reset]);
 
-  const onSubmit = (data: LinksSchema) => {
-    console.log("links", data);
-  };
 
   return (
     <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
