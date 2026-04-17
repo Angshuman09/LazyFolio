@@ -1,35 +1,42 @@
 "use client";
 
-import { RefObject, useState } from "react";
-import { useEffect, useMemo } from "react";
+import { RefObject, useState, useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Link2 } from "lucide-react";
 import { linksSchema, LinksSchema } from "@/schemas/links";
-import { LinksFormValues } from "@/lib/schema-types";
+import { LinkType } from "@/db/enums";
 
 type Props = {
-  profile?: {
-    links?: LinksFormValues[];
-  };
+  profile?: any;
   formRef: RefObject<HTMLFormElement | null>;
-  onSubmit: (data: LinksFormValues)=> void;
+  onSubmit: (data: LinksSchema) => void;
 };
 
+export function detectType(url: string): LinkType {
+  if (url.includes("github.com")) return "GITHUB";
+  if (url.includes("instagram.com")) return "INSTAGRAM";
+  if (url.includes("x.com") || url.includes("twitter.com")) return "X";
+  if (url.includes("linkedin.com")) return "LINKEDIN";
+  return "CUSTOM";
+}
+
 function LinkCard({
+  field,
   index,
   control,
   register,
   errors,
   remove,
 }: {
+  field: any;
   index: number;
   control: any;
   register: any;
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(() => !!(field?.label || field?.url));
   const values = useWatch({ control, name: `links.${index}` });
 
   if (confirmed) {
@@ -131,15 +138,6 @@ function LinkCard({
 }
 
 export default function LinksForm({ profile, formRef, onSubmit }: Props) {
-  // const defaultValues = useMemo<LinksSchema>(() => {
-  //   return {
-  //     links: (profile?.links ?? []).map((l) => ({
-  //       label: l.links[index]?.label ?? "",
-  //       url: l.links[index]?.url ?? "",
-  //     })),
-  //   };
-  // }, [profile]);
-
   const {
     register,
     handleSubmit,
@@ -148,7 +146,12 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     formState: { errors },
   } = useForm<LinksSchema>({
     resolver: zodResolver(linksSchema),
-    // defaultValues,
+    defaultValues: {
+      links: profile?.links?.length ? profile.links.map((l: any) => ({
+        label: l.label || "",
+        url: l.url || ""
+      })) : []
+    },
     mode: "onSubmit",
   });
 
@@ -157,10 +160,16 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     name: "links",
   });
 
-  // useEffect(() => {
-  //   reset(defaultValues);
-  // }, [defaultValues, reset]);
-
+  useEffect(() => {
+    if (profile?.links) {
+      reset({
+        links: profile.links.map((l: any) => ({
+          label: l.label || "",
+          url: l.url || ""
+        }))
+      });
+    }
+  }, [profile?.links, reset]);
 
   return (
     <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
@@ -181,6 +190,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
         {fields.map((f, index) => (
           <LinkCard
             key={f.id}
+            field={f}
             index={index}
             control={control}
             register={register}

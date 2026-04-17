@@ -599,7 +599,7 @@ function MainContent() {
 }
 
 // ─── PAGE ────────────────────────────────────────────────────────────────────
-export function Template2() {
+export function Template2({user, profile}: {user: any, profile: any}) {
   return (
     <main className="min-h-screen bg-[#0c0c0c] text-white">
       {/* Dot grid bg */}

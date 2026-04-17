@@ -15,3 +15,5 @@ export type LinksFormValues = {
   label?: string | null;
   url?: string | null;
 };
+
+type LinkType = "GITHUB" | "INSTAGRAM" | "X" | "LINKEDIN" | "CUSTOM";

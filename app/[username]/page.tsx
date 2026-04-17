@@ -13,11 +13,11 @@ const Template = ({ user, profile }: { user: any; profile: any }) => {
       case "1":
         return <Template1 user={user} profile={profile} />;
       case "2":
-        return <Template2 />;
+        return <Template2 user={user} profile={profile} />;
       case "3":
-        return <Template3 />;
+        return <Template3 user={user} profile={profile} />;
       default:
-        return <Template1 user={user} profile={profile} />;
+        return <Template3 user={user} profile={profile} />;
     }
   };
 

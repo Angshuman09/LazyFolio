@@ -20,7 +20,7 @@ import Template from "../[username]/page";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 import ProfileForm from "@/components/dashboard/profile-form";
-import LinksForm from "@/components/dashboard/links-form";
+import LinksForm, { detectType } from "@/components/dashboard/links-form";
 import ExperienceForm from "@/components/dashboard/experience-form";
 import ProjectsForm from "@/components/dashboard/projects-form";
 import SkillsForm from "@/components/dashboard/skills-form";
@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { LinksFormValues, ProfileFormValues } from "@/lib/schema-types";
 import { TEMPLATES, MOCK_SKILLS, NAV, Tab} from "@/components/resources/dummy-values";
+import { LinksSchema } from "@/schemas/links";
 
 
 export default function DashboardPage() {
@@ -109,25 +110,36 @@ export default function DashboardPage() {
 
   const updateLinks = useCreateLinks();
 
-  const onLinksSubmit = (data: LinksFormValues)=>{
+  const onLinksSubmit = (data: LinksSchema) => {
     setIsSaving(true);
+    
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      setIsSaving(false);
+      return;
+    }
+
+    const formattedLinks = (data.links || []).map(link => ({
+      label: link.label || "",
+      url: link.url || "",
+      type: detectType(link.url || "")
+    }));
 
     updateLinks.mutate({
-      label: data.label,
-      url: data.url
+      profileId: profile.id,
+      links: formattedLinks
     },
-  {
-    onSuccess: ()=>{
-      toast.success("Link updated successfully!"),
-      setIsSaving(false);
-    },
-    onError: ()=>{
-      toast.error("Failed to update links, Please try again.");
-      setIsSaving(false);
-    }
-  })
-    
-  }
+    {
+      onSuccess: () => {
+        toast.success("Links updated successfully!");
+        setIsSaving(false);
+      },
+      onError: () => {
+        toast.error("Failed to update links. Please try again.");
+        setIsSaving(false);
+      }
+    });
+  };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

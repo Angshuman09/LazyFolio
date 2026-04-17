@@ -200,7 +200,7 @@ function StackTicker() {
 }
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
-export function Template3() {
+export function Template3({user, profile}:{user: any, profile: any}) {
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? DATA.projects : DATA.projects.slice(0, 4);
 
