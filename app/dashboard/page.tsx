@@ -9,7 +9,6 @@ import {
   Check,
   ChevronRight,
   Layers,
-
   BarChart3,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth-client";
@@ -28,9 +27,17 @@ import BlogsForm from "@/components/dashboard/blogs-form";
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { LinksFormValues, ProfileFormValues } from "@/lib/schema-types";
-import { TEMPLATES, MOCK_SKILLS, NAV, Tab} from "@/components/resources/dummy-values";
+import {
+  TEMPLATES,
+  MOCK_SKILLS,
+  NAV,
+  Tab,
+} from "@/components/resources/dummy-values";
 import { LinksSchema } from "@/schemas/links";
-
+import { useCreateExperience } from "@/hooks/experience";
+import { ProfileSchema } from "@/schemas/profile";
+import { ExperienceSchema } from "@/schemas/experience";
+import { role } from "better-auth/client";
 
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
@@ -82,8 +89,8 @@ export default function DashboardPage() {
 
   const updateProfile = useUpdateUserProfile();
 
-    const onProfileSubmit = (data: ProfileFormValues) => {
-      setIsSaving(true);
+  const onProfileSubmit = (data: ProfileSchema) => {
+    setIsSaving(true);
     updateProfile.mutate(
       {
         userId: session?.user?.id || undefined,
@@ -91,7 +98,7 @@ export default function DashboardPage() {
         username: data.username,
         tagline: data.tagline,
         location: data.location,
-        age: data?.age,
+        quote: data?.quote,
         email: data.email,
         bio: data.bio,
       },
@@ -104,7 +111,7 @@ export default function DashboardPage() {
           toast.error("Failed to update profile. Please try again.");
           setIsSaving(false);
         },
-      }
+      },
     );
   };
 
@@ -112,33 +119,73 @@ export default function DashboardPage() {
 
   const onLinksSubmit = (data: LinksSchema) => {
     setIsSaving(true);
-    
+
     if (!profile?.id) {
       toast.error("Profile not loaded.");
       setIsSaving(false);
       return;
     }
 
-    const formattedLinks = (data.links || []).map(link => ({
+    const formattedLinks = (data.links || []).map((link) => ({
       label: link.label || "",
       url: link.url || "",
-      type: detectType(link.url || "")
+      type: detectType(link.url || ""),
     }));
 
-    updateLinks.mutate({
+    // console.log(formattedLinks);
+
+    updateLinks.mutate(
+      {
+        profileId: profile.id,
+        links: formattedLinks,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Links updated successfully!");
+          setIsSaving(false);
+        },
+        onError: () => {
+          toast.error("Failed to update links. Please try again.");
+          setIsSaving(false);
+        },
+      },
+    );
+  };
+
+  const createExperience = useCreateExperience();
+
+  const onExperienceSubmit = (data: ExperienceSchema) => {
+    setIsSaving(true);
+
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      setIsSaving(false);
+      return;
+    }
+
+    const formattedExperience = (data.experiences || []).map((experience)=>({
+      role: experience.role || "",
+      companyName: experience.companyName || "",
+      startdate: experience.startdate || "",
+      enddate: experience.enddate || "",
+      description: experience.description || ""
+    }))
+
+    createExperience.mutate({
       profileId: profile.id,
-      links: formattedLinks
+      experiences: formattedExperience,
     },
     {
-      onSuccess: () => {
-        toast.success("Links updated successfully!");
+      onSuccess: ()=>{
+        toast.success("experience created successfully");
         setIsSaving(false);
       },
-      onError: () => {
-        toast.error("Failed to update links. Please try again.");
+      onError: ()=>{
+        toast.error("failed to update experience. Please try again.")
         setIsSaving(false);
       }
-    });
+    }
+  )
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -304,43 +351,26 @@ export default function DashboardPage() {
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
           {tab === "profile" && (
-            <ProfileForm
-              formRef={formRef}
-              onSubmit= {onProfileSubmit}
-            />
+            <ProfileForm formRef={formRef} onSubmit={onProfileSubmit} />
           )}
 
           {tab === "links" && (
             <LinksForm
               profile={profile}
               formRef={formRef}
-              onSubmit = {onLinksSubmit}
+              onSubmit={onLinksSubmit}
             />
           )}
           {tab === "experience" && (
-            <ExperienceForm
-              profile={profile}
-              formRef={formRef}
-            />
+            <ExperienceForm profile={profile} formRef={formRef} onSubmit={onExperienceSubmit} />
           )}
           {tab === "projects" && (
-            <ProjectsForm
-              profile={profile}
-              formRef={formRef}
-            />
+            <ProjectsForm profile={profile} formRef={formRef} />
           )}
           {tab === "skills" && (
-            <SkillsForm
-              profile={profile}
-              formRef={formRef}
-            />
+            <SkillsForm profile={profile} formRef={formRef} />
           )}
-          {tab === "blogs" && (
-            <BlogsForm
-              profile={profile}
-              formRef={formRef}
-            />
-          )}
+          {tab === "blogs" && <BlogsForm profile={profile} formRef={formRef} />}
         </main>
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">

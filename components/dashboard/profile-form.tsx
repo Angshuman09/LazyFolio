@@ -5,22 +5,12 @@ import { RefObject, useEffect } from "react";
 import { useUpdateUserProfile, useGetUserProfile } from "@/hooks/profile";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
-
-type ProfileFormValues = {
-  name: string;
-  username: string;
-  tagline?: string;
-  location?: string;
-  age?: number;
-  email?: string;
-  bio?: string;
-  avatar?: FileList;
-  banner?: FileList;
-};
+import { profileSchema, ProfileSchema } from "@/schemas/profile";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type Props = {
   formRef: RefObject<HTMLFormElement | null>;
-  onSubmit: (data: ProfileFormValues) => void;
+  onSubmit: (data: ProfileSchema) => void;
 };
 
 export default function ProfileForm({ formRef, onSubmit }: Props) {
@@ -32,16 +22,17 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
   const { data: profileData } = useGetUserProfile( user?.user?.id || "dkfldfkldajfdkjl");
   // console.log("profile data", profileData)
 
-  const { register, handleSubmit, reset } = useForm<ProfileFormValues>({
+  const { register, handleSubmit, reset } = useForm<ProfileSchema>({
     defaultValues: {
       name: profileData && profileData?.name || "your name",
       username: profileData && profileData?.username || "your username",
       tagline: profileData && profileData?.tagline || "Full Stack Developer · Open to work",
       location: profileData && profileData?.location || "Assam, India",
-      age: profileData && profileData?.age || 20,
+      quote: profileData && profileData?.quote || 20,
       email: profileData && profileData?.email || "",
       bio: profileData && profileData?.bio || "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
     },
+    resolver: zodResolver(profileSchema)
   });
 
   useEffect(() => {
@@ -66,7 +57,7 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             Avatar
           </div>
           <div className="flex items-center gap-3.5">
-            <div className="w-[62px] h-[62px] rounded-full bg-(--lf-border) flex items-center justify-center font-serif text-[1.5rem] text-(--lf-muted) shrink-0 border-2 border-(--lf-border)">
+            <div className="w-15.5 h-15.5 rounded-full bg-(--lf-border) flex items-center justify-center font-serif text-[1.5rem] text-(--lf-muted) shrink-0 border-2 border-(--lf-border)">
               A
             </div>
             <div className="flex-1">
@@ -156,11 +147,11 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-              Age
+              Quote
             </label>
             <input
-              type="number"
-              {...register("age", { valueAsNumber: true })}
+              type="text"
+              {...register("quote", { valueAsNumber: true })}
               // defaultValue={ profileData && profileData?.age || undefined}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />

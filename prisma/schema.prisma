@@ -82,7 +82,7 @@ model Profile {
   banner      String?
   name        String?
   email       String?
-  age         Int?
+  quote       String?
   location    String?
   userId      String       @unique
   username    String?      @unique

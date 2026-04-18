@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ExperienceSchema } from "@/schemas/experience";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -11,13 +12,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    await prisma.experience.deleteMany({
+      where: {profileId}
+    })
+
     const experience = await prisma.experience.createMany({
       data: experiences.map((experience: any) => ({
         profileId: profileId,
-        company: experience.company,
+        companyName: experience.companyName,
         role: experience.role,
-        startdate: experience.startdate,
-        enddate: experience.enddate,
+        startdate: new Date(experience.startdate),
+        enddate: experience.enddate ? new Date(experience.enddate) : null,
         description: experience.description,
       })),
     });

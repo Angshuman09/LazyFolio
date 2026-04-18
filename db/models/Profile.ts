@@ -27,12 +27,10 @@ export type AggregateProfile = {
 }
 
 export type ProfileAvgAggregateOutputType = {
-  age: number | null
   views: number | null
 }
 
 export type ProfileSumAggregateOutputType = {
-  age: number | null
   views: number | null
 }
 
@@ -42,7 +40,7 @@ export type ProfileMinAggregateOutputType = {
   banner: string | null
   name: string | null
   email: string | null
-  age: number | null
+  quote: string | null
   location: string | null
   userId: string | null
   username: string | null
@@ -62,7 +60,7 @@ export type ProfileMaxAggregateOutputType = {
   banner: string | null
   name: string | null
   email: string | null
-  age: number | null
+  quote: string | null
   location: string | null
   userId: string | null
   username: string | null
@@ -82,7 +80,7 @@ export type ProfileCountAggregateOutputType = {
   banner: number
   name: number
   email: number
-  age: number
+  quote: number
   location: number
   userId: number
   username: number
@@ -100,12 +98,10 @@ export type ProfileCountAggregateOutputType = {
 
 
 export type ProfileAvgAggregateInputType = {
-  age?: true
   views?: true
 }
 
 export type ProfileSumAggregateInputType = {
-  age?: true
   views?: true
 }
 
@@ -115,7 +111,7 @@ export type ProfileMinAggregateInputType = {
   banner?: true
   name?: true
   email?: true
-  age?: true
+  quote?: true
   location?: true
   userId?: true
   username?: true
@@ -135,7 +131,7 @@ export type ProfileMaxAggregateInputType = {
   banner?: true
   name?: true
   email?: true
-  age?: true
+  quote?: true
   location?: true
   userId?: true
   username?: true
@@ -155,7 +151,7 @@ export type ProfileCountAggregateInputType = {
   banner?: true
   name?: true
   email?: true
-  age?: true
+  quote?: true
   location?: true
   userId?: true
   username?: true
@@ -263,7 +259,7 @@ export type ProfileGroupByOutputType = {
   banner: string | null
   name: string | null
   email: string | null
-  age: number | null
+  quote: string | null
   location: string | null
   userId: string
   username: string | null
@@ -307,7 +303,7 @@ export type ProfileWhereInput = {
   banner?: Prisma.StringNullableFilter<"Profile"> | string | null
   name?: Prisma.StringNullableFilter<"Profile"> | string | null
   email?: Prisma.StringNullableFilter<"Profile"> | string | null
-  age?: Prisma.IntNullableFilter<"Profile"> | number | null
+  quote?: Prisma.StringNullableFilter<"Profile"> | string | null
   location?: Prisma.StringNullableFilter<"Profile"> | string | null
   userId?: Prisma.StringFilter<"Profile"> | string
   username?: Prisma.StringNullableFilter<"Profile"> | string | null
@@ -333,7 +329,7 @@ export type ProfileOrderByWithRelationInput = {
   banner?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
-  age?: Prisma.SortOrderInput | Prisma.SortOrder
+  quote?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -364,7 +360,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   banner?: Prisma.StringNullableFilter<"Profile"> | string | null
   name?: Prisma.StringNullableFilter<"Profile"> | string | null
   email?: Prisma.StringNullableFilter<"Profile"> | string | null
-  age?: Prisma.IntNullableFilter<"Profile"> | number | null
+  quote?: Prisma.StringNullableFilter<"Profile"> | string | null
   location?: Prisma.StringNullableFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableFilter<"Profile"> | string | null
   skills?: Prisma.StringNullableListFilter<"Profile">
@@ -388,7 +384,7 @@ export type ProfileOrderByWithAggregationInput = {
   banner?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
-  age?: Prisma.SortOrderInput | Prisma.SortOrder
+  quote?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -417,7 +413,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   banner?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   name?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
-  age?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
+  quote?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   username?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
@@ -438,7 +434,7 @@ export type ProfileCreateInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -463,7 +459,7 @@ export type ProfileUncheckedCreateInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -488,7 +484,7 @@ export type ProfileUpdateInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -513,7 +509,7 @@ export type ProfileUncheckedUpdateInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -538,7 +534,7 @@ export type ProfileCreateManyInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -559,7 +555,7 @@ export type ProfileUpdateManyMutationInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -579,7 +575,7 @@ export type ProfileUncheckedUpdateManyInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -613,7 +609,7 @@ export type ProfileCountOrderByAggregateInput = {
   banner?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  quote?: Prisma.SortOrder
   location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -629,7 +625,6 @@ export type ProfileCountOrderByAggregateInput = {
 }
 
 export type ProfileAvgOrderByAggregateInput = {
-  age?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
@@ -639,7 +634,7 @@ export type ProfileMaxOrderByAggregateInput = {
   banner?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  quote?: Prisma.SortOrder
   location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -659,7 +654,7 @@ export type ProfileMinOrderByAggregateInput = {
   banner?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  age?: Prisma.SortOrder
+  quote?: Prisma.SortOrder
   location?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -674,7 +669,6 @@ export type ProfileMinOrderByAggregateInput = {
 }
 
 export type ProfileSumOrderByAggregateInput = {
-  age?: Prisma.SortOrder
   views?: Prisma.SortOrder
 }
 
@@ -717,14 +711,6 @@ export type ProfileUncheckedUpdateOneWithoutUserNestedInput = {
 
 export type ProfileCreateskillsInput = {
   set: string[]
-}
-
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type ProfileUpdateskillsInput = {
@@ -808,7 +794,7 @@ export type ProfileCreateWithoutUserInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -832,7 +818,7 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -872,7 +858,7 @@ export type ProfileUpdateWithoutUserInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -896,7 +882,7 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -920,7 +906,7 @@ export type ProfileCreateWithoutLinksInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -944,7 +930,7 @@ export type ProfileUncheckedCreateWithoutLinksInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -984,7 +970,7 @@ export type ProfileUpdateWithoutLinksInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1008,7 +994,7 @@ export type ProfileUncheckedUpdateWithoutLinksInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1032,7 +1018,7 @@ export type ProfileCreateWithoutExperiencesInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -1056,7 +1042,7 @@ export type ProfileUncheckedCreateWithoutExperiencesInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -1096,7 +1082,7 @@ export type ProfileUpdateWithoutExperiencesInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1120,7 +1106,7 @@ export type ProfileUncheckedUpdateWithoutExperiencesInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1144,7 +1130,7 @@ export type ProfileCreateWithoutProjectsInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -1168,7 +1154,7 @@ export type ProfileUncheckedCreateWithoutProjectsInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -1208,7 +1194,7 @@ export type ProfileUpdateWithoutProjectsInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1232,7 +1218,7 @@ export type ProfileUncheckedUpdateWithoutProjectsInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1256,7 +1242,7 @@ export type ProfileCreateWithoutBlogsInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   username?: string | null
   bio?: string | null
@@ -1280,7 +1266,7 @@ export type ProfileUncheckedCreateWithoutBlogsInput = {
   banner?: string | null
   name?: string | null
   email?: string | null
-  age?: number | null
+  quote?: string | null
   location?: string | null
   userId: string
   username?: string | null
@@ -1320,7 +1306,7 @@ export type ProfileUpdateWithoutBlogsInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1344,7 +1330,7 @@ export type ProfileUncheckedUpdateWithoutBlogsInput = {
   banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1426,7 +1412,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   banner?: boolean
   name?: boolean
   email?: boolean
-  age?: boolean
+  quote?: boolean
   location?: boolean
   userId?: boolean
   username?: boolean
@@ -1453,7 +1439,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   banner?: boolean
   name?: boolean
   email?: boolean
-  age?: boolean
+  quote?: boolean
   location?: boolean
   userId?: boolean
   username?: boolean
@@ -1475,7 +1461,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   banner?: boolean
   name?: boolean
   email?: boolean
-  age?: boolean
+  quote?: boolean
   location?: boolean
   userId?: boolean
   username?: boolean
@@ -1497,7 +1483,7 @@ export type ProfileSelectScalar = {
   banner?: boolean
   name?: boolean
   email?: boolean
-  age?: boolean
+  quote?: boolean
   location?: boolean
   userId?: boolean
   username?: boolean
@@ -1512,7 +1498,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "banner" | "name" | "email" | "age" | "location" | "userId" | "username" | "bio" | "skills" | "themeId" | "resume" | "tagline" | "bookAcall" | "views" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "banner" | "name" | "email" | "quote" | "location" | "userId" | "username" | "bio" | "skills" | "themeId" | "resume" | "tagline" | "bookAcall" | "views" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
   projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
@@ -1543,7 +1529,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     banner: string | null
     name: string | null
     email: string | null
-    age: number | null
+    quote: string | null
     location: string | null
     userId: string
     username: string | null
@@ -1989,7 +1975,7 @@ export interface ProfileFieldRefs {
   readonly banner: Prisma.FieldRef<"Profile", 'String'>
   readonly name: Prisma.FieldRef<"Profile", 'String'>
   readonly email: Prisma.FieldRef<"Profile", 'String'>
-  readonly age: Prisma.FieldRef<"Profile", 'Int'>
+  readonly quote: Prisma.FieldRef<"Profile", 'String'>
   readonly location: Prisma.FieldRef<"Profile", 'String'>
   readonly userId: Prisma.FieldRef<"Profile", 'String'>
   readonly username: Prisma.FieldRef<"Profile", 'String'>

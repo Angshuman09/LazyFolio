@@ -7,20 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Briefcase } from "lucide-react";
 import { experienceSchema, ExperienceSchema } from "@/schemas/experience";
 
-type ProfileExperience = {
-  companyName?: string | null;
-  role?: string | null;
-  startdate?: string | null;
-  enddate?: string | null;
-  description?: string | null;
-};
-
 type Props = {
-  profile?: {
-    experiences?: ProfileExperience[];
-  };
+  profile?: any
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit?: (data: ExperienceSchema) => void;
 };
 
 function ExperienceCard({
@@ -178,18 +168,7 @@ function ExperienceCard({
   );
 }
 
-export default function ExperienceForm({ profile, formRef }: Props) {
-  const defaultValues = useMemo<ExperienceSchema>(() => {
-    return {
-      experiences: (profile?.experiences ?? []).map((e) => ({
-        companyName: e.companyName ?? "",
-        role: e.role ?? "",
-        startdate: e.startdate ?? "",
-        enddate: e.enddate ?? "",
-        description: e.description ?? "",
-      })),
-    };
-  }, [profile]);
+export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
 
   const {
     register,
@@ -199,7 +178,15 @@ export default function ExperienceForm({ profile, formRef }: Props) {
     formState: { errors },
   } = useForm<ExperienceSchema>({
     resolver: zodResolver(experienceSchema),
-    defaultValues,
+    defaultValues:{
+      experiences: profile?.experiences?.length ? profile.experiences.map((exp: any)=>({
+        role: exp.role || '',
+        startdate: exp.startdate || '',
+        enddate: exp.enddate || '',
+        description: exp.description || '',
+        companyName: exp.companyName || ''
+      })) : []
+    },
     mode: "onSubmit",
   });
 
@@ -209,15 +196,21 @@ export default function ExperienceForm({ profile, formRef }: Props) {
   });
 
   useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
-
-  const onSubmit = (data: ExperienceSchema) => {
-    console.log("experience", data);
-  };
+    if(profile?.experiences){
+      reset({
+        experiences: profile.experiences.map((exp: any)=>({
+          role: exp.role || '',
+          startdate: exp.startdate || '',
+          enddate: exp.enddate || '',
+          companyName: exp.companyName || '',
+          description: exp.description || ''
+        }))
+      })
+    }
+  }, [profile?.experiences, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Experience
       </h1>
