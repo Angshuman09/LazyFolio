@@ -21,7 +21,7 @@ type Props = {
     projects?: ProfileProject[];
   };
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit?: (data: ProjectsSchema) => void;
 };
 
 function ProjectCard({
@@ -214,7 +214,7 @@ function ProjectCard({
   );
 }
 
-export default function ProjectsForm({ profile, formRef }: Props) {
+export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
   const defaultValues = useMemo<ProjectsSchema>(() => {
     return {
       projects: (profile?.projects ?? []).map((p) => ({
@@ -249,12 +249,8 @@ export default function ProjectsForm({ profile, formRef }: Props) {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  const onSubmit = (data: ProjectsSchema) => {
-    console.log("projects", data);
-  };
-
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (()=>{}))}>
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Projects
       </h1>

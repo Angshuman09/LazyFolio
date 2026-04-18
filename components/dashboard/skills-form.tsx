@@ -12,7 +12,7 @@ type Props = {
     skills?: string[] | null;
   };
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit?: (data: SkillsSchema) => void;
 };
 
 function SkillCard({
@@ -100,7 +100,7 @@ function SkillCard({
   );
 }
 
-export default function SkillsForm({ profile, formRef }: Props) {
+export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
   const defaultValues = useMemo<SkillsSchema>(() => {
     return {
       skills: (profile?.skills ?? []).map((s) => ({
@@ -130,15 +130,11 @@ export default function SkillsForm({ profile, formRef }: Props) {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  const onSubmit = (data: SkillsSchema) => {
-    console.log("skills", data);
-  };
-
   // Split confirmed (badge) vs editing (form) items for layout
   const confirmedIndices = new Set<number>();
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Skills
       </h1>

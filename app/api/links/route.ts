@@ -5,7 +5,7 @@ export async function POST(req: NextRequest){
   try {
     const {profileId, links} = await req.json();
     if(!profileId || !links){
-      return NextResponse.json({error: "field is missing in links form"}, {status: 400});
+      return NextResponse.json({error: "field are missing in links form"}, {status: 400});
     }
 
     await prisma.links.deleteMany({

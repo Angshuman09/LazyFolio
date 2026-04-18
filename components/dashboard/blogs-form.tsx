@@ -15,11 +15,9 @@ type ProfileBlog = {
 };
 
 type Props = {
-  profile?: {
-    blogs?: ProfileBlog[];
-  };
+  profile?: any;
   formRef: RefObject<HTMLFormElement | null>;
-  onSavingChange?: (saving: boolean) => void;
+  onSubmit?: (data: BlogsSchema) => void;
 };
 
 function BlogCard({
@@ -158,10 +156,10 @@ function BlogCard({
   );
 }
 
-export default function BlogsForm({ profile, formRef }: Props) {
+export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
   const defaultValues = useMemo<BlogsSchema>(() => {
     return {
-      blogs: (profile?.blogs ?? []).map((b) => ({
+      blogs: (profile?.blogs ?? []).map((b:any) => ({
         title: b.title ?? "",
         description: b.description ?? "",
         blogLink: b.blogLink ?? "",
@@ -191,12 +189,8 @@ export default function BlogsForm({ profile, formRef }: Props) {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  const onSubmit = (data: BlogsSchema) => {
-    console.log("blogs", data);
-  };
-
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Blogs
       </h1>

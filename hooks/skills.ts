@@ -1,18 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
 
-
-export function useCreateLinks(){
+export function useCreateSkills(){
     const mutation = useMutation({
-        mutationFn: async (linkData: any)=>{
-            const response = await fetch('/api/links',{
+        mutationFn: async (data: any)=>{
+            const response = await fetch('/api/skills',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(linkData),
+                body: JSON.stringify(data),
             })
 
-            if(!response.ok) throw new Error("failed to update link")
+            if(!response.ok) throw new Error("failed to update skills")
             return response.json();
         }
     })

@@ -38,6 +38,12 @@ import { useCreateExperience } from "@/hooks/experience";
 import { ProfileSchema } from "@/schemas/profile";
 import { ExperienceSchema } from "@/schemas/experience";
 import { role } from "better-auth/client";
+import { useCreateSkills } from "@/hooks/skills";
+import { SkillsSchema } from "@/schemas/skills";
+import { useCreateBlogs } from "@/hooks/blogs";
+import { BlogsSchema } from "@/schemas/blogs";
+import { ProjectsSchema } from "@/schemas/projects";
+import { useCreateProjects } from "@/hooks/projects";
 
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
@@ -163,29 +169,120 @@ export default function DashboardPage() {
       return;
     }
 
-    const formattedExperience = (data.experiences || []).map((experience)=>({
+    const formattedExperience = (data.experiences || []).map((experience) => ({
       role: experience.role || "",
       companyName: experience.companyName || "",
       startdate: experience.startdate || "",
       enddate: experience.enddate || "",
-      description: experience.description || ""
-    }))
+      description: experience.description || "",
+    }));
 
-    createExperience.mutate({
+    createExperience.mutate(
+      {
+        profileId: profile.id,
+        experiences: formattedExperience,
+      },
+      {
+        onSuccess: () => {
+          toast.success("experience created successfully");
+          setIsSaving(false);
+        },
+        onError: () => {
+          toast.error("failed to update experience. Please try again.");
+          setIsSaving(false);
+        },
+      },
+    );
+  };
+
+  const createProjects = useCreateProjects();
+
+  const onSubmitProjects = (data: ProjectsSchema) => {
+    setIsSaving(true);
+
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      setIsSaving(false);
+      return;
+    }
+
+    const formattedProjects = (data.projects || []).map((project:any) => ({
+      title: project.title || "",
+      description: project.description || "",
+      projectLink: project.projectLink || "",
+      githubLink: project.githubLink || "",
+    }));
+
+    createProjects.mutate(
+      {
+        profileId: profile.id,
+        projects: formattedProjects,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Projects updated successfully!");
+          setIsSaving(false);
+        },
+        onError: () => {
+          toast.error("Failed to update projects. Please try again.");
+          setIsSaving(false);
+        },
+      },
+    );
+  };
+
+  const createSkills = useCreateSkills();
+
+  const onSubmitSkills = (data: SkillsSchema) => {
+    setIsSaving(true);
+
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      setIsSaving(false);
+      return;
+    }
+
+    createSkills.mutate({
+      userId: profile.id,
+      skills: data.skills
+    },
+  {
+    onSuccess:()=>{
+      toast.success("skills updated sucessfully"),
+      setIsSaving(false);
+    },
+    onError: ()=>{
+      toast.error("failed to update skills. Please try again.");
+      setIsSaving(false);
+    }
+  })
+  };
+
+  const createBlogs = useCreateBlogs();
+
+  const onSubmitBlogs = (data: BlogsSchema) => {
+    setIsSaving(true);
+
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      setIsSaving(false);
+      return;
+    }
+
+    createBlogs.mutate({
       profileId: profile.id,
-      experiences: formattedExperience,
+      blogs: data.blogs
     },
     {
-      onSuccess: ()=>{
-        toast.success("experience created successfully");
+      onSuccess: () => {
+        toast.success("Blogs updated successfully!");
         setIsSaving(false);
       },
-      onError: ()=>{
-        toast.error("failed to update experience. Please try again.")
+      onError: () => {
+        toast.error("Failed to update blogs. Please try again.");
         setIsSaving(false);
       }
-    }
-  )
+    });
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -362,15 +459,19 @@ export default function DashboardPage() {
             />
           )}
           {tab === "experience" && (
-            <ExperienceForm profile={profile} formRef={formRef} onSubmit={onExperienceSubmit} />
+            <ExperienceForm
+              profile={profile}
+              formRef={formRef}
+              onSubmit={onExperienceSubmit}
+            />
           )}
           {tab === "projects" && (
-            <ProjectsForm profile={profile} formRef={formRef} />
+            <ProjectsForm profile={profile} formRef={formRef} onSubmit={onSubmitProjects} />
           )}
           {tab === "skills" && (
-            <SkillsForm profile={profile} formRef={formRef} />
+            <SkillsForm profile={profile} formRef={formRef} onSubmit={onSubmitSkills}/>
           )}
-          {tab === "blogs" && <BlogsForm profile={profile} formRef={formRef} />}
+          {tab === "blogs" && <BlogsForm profile={profile} formRef={formRef} onSubmit={onSubmitBlogs} />}
         </main>
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">
