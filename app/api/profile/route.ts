@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+function optionalString(value: string | null | undefined) {
+  if (typeof value !== "string") {
+    return value ?? undefined;
+  }
+
+  const trimmedValue = value.trim();
+  return trimmedValue === "" ? undefined : trimmedValue;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
@@ -23,7 +32,7 @@ export async function GET(request: NextRequest) {
       },
     });
     return NextResponse.json(profile, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Failed to fetch profile" },
       { status: 500 },
@@ -31,7 +40,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
- export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const {
       userId,
@@ -41,7 +50,7 @@ export async function GET(request: NextRequest) {
       email,
       avatar,
       banner,
-      age,
+      quote,
       username,
       tagline,
     } = await request.json();
@@ -66,23 +75,30 @@ export async function GET(request: NextRequest) {
       }
     }
 
-  const profile = await prisma.profile.update({
+    const profileData = {
+      name: optionalString(name),
+      bio: optionalString(bio),
+      location: optionalString(location),
+      email: optionalString(email),
+      avatar: optionalString(avatar),
+      banner: optionalString(banner),
+      quote: optionalString(quote),
+      username: optionalString(username),
+      tagline: optionalString(tagline),
+    };
+
+    const profile = await prisma.profile.upsert({
       where: { userId },
-      data: {
-        name: name ?? undefined,
-        bio: bio ?? undefined,
-        location: location ?? undefined,
-        email: email ?? undefined,
-        avatar: avatar ?? undefined,
-        banner: banner ?? undefined,
-        age: age ?? undefined,
-        username: username ?? undefined,
-        tagline: tagline ?? undefined,
+      update: profileData,
+      create: {
+        userId,
+        ...profileData,
       },
     });
 
     return NextResponse.json(profile, { status: 200 });
   } catch (error) {
+    console.error("Failed to post profile", error);
     return NextResponse.json(
       { error: "Failed to post profile" },
       { status: 500 }

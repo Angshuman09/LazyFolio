@@ -1,27 +1,42 @@
-'use client'
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 
-import { Template1 } from "@/components/portfolios/template1";
-import { Template2 } from "@/components/portfolios/template2";
-import { Template3 } from "@/components/portfolios/template3";
-import { useParams } from "next/navigation";
+interface PageProps {
+  params: Promise<{ username: string }> | { username: string };
+}
 
-const Template = ({ user, profile }: { user: any; profile: any }) => {
-  const slug = useParams();
+export default async function UserPortfolioPage(props: PageProps) {
+  // Await params to support both Next.js 14 and 15
+  const params = await props.params;
+  const username = params?.username;
 
-  const renderTemplate = () => {
-    switch (user?.themeId) {
-      case "1":
-        return <Template1 user={user} profile={profile} />;
-      case "2":
-        return <Template2 user={user} profile={profile} />;
-      case "3":
-        return <Template3 user={user} profile={profile} />;
-      default:
-        return <Template1 user={user} profile={profile} />;
-    }
-  };
+  if (!username) {
+    notFound();
+  }
 
-  return <div className="w-full h-screen">{renderTemplate()}</div>;
-};
+  const profile = await prisma.profile.findUnique({
+    where: { username },
+    include: {
+      user: true,
+      experiences: true,
+      projects: true,
+      blogs: true,
+      links: true,
+    },
+  });
 
-export default Template;
+  if (!profile) {
+    notFound();
+  }
+
+  const { user, ...profileData } = profile;
+
+  return (
+    <TemplateRenderer 
+      slug={params} 
+      user={user} 
+      profile={profileData} 
+    />
+  );
+}

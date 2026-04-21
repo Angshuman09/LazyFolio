@@ -1,36 +1,50 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetUserProfile = (userId?: string) => {
+  const query = useQuery({
+    queryKey: ["profile", userId],
+    queryFn: async () => {
+      const res = await fetch(`/api/profile?userId=${userId}`, {
+        method: "GET",
+      });
+      const payload = await res.json().catch(() => null);
 
-    const query = useQuery({
-        queryKey: ["profile", userId],
-        queryFn: async () => {
-            const res = await fetch(`/api/profile?userId=${userId}`, {
-                method: "GET",
-            });
-            if (!res.ok) throw new Error("Failed to get profile");
+      if (!res.ok) {
+        throw new Error(payload?.error || "Failed to get profile");
+      }
 
-            return res.json();
-        },
-        enabled: !!userId,
-    })
+      return payload;
+    },
+    enabled: !!userId,
+  });
 
-    return query;
-}
+  return query;
+};
 
 export const useUpdateUserProfile = () => {
-    const mutation = useMutation({
-        mutationFn: async (profileData: any) => {
-            const res = await fetch(`/api/profile`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(profileData),
-            });
-            if (!res.ok) throw new Error("Failed to update profile");
-            return res.json();
-        }
-    });
-    return mutation;
-}
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (profileData: unknown) => {
+      const res = await fetch(`/api/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profileData),
+      });
+      const payload = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(payload?.error || "Failed to update profile");
+      }
+
+      return payload;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+
+  return mutation;
+};

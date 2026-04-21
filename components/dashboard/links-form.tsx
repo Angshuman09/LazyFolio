@@ -4,6 +4,7 @@ import { RefObject, useState, useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Link2 } from "lucide-react";
+import toast from "react-hot-toast";
 import { linksSchema, LinksSchema } from "@/schemas/links";
 import { LinkType } from "@/db/enums";
 
@@ -172,7 +173,13 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.links, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit, () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Links
       </h1>

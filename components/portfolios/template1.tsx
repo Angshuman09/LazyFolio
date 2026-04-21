@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Github,
   Twitter,
@@ -15,7 +15,6 @@ import {
   Code2,
 } from "lucide-react";
 
-// ─── DATA ────────────────────────────────────────────────────────────────────
 const DATA = {
   name: "Alex Rivers",
   // handle: "@alexrivers",
@@ -101,7 +100,21 @@ const DATA = {
   ],
 };
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function extractGitHubUsername(url: string) {
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname !== "github.com") {
+      return null; // not a GitHub URL
+    }
+
+    const parts = parsed.pathname.split("/").filter(Boolean);
+    return parts[0] || null; // first segment = username
+  } catch (e) {
+    return null; // invalid URL
+  }
+}
+
 const SocialLink = ({
   href,
   icon: Icon,
@@ -139,11 +152,26 @@ const StatusBadge = ({ status }: { status: string }) => (
   </span>
 );
 
-export function Template1({ user, profile }: { user: any; profile: any }) {
+export function Template1({
+  slug,
+  user,
+  profile,
+}: {
+  slug: any;
+  user: any;
+  profile: any;
+}) {
   const [activeTab, setActiveTab] = useState<"projects" | "blogs" | "stack">(
     "projects",
   );
 
+  const githubLink = profile?.links.find(
+    (link: any) => link.type === "GITHUB",
+  )?.url;
+
+  console.log(githubLink);
+
+  const username = extractGitHubUsername(githubLink);
   return (
     <main className="relative min-h-screen bg-[#09090b] text-white font-(family-name:--font-geist-sans,ui-sans-serif) z-0">
       <div className="absolute top-0 z-[-1] h-full w-full bg-[#09090b] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] pointer-events-none" />
@@ -248,10 +276,10 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
 
         {activeTab === "projects" && (
           <section className="space-y-3">
-            {DATA.projects.map((p) => (
+            {profile?.projects.map((p: any) => (
               <a
-                key={p.name}
-                href={p.url}
+                key={p.id}
+                href={p.projectLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group block p-5 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition-all duration-200"
@@ -260,21 +288,21 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm group-hover:text-indigo-300 transition-colors duration-200">
-                        {p.name}
+                        {p.title}
                       </h3>
                       <ArrowUpRight
                         size={13}
                         className="text-zinc-600 group-hover:text-indigo-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
                       />
                     </div>
-                    <StatusBadge status={p.status} />
+                    {/* <StatusBadge status={p.status} /> */}
                   </div>
                 </div>
                 <p className="text-zinc-400 text-sm leading-relaxed mb-3">
                   {p.description}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {p.tags.map((t) => (
+                  {p.techstack.map((t: any) => (
                     <Tag key={t} text={t} />
                   ))}
                 </div>
@@ -285,30 +313,31 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
 
         {activeTab === "blogs" && (
           <section className="space-y-2">
-            {DATA.blogs.map((b) => (
-              <a
-                key={b.title}
-                href={b.url}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition-all duration-200"
-              >
-                <div className="space-y-1.5 min-w-0">
-                  <p className="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors duration-200 truncate">
-                    {b.title}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-zinc-600 text-xs font-mono">
-                      {b.date}
-                    </span>
-                    {b.tags.map((t) => (
-                      <Tag key={t} text={t} />
-                    ))}
-                  </div>
-                </div>
-                <ChevronRight
-                  size={15}
-                  className="shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all duration-200"
-                />
-              </a>
+            {profile?.blogs.map((b: any) => (
+              <p key={b.id}>{b.title}</p>
+              // <a
+              //   key={b.id}
+              //   href={b.blogLink}
+              //   className="group flex items-center justify-between p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition-all duration-200"
+              // >
+              //   <div className="space-y-1.5 min-w-0">
+              //     <p className="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors duration-200 truncate">
+              //       {b.title}
+              //     </p>
+              //     <div className="flex flex-wrap items-center gap-2">
+              //       <span className="text-zinc-600 text-xs font-mono">
+              //         {b.enddate}
+              //       </span>
+              //       {/* {b.tags.map((t:any) => (
+              //         <Tag key={t} text={t} />
+              //       ))} */}
+              //     </div>
+              //   </div>
+              //   <ChevronRight
+              //     size={15}
+              //     className="shrink-0 text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all duration-200"
+              //   />
+              // </a>
             ))}
           </section>
         )}
@@ -319,7 +348,7 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
               the tech arsenal behind my builds ⚡
             </p>
             <div className="flex flex-wrap gap-2">
-              {DATA.stack.map((tech) => (
+              {profile?.skills.map((tech: any) => (
                 <span
                   key={tech}
                   className="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 text-sm hover:border-indigo-500/50 hover:text-white hover:bg-zinc-800 transition-all duration-200 cursor-default"
@@ -330,6 +359,13 @@ export function Template1({ user, profile }: { user: any; profile: any }) {
             </div>
           </section>
         )}
+
+        <section>
+          <img
+            src={`https://ghchart.rshah.org/${username}`}
+            alt="GitHub Contributions"
+          />
+        </section>
 
         <footer className="mt-20 pt-8 border-t border-zinc-800/60 flex items-center justify-between">
           <p className="text-zinc-600 text-xs font-mono">

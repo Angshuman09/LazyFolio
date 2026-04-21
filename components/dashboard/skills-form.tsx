@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Sparkles } from "lucide-react";
+import toast from "react-hot-toast";
 import { skillsSchema, SkillsSchema } from "@/schemas/skills";
 
 type Props = {
@@ -16,19 +17,21 @@ type Props = {
 };
 
 function SkillCard({
+  field,
   index,
   control,
   register,
   errors,
   remove,
 }: {
+  field: any;
   index: number;
   control: any;
   register: any;
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(() => !!field?.value);
   const values = useWatch({ control, name: `skills.${index}` });
 
   if (confirmed) {
@@ -130,11 +133,14 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  // Split confirmed (badge) vs editing (form) items for layout
-  const confirmedIndices = new Set<number>();
-
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit ?? (() => {}), () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Skills
       </h1>
@@ -154,6 +160,7 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
           {fields.map((f, index) => (
             <SkillCard
               key={f.id}
+              field={f}
               index={index}
               control={control}
               register={register}

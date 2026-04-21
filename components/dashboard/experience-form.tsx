@@ -1,10 +1,11 @@
 "use client";
 
 import { RefObject, useState } from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Briefcase } from "lucide-react";
+import toast from "react-hot-toast";
 import { experienceSchema, ExperienceSchema } from "@/schemas/experience";
 
 type Props = {
@@ -14,19 +15,21 @@ type Props = {
 };
 
 function ExperienceCard({
+  field,
   index,
   control,
   register,
   errors,
   remove,
 }: {
+  field: any;
   index: number;
   control: any;
   register: any;
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(() => !!(field?.role || field?.companyName));
   const values = useWatch({ control, name: `experiences.${index}` });
 
   if (confirmed) {
@@ -210,7 +213,13 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.experiences, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit ?? (() => {}), () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Experience
       </h1>
@@ -228,6 +237,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
         {fields.map((f, index) => (
           <ExperienceCard
             key={f.id}
+            field={f}
             index={index}
             control={control}
             register={register}

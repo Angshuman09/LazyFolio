@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Sun,
   Moon,
@@ -15,7 +15,7 @@ import { signOut, authClient } from "@/lib/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
-import Template from "../[username]/page";
+import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 import ProfileForm from "@/components/dashboard/profile-form";
@@ -26,18 +26,11 @@ import SkillsForm from "@/components/dashboard/skills-form";
 import BlogsForm from "@/components/dashboard/blogs-form";
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
-import { LinksFormValues, ProfileFormValues } from "@/lib/schema-types";
-import {
-  TEMPLATES,
-  MOCK_SKILLS,
-  NAV,
-  Tab,
-} from "@/components/resources/dummy-values";
+import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
 import { LinksSchema } from "@/schemas/links";
 import { useCreateExperience } from "@/hooks/experience";
 import { ProfileSchema } from "@/schemas/profile";
 import { ExperienceSchema } from "@/schemas/experience";
-import { role } from "better-auth/client";
 import { useCreateSkills } from "@/hooks/skills";
 import { SkillsSchema } from "@/schemas/skills";
 import { useCreateBlogs } from "@/hooks/blogs";
@@ -45,37 +38,41 @@ import { BlogsSchema } from "@/schemas/blogs";
 import { ProjectsSchema } from "@/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
 
+function getErrorMessage(error: unknown, fallbackMessage: string) {
+  return error instanceof Error ? error.message : fallbackMessage;
+}
+
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
   const formRef = useRef<HTMLFormElement>(null);
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState<boolean | null>(null);
   const [templateOpen, setTemplateOpen] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState("minimal");
   const [copied, setCopied] = useState(false);
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
-  const [mounted, setMounted] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
-  // console.log(profile);
-
   const router = useRouter();
+  const isSaveDisabled = isSaving || isLoading || isPending;
 
   useEffect(() => {
-    setMounted(true);
     const savedTheme = localStorage.getItem("lf-theme");
-    if (
+    const shouldUseDark =
       savedTheme === "dark" ||
-      document.documentElement.classList.contains("dark")
-    ) {
-      setDark(true);
-    }
+      document.documentElement.classList.contains("dark");
+
+    const frameId = window.requestAnimationFrame(() => {
+      setDark(shouldUseDark);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (dark === null) return;
 
     const root = document.documentElement;
     if (dark) {
@@ -85,7 +82,7 @@ export default function DashboardPage() {
       root.classList.remove("dark");
       localStorage.setItem("lf-theme", "light");
     }
-  }, [dark, mounted]);
+  }, [dark]);
 
   const copyLink = () => {
     navigator.clipboard?.writeText(`lazyfolio.com/${username}`);
@@ -113,8 +110,10 @@ export default function DashboardPage() {
           toast.success("Profile updated successfully!");
           setIsSaving(false);
         },
-        onError: () => {
-          toast.error("Failed to update profile. Please try again.");
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(error, "Failed to update profile. Please try again."),
+          );
           setIsSaving(false);
         },
       },
@@ -132,13 +131,13 @@ export default function DashboardPage() {
       return;
     }
 
-    const formattedLinks = (data.links || []).map((link) => ({
-      label: link.label || "",
-      url: link.url || "",
-      type: detectType(link.url || ""),
-    }));
-
-    // console.log(formattedLinks);
+    const formattedLinks = (data.links || [])
+      .map((link) => ({
+        label: link.label?.trim() || "",
+        url: link.url?.trim() || "",
+        type: detectType(link.url || ""),
+      }))
+      .filter((link) => link.label || link.url);
 
     updateLinks.mutate(
       {
@@ -150,8 +149,10 @@ export default function DashboardPage() {
           toast.success("Links updated successfully!");
           setIsSaving(false);
         },
-        onError: () => {
-          toast.error("Failed to update links. Please try again.");
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(error, "Failed to update links. Please try again."),
+          );
           setIsSaving(false);
         },
       },
@@ -169,13 +170,17 @@ export default function DashboardPage() {
       return;
     }
 
-    const formattedExperience = (data.experiences || []).map((experience) => ({
-      role: experience.role || "",
-      companyName: experience.companyName || "",
-      startdate: experience.startdate || "",
-      enddate: experience.enddate || "",
-      description: experience.description || "",
-    }));
+    const formattedExperience = (data.experiences || [])
+      .map((experience) => ({
+        role: experience.role?.trim() || "",
+        companyName: experience.companyName?.trim() || "",
+        startdate: experience.startdate?.trim() || "",
+        enddate: experience.enddate?.trim() || "",
+        description: experience.description?.trim() || "",
+      }))
+      .filter((experience) =>
+        Object.values(experience).some((value) => value.length > 0),
+      );
 
     createExperience.mutate(
       {
@@ -184,11 +189,16 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("experience created successfully");
+          toast.success("Experience updated successfully!");
           setIsSaving(false);
         },
-        onError: () => {
-          toast.error("failed to update experience. Please try again.");
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(
+              error,
+              "Failed to update experience. Please try again.",
+            ),
+          );
           setIsSaving(false);
         },
       },
@@ -206,12 +216,28 @@ export default function DashboardPage() {
       return;
     }
 
-    const formattedProjects = (data.projects || []).map((project:any) => ({
-      title: project.title || "",
-      description: project.description || "",
-      projectLink: project.projectLink || "",
-      githubLink: project.githubLink || "",
-    }));
+    const formattedProjects = (data.projects || [])
+      .map((project) => ({
+        title: project.title?.trim() || "",
+        description: project.description?.trim() || "",
+        projectLink: project.projectLink?.trim() || "",
+        githubLink: project.githubLink?.trim() || "",
+        techstack:
+          project.techstack
+            ?.split(",")
+            .map((item) => item.trim())
+            .filter(Boolean) || [],
+        enddate: project.enddate?.trim() || "",
+      }))
+      .filter(
+        (project) =>
+          project.title ||
+          project.description ||
+          project.projectLink ||
+          project.githubLink ||
+          project.techstack.length > 0 ||
+          project.enddate,
+      );
 
     createProjects.mutate(
       {
@@ -223,8 +249,10 @@ export default function DashboardPage() {
           toast.success("Projects updated successfully!");
           setIsSaving(false);
         },
-        onError: () => {
-          toast.error("Failed to update projects. Please try again.");
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(error, "Failed to update projects. Please try again."),
+          );
           setIsSaving(false);
         },
       },
@@ -242,20 +270,30 @@ export default function DashboardPage() {
       return;
     }
 
-    createSkills.mutate({
-      userId: profile.id,
-      skills: data.skills
-    },
-  {
-    onSuccess:()=>{
-      toast.success("skills updated sucessfully"),
-      setIsSaving(false);
-    },
-    onError: ()=>{
-      toast.error("failed to update skills. Please try again.");
-      setIsSaving(false);
-    }
-  })
+    const formattedSkills = (data.skills || [])
+      .map((skill) => ({
+        value: skill.value?.trim() || "",
+      }))
+      .filter((skill) => skill.value);
+
+    createSkills.mutate(
+      {
+        userId: profile.id,
+        skills: formattedSkills,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Skills updated successfully!");
+          setIsSaving(false);
+        },
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(error, "Failed to update skills. Please try again."),
+          );
+          setIsSaving(false);
+        },
+      },
+    );
   };
 
   const createBlogs = useCreateBlogs();
@@ -269,20 +307,33 @@ export default function DashboardPage() {
       return;
     }
 
-    createBlogs.mutate({
-      profileId: profile.id,
-      blogs: data.blogs
-    },
-    {
-      onSuccess: () => {
-        toast.success("Blogs updated successfully!");
-        setIsSaving(false);
+    const formattedBlogs = (data.blogs || [])
+      .map((blog) => ({
+        title: blog.title?.trim() || "",
+        description: blog.description?.trim() || "",
+        blogLink: blog.blogLink?.trim() || "",
+        enddate: blog.enddate?.trim() || "",
+      }))
+      .filter((blog) => Object.values(blog).some((value) => value.length > 0));
+
+    createBlogs.mutate(
+      {
+        profileId: profile.id,
+        blogs: formattedBlogs,
       },
-      onError: () => {
-        toast.error("Failed to update blogs. Please try again.");
-        setIsSaving(false);
-      }
-    });
+      {
+        onSuccess: () => {
+          toast.success("Blogs updated successfully!");
+          setIsSaving(false);
+        },
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(error, "Failed to update blogs. Please try again."),
+          );
+          setIsSaving(false);
+        },
+      },
+    );
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -334,7 +385,7 @@ export default function DashboardPage() {
 
           <button
             className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
-            onClick={() => setDark(!dark)}
+            onClick={() => setDark((current) => !current)}
             aria-label="Toggle theme"
           >
             {dark ? <Sun size={14} /> : <Moon size={14} />}
@@ -346,8 +397,9 @@ export default function DashboardPage() {
           </button>
 
           <button
-            onClick={() => formRef.current?.requestSubmit()}
-            disabled={isSaving}
+            type="submit"
+            form="dashboard-form"
+            disabled={isSaveDisabled}
             className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
@@ -448,7 +500,11 @@ export default function DashboardPage() {
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
           {tab === "profile" && (
-            <ProfileForm formRef={formRef} onSubmit={onProfileSubmit} />
+            <ProfileForm
+              profile={profile}
+              formRef={formRef}
+              onSubmit={onProfileSubmit}
+            />
           )}
 
           {tab === "links" && (
@@ -466,17 +522,35 @@ export default function DashboardPage() {
             />
           )}
           {tab === "projects" && (
-            <ProjectsForm profile={profile} formRef={formRef} onSubmit={onSubmitProjects} />
+            <ProjectsForm
+              profile={profile}
+              formRef={formRef}
+              onSubmit={onSubmitProjects}
+            />
           )}
           {tab === "skills" && (
-            <SkillsForm profile={profile} formRef={formRef} onSubmit={onSubmitSkills}/>
+            <SkillsForm
+              profile={profile}
+              formRef={formRef}
+              onSubmit={onSubmitSkills}
+            />
           )}
-          {tab === "blogs" && <BlogsForm profile={profile} formRef={formRef} onSubmit={onSubmitBlogs} />}
+          {tab === "blogs" && (
+            <BlogsForm
+              profile={profile}
+              formRef={formRef}
+              onSubmit={onSubmitBlogs}
+            />
+          )}
         </main>
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">
           <div className="w-full h-full overflow-y-auto overflow-x-hidden">
-            <Template user={session?.user} profile={profile} />
+            <TemplateRenderer
+              slug={{ username: profile?.username || username }}
+              user={session?.user}
+              profile={profile}
+            />
           </div>
         </div>
       </div>

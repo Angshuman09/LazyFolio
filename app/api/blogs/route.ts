@@ -1,9 +1,28 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
 
+type BlogInput = {
+    title?: string;
+    description?: string;
+    enddate?: string;
+    blogLink?: string;
+};
+
+function parseOptionalDate(value: string | null | undefined) {
+    if (!value?.trim()) {
+        return null;
+    }
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
 export async function POST(req: NextRequest){
     try {
-        const {profileId, blogs} = await req.json();
+        const { profileId, blogs } = (await req.json()) as {
+            profileId?: string;
+            blogs?: BlogInput[];
+        };
 
         if(!profileId || !blogs){
             return NextResponse.json({error: "fields are missing in the blog form"}, {status:400});
@@ -16,11 +35,11 @@ export async function POST(req: NextRequest){
         });
 
         const createBlogs = await prisma.blog.createMany({
-            data: blogs.map((blog:any)=>({
+            data: blogs.map((blog)=>({
                 profileId: profileId,
                 title: blog.title,
                 description: blog.description,
-                enddate: blog.enddate ? new Date(blog.enddate) : null,
+                enddate: parseOptionalDate(blog.enddate),
                 blogLink: blog.blogLink
             }))
         });

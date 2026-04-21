@@ -1,49 +1,72 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RefObject, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { RefObject, useEffect } from "react";
-import { useUpdateUserProfile, useGetUserProfile } from "@/hooks/profile";
-import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/schemas/profile";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+type ProfileData = Partial<
+  Pick<
+    ProfileSchema,
+    "name" | "username" | "tagline" | "location" | "quote" | "email" | "bio"
+  >
+> | null;
 
 type Props = {
+  profile?: ProfileData;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit: (data: ProfileSchema) => void;
 };
 
-export default function ProfileForm({ formRef, onSubmit }: Props) {
+function FieldError({ message }: { message?: string }) {
+  if (!message) {
+    return null;
+  }
 
-    const {data: user} = authClient.useSession();
+  return <p className="text-[0.72rem] text-[#b91c1c]">{message}</p>;
+}
 
-  const updateProfile = useUpdateUserProfile();
+export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
+  const defaultValues = useMemo<ProfileSchema>(
+    () => ({
+      name: profile?.name || "your name",
+      username: profile?.username || "your username",
+      tagline: profile?.tagline || "Full Stack Developer · Open to work",
+      location: profile?.location || "Assam, India",
+      quote: profile?.quote || "your quote",
+      email: profile?.email || "",
+      bio:
+        profile?.bio ||
+        "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
+      avatar: undefined,
+      banner: undefined,
+    }),
+    [profile],
+  );
 
-  const { data: profileData } = useGetUserProfile( user?.user?.id || "dkfldfkldajfdkjl");
-  // console.log("profile data", profileData)
-
-  const { register, handleSubmit, reset } = useForm<ProfileSchema>({
-    defaultValues: {
-      name: profileData && profileData?.name || "your name",
-      username: profileData && profileData?.username || "your username",
-      tagline: profileData && profileData?.tagline || "Full Stack Developer · Open to work",
-      location: profileData && profileData?.location || "Assam, India",
-      quote: profileData && profileData?.quote || 20,
-      email: profileData && profileData?.email || "",
-      bio: profileData && profileData?.bio || "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
-    },
-    resolver: zodResolver(profileSchema)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProfileSchema>({
+    defaultValues,
+    resolver: zodResolver(profileSchema),
   });
 
   useEffect(() => {
-  if (profileData) {
-    reset(profileData);
-  }
-}, [profileData, reset]);
-
+    reset(defaultValues);
+  }, [defaultValues, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit, () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Profile
       </h1>
@@ -111,9 +134,9 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("name")}
-              // defaultValue={profileData && profileData?.name || "your name"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
+            <FieldError message={errors.name?.message} />
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -121,9 +144,9 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("username")}
-              // defaultValue={ profileData && profileData?.username || "your username"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
+            <FieldError message={errors.username?.message} />
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -131,9 +154,9 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("tagline")}
-              // defaultValue={ profileData && profileData?.tagline || "your tagline"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
+            <FieldError message={errors.tagline?.message} />
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -141,9 +164,9 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("location")}
-              // defaultValue={ profileData && profileData?.location || "your location"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
+            <FieldError message={errors.location?.message} />
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -151,10 +174,10 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               type="text"
-              {...register("quote", { valueAsNumber: true })}
-              // defaultValue={ profileData && profileData?.age || undefined}
+              {...register("quote")}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
+            <FieldError message={errors.quote?.message} />
           </div>
           <div className="flex flex-col gap-1.25 mb-3.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -162,10 +185,10 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("email")}
-              // defaultValue={ profileData && profileData?.email || "your email"}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
               placeholder="enter your email address"
             />
+            <FieldError message={errors.email?.message} />
           </div>
         </div>
         <div className="flex flex-col gap-1.25 mb-3.5">
@@ -174,9 +197,9 @@ export default function ProfileForm({ formRef, onSubmit }: Props) {
           </label>
           <textarea
             {...register("bio")}
-            // defaultValue={ profileData && profileData?.bio || "your bio"}
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
           />
+          <FieldError message={errors.bio?.message} />
         </div>
       </div>
     </form>

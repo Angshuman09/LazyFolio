@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Code2, Github, ExternalLink } from "lucide-react";
+import toast from "react-hot-toast";
 import { projectsSchema, ProjectsSchema } from "@/schemas/projects";
 
 type ProfileProject = {
@@ -25,19 +26,21 @@ type Props = {
 };
 
 function ProjectCard({
+  field,
   index,
   control,
   register,
   errors,
   remove,
 }: {
+  field: any;
   index: number;
   control: any;
   register: any;
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(() => !!(field?.title || field?.projectLink || field?.githubLink));
   const values = useWatch({ control, name: `projects.${index}` });
 
   if (confirmed) {
@@ -145,6 +148,11 @@ function ProjectCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="https://github.com/you/repo"
           />
+          {errors.projects?.[index]?.githubLink?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.projects[index]?.githubLink?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25 mb-1.5">
@@ -156,6 +164,11 @@ function ProjectCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="https://your-demo.com"
           />
+          {errors.projects?.[index]?.projectLink?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.projects[index]?.projectLink?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25 mb-1.5">
@@ -250,7 +263,13 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
   }, [defaultValues, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (()=>{}))}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit ?? (() => {}), () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Projects
       </h1>
@@ -268,6 +287,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
         {fields.map((f, index) => (
           <ProjectCard
             key={f.id}
+            field={f}
             index={index}
             control={control}
             register={register}

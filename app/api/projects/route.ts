@@ -1,9 +1,30 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 
+type ProjectInput = {
+    title?: string;
+    description?: string;
+    enddate?: string;
+    githubLink?: string;
+    projectLink?: string;
+    techstack?: string[];
+};
+
+function parseOptionalDate(value: string | null | undefined) {
+    if (!value?.trim()) {
+        return null;
+    }
+
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const {profileId, projects} = await req.json();
+    const { profileId, projects } = (await req.json()) as {
+        profileId?: string;
+        projects?: ProjectInput[];
+    };
 
     if(!profileId || !projects){
         return NextResponse.json({error:"Fields are missing in project form"}, {status: 404});
@@ -14,14 +35,14 @@ export async function POST(req: NextRequest) {
     });
 
     const createProjects = await prisma.project.createMany({
-        data: projects.map((project:any)=>({
+        data: projects.map((project)=>({
             profileId: profileId,
             title: project.title,
             description: project.description,
-            enddate: project.enddate ? new Date(project.enddate) : null,
+            enddate: parseOptionalDate(project.enddate),
             githubLink: project.githubLink,
             projectLink: project.projectLink,
-            techstack: project.techstack
+            techstack: Array.isArray(project.techstack) ? project.techstack : []
         }))
     });
 

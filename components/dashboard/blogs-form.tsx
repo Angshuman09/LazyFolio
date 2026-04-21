@@ -5,6 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, BookOpen } from "lucide-react";
+import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/schemas/blogs";
 
 type ProfileBlog = {
@@ -21,19 +22,21 @@ type Props = {
 };
 
 function BlogCard({
+  field,
   index,
   control,
   register,
   errors,
   remove,
 }: {
+  field: any;
   index: number;
   control: any;
   register: any;
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(() => !!(field?.title || field?.blogLink));
   const values = useWatch({ control, name: `blogs.${index}` });
 
   if (confirmed) {
@@ -109,6 +112,11 @@ function BlogCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="https://dev.to/you/article"
           />
+          {errors.blogs?.[index]?.blogLink?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.blogs[index]?.blogLink?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25 mb-1.5">
@@ -190,7 +198,13 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
   }, [defaultValues, reset]);
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit(onSubmit ?? (() => {}))}>
+    <form
+      id="dashboard-form"
+      ref={formRef}
+      onSubmit={handleSubmit(onSubmit ?? (() => {}), () => {
+        toast.error("Please fix the highlighted fields before saving.");
+      })}
+    >
       <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
         Blogs
       </h1>
@@ -208,6 +222,7 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
         {fields.map((f, index) => (
           <BlogCard
             key={f.id}
+            field={f}
             index={index}
             control={control}
             register={register}

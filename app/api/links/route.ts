@@ -1,9 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { LinkType } from "@/db/enums";
+
+type LinkInput = {
+  type?: LinkType;
+  label?: string;
+  url?: string;
+};
 
 export async function POST(req: NextRequest){
   try {
-    const {profileId, links} = await req.json();
+    const { profileId, links } = (await req.json()) as {
+      profileId?: string;
+      links?: LinkInput[];
+    };
     if(!profileId || !links){
       return NextResponse.json({error: "field are missing in links form"}, {status: 400});
     }
@@ -13,9 +23,9 @@ export async function POST(req: NextRequest){
     })
 
     const createLinks = await prisma.links.createMany({
-      data: links.map((link: any)=>({
+      data: links.map((link)=>({
         profileId: profileId,
-        type: link.type,
+        type: link.type ?? LinkType.CUSTOM,
         label: link.label,
         url: link.url
       }))

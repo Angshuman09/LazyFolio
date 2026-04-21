@@ -1,10 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
 
+type SkillInput = {
+    value?: string;
+};
+
 
 export async function POST(req: NextRequest){
     try {
-        const {userId, skills} = await req.json();
+        const { userId, skills } = (await req.json()) as {
+            userId?: string;
+            skills?: SkillInput[];
+        };
 
         if(!userId || !skills){
             return NextResponse.json({error: "fields are missing in the skills form"}, {status:404});
@@ -15,7 +22,7 @@ export async function POST(req: NextRequest){
                 id: userId
             },
             data:{
-                skills: skills.map((s: any) => s.value)
+                skills: skills.map((skill) => skill.value ?? "")
             }
         })
 

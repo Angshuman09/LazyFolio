@@ -1,21 +1,27 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateExperience = ()=>{
+    const queryClient = useQueryClient();
+
     const mutation = useMutation({
-        mutationFn: async (data: any)=>{
+        mutationFn: async (data: unknown)=>{
             const response = await fetch('/api/experience', {
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
-            })
+            });
+            const payload = await response.json().catch(() => null);
 
-            if(!response.ok) throw new Error("failed to create the user");
+            if(!response.ok) throw new Error(payload?.error || "Failed to update experience");
 
-            return response.json();
+            return payload;
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ["profile"] });
         }
-    })
+    });
 
     return mutation;
-}
+};

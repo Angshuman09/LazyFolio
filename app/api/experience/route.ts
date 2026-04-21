@@ -1,10 +1,29 @@
 import { prisma } from "@/lib/prisma";
-import { ExperienceSchema } from "@/schemas/experience";
 import { NextRequest, NextResponse } from "next/server";
+
+type ExperienceInput = {
+  companyName?: string;
+  role?: string;
+  startdate?: string;
+  enddate?: string;
+  description?: string;
+};
+
+function parseOptionalDate(value: string | null | undefined) {
+  if (!value?.trim()) {
+    return null;
+  }
+
+  const parsedDate = new Date(value);
+  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { profileId, experiences } = await request.json();
+    const { profileId, experiences } = (await request.json()) as {
+      profileId?: string;
+      experiences?: ExperienceInput[];
+    };
     if (!profileId) {
       return NextResponse.json(
         { error: "User ID is required" },
@@ -17,12 +36,12 @@ export async function POST(request: NextRequest) {
     })
 
     const experience = await prisma.experience.createMany({
-      data: experiences.map((experience: any) => ({
+      data: (experiences ?? []).map((experience) => ({
         profileId: profileId,
         companyName: experience.companyName,
         role: experience.role,
-        startdate: new Date(experience.startdate),
-        enddate: experience.enddate ? new Date(experience.enddate) : null,
+        startdate: parseOptionalDate(experience.startdate),
+        enddate: parseOptionalDate(experience.enddate),
         description: experience.description,
       })),
     });
