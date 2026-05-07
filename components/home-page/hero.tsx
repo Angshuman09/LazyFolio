@@ -1,43 +1,73 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { Highlighter } from "../ui/highlighter";
 
 const Hero = () => {
-  const router = useRouter();
   return (
-    <section className="hero-gradient max-w-3xl mx-auto px-6 pt-28 pb-32 text-center relative">
-      {/* Subtle badge above headline */}
-      <div className="fade-up fade-up-1 inline-flex items-center gap-2 mb-8 px-4 py-1.5 rounded-full border border-(--lf-border-alpha) bg-(--lf-accent-soft) text-[0.75rem] font-medium tracking-wide text-(--lf-muted)">
-        <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-        Templates for creators & devs
+    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center">
+
+      {/* Badge */}
+      <div className="fade-up fade-up-1 inline-flex w-fit items-center gap-2 mb-9 px-4 py-2 rounded-full border border-(--lf-border) bg-(--lf-surface) mx-auto">
+        <div className="relative flex size-3 items-center justify-center">
+          <span className="absolute w-5 h-5 rounded-full bg-yellow-400 opacity-40 animate-ping"></span>
+          <span className="relative inline-flex size-2.5 rounded-full bg-yellow-600 z-10"></span>
+        </div>
+        <span className="font-mono text-[0.65rem] uppercase tracking-[0.13em] text-(--lf-muted)">
+          Book a live demo today
+        </span>
       </div>
 
-      <h1 className="fade-up fade-up-2 font-serif-display text-[clamp(3rem,7vw,4.8rem)] font-normal leading-[1.07] tracking-tight mb-6 text-(--lf-ink)">
-        Build your portfolio <br />
-        <strong className="font-serif-display font-bold">
-          in{" "}
-          <span className="inline-block text-violet-400 dark:gradient-text animate-[glow_2s_ease-in-out_infinite]">
-            minutes
-          </span>
-        </strong>
+      {/* Headline — 3-line rhythm, italic highlight */}
+      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-7 text-(--lf-ink)">
+        A polished{" "}
+        <Highlighter action="underline" color="#F59E0B">
+          <em>portfolio</em>
+        </Highlighter>
+        ,
+        <br />
+        without the
+        <br />
+        busywork.
       </h1>
 
-      <p className="fade-up fade-up-3 text-[1.05rem] text-(--lf-muted) leading-relaxed max-w-md mx-auto mb-10">
-        No deployment. No setup. Just create and share.
-        <br />
-        {/* <span className="text-(--lf-dimmed) text-[0.9rem]">
-          Beautiful portfolios in under 5 minutes.
-        </span> */}
-      </p>
+      {/* Description — use --lf-tan-text for readable warmth, not washed-out muted */}
 
-      <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <input type="text" placeholder="Enter your username" />
-        <button className="group inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-surface) text-[0.9rem] font-semibold px-3 py-3.5 rounded-2xl border-1 border-(--lf-ink) transition-all duration-300 ">
-          Get your username
-          <span className="btn-arrow w-5 h-5 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none">
+      {/* CTA row */}
+      <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-stretch justify-center gap-2.5 w-full max-w-[460px] mx-auto mb-7">
+        <label className="flex items-center flex-1 min-w-0 rounded-[14px] border border-(--lf-border) bg-(--lf-surface) px-4 h-[52px] gap-1 transition-colors duration-150 focus-within:border-(--lf-tan) cursor-text">
+          <span className="font-mono text-[0.8125rem] text-(--lf-muted) whitespace-nowrap select-none shrink-0">
+            lazyfolio.com/
+          </span>
+          <input
+            type="text"
+            placeholder="yourname"
+            className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 placeholder:text-(--lf-dimmed)"
+          />
+        </label>
+        <button className="group inline-flex items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold h-[52px] px-6 rounded-[14px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0">
+          Claim username
+          <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">
             ↗
           </span>
         </button>
       </div>
+
+      {/* Social proof */}
+      <div className="fade-up fade-up-3 flex items-center justify-center gap-3">
+        <div className="flex">
+          {["#d4b08c", "#c49478", "#b47860", "#9e6048"].map((bg, i) => (
+            <div
+              key={i}
+              className="w-[26px] h-[26px] rounded-full border-2 border-(--lf-bg) -ml-2 first:ml-0"
+              style={{ background: bg, zIndex: 4 - i }}
+            />
+          ))}
+        </div>
+        <p className="font-mono text-[11px] tracking-wide text-(--lf-sub)">
+          <span className="text-(--lf-tan-text) font-semibold">2,400+</span>{" "}
+          creators already live
+        </p>
+      </div>
+
     </section>
   );
 };

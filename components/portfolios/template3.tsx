@@ -218,33 +218,32 @@ export function Template3({user, profile}:{user: any, profile: any}) {
           {/* QUOTE */}
           <div className="mb-12 border-l-2 border-zinc-700 pl-4">
             <p className="text-xs text-zinc-500 italic leading-relaxed">
-              "{DATA.quote}"
+              "{profile?.quote || DATA.quote}"
             </p>
           </div>
 
           {/* HERO */}
           <section className="mb-8">
             <h1 className="text-xl font-bold text-white mb-1 tracking-tight">
-              {DATA.name}
+              {profile?.name || DATA.name}
             </h1>
             <p className="text-xs text-zinc-600 font-mono mb-5">
-              {DATA.tagline}
+              {profile?.tagline || DATA.tagline}
             </p>
-            <p className="text-sm text-zinc-400 leading-[1.8]">{DATA.bio}</p>
+            <p className="text-sm text-zinc-400 leading-[1.8]">{profile?.bio || DATA.bio}</p>
           </section>
 
           {/* QUICK LINKS */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {DATA.connect.map(({ label, icon: Icon, href }) => (
+            {profile?.links?.map((links:any) => (
               <a
-                key={label}
-                href={href}
-                target={href.startsWith("mailto") ? undefined : "_blank"}
+                key={links}
+                href={links.url}
+                target={links.url.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] text-zinc-500 border border-zinc-800 bg-zinc-900/60 hover:border-zinc-600 hover:text-zinc-200 transition-all duration-150"
               >
-                <Icon size={11} />
-                {label}
+                {links.name}
               </a>
             ))}
             <a
@@ -445,7 +444,7 @@ export function Template3({user, profile}:{user: any, profile: any}) {
               className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-200"
             >
               <img
-                src={DATA.avatar}
+                src={profile?.avatar || DATA.avatar}
                 alt="avatar"
                 className="w-6 h-6 rounded-full ring-1 ring-zinc-700"
               />

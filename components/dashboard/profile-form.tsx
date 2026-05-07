@@ -36,9 +36,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
       location: profile?.location || "",
       quote: profile?.quote || "",
       email: profile?.email || "",
-      bio:
-        profile?.bio ||
-        "",
+      bio: profile?.bio || "",
       avatar: undefined,
       banner: undefined,
     }),
@@ -74,13 +72,37 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
         How you appear on your public portfolio page
       </p>
 
+      <div className="flex flex-col gap-1.25 mb-5">
+        <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
+          Username
+        </label>
+        <div className="flex items-stretch">
+          <div className="flex items-center flex-1 rounded-l-xl border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 py-2 gap-1.5 transition-colors duration-150 focus-within:border-(--lf-muted)">
+            <span className="text-[0.78rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
+              lazyfolio.com/
+            </span>
+            <input
+              {...register("username")}
+              placeholder="username"
+              className="bg-transparent border-none outline-none text-[0.85rem] text-(--lf-ink) font-medium w-full placeholder:text-(--lf-dimmed) font-sans-body"
+            />
+          </div>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+          >
+            Change
+          </button>
+        </div>
+        <FieldError message={errors.username?.message} />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
         <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
           <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-3.5">
             Avatar
           </div>
           <div className="flex items-center gap-3.5">
-
             <div className="flex-1">
               <input
                 id="avatar-upload"
@@ -125,8 +147,8 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
         <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-4">
           Basic Info
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5">
-          <div className="flex flex-col gap-1.25 mb-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5 gap-y-3.5">
+          <div className="flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Full Name
             </label>
@@ -137,18 +159,20 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             />
             <FieldError message={errors.name?.message} />
           </div>
-          <div className="flex flex-col gap-1.25 mb-3.5">
+
+          <div className="flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-              Username
+              Email
             </label>
             <input
-              {...register("username")}
-              placeholder="Enter your username"
+              {...register("email")}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              placeholder="enter your email address"
             />
-            <FieldError message={errors.username?.message} />
+            <FieldError message={errors.email?.message} />
           </div>
-          <div className="flex flex-col gap-1.25 mb-3.5">
+
+          <div className="sm:col-span-2 flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Tagline
             </label>
@@ -159,7 +183,8 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             />
             <FieldError message={errors.tagline?.message} />
           </div>
-          <div className="flex flex-col gap-1.25 mb-3.5">
+
+          <div className="flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Location
             </label>
@@ -170,7 +195,8 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             />
             <FieldError message={errors.location?.message} />
           </div>
-          <div className="flex flex-col gap-1.25 mb-3.5">
+
+          <div className="flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Quote
             </label>
@@ -182,19 +208,8 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             />
             <FieldError message={errors.quote?.message} />
           </div>
-          <div className="flex flex-col gap-1.25 mb-3.5">
-            <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-              Email
-            </label>
-            <input
-              {...register("email")}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-              placeholder="enter your email address"
-            />
-            <FieldError message={errors.email?.message} />
-          </div>
         </div>
-        <div className="flex flex-col gap-1.25 mb-3.5">
+        <div className="flex flex-col gap-1.25 mt-3.5">
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
             Bio
           </label>
