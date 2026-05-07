@@ -30,12 +30,10 @@ const Hero = () => {
       </p>
 
       <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button
-          onClick={() => router.push("/sign-in")}
-          className="group inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-surface) text-[0.9rem] font-semibold px-6 py-3.5 rounded-2xl border-2 border-(--lf-ink) hover:bg-(--lf-surface) hover:text-(--lf-ink) transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)]"
-        >
-          Get started for Free
-          <span className="btn-arrow w-5 h-5 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none group-hover:bg-(--lf-ink) group-hover:text-(--lf-surface)">
+        <input type="text" placeholder="Enter your username" />
+        <button className="group inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-surface) text-[0.9rem] font-semibold px-3 py-3.5 rounded-2xl border-1 border-(--lf-ink) transition-all duration-300 ">
+          Get your username
+          <span className="btn-arrow w-5 h-5 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none">
             ↗
           </span>
         </button>

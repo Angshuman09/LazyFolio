@@ -30,15 +30,15 @@ function FieldError({ message }: { message?: string }) {
 export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
-      name: profile?.name || "your name",
-      username: profile?.username || "your username",
-      tagline: profile?.tagline || "Full Stack Developer · Open to work",
-      location: profile?.location || "Assam, India",
-      quote: profile?.quote || "your quote",
+      name: profile?.name || "",
+      username: profile?.username || "",
+      tagline: profile?.tagline || "",
+      location: profile?.location || "",
+      quote: profile?.quote || "",
       email: profile?.email || "",
       bio:
         profile?.bio ||
-        "I build things for the web. Passionate about developer tooling, open source, and shipping fast.",
+        "",
       avatar: undefined,
       banner: undefined,
     }),
@@ -80,9 +80,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             Avatar
           </div>
           <div className="flex items-center gap-3.5">
-            <div className="w-15.5 h-15.5 rounded-full bg-(--lf-border) flex items-center justify-center font-serif text-[1.5rem] text-(--lf-muted) shrink-0 border-2 border-(--lf-border)">
-              A
-            </div>
+
             <div className="flex-1">
               <input
                 id="avatar-upload"
@@ -134,6 +132,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("name")}
+              placeholder="Enter your name"
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
             <FieldError message={errors.name?.message} />
@@ -144,6 +143,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("username")}
+              placeholder="Enter your username"
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
             <FieldError message={errors.username?.message} />
@@ -154,6 +154,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("tagline")}
+              placeholder="e.g. Full Stack Developer · Open to work"
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
             <FieldError message={errors.tagline?.message} />
@@ -164,6 +165,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             </label>
             <input
               {...register("location")}
+              placeholder="e.g. Assam, India"
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
             <FieldError message={errors.location?.message} />
@@ -175,6 +177,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
             <input
               type="text"
               {...register("quote")}
+              placeholder="e.g. Art is never finished, only abandoned. ~ Leonardo da Vinci"
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             />
             <FieldError message={errors.quote?.message} />
@@ -197,6 +200,7 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
           </label>
           <textarea
             {...register("bio")}
+            placeholder="Tell us about yourself"
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
           />
           <FieldError message={errors.bio?.message} />
