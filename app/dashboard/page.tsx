@@ -543,6 +543,7 @@ export default function DashboardPage() {
             <ProfileForm
               profile={profile}
               formRef={formRef}
+              session={session}
               onSubmit={onProfileSubmit}
             />
           )}

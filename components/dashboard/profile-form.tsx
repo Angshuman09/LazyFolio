@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RefObject, useEffect, useMemo } from "react";
+import { RefObject, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/schemas/profile";
+import { set } from "zod";
 
 type ProfileData = Partial<
   Pick<
@@ -15,6 +16,7 @@ type ProfileData = Partial<
 
 type Props = {
   profile?: ProfileData;
+  session?: any; 
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit: (data: ProfileSchema) => void;
 };
@@ -27,7 +29,7 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-[0.72rem] text-[#b91c1c]">{message}</p>;
 }
 
-export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
+export default function ProfileForm({ profile, formRef, onSubmit, session }: Props) {
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
       name: profile?.name || "",
@@ -43,10 +45,13 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
     [profile],
   );
 
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<ProfileSchema>({
     defaultValues,
@@ -56,6 +61,38 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset]);
+
+  console.log(session?.user?.id);
+
+  const handleSubmitUsername = async ()=>{
+    setLoading(true);
+    const username = getValues("username");
+
+    if(!username){
+      toast.error("Username cannot be empty");
+      return;
+    }
+
+    const response = await fetch("/api/username", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        userId: await session?.user?.id as string
+      })
+    })
+
+    const data = await response.json();
+
+    if(response.ok){
+      toast.success("Username updated successfully");
+    } else {
+      toast.error(data.error || "Failed to update username");
+    }
+    setLoading(false);
+  }
 
   return (
     <form
@@ -90,8 +127,10 @@ export default function ProfileForm({ profile, formRef, onSubmit }: Props) {
           <button
             type="button"
             className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+            onClick={handleSubmitUsername}
+            disabled={loading}
           >
-            Change
+            {loading ? "Updating..." : "Change"}
           </button>
         </div>
         <FieldError message={errors.username?.message} />

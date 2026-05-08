@@ -50,7 +50,7 @@ const Navbar = () => {
   return (
     <nav
       className={[
-        "sticky top-0 z-50 bg-(--lf-surface)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300",
+        "sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300",
         scrolled ? "border-b border-(--lf-border-alpha)" : "",
       ].join(" ")}
     >

@@ -12,7 +12,7 @@ const Hero = () => {
           <span className="relative inline-flex size-2.5 rounded-full bg-yellow-600 z-10"></span>
         </div>
         <span className="font-mono text-[0.65rem] uppercase tracking-[0.13em] text-(--lf-muted)">
-          Book a live demo today
+          No Code Portfolio
         </span>
       </div>
 

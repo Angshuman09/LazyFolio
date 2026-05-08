@@ -62,24 +62,13 @@ const Footer = () => {
       <div className="bg-(--lf-bg) px-6 md:px-12 pt-8 pb-16 md:pb-20 text-(--lf-ink) relative z-30">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-end gap-12">
           <div className="flex flex-col gap-10 w-full">
-            <h2 className="font-sans-body font-normal text-xl md:text-2xl lg:text-3xl max-w-3xl leading-snug text-(--lf-dimmed)">
-              From sophisticated portfolios to high-converting landing pages,{" "}
-              <br className="hidden md:block" /> there's a unique setup for
-              every modern creator.
-            </h2>
 
             <div className="flex flex-col sm:flex-row justify-between items-end gap-6 w-full mt-4 md:mt-8 border-t border-(--lf-border-alpha) pt-8">
               <div className="flex items-center gap-4">
                 <span className="font-serif-display text-5xl md:text-7xl tracking-tight leading-none text-(--lf-ink)">
                   Lazyfolio
                 </span>
-                <span
-                  className="text-3xl hidden sm:inline-block md:text-4xl pb-1 animate-pulse"
-                  role="img"
-                  aria-label="sparkles"
-                >
-                  ✨
-                </span>
+
               </div>
 
               <div className="flex gap-4">
