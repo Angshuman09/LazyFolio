@@ -138,7 +138,7 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 }
 
 .home-hero-title {
-  width: min(100%, 14ch);
+  /* width: min(100%, 14ch); */
   margin-inline: auto;
   font-size: clamp(3.75rem, 6.25vw, 6.75rem);
   line-height: 0.94;

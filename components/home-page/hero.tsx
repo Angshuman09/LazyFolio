@@ -17,16 +17,14 @@ const Hero = () => {
       </div>
 
       {/* Headline — 3-line rhythm, italic highlight */}
-      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-7 text-(--lf-ink)">
+      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)">
         A polished{" "}
         <Highlighter action="underline" color="#F59E0B">
           <em>portfolio</em>
         </Highlighter>
         ,
         <br />
-        without the
-        <br />
-        busywork.
+        without the busywork.
       </h1>
 
       {/* Description — use --lf-tan-text for readable warmth, not washed-out muted */}
