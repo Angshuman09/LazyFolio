@@ -24,6 +24,7 @@ import ExperienceForm from "@/components/dashboard/experience-form";
 import ProjectsForm from "@/components/dashboard/projects-form";
 import SkillsForm from "@/components/dashboard/skills-form";
 import BlogsForm from "@/components/dashboard/blogs-form";
+import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
@@ -439,7 +440,7 @@ export default function DashboardPage() {
           <button
             type="submit"
             form="dashboard-form"
-            disabled={isSaveDisabled}
+            disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
             className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
@@ -498,15 +499,19 @@ export default function DashboardPage() {
           } md:translate-x-0 fixed md:static z-40 md:z-auto w-52 md:w-50 shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-transform duration-200`}
         >
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
-            {NAV.map((n) => (
+            {NAV.map((n) => {
+              const isDisabled = !profile?.username && n.id !== "profile";
+              return (
               <button
                 key={n.id}
+                disabled={isDisabled}
                 className={`flex items-center gap-[9px] px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
                   tab === n.id
                     ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
                     : ""
-                }`}
+                } ${isDisabled ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)" : ""}`}
                 onClick={() => {
+                  if (isDisabled) return;
                   setTab(n.id);
                   setSidebarOpen(false);
                 }}
@@ -516,7 +521,7 @@ export default function DashboardPage() {
                 </span>
                 {n.label}
               </button>
-            ))}
+            )})}
           </div>
 
           <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
@@ -539,49 +544,61 @@ export default function DashboardPage() {
         </aside>
 
         <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
-          {tab === "profile" && (
-            <ProfileForm
-              profile={profile}
-              formRef={formRef}
-              session={session}
-              onSubmit={onProfileSubmit}
-            />
-          )}
+          {isLoading || isPending ? (
+            <DashboardSkeleton />
+          ) : !profile?.username && tab !== "profile" ? (
+             <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
+               <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
+               <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
+               <button onClick={() => setTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
+             </div>
+          ) : (
+            <>
+              {tab === "profile" && (
+                <ProfileForm
+                  profile={profile}
+                  formRef={formRef}
+                  session={session}
+                  onSubmit={onProfileSubmit}
+                />
+              )}
 
-          {tab === "links" && (
-            <LinksForm
-              profile={profile}
-              formRef={formRef}
-              onSubmit={onLinksSubmit}
-            />
-          )}
-          {tab === "experience" && (
-            <ExperienceForm
-              profile={profile}
-              formRef={formRef}
-              onSubmit={onExperienceSubmit}
-            />
-          )}
-          {tab === "projects" && (
-            <ProjectsForm
-              profile={profile}
-              formRef={formRef}
-              onSubmit={onSubmitProjects}
-            />
-          )}
-          {tab === "skills" && (
-            <SkillsForm
-              profile={profile}
-              formRef={formRef}
-              onSubmit={onSubmitSkills}
-            />
-          )}
-          {tab === "blogs" && (
-            <BlogsForm
-              profile={profile}
-              formRef={formRef}
-              onSubmit={onSubmitBlogs}
-            />
+              {tab === "links" && (
+                <LinksForm
+                  profile={profile}
+                  formRef={formRef}
+                  onSubmit={onLinksSubmit}
+                />
+              )}
+              {tab === "experience" && (
+                <ExperienceForm
+                  profile={profile}
+                  formRef={formRef}
+                  onSubmit={onExperienceSubmit}
+                />
+              )}
+              {tab === "projects" && (
+                <ProjectsForm
+                  profile={profile}
+                  formRef={formRef}
+                  onSubmit={onSubmitProjects}
+                />
+              )}
+              {tab === "skills" && (
+                <SkillsForm
+                  profile={profile}
+                  formRef={formRef}
+                  onSubmit={onSubmitSkills}
+                />
+              )}
+              {tab === "blogs" && (
+                <BlogsForm
+                  profile={profile}
+                  formRef={formRef}
+                  onSubmit={onSubmitBlogs}
+                />
+              )}
+            </>
           )}
         </main>
 
