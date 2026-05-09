@@ -103,7 +103,7 @@
   --lf-nav-shadow: rgba(0, 0, 0, 0.5);
   --lf-border-alpha: rgba(255, 255, 255, 0.06);
   --lf-accent-soft: rgba(139, 92, 246, 0.08);
-  --lf-glow: #c084fc;
+  --lf-glow: #f59e0b;
 
   /* Accent palette for cards & UI pops */
   --lf-accent-1: #c084fc;  /* violet */
@@ -133,7 +133,7 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: clamp(3rem, 7vh, 5rem);
+  padding-top: clamp(1rem, 3vh, 2.5rem);
   padding-bottom: clamp(3.5rem, 7vh, 5rem);
 }
 
@@ -155,7 +155,7 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 @media (max-width: 639px) {
   .home-hero {
     min-height: calc(100svh - 72px);
-    padding-top: 3rem;
+    padding-top: 1rem;
     padding-bottom: 4rem;
   }
 

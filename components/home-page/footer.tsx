@@ -95,7 +95,7 @@ const Footer = () => {
 
             <div className="flex flex-col sm:flex-row justify-between items-center mt-2 text-sm text-(--lf-sub) font-medium gap-4">
               <span>
-                © {new Date().getFullYear()} Lazyfolio. Designed for creators.
+                © {new Date().getFullYear()} Lazyfolio. 
               </span>
               <div className="flex gap-6">
                 {["Privacy Policy", "Terms of Service", "Contact Support"].map(

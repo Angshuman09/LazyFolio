@@ -37,7 +37,7 @@ function SkillCard({
   if (confirmed) {
     return (
       <div className="group inline-flex items-center gap-1.5 bg-(--lf-surface) border border-(--lf-border) rounded-xl px-3 py-2 transition-colors duration-150 hover:border-(--lf-muted)">
-        <Sparkles size={11} className="text-(--lf-muted) shrink-0" />
+        {/* <Sparkles size={11} className="text-(--lf-muted) shrink-0" /> */}
         <span className="text-[0.78rem] text-(--lf-ink) font-mono">
           {values?.value || <span className="text-(--lf-muted) italic">Unnamed</span>}
         </span>
