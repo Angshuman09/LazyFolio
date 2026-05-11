@@ -34,7 +34,7 @@ export default async function UserPortfolioPage(props: PageProps) {
 
   return (
     <TemplateRenderer 
-      slug={params} 
+      // slug={params} 
       user={user} 
       profile={profileData} 
     />

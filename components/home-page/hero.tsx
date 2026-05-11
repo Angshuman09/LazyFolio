@@ -8,10 +8,10 @@ const Hero = () => {
       {/* Badge */}
       <div className="fade-up fade-up-1 inline-flex w-fit items-center gap-2 mb-12 sm:mb-14 px-4 py-2 rounded-full border border-(--lf-border) bg-(--lf-surface) mx-auto">
         <div className="relative flex size-3 items-center justify-center">
-          <span className="absolute w-5 h-5 rounded-full bg-yellow-400 opacity-40 animate-ping"></span>
-          <span className="relative inline-flex size-2.5 rounded-full bg-yellow-600 z-10"></span>
+          <span className="absolute w-5 h-5 rounded-full bg-orange-400 opacity-40 animate-ping"></span>
+          <span className="relative inline-flex size-2.5 rounded-full bg-orange-300 z-10"></span>
         </div>
-        <span className="font-mono text-[0.65rem] uppercase tracking-[0.13em] text-(--lf-muted)">
+        <span className="font-mono text-[0.65rem] tracking-[0.13em] text-(--lf-muted)">
           No Code Portfolio
         </span>
       </div>
@@ -50,7 +50,7 @@ const Hero = () => {
       </div>
 
       {/* Social proof */}
-      <div className="fade-up fade-up-3 flex items-center justify-center gap-3">
+      {/* <div className="fade-up fade-up-3 flex items-center justify-center gap-3">
         <div className="flex">
           {["#d4b08c", "#c49478", "#b47860", "#9e6048"].map((bg, i) => (
             <div
@@ -64,6 +64,11 @@ const Hero = () => {
           <span className="text-(--lf-tan-text) font-semibold">2,400+</span>{" "}
           creators already live
         </p>
+      </div> */}
+
+      <div>
+        <h1 className="text-5xl font-normal pt-12 font-serif-display">How to use?</h1>
+        <p>video will be attached after deployment :)</p>
       </div>
 
     </section>

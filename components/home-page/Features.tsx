@@ -20,7 +20,7 @@ const Features = () => {
         {FEATURES.map((f) => (
           <article
             key={f.title}
-            className="rounded-lg hover:bg-zinc-800 border min-h-44 p-6 flex flex-col justify-between border-(--lf-border) bg-(--lf-surface)"
+            className="rounded-lg hover:bg-(--lf-bg) border min-h-44 p-6 flex flex-col justify-between border-(--lf-border) bg-(--lf-surface)"
           >
             <div className="flex items-start justify-between">
               <span className="text-(--lf-muted)">{f.icon}</span>
