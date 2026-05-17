@@ -3,10 +3,10 @@ import { Highlighter } from "../ui/highlighter";
 
 const Hero = () => {
   return (
-    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center">
+    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-5">
 
       {/* Badge */}
-      <div className="fade-up fade-up-1 inline-flex w-fit items-center gap-2 mb-12 sm:mb-14 px-4 py-2 rounded-full border border-(--lf-border) bg-(--lf-surface) mx-auto">
+      <div className="fade-up fade-up-1 inline-flex w-fit items-center gap-2 mt-5 mb-12 sm:mb-14 px-4 py-2 rounded-full border border-(--lf-border) bg-(--lf-surface) mx-auto">
         <div className="relative flex size-3 items-center justify-center">
           <span className="absolute w-5 h-5 rounded-full bg-orange-400 opacity-40 animate-ping"></span>
           <span className="relative inline-flex size-2.5 rounded-full bg-orange-300 z-10"></span>
@@ -15,6 +15,8 @@ const Hero = () => {
           No Code Portfolio
         </span>
       </div>
+
+      {/* Craft a stunning portfolio, without touching the messy stuff. */}
 
       {/* Headline — 3-line rhythm, italic highlight */}
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 sm:mb-12 text-(--lf-ink)">

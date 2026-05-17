@@ -1,5 +1,6 @@
 "use client"
 
+import { TooltipProvider } from "@/components/ui/tooltip"
 // import { ClerkProvider } from "@clerk/nextjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useState } from "react"
@@ -18,9 +19,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-        {/* <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY} dynamic> */}
-      {children}
-        {/* </ClerkProvider> */}
+       <TooltipProvider>{children}</TooltipProvider>
     </QueryClientProvider>
   )
 }

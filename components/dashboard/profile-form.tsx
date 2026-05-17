@@ -5,13 +5,12 @@ import { RefObject, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/schemas/profile";
-import { set } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 
 type ProfileData = Partial<
   Pick<
     ProfileSchema,
-    "name" | "username" | "tagline" | "location" | "quote" | "email" | "bio"
+    "name" | "username" | "tagline" | "location" | "quote" | "email" | "bio" | "bookAcall"
   >
 > | null;
 
@@ -42,6 +41,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       bio: profile?.bio || "",
       avatar: undefined,
       banner: undefined,
+      bookAcall: profile?.bookAcall || "",
     }),
     [profile],
   );
@@ -170,7 +170,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                     Upload photo
                   </label>
                   <div className="text-[0.68rem] text-(--lf-muted) font-mono text-center">
-                    PNG · JPG · max 2MB
+                    {/* PNG · JPG · max 2MB */}
                   </div>
                 </div>
               </div>
@@ -224,13 +224,25 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                 <FieldError message={errors.email?.message} />
               </div>
 
-              <div className="sm:col-span-2 flex flex-col gap-1.25">
+              <div className=" flex flex-col gap-1.25">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   Tagline
                 </label>
                 <input
                   {...register("tagline")}
                   placeholder="e.g. Full Stack Developer · Open to work"
+                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                />
+                <FieldError message={errors.tagline?.message} />
+              </div>
+
+               <div className=" flex flex-col gap-1.25">
+                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
+                  Book a Call Link
+                </label>
+                <input
+                  {...register("bookAcall")}
+                  placeholder="e.g. https://cal.com/angshuman-kashyap-qmfpnk/let-s-talk"
                   className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
                 />
                 <FieldError message={errors.tagline?.message} />

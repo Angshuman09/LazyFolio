@@ -8,6 +8,7 @@ import {
   ArrowRight,
   MoveUpRight,
 } from "lucide-react";
+import Image from "next/image";
 
 type DateLike = string | Date | null | undefined;
 
@@ -680,13 +681,6 @@ export function Template1({
 
   return (
     <>
-      <style>{`
-        @keyframes ticker {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-      `}</style>
-
       <main className="min-h-screen bg-[#0e0e0e] text-zinc-300 antialiased">
         <div className="max-w-[640px] mx-auto px-5 py-16 sm:py-20">
           {/* QUOTE */}
@@ -699,16 +693,21 @@ export function Template1({
           {/* HERO */}
           <section className="mb-8">
             <div className="relative mb-9">
-              <div className="h-28 sm:h-34 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
-                <img
-                  src={banner}
+              <div className="relative h-28 sm:h-34 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+                <Image
+                  src={banner || ""}
                   alt={`${name} banner`}
-                  className="w-full h-full object-cover opacity-85"
+                  fill
+                  unoptimized
+                  className="object-cover opacity-85"
                 />
               </div>
-              <img
-                src={avatar}
-                alt={name}
+              <Image
+                src={avatar || ""}
+                alt={name || ""}
+                width={56}
+                height={56}
+                unoptimized
                 className="absolute left-4 -bottom-6 w-14 h-14 rounded-2xl object-cover ring-4 ring-[#0e0e0e] border border-zinc-700 bg-zinc-900"
               />
             </div>
@@ -949,9 +948,12 @@ export function Template1({
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-all duration-200"
             >
-              <img
-                src={avatar}
-                alt={name}
+              <Image
+                src={avatar || ""}
+                alt={name || ""}
+                width={24}
+                height={24}
+                unoptimized
                 className="w-6 h-6 rounded-full object-cover ring-1 ring-zinc-700"
               />
               <span className="text-[13px] text-zinc-400 group-hover:text-white transition-colors">

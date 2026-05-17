@@ -1,3 +1,4 @@
+import { ProfileSchema } from "@/schemas/profile";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetUserProfile = (userId?: string) => {
@@ -25,7 +26,7 @@ export const useUpdateUserProfile = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (profileData: unknown) => {
+    mutationFn: async (profileData: ProfileSchema) => {
       const res = await fetch(`/api/profile`, {
         method: "POST",
         headers: {

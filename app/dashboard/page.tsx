@@ -126,7 +126,7 @@ export default function DashboardPage() {
 
     updateProfile.mutate(
       {
-        userId: session?.user?.id || undefined,
+        // userId: session?.user?.id || undefined,
         name: data.name,
         username: data.username,
         tagline: data.tagline,
@@ -135,6 +135,7 @@ export default function DashboardPage() {
         email: data.email,
         bio: data.bio,
         avatar: avatarUrl,
+        bookAcall: data.bookAcall,
         banner: bannerUrl,
       },
       {

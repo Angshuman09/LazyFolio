@@ -10,6 +10,7 @@ export const profileSchema = z.object({
   bio: z.string().max(500).optional(),
   avatar: z.any().optional(),
   banner: z.any().optional(),
+  bookAcall: z.union([z.url(), z.literal("")]).optional(),
 });
 
 export type ProfileSchema = z.infer<typeof profileSchema>;
