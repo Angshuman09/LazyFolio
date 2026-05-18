@@ -24,7 +24,10 @@ import ExperienceForm from "@/components/dashboard/experience-form";
 import ProjectsForm from "@/components/dashboard/projects-form";
 import SkillsForm from "@/components/dashboard/skills-form";
 import BlogsForm from "@/components/dashboard/blogs-form";
-import { DashboardSkeleton } from "@/components/dashboard/dashboard-skeleton";
+import {
+  DashboardSkeleton,
+  TemplateRendererSkeleton,
+} from "@/components/dashboard/dashboard-skeleton";
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
@@ -126,7 +129,7 @@ export default function DashboardPage() {
 
     updateProfile.mutate(
       {
-        // userId: session?.user?.id || undefined,
+        userId: session?.user?.id!,
         name: data.name,
         username: data.username,
         tagline: data.tagline,
@@ -605,11 +608,15 @@ export default function DashboardPage() {
 
         <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">
           <div className="w-full h-full overflow-y-auto overflow-x-hidden">
-            <TemplateRenderer
-              slug={{ username: profile?.username || username }}
-              user={session?.user}
-              profile={profile}
-            />
+            {isLoading || isPending ? (
+              <TemplateRendererSkeleton />
+            ) : (
+              <TemplateRenderer
+                slug={{ username: profile?.username || username }}
+                user={session?.user}
+                profile={profile}
+              />
+            )}
           </div>
         </div>
       </div>

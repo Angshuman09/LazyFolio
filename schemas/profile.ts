@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
+  userId: z.string(),
   name: z.string().min(1),
   email: z.union([z.literal(""), z.string().email()]).optional(),
   quote: z.string().min(1).optional().or(z.literal("")),

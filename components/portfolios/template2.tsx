@@ -7,7 +7,6 @@ import {
   ExternalLink,
   ArrowRight,
   MoveUpRight,
-  Twitter,
   Linkedin,
   Youtube,
   Mail,
@@ -22,7 +21,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { ProfileSchema } from "@/schemas/profile";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 type DateLike = string | Date | null | undefined;
@@ -102,28 +100,28 @@ type NormalizedLink = {
 
 type PortfolioExperience = {
   id: string;
-  company: string;
+  company?: string;
   companyUrl?: string;
-  role: string;
+  role?: string;
   period?: string;
   bullets: string[];
 };
 
 type PortfolioProject = {
   id: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   tags: string[];
   github?: string;
   demo?: string;
-  status: string;
+  status?: string;
 };
 
 type PortfolioBlog = {
   id: string;
-  title: string;
+  title?: string;
   description?: string;
-  readTime: string;
+  readTime?: string;
   url?: string;
 };
 
@@ -136,146 +134,6 @@ type KnownLinkMetadata = {
   label: string;
   domains: readonly string[];
   labels: readonly string[];
-};
-
-// ─── DATA ────────────────────────────────────────────────────────────────────
-const DATA = {
-  quote: "You make your own luck if you stay at it long enough.",
-  name: "Alex Rivers",
-  tagline: "22 · engineer · developer · builder",
-  bio: "I build from zero. Whether it's frontend, backend, full-stack applications, or AI-powered experiences, I work across the entire development lifecycle. From UI/UX to deployment to user feedback — I care less about technology debates and more about shipping things people love using.",
-  calLink: "https://cal.com",
-  avatar:
-    "https://api.dicebear.com/9.x/notionists/svg?seed=alexrivers2026&backgroundColor=b6e3f4",
-  banner:
-    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-
-  experience: [
-    {
-      company: "Acme AI",
-      companyUrl: "https://github.com",
-      role: "Software Engineering Intern (AI)",
-      period: "April 2025 – July 2025",
-      bullets: [
-        "Built a reminder system using Redis Sorted Sets and a background daemon for time-based task execution.",
-        "Integrated Swiggy, Blinkit, and Google APIs into a WhatsApp bot with user-configurable preferences.",
-        "Added Azure Blob Storage integration for file handling and WhatsApp message reaction tracking.",
-        "Ensured message compliance by chunking outputs that exceeded 4096 characters.",
-      ],
-    },
-    {
-      company: "Freelance",
-      companyUrl: "#",
-      role: "Full Stack Developer",
-      period: "2022 – Present",
-      bullets: [
-        "Shipped 15+ client projects spanning SaaS, marketing, and e-commerce verticals.",
-        "Reduced average page load time by 40% through caching and CDN strategies.",
-      ],
-    },
-  ],
-
-  projects: [
-    {
-      name: "Arc Labs",
-      description:
-        "AI-powered job tools — resume builder, mock interviews, job tracker.",
-      tags: ["Next.js", "TypeScript", "Redis", "Prisma"],
-      github: "https://github.com",
-      demo: "https://github.com",
-      status: "Live",
-    },
-    {
-      name: "ASCII Studio",
-      description:
-        "Turn videos into ASCII frame animations that play smoothly in sequence.",
-      tags: ["Next.js", "TypeScript", "GSAP"],
-      github: "https://github.com",
-      demo: "https://github.com",
-      status: "WIP",
-    },
-    {
-      name: "Pixel Perfect",
-      description:
-        "A React component library for modern web apps. 160+ GitHub stars.",
-      tags: ["Next.js", "Tailwind CSS", "Framer Motion"],
-      github: "https://github.com",
-      demo: "https://github.com",
-      status: "Live",
-    },
-    {
-      name: "Rune Icon",
-      description:
-        "All-in-one icon library for modern apps — clean, consistent, scalable.",
-      tags: ["Next.js", "TypeScript", "Figma"],
-      github: "https://github.com",
-      demo: null,
-      status: "WIP",
-    },
-    {
-      name: "GoDis",
-      description: "Redis implementation from scratch in Go.",
-      tags: ["Go", "Networking"],
-      github: "https://github.com",
-      demo: null,
-      status: "Open Source",
-    },
-    {
-      name: "CrabGit",
-      description:
-        "Git built from scratch in Rust with content-addressable storage.",
-      tags: ["Rust", "CLI"],
-      github: "https://github.com",
-      demo: null,
-      status: "Open Source",
-    },
-  ],
-
-  blogs: [
-    {
-      title:
-        "Building a Text-to-Speech System for 25K Users (Without Melting a Server)",
-      readTime: "11 min read",
-      url: "#",
-    },
-    {
-      title: "How I Choose Problems, Solve Them, and End Up Getting Traction",
-      readTime: "4 min read",
-      url: "#",
-    },
-    {
-      title: "How to SSH Into Your Server the Right Way",
-      readTime: "3 min read",
-      url: "#",
-    },
-  ],
-
-  stack: [
-    { name: "JavaScript" },
-    { name: "TypeScript" },
-    { name: "React" },
-    { name: "Next.js" },
-    { name: "Node.js" },
-    { name: "Python" },
-    { name: "Go" },
-    { name: "Rust" },
-    { name: "PostgreSQL" },
-    { name: "Redis" },
-    { name: "MongoDB" },
-    { name: "Docker" },
-    { name: "AWS" },
-    { name: "Tailwind" },
-    { name: "Figma" },
-    { name: "Git" },
-  ],
-
-  connect: [
-    { label: "GitHub", href: "https://github.com", type: "GITHUB" },
-    { label: "X", href: "https://x.com", type: "X" },
-    { label: "LinkedIn", href: "https://linkedin.com", type: "LINKEDIN" },
-    { label: "Mail", href: "mailto:hi@alexrivers.dev" },
-    { label: "Resume", href: "#" },
-  ],
 };
 
 const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
@@ -530,27 +388,19 @@ function normalizeLink(
   return { id: link.id || `${label}-${index}`, label, href };
 }
 
-function defaultLinks() {
-  return DATA.connect
-    .map((link, index) => normalizeLink(link, index))
-    .filter(Boolean) as NormalizedLink[];
-}
-
 function normalizeLinks(links?: ProfileLink[] | null) {
-  const normalized = (links || [])
+  return (links || [])
     .map((link, index) => normalizeLink(link, index))
     .filter(Boolean) as NormalizedLink[];
-  return normalized.length ? normalized : defaultLinks();
 }
 
 function addProfileContactLinks(
   links: NormalizedLink[],
-  profile?: ProfileSchema,
+  profile?: ProfileData | null,
 ) {
   const contactLinks = [...links];
   const email = textValue(profile?.email);
   const resume = cleanUrl(profile?.resume);
-  const bookCallLink = profile?.bookAcall;
 
   if (
     email &&
@@ -612,20 +462,15 @@ function normalizeExperiences(
       if (!company && !role && bullets.length === 0) return null;
       return {
         id: experience.id || `${company || role}-${index}`,
-        company: company || "Independent",
-        role: role || "Contributor",
+        company: company || undefined,
+        role: role || undefined,
         period: formatDateRange(experience.startdate, experience.enddate),
-        bullets: bullets.length ? bullets : ["Details coming soon."],
+        bullets,
       };
     })
     .filter(Boolean) as PortfolioExperience[];
 
-  return normalized.length
-    ? normalized
-    : DATA.experience.map((experience, index) => ({
-        ...experience,
-        id: `default-experience-${index}`,
-      }));
+  return normalized;
 }
 
 function normalizeProjects(
@@ -644,26 +489,20 @@ function normalizeProjects(
         return null;
       const status =
         textValue(project.status) ||
-        (project.live || demo ? "Live" : github ? "Open Source" : "WIP");
+        (project.live || demo ? "Live" : github ? "Open Source" : "");
       return {
         id: project.id || `${name || "project"}-${index}`,
-        name: name || "Untitled project",
-        description: description || "Project details coming soon.",
+        name: name || undefined,
+        description: description || undefined,
         tags,
         github,
         demo,
-        status,
+        status: status || undefined,
       };
     })
     .filter(Boolean) as PortfolioProject[];
 
-  return normalized.length
-    ? normalized
-    : DATA.projects.map((project, index) => ({
-        ...project,
-        id: `default-project-${index}`,
-        demo: project.demo || undefined,
-      }));
+  return normalized;
 }
 
 function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
@@ -675,21 +514,16 @@ function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
       if (!title && !description && !url) return null;
       return {
         id: blog.id || `${title || "blog"}-${index}`,
-        title: title || "Untitled post",
+        title: title || undefined,
         description: description || undefined,
         readTime:
-          textValue(blog.readTime) || formatDate(blog.enddate) || "Article",
+          textValue(blog.readTime) || formatDate(blog.enddate) || undefined,
         url,
       };
     })
     .filter(Boolean) as PortfolioBlog[];
 
-  return normalized.length
-    ? normalized
-    : DATA.blogs.map((blog, index) => ({
-        ...blog,
-        id: `default-blog-${index}`,
-      }));
+  return normalized;
 }
 
 function normalizeStack(skills?: string[] | null): StackItem[] {
@@ -697,11 +531,11 @@ function normalizeStack(skills?: string[] | null): StackItem[] {
     .map(textValue)
     .filter(Boolean)
     .map((skill) => ({ name: skill }));
-  return normalized.length ? normalized : DATA.stack;
+  return normalized;
 }
 
 function getBookCallLink(profile?: ProfileData) {
-  return cleanUrl(profile?.bookAcall) || DATA.calLink;
+  return cleanUrl(profile?.bookAcall);
 }
 
 // ─── STACK TICKER ─────────────────────────────────────────────────────────────
@@ -739,21 +573,22 @@ export function Template2({
   profile: ProfileData;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const name = textValue(profile?.name) || textValue(user?.name) || DATA.name;
-  const quote = textValue(profile?.quote) || DATA.quote;
-  const tagline = textValue(profile?.tagline) || DATA.tagline;
-  const bio = textValue(profile?.bio) || DATA.bio;
-  const avatar =
-    cleanUrl(profile?.avatar) || cleanUrl(user?.image) || DATA.avatar;
-  const banner = cleanUrl(profile?.banner) || DATA.banner;
+  const name = textValue(profile?.name) || textValue(user?.name);
+  const quote = textValue(profile?.quote);
+  const tagline = textValue(profile?.tagline);
+  const bio = textValue(profile?.bio);
+  const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
+  const banner = cleanUrl(profile?.banner);
   const links = normalizeLinks(profile?.links);
-  const contactLinks = addProfileContactLinks(links, profile?.links);
+  const contactLinks = addProfileContactLinks(links, profile);
   const experiences = normalizeExperiences(profile?.experiences);
   const projects = normalizeProjects(profile?.projects);
   const blogs = normalizeBlogs(profile?.blogs);
   const stack = normalizeStack(profile?.skills);
-  const bookCallLink = getBookCallLink(profile?.bookAcall);
+  const bookCallLink = getBookCallLink(profile);
   const visibleProjects = showAll ? projects : projects.slice(0, 4);
+  const hasHeroMedia = Boolean(banner || avatar);
+  const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
 
   return (
     <>
@@ -766,38 +601,56 @@ export function Template2({
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
         <div className="max-w-[800px] mx-auto px-6 py-16 sm:py-20">
           {/* QUOTE */}
-          <div className="mb-12 border-l-2 border-stone-300 pl-4">
-            <p className="text-xs text-stone-500 italic leading-relaxed">
-              &ldquo;{quote}&rdquo;
-            </p>
-          </div>
+          {quote && (
+            <div className="mb-12 border-l-2 border-stone-300 pl-4">
+              <p className="text-xs text-stone-500 italic leading-relaxed">
+                &ldquo;{quote}&rdquo;
+              </p>
+            </div>
+          )}
 
           {/* HERO */}
           <section className="mb-8">
-            <div className="relative mb-9">
-              <div className="relative h-32 sm:h-55 rounded-xl overflow-hidden border border-stone-200 bg-white">
-                <Image
-                  src={banner || ""}
-                  alt={`${name} banner`}
-                  fill
-                  unoptimized
-                  className="object-cover opacity-90"
-                />
+            {hasHeroMedia && (
+              <div className="relative mb-9">
+                {banner && (
+                  <div className="relative h-32 sm:h-55 rounded-xl overflow-hidden border border-stone-200 bg-white">
+                    <Image
+                      src={banner}
+                      alt={name ? `${name} banner` : "Portfolio banner"}
+                      fill
+                      unoptimized
+                      className="object-cover opacity-90"
+                    />
+                  </div>
+                )}
+                {avatar && (
+                  <Image
+                    src={avatar}
+                    alt={name || "Profile avatar"}
+                    width={80}
+                    height={80}
+                    unoptimized
+                    className={
+                      banner
+                        ? "absolute left-4 -bottom-8 w-20 h-20 rounded-lg object-cover ring-1 ring-[#fbfbfb] border border-stone-200 bg-white"
+                        : "w-20 h-20 rounded-lg object-cover border border-stone-200 bg-white"
+                    }
+                  />
+                )}
               </div>
-              <Image
-                src={avatar || ""}
-                alt={name || ""}
-                width={80}
-                height={80}
-                unoptimized
-                className="absolute left-4 -bottom-8 w-20 h-20 rounded-lg object-cover ring-1 ring-[#fbfbfb] border border-stone-200 bg-white"
-              />
-            </div>
-            <h1 className="text-xl font-bold text-stone-900 mb-1 tracking-tight">
-              {name}
-            </h1>
-            <p className="text-xs text-stone-400 font-mono mb-5">{tagline}</p>
-            <p className="text-sm text-stone-600 leading-[1.8]">{bio}</p>
+            )}
+            {name && (
+              <h1 className="text-xl font-bold text-stone-900 mb-1 tracking-tight">
+                {name}
+              </h1>
+            )}
+            {tagline && (
+              <p className="text-xs text-stone-400 font-mono mb-5">
+                {tagline}
+              </p>
+            )}
+            {bio && <p className="text-sm text-stone-600 leading-[1.8]">{bio}</p>}
           </section>
 
           {/* QUICK LINKS — icon-only buttons */}
@@ -809,312 +662,373 @@ export function Template2({
         <p>Add to library</p>
       </TooltipContent>
     </Tooltip>*/}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {links.map((link) => (
-              <Tooltip key={link.id}>
-                <TooltipTrigger asChild>
-                  <Link
-                    href={link.href}
-                    target={
-                      shouldOpenInNewTab(link.href) ? "_blank" : undefined
-                    }
-                    rel="noopener noreferrer"
-                    title={link.label}
-                    className="inline-flex items-center justify-center w-8 h-8 rounded-md text-stone-500 border border-stone-200 bg-white/60 hover:border-stone-300 hover:text-stone-800 hover:bg-stone-50 transition-all duration-150"
-                  >
-                    {getLinkIcon(link.label, link.href)}
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{link.label}</p>
-                </TooltipContent>
-              </Tooltip>
-            ))}
-            <Link
-              href={bookCallLink}
-              target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] text-stone-700 border border-stone-200 bg-stone-100 hover:bg-stone-200 transition-all duration-150 ml-auto font-medium"
-            >
-              Book a call
-              <ArrowRight size={10} />
-            </Link>
-          </div>
-
-          <Divider />
-
-          {/* EXPERIENCE */}
-          <section>
-            <SectionHeading>Professional Experience</SectionHeading>
-            <div className="space-y-8">
-              {experiences.map((exp) => (
-                <div key={exp.id}>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div>
-                      {exp.companyUrl && exp.companyUrl !== "#" ? (
-                        <a
-                          href={exp.companyUrl}
-                          target={
-                            shouldOpenInNewTab(exp.companyUrl)
-                              ? "_blank"
-                              : undefined
-                          }
-                          rel="noopener noreferrer"
-                          className="group inline-flex items-center gap-1 text-sm font-semibold text-stone-900 hover:text-stone-700 transition-colors"
-                        >
-                          {exp.company}
-                          <MoveUpRight
-                            size={10}
-                            className="text-stone-400 group-hover:text-stone-600 transition-colors"
-                          />
-                        </a>
-                      ) : (
-                        <span className="text-sm font-semibold text-stone-900">
-                          {exp.company}
-                        </span>
-                      )}
-                      <p className="text-[11px] text-stone-500 mt-0.5">
-                        {exp.role}
-                      </p>
-                    </div>
-                    {exp.period && (
-                      <span className="text-[10px] font-mono text-stone-500 shrink-0 pt-0.5">
-                        {exp.period}
-                      </span>
-                    )}
-                  </div>
-                  <ul className="space-y-1.5">
-                    {exp.bullets.map((bullet, i) => (
-                      <li
-                        key={`${exp.id}-${i}`}
-                        className="flex gap-2.5 text-[13px] text-stone-600 leading-relaxed"
-                      >
-                        <span className="text-stone-300 shrink-0 select-none mt-0.5">
-                          •
-                        </span>
-                        {bullet}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <Divider />
-
-          {/* PROJECTS */}
-          <section>
-            <SectionHeading>Proof of Work</SectionHeading>
-            <div className="space-y-0.5">
-              {visibleProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="group flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
-                >
-                  {/* Monogram */}
-                  <div className="w-7 h-7 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[10px] font-bold text-stone-400 select-none">
-                      {project.name[0]}
-                    </span>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <span className="text-[13px] font-medium text-stone-800">
-                        {project.name}
-                      </span>
-                      <span
-                        className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusStyle[project.status] ?? fallbackStatusStyle}`}
-                      >
-                        {project.status}
-                      </span>
-                    </div>
-                    <p className="text-[12px] text-stone-500 leading-relaxed mb-1.5">
-                      {project.description}
-                    </p>
-                    {project.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {project.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-stone-100 text-stone-500"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {(project.github || project.demo) && (
-                    <div className="flex gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 mt-0.5">
-                      {project.github && (
-                        <a
-                          href={project.github}
-                          target={
-                            shouldOpenInNewTab(project.github)
-                              ? "_blank"
-                              : undefined
-                          }
-                          rel="noopener noreferrer"
-                          className="text-stone-400 hover:text-stone-600 transition-colors"
-                          aria-label={`${project.name} source`}
-                        >
-                          <Github size={12} />
-                        </a>
-                      )}
-                      {project.demo && (
-                        <Link
-                          href={project.demo}
-                          target={
-                            shouldOpenInNewTab(project.demo)
-                              ? "_blank"
-                              : undefined
-                          }
-                          rel="noopener noreferrer"
-                          className="text-stone-400 hover:text-stone-600 transition-colors"
-                          aria-label={`${project.name} live link`}
-                        >
-                          <ExternalLink size={12} />
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {projects.length > 4 && (
-              <button
-                onClick={() => setShowAll((value) => !value)}
-                className="mt-3 ml-3 text-[11px] text-stone-500 hover:text-stone-700 transition-colors cursor-pointer"
-              >
-                {showAll ? "Show less" : "View All →"}
-              </button>
-            )}
-          </section>
-
-          <Divider />
-
-          {/* BLOGS */}
-          <section>
-            <SectionHeading>Thoughts</SectionHeading>
-            <div className="space-y-0.5">
-              {blogs.map((blog) => (
-                <Link
-                  key={blog.id}
-                  href={blog.url || "#"}
-                  target={shouldOpenInNewTab(blog.url) ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  className="group flex items-center justify-between px-3 py-3 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
-                >
-                  <div className="min-w-0 pr-4">
-                    <p className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors leading-snug">
-                      {blog.title}
-                    </p>
-                    {blog.description && (
-                      <p className="text-[11px] text-stone-400 leading-relaxed mt-1 line-clamp-2">
-                        {blog.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[10px] font-mono text-stone-400">
-                      {blog.readTime}
-                    </span>
-                    <ArrowRight
-                      size={10}
-                      className="text-stone-300 group-hover:text-stone-500 group-hover:translate-x-0.5 transition-all"
-                    />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          <Divider />
-
-          {/* STACK */}
-          <section>
-            <SectionHeading>Stack I use</SectionHeading>
-            <p className="text-[12px] text-stone-500 mb-4 leading-relaxed">
-              Technologies I work with to build products that solve real
-              problems.
-            </p>
-            <StackTicker stack={stack} />
-          </section>
-
-          <Divider />
-
-          {/* BOOK A CALL */}
-          <section className="mb-2">
-            <p className="text-[13px] text-stone-500 mb-5 leading-relaxed">
-              If you&apos;ve read this far, you might be interested in what I
-              do.
-            </p>
-            <Link
-              href={bookCallLink}
-              target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:border-stone-300 transition-all duration-200"
-            >
-              <Image
-                src={avatar || ""}
-                alt={name || ""}
-                width={24}
-                height={24}
-                unoptimized
-                className="w-6 h-6 rounded-full object-cover ring-1 ring-stone-200"
-              />
-              <span className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors">
-                Book a Free Call
-              </span>
-              <ArrowRight
-                size={11}
-                className="text-stone-400 group-hover:text-stone-600 group-hover:translate-x-0.5 transition-all"
-              />
-            </Link>
-          </section>
-
-          <Divider />
-
-          {/* CONNECT */}
-          <section>
-            <SectionHeading>Let&apos;s connect</SectionHeading>
-            <p className="text-[12px] text-stone-500 mb-4">
-              Find me on these platforms
-            </p>
-            <div className="space-y-0.5">
-              {contactLinks.map((link) => (
-                <Link
-                  key={link.id}
-                  href={link.href}
-                  target={shouldOpenInNewTab(link.href) ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-stone-500 group-hover:text-stone-800 transition-colors">
+          {hasQuickActions && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {links.map((link) => (
+                <Tooltip key={link.id}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={link.href}
+                      target={
+                        shouldOpenInNewTab(link.href) ? "_blank" : undefined
+                      }
+                      rel="noopener noreferrer"
+                      title={link.label}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-md text-stone-500 border border-stone-200 bg-white/60 hover:border-stone-300 hover:text-stone-800 hover:bg-stone-50 transition-all duration-150"
+                    >
                       {getLinkIcon(link.label, link.href)}
-                    </span>
-                    <span className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors">
-                      {link.label}
-                    </span>
-                  </div>
-                  <MoveUpRight
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{link.label}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
+              {bookCallLink && (
+                <Link
+                  href={bookCallLink}
+                  target={
+                    shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
+                  }
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] text-stone-700 border border-stone-200 bg-stone-100 hover:bg-stone-200 transition-all duration-150 ml-auto font-medium"
+                >
+                  Book a call
+                  <ArrowRight size={10} />
+                </Link>
+              )}
+            </div>
+          )}
+
+          {experiences.length > 0 && (
+            <>
+              <Divider />
+              <section>
+                <SectionHeading>Professional Experience</SectionHeading>
+                <div className="space-y-8">
+                  {experiences.map((exp) => (
+                    <div key={exp.id}>
+                      <div className="flex items-start justify-between gap-2 mb-3">
+                        <div>
+                          {exp.company &&
+                            (exp.companyUrl && exp.companyUrl !== "#" ? (
+                              <a
+                                href={exp.companyUrl}
+                                target={
+                                  shouldOpenInNewTab(exp.companyUrl)
+                                    ? "_blank"
+                                    : undefined
+                                }
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-1 text-sm font-semibold text-stone-900 hover:text-stone-700 transition-colors"
+                              >
+                                {exp.company}
+                                <MoveUpRight
+                                  size={10}
+                                  className="text-stone-400 group-hover:text-stone-600 transition-colors"
+                                />
+                              </a>
+                            ) : (
+                              <span className="text-sm font-semibold text-stone-900">
+                                {exp.company}
+                              </span>
+                            ))}
+                          {exp.role && (
+                            <p className="text-[11px] text-stone-500 mt-0.5">
+                              {exp.role}
+                            </p>
+                          )}
+                        </div>
+                        {exp.period && (
+                          <span className="text-[10px] font-mono text-stone-500 shrink-0 pt-0.5">
+                            {exp.period}
+                          </span>
+                        )}
+                      </div>
+                      {exp.bullets.length > 0 && (
+                        <ul className="space-y-1.5">
+                          {exp.bullets.map((bullet, i) => (
+                            <li
+                              key={`${exp.id}-${i}`}
+                              className="flex gap-2.5 text-[13px] text-stone-600 leading-relaxed"
+                            >
+                              <span className="text-stone-300 shrink-0 select-none mt-0.5">
+                                •
+                              </span>
+                              {bullet}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
+
+          {projects.length > 0 && (
+            <>
+              <Divider />
+              <section>
+                <SectionHeading>Proof of Work</SectionHeading>
+                <div className="space-y-0.5">
+                  {visibleProjects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="group flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
+                    >
+                      {project.name && (
+                        <div className="w-7 h-7 rounded-md bg-stone-100 border border-stone-200 flex items-center justify-center shrink-0 mt-0.5">
+                          <span className="text-[10px] font-bold text-stone-400 select-none">
+                            {project.name[0]}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0">
+                        {(project.name || project.status) && (
+                          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                            {project.name && (
+                              <span className="text-[13px] font-medium text-stone-800">
+                                {project.name}
+                              </span>
+                            )}
+                            {project.status && (
+                              <span
+                                className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusStyle[project.status] ?? fallbackStatusStyle}`}
+                              >
+                                {project.status}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {project.description && (
+                          <p className="text-[12px] text-stone-500 leading-relaxed mb-1.5">
+                            {project.description}
+                          </p>
+                        )}
+                        {project.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {project.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[10px] px-1.5 py-0.5 rounded bg-stone-100 text-stone-500"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {(project.github || project.demo) && (
+                        <div className="flex gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 mt-0.5">
+                          {project.github && (
+                            <a
+                              href={project.github}
+                              target={
+                                shouldOpenInNewTab(project.github)
+                                  ? "_blank"
+                                  : undefined
+                              }
+                              rel="noopener noreferrer"
+                              className="text-stone-400 hover:text-stone-600 transition-colors"
+                              aria-label={
+                                project.name
+                                  ? `${project.name} source`
+                                  : "Project source"
+                              }
+                            >
+                              <Github size={12} />
+                            </a>
+                          )}
+                          {project.demo && (
+                            <Link
+                              href={project.demo}
+                              target={
+                                shouldOpenInNewTab(project.demo)
+                                  ? "_blank"
+                                  : undefined
+                              }
+                              rel="noopener noreferrer"
+                              className="text-stone-400 hover:text-stone-600 transition-colors"
+                              aria-label={
+                                project.name
+                                  ? `${project.name} live link`
+                                  : "Project live link"
+                              }
+                            >
+                              <ExternalLink size={12} />
+                            </Link>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {projects.length > 4 && (
+                  <button
+                    onClick={() => setShowAll((value) => !value)}
+                    className="mt-3 ml-3 text-[11px] text-stone-500 hover:text-stone-700 transition-colors cursor-pointer"
+                  >
+                    {showAll ? "Show less" : "View All →"}
+                  </button>
+                )}
+              </section>
+            </>
+          )}
+
+          {blogs.length > 0 && (
+            <>
+              <Divider />
+              <section>
+                <SectionHeading>Thoughts</SectionHeading>
+                <div className="space-y-0.5">
+                  {blogs.map((blog) => {
+                    const content = (
+                      <>
+                        <div className="min-w-0 pr-4">
+                          {blog.title && (
+                            <p className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors leading-snug">
+                              {blog.title}
+                            </p>
+                          )}
+                          {blog.description && (
+                            <p className="text-[11px] text-stone-400 leading-relaxed mt-1 line-clamp-2">
+                              {blog.description}
+                            </p>
+                          )}
+                        </div>
+                        {(blog.readTime || blog.url) && (
+                          <div className="flex items-center gap-2 shrink-0">
+                            {blog.readTime && (
+                              <span className="text-[10px] font-mono text-stone-400">
+                                {blog.readTime}
+                              </span>
+                            )}
+                            {blog.url && (
+                              <ArrowRight
+                                size={10}
+                                className="text-stone-300 group-hover:text-stone-500 group-hover:translate-x-0.5 transition-all"
+                              />
+                            )}
+                          </div>
+                        )}
+                      </>
+                    );
+
+                    return blog.url ? (
+                      <Link
+                        key={blog.id}
+                        href={blog.url}
+                        target={
+                          shouldOpenInNewTab(blog.url) ? "_blank" : undefined
+                        }
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between px-3 py-3 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
+                      >
+                        {content}
+                      </Link>
+                    ) : (
+                      <div
+                        key={blog.id}
+                        className="group flex items-center justify-between px-3 py-3 rounded-lg border border-transparent"
+                      >
+                        {content}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            </>
+          )}
+
+          {stack.length > 0 && (
+            <>
+              <Divider />
+              <section>
+                <SectionHeading>Stack I use</SectionHeading>
+                <StackTicker stack={stack} />
+              </section>
+            </>
+          )}
+
+          {bookCallLink && (
+            <>
+              <Divider />
+              <section className="mb-2">
+                <Link
+                  href={bookCallLink}
+                  target={
+                    shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
+                  }
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:border-stone-300 transition-all duration-200"
+                >
+                  {avatar && (
+                    <Image
+                      src={avatar}
+                      alt={name || "Profile avatar"}
+                      width={24}
+                      height={24}
+                      unoptimized
+                      className="w-6 h-6 rounded-full object-cover ring-1 ring-stone-200"
+                    />
+                  )}
+                  <span className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors">
+                    Book a Free Call
+                  </span>
+                  <ArrowRight
                     size={11}
-                    className="text-stone-300 group-hover:text-stone-500 transition-colors"
+                    className="text-stone-400 group-hover:text-stone-600 group-hover:translate-x-0.5 transition-all"
                   />
                 </Link>
-              ))}
-            </div>
-          </section>
+              </section>
+            </>
+          )}
+
+          {contactLinks.length > 0 && (
+            <>
+              <Divider />
+              <section>
+                <SectionHeading>Let&apos;s connect</SectionHeading>
+                <div className="space-y-0.5">
+                  {contactLinks.map((link) => (
+                    <Link
+                      key={link.id}
+                      href={link.href}
+                      target={
+                        shouldOpenInNewTab(link.href) ? "_blank" : undefined
+                      }
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-stone-500 group-hover:text-stone-800 transition-colors">
+                          {getLinkIcon(link.label, link.href)}
+                        </span>
+                        <span className="text-[13px] text-stone-600 group-hover:text-stone-900 transition-colors">
+                          {link.label}
+                        </span>
+                      </div>
+                      <MoveUpRight
+                        size={11}
+                        className="text-stone-300 group-hover:text-stone-500 transition-colors"
+                      />
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
 
           {/* FOOTER */}
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
             <p className="text-[11px] text-stone-400 font-mono">
-              © {new Date().getFullYear()} {name}
+              © {new Date().getFullYear()}
+              {name ? ` ${name}` : ""}
             </p>
             <p className="text-[11px] text-stone-300">
               built with{" "}

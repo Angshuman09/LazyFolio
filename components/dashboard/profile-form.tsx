@@ -32,6 +32,7 @@ function FieldError({ message }: { message?: string }) {
 export default function ProfileForm({ profile, formRef, onSubmit, session }: Props) {
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
+      userId: session?.user?.id || "",
       name: profile?.name || "",
       username: profile?.username || "",
       tagline: profile?.tagline || "",
