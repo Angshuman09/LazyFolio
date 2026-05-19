@@ -19,7 +19,7 @@ export const GoogleAuth = ({disable, setDisable}: {disable: boolean; setDisable:
     <button
       onClick={handleGoogleLogin}
       disabled={isPending || disable}
-      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-(--lf-bg) border-2 border-(--lf-border) rounded-2xl shadow-sm hover:bg-(--lf-surface) hover:border-(--lf-muted) transition-all duration-200 font-sans-body font-semibold text-[0.9rem] text-(--lf-ink) hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-(--lf-bg) border-2 border-(--lf-border) rounded-4xl shadow-sm hover:bg-(--lf-surface) hover:border-(--lf-muted) transition-all duration-200 font-sans-body font-semibold text-[0.9rem] text-(--lf-ink) hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
     >
       {isPending ? (
         <svg

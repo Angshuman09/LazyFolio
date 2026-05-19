@@ -410,7 +410,8 @@ export default function DashboardPage() {
 
         <div className="flex items-center gap-1.5 md:gap-2">
           <button
-            className="hidden sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
+          disabled={!profile?.username}
+            className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
             onClick={() => setTemplateOpen(true)}
           >
             <Layers size={13} />
@@ -436,7 +437,10 @@ export default function DashboardPage() {
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-          <button className="hidden sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
+          <button 
+          disabled={!profile?.username}
+          // onClick={}
+          className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
           </button>
@@ -531,15 +535,16 @@ export default function DashboardPage() {
           <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
 
           <div className="mt-auto shrink-0 border border-(--lf-border) rounded-[10px] p-3.5 bg-(--lf-surface)">
-            <div className="text-[0.65rem] text-(--lf-muted) font-mono uppercase tracking-widest mb-1.5">
-              Your portfolio
+            <div className="text-[0.65rem] text-(--lf-muted) font-mono tracking-widest mb-1.5">
+              Your portfolio link
             </div>
             <div className="text-[0.75rem] text-(--lf-ink) font-mono mb-2.5 break-all">
-              lazyfolio/{username}
+              lazyfolio/{profile?.username || "your-username"}
             </div>
             <button
-              className="inline-flex items-center gap-1.5 px-3 h-[30px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
+              className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-[30px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
               onClick={copyLink}
+              disabled={!profile?.username}
             >
               {copied ? <Check size={11} /> : <Copy size={11} />}
               {copied ? "Copied!" : "Copy link"}

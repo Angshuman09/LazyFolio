@@ -93,7 +93,7 @@
   --sidebar-ring: oklch(0.556 0 0);
 
   /* Lazyfolio dark palette — premium metal black */
-  --lf-bg: #090808; /* zinc-950 */
+  --lf-bg: #111111; /* zinc-950 */
   --lf-surface: #18181b; /* zinc-900 */
   --lf-border: #27272a; /* zinc-800 */
   --lf-ink: #fafafa;

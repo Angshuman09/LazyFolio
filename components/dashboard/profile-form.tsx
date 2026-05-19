@@ -10,13 +10,20 @@ import { useQueryClient } from "@tanstack/react-query";
 type ProfileData = Partial<
   Pick<
     ProfileSchema,
-    "name" | "username" | "tagline" | "location" | "quote" | "email" | "bio" | "bookAcall"
+    | "name"
+    | "username"
+    | "tagline"
+    | "location"
+    | "quote"
+    | "email"
+    | "bio"
+    | "bookAcall"
   >
 > | null;
 
 type Props = {
   profile?: ProfileData;
-  session?: any; 
+  session?: any;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit: (data: ProfileSchema) => void;
 };
@@ -29,7 +36,12 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-[0.72rem] text-[#b91c1c]">{message}</p>;
 }
 
-export default function ProfileForm({ profile, formRef, onSubmit, session }: Props) {
+export default function ProfileForm({
+  profile,
+  formRef,
+  onSubmit,
+  session,
+}: Props) {
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
       userId: session?.user?.id || "",
@@ -48,6 +60,14 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
   );
 
   const [loading, setLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
 
   const {
     register,
@@ -68,11 +88,11 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
 
   console.log(session?.user?.id);
 
-  const handleSubmitUsername = async ()=>{
+  const handleSubmitUsername = async () => {
     setLoading(true);
     const username = getValues("username");
 
-    if(!username){
+    if (!username) {
       toast.error("Username cannot be empty");
       return;
     }
@@ -80,24 +100,24 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
     const response = await fetch("/api/username", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         username,
-        userId: await session?.user?.id as string
-      })
-    })
+        userId: (await session?.user?.id) as string,
+      }),
+    });
 
     const data = await response.json();
 
-    if(response.ok){
+    if (response.ok) {
       toast.success("Username updated successfully");
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
     } else {
       toast.error(data.error || "Failed to update username");
     }
     setLoading(false);
-  }
+  };
 
   return (
     <form
@@ -143,10 +163,14 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
 
       {!profile?.username ? (
         <div className="p-8 border border-(--lf-border) rounded-xl bg-(--lf-surface) text-center mb-7 flex flex-col items-center">
-           <div className="text-[1.1rem] font-serif-display text-(--lf-ink) mb-1.5">Set your username first</div>
-           <div className="text-[0.82rem] text-(--lf-muted) max-w-md leading-relaxed">
-             You need to claim a username before you can update your profile avatar, banner, and basic information. Your username will also be your public portfolio link!
-           </div>
+          <div className="text-[1.1rem] font-serif-display text-(--lf-ink) mb-1.5">
+            Set your username first
+          </div>
+          <div className="text-[0.82rem] text-(--lf-muted) max-w-md leading-relaxed">
+            You need to claim a username before you can update your profile
+            avatar, banner, and basic information. Your username will also be
+            your public portfolio link!
+          </div>
         </div>
       ) : (
         <>
@@ -163,6 +187,10 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                     accept="image/png,image/jpeg"
                     className="hidden"
                     {...register("avatar")}
+                    onChange={(e) => {
+                      register("avatar").onChange(e); // keep react-hook-form in sync
+                      setAvatarFile(e.target.files?.[0] ?? null);
+                    }}
                   />
                   <label
                     htmlFor="avatar-upload"
@@ -171,7 +199,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                     Upload photo
                   </label>
                   <div className="text-[0.68rem] text-(--lf-muted) font-mono text-center">
-                    {/* PNG · JPG · max 2MB */}
+                    {avatarFile ? avatarFile.name : "No file chosen"} ·{" "}
+                    {avatarFile ? formatSize(avatarFile.size) : "0 B"}
                   </div>
                 </div>
               </div>
@@ -186,12 +215,27 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                 accept="image/png,image/jpeg"
                 className="hidden"
                 {...register("banner")}
+                onChange={(e) => {
+                  register("banner").onChange(e);
+                  setBannerFile(e.target.files?.[0] ?? null);
+                }}
               />
               <label
                 htmlFor="banner-upload"
                 className="h-[66px] rounded-lg cursor-pointer bg-(--lf-border) flex items-center justify-center text-[0.75rem] text-(--lf-muted) border-2 border-dashed border-(--lf-border)"
               >
-                Click to upload banner
+                {bannerFile ? (
+                  <span className="flex flex-col items-center gap-0.5">
+                    <span className="text-(--lf-ink) font-medium truncate max-w-[180px]">
+                      {bannerFile.name}
+                    </span>
+                    <span className="text-[0.68rem] text-(--lf-muted)">
+                      {formatSize(bannerFile.size)}
+                    </span>
+                  </span>
+                ) : (
+                  "Click to upload banner"
+                )}
               </label>
             </div>
           </div>
@@ -237,7 +281,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                 <FieldError message={errors.tagline?.message} />
               </div>
 
-               <div className=" flex flex-col gap-1.25">
+              <div className=" flex flex-col gap-1.25">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   Book a Call Link
                 </label>
