@@ -89,7 +89,11 @@ export default function DashboardPage() {
   }, [dark]);
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(`lazyfolio.com/${username}`);
+    navigator.clipboard?.writeText(`${process.env.NEXT_PUBLIC_SITE_URL as string}/${profile?.username || username}`).then(() => {
+      toast.success("Profile link copied to clipboard!");
+    }).catch(() => {
+      toast.error("Failed to copy link. Please try manually copying: " + `/${profile?.username || username}`);
+    });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -439,7 +443,8 @@ export default function DashboardPage() {
 
           <button 
           disabled={!profile?.username}
-          // onClick={}
+    
+          onClick={()=> window.open(`/${profile?.username || username}`, "_blank")}
           className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
@@ -449,7 +454,7 @@ export default function DashboardPage() {
             type="submit"
             form="dashboard-form"
             disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
-            className="inline-flex items-center gap-1.5 px-3 md:px-4.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
+            className="inline-flex items-center gap-1.5 px-4 md:px-2.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
               <>
@@ -542,7 +547,7 @@ export default function DashboardPage() {
               lazyfolio/{profile?.username || "your-username"}
             </div>
             <button
-              className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-[30px] rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
+              className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
               onClick={copyLink}
               disabled={!profile?.username}
             >

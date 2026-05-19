@@ -2,6 +2,7 @@
 
 import { Template1 } from "@/components/portfolios/template1";
 import { Template2 } from "@/components/portfolios/template2";
+import { Template3 } from "./template3";
 
 type Template1Props = Parameters<typeof Template1>[0];
 type TemplateUser = Template1Props["user"];
@@ -23,6 +24,8 @@ export function TemplateRenderer({ user, profile }: TemplateRendererProps) {
         return <Template1 user={user ?? {}} profile={profile ?? {}} />;
       case "2":
         return <Template2 user={user ?? {}} profile={profile ?? {}} />;
+      case "3":
+        return <Template3 user={user ?? {}} profile={profile ?? {}} />;
       default:
         return <Template1 user={user ?? {}} profile={profile ?? {}} />;
     }

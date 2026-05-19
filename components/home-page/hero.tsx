@@ -15,7 +15,7 @@ const Hero = () => {
         without the busywork.
       </h1>
 
-      <p className="tracking-wider font-serif-display">Build your portfolio in <span className="text-(--lf-tan-text) font-bold"><em>minutes</em></span>, not after hours of tweaking layouts and writing everything from <span className="text-(--lf-tan-text) font-bold"><em>scratch</em></span>.</p>
+      <p className="tracking-wider font-serif-display">Build your portfolio in <span className="text-(--lf-tan-text) font-bold"><em>minutes</em></span>, not after hours of tweaking layouts and writing everything from <span className="text-(--lf-tan-text) font-bold"><em>scratch </em></span>&gt;◡&lt;</p>
 
       <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-3 w-full px-4 sm:px-0 max-w-[460px] mx-auto mb-10 mt-17">
         <label className="flex items-center flex-1 min-w-0 rounded-[14px] border border-(--lf-border) bg-(--lf-surface) px-6 sm:px-4 min-h-[56px] sm:min-h-[52px] gap-2 sm:gap-1 transition-colors duration-150 focus-within:border-(--lf-tan) cursor-text">
