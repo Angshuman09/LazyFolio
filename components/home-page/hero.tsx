@@ -2,6 +2,9 @@
 import { Highlighter } from "../ui/highlighter";
 
 const Hero = () => {
+  const handleSubmitUsername = () => {
+    
+  }
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-15">
 
@@ -29,7 +32,7 @@ const Hero = () => {
           />
         </label>
         <button 
-
+        onClick={()=>handleSubmitUsername}
         className="group inline-flex items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[56px] sm:min-h-[52px] px-6 rounded-[14px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0">
           Claim username
           <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">
