@@ -20,7 +20,7 @@ const Navbar = () => {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  // const [scrolled, setScrolled] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [stars, setStars] = useState<number | null>(null);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
@@ -49,10 +49,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={[
-        "sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300",
-        scrolled ? "border-b border-(--lf-border-alpha)" : "",
-      ].join(" ")}
+      className= "sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Left nav links */}

@@ -454,7 +454,7 @@ export default function DashboardPage() {
             type="submit"
             form="dashboard-form"
             disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
-            className="inline-flex items-center gap-1.5 px-4 md:px-2.5 h-8.5 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
+            className="inline-flex items-center gap-1.5 px-4 md:px-3.5 h-7.5 rounded-md bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
               <>

@@ -151,7 +151,7 @@ export default function ProfileForm({
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-4 rounded-r-md border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans-body whitespace-nowrap"
             onClick={handleSubmitUsername}
             disabled={loading}
           >

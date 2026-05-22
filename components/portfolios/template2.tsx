@@ -604,7 +604,7 @@ export function Template2({
           {quote && (
             <div className="mb-12 border-l-2 border-stone-300 pl-4">
               <p className="text-xs text-stone-500 italic leading-relaxed">
-                &ldquo;{quote}&rdquo;
+                {quote}
               </p>
             </div>
           )}
