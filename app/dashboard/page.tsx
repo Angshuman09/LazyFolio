@@ -176,6 +176,7 @@ export default function DashboardPage() {
 
     const formattedLinks = (data.links || [])
       .map((link) => ({
+        id: link.id,
         label: link.label?.trim() || "",
         url: link.url?.trim() || "",
         type: detectType(link.url || ""),

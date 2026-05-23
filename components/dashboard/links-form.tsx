@@ -3,10 +3,11 @@
 import { RefObject, useState, useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, Pencil, Check, Link2 } from "lucide-react";
+import { Plus, Trash2, Pencil, Check, Link2, Loader2, Loader } from "lucide-react";
 import toast from "react-hot-toast";
 import { linksSchema, LinksSchema } from "@/schemas/links";
 import { LinkType } from "@/db/enums";
+import { useCreateLink, useDeleteLink } from "@/hooks/link";
 
 type Props = {
   profile?: any;
@@ -28,6 +29,7 @@ function LinkCard({
   control,
   register,
   errors,
+  profile,
   remove,
 }: {
   field: any;
@@ -35,10 +37,54 @@ function LinkCard({
   control: any;
   register: any;
   errors: any;
+  profile: any
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(() => !!(field?.label || field?.url));
+  const [confirmed, setConfirmed] = useState(
+    () => !!(field?.label || field?.url),
+  );
   const values = useWatch({ control, name: `links.${index}` });
+  const [loading, setLoading] = useState(false);
+
+  const createLink = useCreateLink();
+  const deleteLink = useDeleteLink();
+
+  const onSaveLink = async () => {
+    setConfirmed(true)
+    setLoading(true);
+    const linkType = detectType(values.url);
+    try {
+      await createLink.mutateAsync({
+        link: {
+          label: values.label,
+          url: values.url,
+          type: linkType,
+        },
+        profileId: profile?.id,
+      });
+      toast.success("Link saved successfully!");
+      setLoading(false);
+      setConfirmed(true);
+    } catch (error) {
+      console.error("Error saving link:", error);
+      toast.error("An error occurred while saving the link.");
+      setLoading(false);
+    }
+  };
+
+  const onDeleteLink = async () => {
+    setLoading(true);
+    try {
+      await deleteLink.mutateAsync(values?.id as string);
+      toast.success("Link deleted successfully!");
+      setLoading(false);
+      remove(index);
+    } catch (error) {
+      console.error("Error deleting link:", error);
+      toast.error("An error occurred while deleting the link.");
+      setLoading(false);
+    }
+  };
 
   if (confirmed) {
     return (
@@ -49,7 +95,9 @@ function LinkCard({
           </div>
           <div className="min-w-0">
             <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans truncate">
-              {values?.label || <span className="text-(--lf-muted) italic">Untitled</span>}
+              {values?.label || (
+                <span className="text-(--lf-muted) italic">Untitled</span>
+              )}
             </div>
             <div className="text-[0.72rem] text-(--lf-muted) font-mono truncate">
               {values?.url || "—"}
@@ -67,11 +115,12 @@ function LinkCard({
           </button>
           <button
             type="button"
-            onClick={() => remove(index)}
+            onClick={onDeleteLink}
+            disabled={loading}
             className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
             aria-label="Remove link"
           >
-            <Trash2 size={12} />
+           {loading? <Loader size={12} /> : <Trash2 size={12} />}
           </button>
         </div>
       </div>
@@ -119,19 +168,20 @@ function LinkCard({
       <div className="flex items-center justify-between mt-3.5">
         <button
           type="button"
-          onClick={() => remove(index)}
-          className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+          // onClick={() => remove(index)}
+          className="inline-flex items-center gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
-          <Trash2 size={11} />
-          Delete
+          {/* <Trash2 size={11} /> */}
+          Cancel
         </button>
         <button
           type="button"
-          onClick={() => setConfirmed(true)}
+          onClick={onSaveLink}
+          disabled={loading}
           className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
           <Check size={11} strokeWidth={2.5} />
-          Done
+          {loading ? "Saving..." : "Done"}
         </button>
       </div>
     </div>
@@ -148,10 +198,13 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   } = useForm<LinksSchema>({
     resolver: zodResolver(linksSchema),
     defaultValues: {
-      links: profile?.links?.length ? profile.links.map((l: any) => ({
-        label: l.label || "",
-        url: l.url || ""
-      })) : []
+      links: profile?.links?.length
+        ? profile.links.map((l: any) => ({
+            id: l.id,
+            label: l.label || "",
+            url: l.url || "",
+          }))
+        : [],
     },
     mode: "onSubmit",
   });
@@ -165,9 +218,10 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     if (profile?.links) {
       reset({
         links: profile.links.map((l: any) => ({
+          id: l.id,
           label: l.label || "",
-          url: l.url || ""
-        }))
+          url: l.url || "",
+        })),
       });
     }
   }, [profile?.links, reset]);
@@ -203,6 +257,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
             register={register}
             errors={errors}
             remove={remove}
+            profile = {profile}
           />
         ))}
       </div>
