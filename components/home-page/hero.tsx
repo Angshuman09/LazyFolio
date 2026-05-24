@@ -51,16 +51,18 @@ const Hero = () => {
     }
   };
   return (
+    // Stop building your portfolio. Start showing it.
+    // Yes, you still need a portfolio.
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-15">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
         <span className="block">
-          A polished{" "}
-          <Highlighter action="underline" color="#B08D57">
-            portfolio
+          Make the internet {" "}
+         
+            know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist</span>
           </Highlighter>
         </span>
 
-        <span className="block mt-4">without the busywork.</span>
+        {/* <span className="block mt-4"> Start showing it.</span> */}
       </h1>
 
       <p className="tracking-wider font-serif-display">

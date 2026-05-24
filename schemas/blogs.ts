@@ -19,4 +19,3 @@ export const blogsSchema = z.object({
 });
 
 export type BlogsSchema = z.infer<typeof blogsSchema>;
-

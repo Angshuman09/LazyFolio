@@ -52,7 +52,7 @@ const Footer = () => {
       </div>
 
       <div
-        className="mt-8 select-none pointer-events-none leading-none"
+        className="mt-8 select-none pointer-events-none leading-none text-[#d9c099]"
         style={{
           fontSize: "clamp(80px, 18vw, 220px)",
           fontWeight: 800,

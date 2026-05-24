@@ -1,12 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
-
-type BlogInput = {
-    title?: string;
-    description?: string;
-    enddate?: string;
-    blogLink?: string;
-};
+import {BlogsSchema} from "@/schemas/blogs";
 
 function parseOptionalDate(value: string | null | undefined) {
     if (!value?.trim()) {
@@ -21,7 +15,7 @@ export async function POST(req: NextRequest){
     try {
         const { profileId, blogs } = (await req.json()) as {
             profileId?: string;
-            blogs?: BlogInput[];
+            blogs?: BlogsSchema["blogs"];
         };
 
         if(!profileId || !blogs){

@@ -1,13 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-
-type ExperienceInput = {
-  companyName?: string;
-  role?: string;
-  startdate?: string;
-  enddate?: string;
-  description?: string;
-};
+import { ExperienceSchema } from "@/schemas/experience";
 
 function parseOptionalDate(value: string | null | undefined) {
   if (!value?.trim()) {
@@ -22,7 +15,7 @@ export async function POST(request: NextRequest) {
   try {
     const { profileId, experiences } = (await request.json()) as {
       profileId?: string;
-      experiences?: ExperienceInput[];
+      experiences?: ExperienceSchema["experiences"];
     };
     if (!profileId) {
       return NextResponse.json(

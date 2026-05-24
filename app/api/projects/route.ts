@@ -1,14 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-
-type ProjectInput = {
-    title?: string;
-    description?: string;
-    enddate?: string;
-    githubLink?: string;
-    projectLink?: string;
-    techstack?: string[];
-};
+import {ProjectsSchema} from "@/schemas/projects";
 
 function parseOptionalDate(value: string | null | undefined) {
     if (!value?.trim()) {
@@ -23,7 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     const { profileId, projects } = (await req.json()) as {
         profileId?: string;
-        projects?: ProjectInput[];
+        projects?: ProjectsSchema["projects"];
     };
 
     if(!profileId || !projects){

@@ -1,16 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
-
-type SkillInput = {
-    value?: string;
-};
-
+import {SkillsSchema} from "@/schemas/skills";
 
 export async function POST(req: NextRequest){
     try {
         const { userId, skills } = (await req.json()) as {
             userId?: string;
-            skills?: SkillInput[];
+            skills?: SkillsSchema["skills"];
         };
 
         if(!userId || !skills){

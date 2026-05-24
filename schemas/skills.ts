@@ -11,4 +11,3 @@ export const skillsSchema = z.object({
 });
 
 export type SkillsSchema = z.infer<typeof skillsSchema>;
-

@@ -20,4 +20,3 @@ export const experienceSchema = z.object({
 });
 
 export type ExperienceSchema = z.infer<typeof experienceSchema>;
-

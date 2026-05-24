@@ -22,4 +22,3 @@ export const projectsSchema = z.object({
 });
 
 export type ProjectsSchema = z.infer<typeof projectsSchema>;
-

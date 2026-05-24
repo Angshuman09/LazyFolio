@@ -12,10 +12,10 @@ export const linksSchema = z.object({
         id: z.string().optional(),
         label: stringOrEmpty(120).optional(),
         url: z.union([z.literal(""), z.string().url()]).optional(),
+        type: z.enum(["GITHUB", "LINKEDIN", "X", "INSTAGRAM", "CUSTOM"]).optional(),
       }),
     )
     .optional(),
 });
 
 export type LinksSchema = z.infer<typeof linksSchema>;
-

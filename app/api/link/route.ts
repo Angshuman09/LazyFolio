@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
-import { Link } from "lucide-react";
+import { LinksSchema } from "@/schemas/links";
 
 type LinkInput = {
     url: string;
