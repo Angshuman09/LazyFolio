@@ -700,16 +700,48 @@ export function ThemedPortfolioTemplate({
         .${config.key}-ticker-track {
           animation: ${config.key}-ticker 34s linear infinite;
         }
+        @container (max-width: 920px) {
+          .${config.key}-portfolio .lf-themed-hero {
+            grid-template-columns: minmax(0, 1fr) !important;
+            align-items: stretch !important;
+          }
+          .${config.key}-portfolio .lf-themed-project-list,
+          .${config.key}-portfolio .lf-themed-contact-list {
+            grid-template-columns: minmax(0, 1fr) !important;
+          }
+          .${config.key}-portfolio .lf-themed-name {
+            font-size: 42px !important;
+          }
+          .${config.key}-portfolio .lf-themed-banner {
+            height: 13rem !important;
+          }
+        }
+        @container (max-width: 560px) {
+          .${config.key}-portfolio .lf-themed-name {
+            font-size: 34px !important;
+          }
+          .${config.key}-portfolio .lf-themed-banner {
+            height: 11rem !important;
+          }
+          .${config.key}-portfolio .lf-themed-experience-meta,
+          .${config.key}-portfolio .lf-themed-footer {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+        }
       `}</style>
-      <main className={config.pageClass} style={config.pageStyle}>
+      <main
+        className={`${config.key}-portfolio ${config.pageClass}`}
+        style={{ ...config.pageStyle, containerType: "inline-size" }}
+      >
         <div className={config.containerClass}>
           {quote && <p className={config.quoteClass}>{quote}</p>}
 
-          <section className={config.heroClass}>
+          <section className={`lf-themed-hero ${config.heroClass}`}>
             {hasHeroMedia && (
               <div className={config.heroMediaClass}>
                 {banner && (
-                  <div className={config.bannerClass}>
+                  <div className={`lf-themed-banner ${config.bannerClass}`}>
                     <Image
                       src={banner}
                       alt={name ? `${name} banner` : "Portfolio banner"}
@@ -738,7 +770,11 @@ export function ThemedPortfolioTemplate({
             )}
 
             <div>
-              {name && <h1 className={config.nameClass}>{name}</h1>}
+              {name && (
+                <h1 className={`lf-themed-name ${config.nameClass}`}>
+                  {name}
+                </h1>
+              )}
               {tagline && <p className={config.taglineClass}>{tagline}</p>}
               {bio && <p className={config.bioClass}>{bio}</p>}
             </div>
@@ -800,7 +836,7 @@ export function ThemedPortfolioTemplate({
                 <div className={config.experienceListClass}>
                   {experiences.map((experience) => (
                     <div key={experience.id} className={config.experienceItemClass}>
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="lf-themed-experience-meta flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           {experience.company && (
                             <p className={config.companyClass}>
@@ -848,7 +884,7 @@ export function ThemedPortfolioTemplate({
                 >
                   Projects
                 </SectionHeading>
-                <div className={config.projectListClass}>
+                <div className={`lf-themed-project-list ${config.projectListClass}`}>
                   {visibleProjects.map((project) => (
                     <article key={project.id} className={config.projectItemClass}>
                       <div className={config.projectInitialClass}>
@@ -1086,7 +1122,7 @@ export function ThemedPortfolioTemplate({
                 >
                   Connect
                 </SectionHeading>
-                <div className={config.contactListClass}>
+                <div className={`lf-themed-contact-list ${config.contactListClass}`}>
                   {contactLinks.map((link) => (
                     <Link
                       key={link.id}
@@ -1120,7 +1156,7 @@ export function ThemedPortfolioTemplate({
             </>
           )}
 
-          <footer className={config.footerClass}>
+          <footer className={`lf-themed-footer ${config.footerClass}`}>
             <p className={config.footerTextClass}>
               (c) {new Date().getFullYear()}
               {name ? ` ${name}` : ""}

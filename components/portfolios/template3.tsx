@@ -796,14 +796,9 @@ export function Template3({
           {/* ── QUOTE ─────────────────────────────────────────────────── */}
           {quote && (
             <div className="mt-16 flex flex-col items-start gap-3">
-              <p className="text-[14px] text-slate-400 italic leading-relaxed max-w-sm border-l-2 border-slate-100 pl-4">
-                "{quote}"
+              <p className="text-[14px] md:whitespace-nowrap text-slate-400 italic leading-relaxed max-w-sm border-l-2 border-slate-100 pl-4">
+                {quote}
               </p>
-              {name && (
-                <span className="text-[10px] font-semibold text-slate-300 uppercase tracking-[0.18em] font-mono pl-5">
-                  — {name}
-                </span>
-              )}
             </div>
           )}
         </div>
