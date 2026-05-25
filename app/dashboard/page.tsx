@@ -116,7 +116,7 @@ export default function DashboardPage() {
   };
   const updateProfile = useUpdateUserProfile();
 
-  const applyTemplate = () => {
+  const applyTemplate = (templateId = activeTemplate) => {
     if (!session?.user?.id || !profile?.username) {
       toast.error("Create your profile before choosing a template.");
       return;
@@ -136,7 +136,7 @@ export default function DashboardPage() {
         avatar: profile.avatar,
         banner: profile.banner,
         bookAcall: profile.bookAcall || "",
-        themeId: activeTemplate,
+        themeId: templateId,
       },
       {
         onSuccess: () => {
@@ -571,7 +571,7 @@ export default function DashboardPage() {
               <button
                 key={n.id}
                 disabled={isDisabled}
-                className={`flex items-center gap-[9px] px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
+                className={`flex items-center gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
                   tab === n.id
                     ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
                     : ""
@@ -690,7 +690,7 @@ export default function DashboardPage() {
           onClick={() => setTemplateOpen(false)}
         >
           <div
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-[95vw] sm:max-w-105 shadow-2xl overflow-hidden p-4 sm:p-6 animate-in fade-in zoom-in duration-200"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-[95vw] xl:max-w-6xl shadow-2xl overflow-hidden p-4 sm:p-6 animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-serif-display text-[1.25rem] font-medium text-(--lf-ink) mb-1.5 leading-tight">
@@ -701,12 +701,18 @@ export default function DashboardPage() {
               anytime.
             </p>
 
-            <div className="flex flex-col gap-2.5">
+            <div className="grid grid-flow-col auto-cols-[minmax(220px,1fr)] gap-3 overflow-x-auto pb-2">
               {TEMPLATES.map((t) => (
-                <div
+                <button
+                  type="button"
                   key={t.id}
-                  className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-150 cursor-pointer ${activeTemplate === t.id ? "border-(--lf-ink) bg-(--lf-accent-soft)" : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted)"}`}
-                  onClick={() => setActiveTemplate(t.id)}
+                  disabled={isSaveDisabled}
+                  className={`flex min-h-34 flex-col items-start gap-3 p-4 rounded-xl border text-left transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id ? "border-(--lf-ink) bg-(--lf-accent-soft)" : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted)"}`}
+                  onClick={() => {
+                    setActiveTemplate(t.id);
+                    setTemplateOpen(false);
+                    applyTemplate(t.id);
+                  }}
                 >
                   <div
                     className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${activeTemplate === t.id ? "bg-(--lf-ink) text-(--lf-bg)" : "bg-(--lf-border) text-(--lf-muted)"}`}
@@ -717,7 +723,7 @@ export default function DashboardPage() {
                       <span className="text-[1.1rem]">{t.emoji}</span>
                     )}
                   </div>
-                  <div className="flex-1">
+                  <div>
                     <div className="text-[0.88rem] font-semibold text-(--lf-ink)">
                       {t.label}
                     </div>
@@ -725,7 +731,7 @@ export default function DashboardPage() {
                       {t.preview}
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
 
@@ -735,14 +741,6 @@ export default function DashboardPage() {
                 onClick={() => setTemplateOpen(false)}
               >
                 Cancel
-              </button>
-              <button
-                className="inline-flex items-center gap-2 px-5 h-9 rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-bold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap"
-                disabled={isSaveDisabled}
-                onClick={applyTemplate}
-              >
-                <Check size={12} strokeWidth={3} />
-                Apply template
               </button>
             </div>
           </div>
