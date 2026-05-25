@@ -53,7 +53,8 @@ export async function POST(request: NextRequest) {
       quote,
       username,
       tagline,
-      bookAcall
+      bookAcall,
+      themeId,
     } = await request.json();
 
     if (!userId) {
@@ -87,6 +88,7 @@ export async function POST(request: NextRequest) {
       username: optionalString(username),
       tagline: optionalString(tagline),
       bookAcall: optionalString(bookAcall),
+      themeId: optionalString(themeId),
     };
 
     const profile = await prisma.profile.upsert({

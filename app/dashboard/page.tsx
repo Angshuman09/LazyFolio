@@ -51,7 +51,7 @@ export default function DashboardPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [dark, setDark] = useState<boolean | null>(null);
   const [templateOpen, setTemplateOpen] = useState(false);
-  const [activeTemplate, setActiveTemplate] = useState("minimal");
+  const [activeTemplate, setActiveTemplate] = useState("1");
   const [copied, setCopied] = useState(false);
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
@@ -116,7 +116,53 @@ export default function DashboardPage() {
   };
   const updateProfile = useUpdateUserProfile();
 
+  const applyTemplate = () => {
+    if (!session?.user?.id || !profile?.username) {
+      toast.error("Create your profile before choosing a template.");
+      return;
+    }
+
+    setIsSaving(true);
+    updateProfile.mutate(
+      {
+        userId: session.user.id,
+        name: profile.name || session.user.name || "",
+        username: profile.username,
+        tagline: profile.tagline || "",
+        location: profile.location || "",
+        quote: profile.quote || "",
+        email: profile.email || "",
+        bio: profile.bio || "",
+        avatar: profile.avatar,
+        banner: profile.banner,
+        bookAcall: profile.bookAcall || "",
+        themeId: activeTemplate,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Template applied successfully!");
+          setIsSaving(false);
+          setTemplateOpen(false);
+        },
+        onError: (error) => {
+          toast.error(
+            getErrorMessage(
+              error,
+              "Failed to apply template. Please try again.",
+            ),
+          );
+          setIsSaving(false);
+        },
+      },
+    );
+  };
+
   const onProfileSubmit = async (data: ProfileSchema) => {
+    if (!session?.user?.id) {
+      toast.error("You need to be signed in to update your profile.");
+      return;
+    }
+
     setIsSaving(true);
     const avatarFile =
       data.avatar instanceof FileList ? data.avatar[0] : data.avatar;
@@ -133,7 +179,7 @@ export default function DashboardPage() {
 
     updateProfile.mutate(
       {
-        userId: session?.user?.id!,
+        userId: session.user.id,
         name: data.name,
         username: data.username,
         tagline: data.tagline,
@@ -417,18 +463,24 @@ export default function DashboardPage() {
           <button
           disabled={!profile?.username}
             className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
-            onClick={() => setTemplateOpen(true)}
+            onClick={() => {
+              setActiveTemplate(profile?.themeId || "1");
+              setTemplateOpen(true);
+            }}
           >
             <Layers size={13} />
             Templates
             <span className="font-mono text-[0.65rem] text-(--lf-muted) opacity-75 px-1.5 py-px rounded bg-(--lf-border-alpha)">
-              {TEMPLATES.find((t) => t.id === activeTemplate)?.label}
+              {TEMPLATES.find((t) => t.id === (profile?.themeId || activeTemplate))?.label}
             </span>
           </button>
 
           <button
             className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
-            onClick={() => setTemplateOpen(true)}
+            onClick={() => {
+              setActiveTemplate(profile?.themeId || "1");
+              setTemplateOpen(true);
+            }}
             aria-label="Templates"
           >
             <Layers size={13} />
@@ -686,7 +738,8 @@ export default function DashboardPage() {
               </button>
               <button
                 className="inline-flex items-center gap-2 px-5 h-9 rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-bold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans whitespace-nowrap"
-                onClick={() => setTemplateOpen(false)}
+                disabled={isSaveDisabled}
+                onClick={applyTemplate}
               >
                 <Check size={12} strokeWidth={3} />
                 Apply template

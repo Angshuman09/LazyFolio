@@ -56,7 +56,7 @@ const Footer = () => {
         style={{
           fontSize: "clamp(80px, 18vw, 220px)",
           fontWeight: 800,
-          letterSpacing: "-0.03em",
+          // letterSpacing: "-0.03em",
           lineHeight: 0.85,
           paddingLeft: "0.03em",
           fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
