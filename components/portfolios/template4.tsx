@@ -27,21 +27,20 @@ const config: TemplateThemeConfig = {
   containerClass: "mx-auto max-w-[850px] px-5 py-12 sm:px-8 sm:py-16",
   quoteClass:
     "mb-10 max-w-xl border-l-2 border-[#7f1d1d]/35 pl-4 text-[13px] italic leading-7 text-[#6d5f54]",
-  heroClass: "mb-9 grid gap-8 sm:grid-cols-[1.1fr_0.9fr] sm:items-end",
-  heroMediaClass: "relative order-first sm:order-last",
+  heroClass: "mb-9 flex flex-col gap-6",
+  heroMediaClass: "relative w-full",
   bannerClass:
-    "relative h-52 overflow-hidden rounded-lg border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-72",
+    "relative h-36 w-full overflow-hidden rounded-xl border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-58",
   bannerOverlayClass: "absolute inset-0 bg-[#1f2933]/10",
   avatarWithBannerClass:
-    "absolute -bottom-5 left-5 h-[84px] w-[84px] rounded-lg border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md ring-4 ring-[#f7f2e8]",
+    "absolute -bottom-7 left-5 h-[104px] w-[104px] rounded-full border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md ring-1 ring-[#f7f2e8]",
   avatarSoloClass:
-    "h-[84px] w-[84px] rounded-lg border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md",
+    "h-[94px] w-[94px] rounded-lg border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md",
   nameClass:
-    "font-serif-display text-[42px] font-normal leading-[0.95] text-[#1d2421] sm:text-[64px]",
+    "font-serif-display mt-4 text-[42px] font-normal leading-[0.95] text-[#1d2421] sm:text-[64px]",
   taglineClass:
     "mt-4 max-w-md font-sans text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7f1d1d]",
-  bioClass:
-    "mt-5 max-w-xl text-[15px] leading-8 text-[#52645b] sm:text-[16px]",
+  bioClass: "mt-5 max-w-3xl text-[15px] leading-8 text-[#52645b] sm:text-[16px]",
   quickLinksClass: "mb-2 flex flex-wrap items-center gap-2",
   quickLinkClass:
     "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d8cdbf] bg-[#fffdf8] text-[#52645b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/40 hover:text-[#7f1d1d]",
@@ -49,22 +48,19 @@ const config: TemplateThemeConfig = {
     "ml-auto inline-flex h-9 items-center gap-2 rounded-lg bg-[#25302b] px-4 font-sans text-[12px] font-semibold text-[#fffaf2] transition hover:bg-[#7f1d1d]",
   dividerClass: "my-12 h-px w-full bg-[#d8cdbf]",
   sectionHeadingClass: "mb-6 flex items-center gap-3",
-  sectionIconClass:
-    "inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#7f1d1d]/10 text-[#7f1d1d]",
+  // sectionIconClass:
+  //   "inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#7f1d1d]/10 text-[#7f1d1d]",
   sectionTitleClass:
     "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#52645b]",
   experienceListClass: "space-y-4",
   experienceItemClass:
     "rounded-lg border border-[#d8cdbf] bg-[#fffdf8]/90 p-5 shadow-sm",
-  companyClass:
-    "font-serif-display text-[22px] leading-none text-[#1d2421]",
+  companyClass: "font-serif-display text-[22px] leading-none text-[#1d2421]",
   roleClass: "mt-2 font-sans text-[12px] font-medium text-[#7f1d1d]",
   periodClass:
     "font-sans text-[11px] font-semibold uppercase tracking-[0.16em] text-[#9b8d80]",
-  bulletClass:
-    "flex gap-3 font-sans text-[13px] leading-6 text-[#52645b]",
-  bulletMarkerClass:
-    "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f1d1d]/60",
+  bulletClass: "flex gap-3 font-sans text-[13px] leading-6 text-[#52645b]",
+  bulletMarkerClass: "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f1d1d]/60",
   projectListClass: "grid gap-3",
   projectItemClass:
     "group flex items-start gap-4 rounded-lg border border-[#d8cdbf] bg-[#fffdf8] p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/30",
@@ -72,8 +68,7 @@ const config: TemplateThemeConfig = {
     "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f0f7f3] text-[#7f1d1d]",
   projectInitialTextClass:
     "font-serif-display text-[22px] uppercase leading-none",
-  projectNameClass:
-    "font-sans text-[14px] font-bold text-[#1d2421]",
+  projectNameClass: "font-sans text-[14px] font-bold text-[#1d2421]",
   projectDescriptionClass:
     "mt-2 font-sans text-[13px] leading-6 text-[#63736b]",
   projectTagClass:
@@ -90,11 +85,11 @@ const config: TemplateThemeConfig = {
     "rounded-md border border-[#d8cdbf] bg-[#f7f2e8] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6d5f54]",
   showMoreClass:
     "mt-4 inline-flex items-center gap-1 font-sans text-[12px] font-bold text-[#7f1d1d] transition hover:text-[#25302b]",
-  blogListClass: "divide-y divide-[#d8cdbf] rounded-lg border border-[#d8cdbf] bg-[#fffdf8]",
+  blogListClass:
+    "divide-y divide-[#d8cdbf] rounded-lg border border-[#d8cdbf] bg-[#fffdf8]",
   blogItemClass:
     "group flex items-center justify-between gap-4 p-4 text-[#52645b] transition hover:bg-[#f0f7f3]",
-  blogTitleClass:
-    "font-serif-display text-[20px] leading-snug text-[#25302b]",
+  blogTitleClass: "font-serif-display text-[20px] leading-snug text-[#25302b]",
   blogDescriptionClass:
     "mt-1 font-sans text-[12px] leading-5 text-[#748177] line-clamp-2",
   blogMetaClass:
@@ -130,14 +125,14 @@ const config: TemplateThemeConfig = {
     "font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#52645b]",
   iconSize: 14,
   iconStrokeWidth: 1.7,
-  sectionIcons: {
-    experience: BriefcaseBusiness,
-    projects: LibraryBig,
-    writing: PenLine,
-    stack: Sparkles,
-    contact: Send,
-    call: CalendarDays,
-  },
+  // sectionIcons: {
+  //   experience: BriefcaseBusiness,
+  //   projects: LibraryBig,
+  //   writing: PenLine,
+  //   stack: Sparkles,
+  //   contact: Send,
+  //   call: CalendarDays,
+  // },
 };
 
 export function Template4(props: ThemedPortfolioProps) {
