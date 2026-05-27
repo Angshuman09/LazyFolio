@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { deleteFromCloudinary } from "../upload/route";
 
 function optionalString(value: string | null | undefined) {
   if (typeof value !== "string") {
@@ -8,6 +9,15 @@ function optionalString(value: string | null | undefined) {
 
   const trimmedValue = value.trim();
   return trimmedValue === "" ? undefined : trimmedValue;
+}
+
+function clearableString(value: string | null | undefined) {
+  if (typeof value !== "string") {
+    return value ?? undefined;
+  }
+
+  const trimmedValue = value.trim();
+  return trimmedValue === "" ? null : trimmedValue;
 }
 
 export async function GET(request: NextRequest) {
@@ -77,17 +87,36 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const existingProfile = await prisma.profile.findUnique({ where: { userId } });
+
+    const newAvatar = optionalString(avatar);
+    const newBanner = optionalString(banner);
+
+    if (existingProfile?.avatar) {
+      const avatarChanged = newAvatar !== existingProfile.avatar;
+      if (avatarChanged) {
+        await deleteFromCloudinary(existingProfile.avatar);
+      }
+    }
+
+    if (existingProfile?.banner) {
+      const bannerChanged = newBanner !== existingProfile.banner;
+      if (bannerChanged) {
+        await deleteFromCloudinary(existingProfile.banner);
+      }
+    }
+
     const profileData = {
-      name: optionalString(name),
-      bio: optionalString(bio),
-      location: optionalString(location),
-      email: optionalString(email),
+      name: clearableString(name),
+      bio: clearableString(bio),
+      location: clearableString(location),
+      email: clearableString(email),
       avatar: optionalString(avatar),
       banner: optionalString(banner),
-      quote: optionalString(quote),
+      quote: clearableString(quote),
       username: optionalString(username),
-      tagline: optionalString(tagline),
-      bookAcall: optionalString(bookAcall),
+      tagline: clearableString(tagline),
+      bookAcall: clearableString(bookAcall),
       themeId: optionalString(themeId),
     };
 

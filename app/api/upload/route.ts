@@ -40,3 +40,23 @@ export async function POST(req: NextRequest){
         return Response.json({error: 'Failed to upload image'}, {status: 500});
     }
 }
+
+function extractPublicId(url: string): string | null {
+  try {
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[a-z]+)?$/i);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteFromCloudinary(url: string) {
+  const publicId = extractPublicId(url);
+  if (!publicId) return;
+  try {
+    await cloudinary.uploader.destroy(publicId);
+  } catch (err) {
+    console.error("Failed to delete from Cloudinary:", err);
+    
+  }
+}
