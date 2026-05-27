@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RefObject, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/schemas/profile";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,9 +21,15 @@ type ProfileData = Partial<
   >
 > | null;
 
+type SessionData = {
+  user?: {
+    id?: string | null;
+  } | null;
+} | null;
+
 type Props = {
   profile?: ProfileData;
-  session?: any;
+  session?: SessionData;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit: (data: ProfileSchema) => void;
 };
@@ -56,7 +62,7 @@ export default function ProfileForm({
       banner: undefined,
       bookAcall: profile?.bookAcall || "",
     }),
-    [profile],
+    [profile, session?.user?.id],
   );
 
   const [loading, setLoading] = useState(false);
@@ -74,6 +80,8 @@ export default function ProfileForm({
     handleSubmit,
     reset,
     getValues,
+    setValue,
+    control,
     formState: { errors },
   } = useForm<ProfileSchema>({
     defaultValues,
@@ -85,6 +93,11 @@ export default function ProfileForm({
   }, [defaultValues, reset]);
 
   const queryClient = useQueryClient();
+  const emailValue = useWatch({ control, name: "email" });
+  const taglineValue = useWatch({ control, name: "tagline" });
+  const bookCallValue = useWatch({ control, name: "bookAcall" });
+  const quoteValue = useWatch({ control, name: "quote" });
+  const bioValue = useWatch({ control, name: "bio" });
 
   console.log(session?.user?.id);
 
@@ -258,9 +271,25 @@ export default function ProfileForm({
               </div>
 
               <div className="flex flex-col gap-1.25">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Email
-                </label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
+                    Email
+                  </label>
+                  {emailValue && (
+                    <button
+                      type="button"
+                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+                      onClick={() =>
+                        setValue("email", "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
                 <input
                   {...register("email")}
                   className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
@@ -270,9 +299,25 @@ export default function ProfileForm({
               </div>
 
               <div className=" flex flex-col gap-1.25">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Tagline
-                </label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
+                    Tagline
+                  </label>
+                  {taglineValue && (
+                    <button
+                      type="button"
+                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+                      onClick={() =>
+                        setValue("tagline", "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
                 <input
                   {...register("tagline")}
                   placeholder="e.g. Full Stack Developer · Open to work"
@@ -282,15 +327,31 @@ export default function ProfileForm({
               </div>
 
               <div className=" flex flex-col gap-1.25">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Book a Call Link
-                </label>
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
+                    Book a Call Link
+                  </label>
+                  {bookCallValue && (
+                    <button
+                      type="button"
+                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+                      onClick={() =>
+                        setValue("bookAcall", "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
                 <input
                   {...register("bookAcall")}
                   placeholder="e.g. https://cal.com/angshuman-kashyap-qmfpnk/let-s-talk"
                   className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
                 />
-                <FieldError message={errors.tagline?.message} />
+                <FieldError message={errors.bookAcall?.message} />
               </div>
 
               <div className="flex flex-col gap-1.25">
@@ -306,9 +367,25 @@ export default function ProfileForm({
               </div>
 
               <div className="flex flex-col gap-1.25">
+                <div className="flex items-center justify-between gap-2">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   Quote
                 </label>
+                  {quoteValue && (
+                    <button
+                      type="button"
+                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+                      onClick={() =>
+                        setValue("quote", "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                  )}
+                  </div>
                 <input
                   type="text"
                   {...register("quote")}
@@ -319,9 +396,25 @@ export default function ProfileForm({
               </div>
             </div>
             <div className="flex flex-col gap-1.25 mt-3.5">
+               <div className="flex items-center justify-between gap-2">
               <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                 Bio
               </label>
+              {bioValue && (
+                    <button
+                      type="button"
+                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+                      onClick={() =>
+                        setValue("bio", "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                    >
+                      Clear
+                    </button>
+                  )}
+                  </div>
               <textarea
                 {...register("bio")}
                 placeholder="Tell us about yourself"

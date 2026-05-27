@@ -170,7 +170,7 @@ export type TemplateThemeConfig = {
   quickCtaClass: string;
   dividerClass: string;
   sectionHeadingClass: string;
-  sectionIconClass: string;
+  // sectionIconClass: string;
   sectionTitleClass: string;
   experienceListClass: string;
   experienceItemClass: string;
@@ -214,14 +214,14 @@ export type TemplateThemeConfig = {
   footerBrandClass: string;
   iconSize?: number;
   iconStrokeWidth?: number;
-  sectionIcons?: {
-    experience?: IconComponent;
-    projects?: IconComponent;
-    writing?: IconComponent;
-    stack?: IconComponent;
-    contact?: IconComponent;
-    call?: IconComponent;
-  };
+  // sectionIcons?: {
+  //   experience?: IconComponent;
+  //   projects?: IconComponent;
+  //   writing?: IconComponent;
+  //   stack?: IconComponent;
+  //   contact?: IconComponent;
+  //   call?: IconComponent;
+  // };
 };
 
 const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
@@ -628,9 +628,9 @@ function SectionHeading({
 }) {
   return (
     <div className={config.sectionHeadingClass}>
-      <span className={config.sectionIconClass}>
+      {/* <span className={config.sectionIconClass}>
         <Icon size={13} strokeWidth={config.iconStrokeWidth ?? 1.8} />
-      </span>
+      </span> */}
       <h2 className={config.sectionTitleClass}>{children}</h2>
     </div>
   );
@@ -688,7 +688,7 @@ export function ThemedPortfolioTemplate({
   const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
   const iconSize = config.iconSize ?? 14;
   const iconStrokeWidth = config.iconStrokeWidth ?? 1.8;
-  const CallIcon = config.sectionIcons?.call ?? CalendarDays;
+  // const CallIcon = config.sectionIcons?.call ?? CalendarDays;
 
   return (
     <>
@@ -829,7 +829,7 @@ export function ThemedPortfolioTemplate({
               <section>
                 <SectionHeading
                   config={config}
-                  icon={config.sectionIcons?.experience ?? BriefcaseBusiness}
+                  // icon={config.sectionIcons?.experience ?? BriefcaseBusiness}
                 >
                   Experience
                 </SectionHeading>
@@ -880,7 +880,7 @@ export function ThemedPortfolioTemplate({
               <section>
                 <SectionHeading
                   config={config}
-                  icon={config.sectionIcons?.projects ?? Layers3}
+                  // icon={config.sectionIcons?.projects ?? Layers3}
                 >
                   Projects
                 </SectionHeading>
@@ -995,7 +995,7 @@ export function ThemedPortfolioTemplate({
               <section>
                 <SectionHeading
                   config={config}
-                  icon={config.sectionIcons?.writing ?? BookOpen}
+                  // icon={config.sectionIcons?.writing ?? BookOpen}
                 >
                   Writing
                 </SectionHeading>
@@ -1059,7 +1059,7 @@ export function ThemedPortfolioTemplate({
               <section>
                 <SectionHeading
                   config={config}
-                  icon={config.sectionIcons?.stack ?? Code2}
+                  // icon={config.sectionIcons?.stack ?? Code2}
                 >
                   Stack
                 </SectionHeading>
@@ -1091,7 +1091,7 @@ export function ThemedPortfolioTemplate({
                     />
                   ) : (
                     <span className={config.footerAvatarClass}>
-                      <CallIcon size={17} strokeWidth={iconStrokeWidth} />
+                      {/* <CallIcon size={17} strokeWidth={iconStrokeWidth} /> */}
                     </span>
                   )}
                   <span className="min-w-0 flex-1">
@@ -1118,7 +1118,7 @@ export function ThemedPortfolioTemplate({
               <section>
                 <SectionHeading
                   config={config}
-                  icon={config.sectionIcons?.contact ?? Send}
+                  // icon={config.sectionIcons?.contact ?? Send}
                 >
                   Connect
                 </SectionHeading>

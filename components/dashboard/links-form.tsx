@@ -168,8 +168,8 @@ function LinkCard({
       <div className="flex items-center justify-between mt-3.5">
         <button
           type="button"
-          // onClick={() => remove(index)}
-          className="inline-flex items-center gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+          onClick={() => setConfirmed(true)}
+          className="inline-flex items-center border-slate-400 gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border  text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
           {/* <Trash2 size={11} /> */}
           Cancel
