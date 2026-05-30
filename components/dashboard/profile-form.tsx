@@ -28,7 +28,7 @@ type SessionData = {
 } | null;
 
 type Props = {
-  profile?: ProfileData;
+  profile?: ProfileSchema;
   session?: SessionData;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit: (data: ProfileSchema) => void;

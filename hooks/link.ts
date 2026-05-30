@@ -5,7 +5,7 @@ export function useDeleteLink(){
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async (linkId: string)=>{
-            const response = await fetch(`/api/links/${linkId}`,{
+            const response = await fetch(`/api/dashboard/links/${linkId}`,{
                 method: "DELETE",
             });
             const payload = await response.json().catch(() => null);
@@ -25,7 +25,7 @@ export function useCreateLink(){
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async (linkData: unknown)=>{
-            const response = await fetch('/api/link',{
+            const response = await fetch('/api/dashboard/link',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

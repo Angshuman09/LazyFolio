@@ -6,7 +6,7 @@ export function useCreateLinks(){
 
     const mutation = useMutation({
         mutationFn: async (linkData: unknown)=>{
-            const response = await fetch('/api/links',{
+            const response = await fetch('/api/dashboard/links',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

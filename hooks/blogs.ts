@@ -6,7 +6,7 @@ export function useCreateBlogs(){
 
     const mutation = useMutation({
         mutationFn: async (data: unknown)=>{
-            const response = await fetch('/api/blogs',{
+            const response = await fetch('/api/dashboard/blogs',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

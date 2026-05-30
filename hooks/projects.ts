@@ -6,7 +6,7 @@ export function useCreateProjects(){
 
     const mutation = useMutation({
         mutationFn: async (data: unknown)=>{
-            const response = await fetch('/api/projects',{
+            const response = await fetch('/api/dashboard/projects',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

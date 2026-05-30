@@ -5,7 +5,7 @@ export const useCreateExperience = ()=>{
 
     const mutation = useMutation({
         mutationFn: async (data: unknown)=>{
-            const response = await fetch('/api/experience', {
+            const response = await fetch('/api/dashboard/experience', {
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

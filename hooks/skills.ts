@@ -5,7 +5,7 @@ export function useCreateSkills(){
 
     const mutation = useMutation({
         mutationFn: async (data: unknown)=>{
-            const response = await fetch('/api/skills',{
+            const response = await fetch('/api/dashboard/skills',{
                 method: "POST",
                  headers: {
                     "Content-Type": "application/json",

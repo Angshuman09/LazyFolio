@@ -5,7 +5,7 @@ export const useGetUserProfile = (userId?: string) => {
   const query = useQuery({
     queryKey: ["profile", userId],
     queryFn: async () => {
-      const res = await fetch(`/api/profile?userId=${userId}`, {
+      const res = await fetch(`/api/dashboard/profile?userId=${userId}`, {
         method: "GET",
       });
       const payload = await res.json().catch(() => null);
@@ -27,7 +27,7 @@ export const useUpdateUserProfile = () => {
 
   const mutation = useMutation({
     mutationFn: async (profileData: ProfileSchema) => {
-      const res = await fetch(`/api/profile`, {
+      const res = await fetch(`/api/dashboard/profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
