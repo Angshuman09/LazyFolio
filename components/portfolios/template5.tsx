@@ -49,8 +49,6 @@ const config: TemplateThemeConfig = {
     "ml-auto inline-flex h-9 items-center gap-2 rounded-md border border-[#2ddf7f]/60 bg-[#2ddf7f]/10 px-4 text-[12px] font-semibold text-[#d7ffe8] transition hover:bg-[#2ddf7f]/20",
   dividerClass: "my-10 h-px w-full bg-[#1f4d36]",
   sectionHeadingClass: "mb-5 flex items-center gap-3",
-  sectionIconClass:
-    "inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#1f4d36] bg-[#0a1a13] text-[#2ddf7f]",
   sectionTitleClass:
     "text-[12px] font-semibold uppercase tracking-[0.22em] text-[#86efac]",
   experienceListClass: "space-y-3",
@@ -116,15 +114,7 @@ const config: TemplateThemeConfig = {
   footerTextClass: "text-[10px] uppercase tracking-[0.14em] text-[#5aa77a]",
   footerBrandClass: "text-[10px] uppercase tracking-[0.14em] text-[#86efac]",
   iconSize: 14,
-  iconStrokeWidth: 1.9,
-  sectionIcons: {
-    experience: Briefcase,
-    projects: Braces,
-    writing: BookMarked,
-    stack: Binary,
-    contact: Radio,
-    call: CalendarClock,
-  },
+  iconStrokeWidth: 1.9
 };
 
 export function Template5(props: ThemedPortfolioProps) {

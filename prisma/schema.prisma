@@ -83,7 +83,6 @@ model Profile {
   name        String?
   email       String?
   quote       String?
-  location    String?
   userId      String       @unique
   username    String?      @unique
   bio         String?

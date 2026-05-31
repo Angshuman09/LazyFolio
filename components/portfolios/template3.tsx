@@ -447,7 +447,7 @@ export function Template3({
           {/* ── HERO ─────────────────────────────────────────────────── */}
           <section className="mb-10">
             {hasHeroMedia && (
-              <div className="relative mb-10">
+              <div className="relative mb-2">
                 {banner && (
                   <div className="relative h-36 sm:h-52 rounded-xl overflow-hidden">
                     <Image

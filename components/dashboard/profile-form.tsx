@@ -13,7 +13,6 @@ type ProfileData = Partial<
     | "name"
     | "username"
     | "tagline"
-    | "location"
     | "quote"
     | "email"
     | "bio"
@@ -54,7 +53,6 @@ export default function ProfileForm({
       name: profile?.name || "",
       username: profile?.username || "",
       tagline: profile?.tagline || "",
-      location: profile?.location || "",
       quote: profile?.quote || "",
       email: profile?.email || "",
       bio: profile?.bio || "",
@@ -354,19 +352,7 @@ export default function ProfileForm({
                 <FieldError message={errors.bookAcall?.message} />
               </div>
 
-              <div className="flex flex-col gap-1.25">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Location
-                </label>
-                <input
-                  {...register("location")}
-                  placeholder="e.g. Assam, India"
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-                />
-                <FieldError message={errors.location?.message} />
-              </div>
-
-              <div className="flex flex-col gap-1.25">
+              <div className="flex flex-col gap-1.25 sm:col-span-2">
                 <div className="flex items-center justify-between gap-2">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   Quote

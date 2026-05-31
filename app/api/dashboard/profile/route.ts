@@ -2,6 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { deleteFromCloudinary } from "../upload/route";
 
+const profileSelect = {
+  id: true,
+  avatar: true,
+  banner: true,
+  name: true,
+  email: true,
+  quote: true,
+  userId: true,
+  username: true,
+  bio: true,
+  skills: true,
+  themeId: true,
+  resume: true,
+  tagline: true,
+  bookAcall: true,
+  views: true,
+  createdAt: true,
+  updatedAt: true,
+  experiences: true,
+  projects: true,
+  blogs: true,
+  links: true,
+};
+
 function optionalString(value: string | null | undefined) {
   if (typeof value !== "string") {
     return value ?? undefined;
@@ -34,15 +58,11 @@ export async function GET(request: NextRequest) {
   try {
     const profile = await prisma.profile.findUnique({
       where: { userId },
-      include: {
-        experiences: true,
-        projects: true,
-        blogs: true,
-        links: true,
-      },
+      select: profileSelect,
     });
     return NextResponse.json(profile, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch profile", error);
     return NextResponse.json(
       { error: "Failed to fetch profile" },
       { status: 500 },
@@ -56,7 +76,6 @@ export async function POST(request: NextRequest) {
       userId,
       name,
       bio,
-      location,
       email,
       avatar,
       banner,
@@ -77,6 +96,7 @@ export async function POST(request: NextRequest) {
     if (username) {
       const existingUser = await prisma.profile.findUnique({
         where: { username },
+        select: { userId: true },
       });
 
       if (existingUser && existingUser.userId !== userId) {
@@ -87,7 +107,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const existingProfile = await prisma.profile.findUnique({ where: { userId } });
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId },
+      select: { avatar: true, banner: true },
+    });
 
     const newAvatar = optionalString(avatar);
     const newBanner = optionalString(banner);
@@ -109,7 +132,6 @@ export async function POST(request: NextRequest) {
     const profileData = {
       name: clearableString(name),
       bio: clearableString(bio),
-      location: clearableString(location),
       email: clearableString(email),
       avatar: optionalString(avatar),
       banner: optionalString(banner),
@@ -127,6 +149,7 @@ export async function POST(request: NextRequest) {
         userId,
         ...profileData,
       },
+      select: profileSelect,
     });
 
     return NextResponse.json(profile, { status: 200 });

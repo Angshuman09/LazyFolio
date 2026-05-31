@@ -281,11 +281,11 @@ const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
   },
 ];
 
-function textValue(value: unknown) {
+export function textValue(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function cleanUrl(value?: string | null) {
+export function cleanUrl(value?: string | null) {
   const url = textValue(value);
   if (!url) return "";
 
@@ -304,7 +304,7 @@ function cleanUrl(value?: string | null) {
   return `https://${url}`;
 }
 
-function shouldOpenInNewTab(href?: string) {
+export function shouldOpenInNewTab(href?: string) {
   return !!href && /^https?:\/\//i.test(href);
 }
 
@@ -366,13 +366,13 @@ function normalizeLink(
   return { id: link.id || `${label}-${index}`, label, href };
 }
 
-function normalizeLinks(links?: ProfileLink[] | null) {
+export function normalizeLinks(links?: ProfileLink[] | null) {
   return (links || [])
     .map((link, index) => normalizeLink(link, index))
     .filter(Boolean) as NormalizedLink[];
 }
 
-function addProfileContactLinks(
+export function addProfileContactLinks(
   links: NormalizedLink[],
   profile?: ProfileData | null,
 ) {
@@ -434,7 +434,7 @@ function splitDescription(description?: string | null) {
     .filter(Boolean);
 }
 
-function normalizeExperiences(
+export function normalizeExperiences(
   experiences?: ProfileExperience[] | null,
 ): PortfolioExperience[] {
   return (experiences || [])
@@ -456,7 +456,7 @@ function normalizeExperiences(
     .filter(Boolean) as PortfolioExperience[];
 }
 
-function normalizeProjects(
+export function normalizeProjects(
   projects?: ProfileProject[] | null,
 ): PortfolioProject[] {
   return (projects || [])
@@ -475,7 +475,7 @@ function normalizeProjects(
 
       const status =
         textValue(project.status) ||
-        (project.live || demo ? "Live" : github ? "Open Source" : "");
+        (project.live || demo ? "Live" : github ? "" : "");
 
       return {
         id: project.id || `${name || "project"}-${index}`,
@@ -490,7 +490,7 @@ function normalizeProjects(
     .filter(Boolean) as PortfolioProject[];
 }
 
-function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
+export function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
   return (blogs || [])
     .map((blog, index) => {
       const title = textValue(blog.title);
@@ -511,18 +511,18 @@ function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
     .filter(Boolean) as PortfolioBlog[];
 }
 
-function normalizeStack(skills?: string[] | null): StackItem[] {
+export function normalizeStack(skills?: string[] | null): StackItem[] {
   return (skills || [])
     .map(textValue)
     .filter(Boolean)
     .map((skill) => ({ name: skill }));
 }
 
-function getBookCallLink(profile?: ProfileData) {
+export function getBookCallLink(profile?: ProfileData) {
   return cleanUrl(profile?.bookAcall);
 }
 
-function getLinkIcon(
+export function getLinkIcon(
   label: string,
   href: string,
   iconSize = 14,
@@ -882,16 +882,16 @@ export function ThemedPortfolioTemplate({
                   config={config}
                   // icon={config.sectionIcons?.projects ?? Layers3}
                 >
-                  Projects
+                  Proof of work
                 </SectionHeading>
                 <div className={`lf-themed-project-list ${config.projectListClass}`}>
                   {visibleProjects.map((project) => (
                     <article key={project.id} className={config.projectItemClass}>
-                      <div className={config.projectInitialClass}>
+                      {/* <div className={config.projectInitialClass}>
                         <span className={config.projectInitialTextClass}>
                           {project.name?.[0] ?? "#"}
                         </span>
-                      </div>
+                      </div> */}
 
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -997,7 +997,7 @@ export function ThemedPortfolioTemplate({
                   config={config}
                   // icon={config.sectionIcons?.writing ?? BookOpen}
                 >
-                  Writing
+                  Thoughts and writings
                 </SectionHeading>
                 <div className={config.blogListClass}>
                   {blogs.map((blog) => {
@@ -1061,7 +1061,7 @@ export function ThemedPortfolioTemplate({
                   config={config}
                   // icon={config.sectionIcons?.stack ?? Code2}
                 >
-                  Stack
+                  Skills
                 </SectionHeading>
                 <StackTicker stack={stack} config={config} />
               </section>
@@ -1112,7 +1112,7 @@ export function ThemedPortfolioTemplate({
             </>
           )}
 
-          {contactLinks.length > 0 && (
+          {/* {contactLinks.length > 0 && (
             <>
               <Divider config={config} />
               <section>
@@ -1154,7 +1154,7 @@ export function ThemedPortfolioTemplate({
                 </div>
               </section>
             </>
-          )}
+          )} */}
 
           <footer className={`lf-themed-footer ${config.footerClass}`}>
             <p className={config.footerTextClass}>

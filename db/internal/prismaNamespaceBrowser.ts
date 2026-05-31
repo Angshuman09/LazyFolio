@@ -143,7 +143,6 @@ export const ProfileScalarFieldEnum = {
   name: 'name',
   email: 'email',
   quote: 'quote',
-  location: 'location',
   userId: 'userId',
   username: 'username',
   bio: 'bio',

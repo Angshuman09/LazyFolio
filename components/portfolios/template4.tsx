@@ -30,7 +30,7 @@ const config: TemplateThemeConfig = {
   heroClass: "mb-9 flex flex-col gap-6",
   heroMediaClass: "relative w-full",
   bannerClass:
-    "relative h-36 w-full overflow-hidden rounded-xl border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-58",
+    "relative h-36 w-full overflow-hidden rounded-xl border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-68",
   bannerOverlayClass: "absolute inset-0 bg-[#1f2933]/10",
   avatarWithBannerClass:
     "absolute -bottom-7 left-5 h-[104px] w-[104px] rounded-full border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md ring-1 ring-[#f7f2e8]",
@@ -95,7 +95,7 @@ const config: TemplateThemeConfig = {
   blogMetaClass:
     "font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-[#9b8d80]",
   stackShellClass:
-    "relative overflow-hidden rounded-lg border border-[#d8cdbf] bg-[#fffdf8] py-3",
+    "relative overflow-hidden rounded-lg py-3",
   stackFadeLeftClass:
     "pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-gradient-to-r from-[#fffdf8] to-transparent",
   stackFadeRightClass:

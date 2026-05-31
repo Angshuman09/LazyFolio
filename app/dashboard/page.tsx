@@ -102,7 +102,7 @@ export default function DashboardPage() {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch("/api/upload", {
+    const response = await fetch("/api/dashboard/upload", {
       method: "POST",
       body: formData,
     });
@@ -129,7 +129,6 @@ export default function DashboardPage() {
         name: profile.name || session.user.name || "",
         username: profile.username,
         tagline: profile.tagline || "",
-        location: profile.location || "",
         quote: profile.quote || "",
         email: profile.email || "",
         bio: profile.bio || "",
@@ -183,7 +182,6 @@ export default function DashboardPage() {
         name: data.name,
         username: data.username,
         tagline: data.tagline,
-        location: data.location,
         quote: data?.quote,
         email: data.email,
         bio: data.bio,

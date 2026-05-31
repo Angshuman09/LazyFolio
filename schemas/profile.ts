@@ -7,7 +7,6 @@ export const profileSchema = z.object({
   quote: z.string().min(1).optional().or(z.literal("")),
   username: z.string().min(3).max(20),
   tagline: z.string().max(100).optional(),
-  location: z.string().optional(),
   bio: z.string().max(500).optional(),
   avatar: z.any().optional(),
   banner: z.any().optional(),

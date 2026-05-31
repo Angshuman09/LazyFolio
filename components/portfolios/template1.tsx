@@ -7,8 +7,19 @@ import {
   ExternalLink,
   ArrowRight,
   MoveUpRight,
+  Linkedin,
+  Youtube,
+  Mail,
+  Globe,
+  FileText,
+  Code2,
+  BookOpen,
+  Instagram,
+  Phone,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 type DateLike = string | Date | null | undefined;
 
@@ -164,6 +175,11 @@ const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
     labels: ["dev.to", "dev"],
   },
   {
+    label: "LeetCode",
+    domains: ["leetcode.com"],
+    labels: ["leetcode"],
+  },
+  {
     label: "Dribbble",
     domains: ["dribbble.com"],
     labels: ["dribbble"],
@@ -174,6 +190,99 @@ const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
     labels: ["behance"],
   },
 ];
+
+// ─── ICON RESOLVER ────────────────────────────────────────────────────────────
+function getLinkIcon(label: string, href: string): ReactNode {
+  const domain = getDomain(href);
+  const lowerLabel = label.toLowerCase();
+  const lowerDomain = domain.toLowerCase();
+
+  const iconProps = { size: 14 };
+
+  // GitHub
+  if (lowerDomain.includes("github") || lowerLabel === "github") {
+    return <Github {...iconProps} />;
+  }
+
+  // X / Twitter
+  if (
+    lowerDomain.includes("x.com") ||
+    lowerDomain.includes("twitter") ||
+    lowerLabel === "x" ||
+    lowerLabel === "twitter"
+  ) {
+    // X logo as SVG since lucide doesn't have it
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    );
+  }
+
+  // LinkedIn
+  if (lowerDomain.includes("linkedin") || lowerLabel === "linkedin") {
+    return <Linkedin {...iconProps} />;
+  }
+
+  // Instagram
+  if (lowerDomain.includes("instagram") || lowerLabel === "instagram") {
+    return <Instagram {...iconProps} />;
+  }
+
+  // YouTube
+  if (
+    lowerDomain.includes("youtube") ||
+    lowerDomain.includes("youtu.be") ||
+    lowerLabel === "youtube"
+  ) {
+    return <Youtube {...iconProps} />;
+  }
+
+  // Medium
+  if (lowerDomain.includes("medium") || lowerLabel === "medium") {
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+      </svg>
+    );
+  }
+
+  // LeetCode
+  if (lowerDomain.includes("leetcode") || lowerLabel === "leetcode") {
+    return <Code2 {...iconProps} />;
+  }
+
+  // Dev.to
+  if (
+    lowerDomain.includes("dev.to") ||
+    lowerLabel === "dev.to" ||
+    lowerLabel === "dev"
+  ) {
+    return <BookOpen {...iconProps} />;
+  }
+
+  // Mail
+  if (
+    href.startsWith("mailto:") ||
+    lowerLabel === "mail" ||
+    lowerLabel === "email"
+  ) {
+    return <Mail {...iconProps} />;
+  }
+
+  // Phone
+  if (href.startsWith("tel:") || lowerLabel === "phone") {
+    return <Phone {...iconProps} />;
+  }
+
+  // Resume
+  if (lowerLabel === "resume" || lowerLabel === "cv") {
+    return <FileText {...iconProps} />;
+  }
+
+  // Fallback
+  return <Globe {...iconProps} />;
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const Divider = () => <div className="w-full h-px bg-zinc-800/80 my-10" />;
@@ -519,12 +628,12 @@ export function Template1({
   return (
     <>
       <main className="min-h-screen bg-[#0e0e0e] text-zinc-300 antialiased">
-        <div className="max-w-[640px] mx-auto px-5 py-16 sm:py-20">
+        <div className="max-w-160 mx-auto px-5 py-16 sm:py-20">
           {/* QUOTE */}
           {quote && (
             <div className="mb-12 border-l-2 border-zinc-700 pl-4">
               <p className="text-xs text-zinc-500 italic leading-relaxed">
-                &ldquo;{quote}&rdquo;
+                {quote}
               </p>
             </div>
           )}
@@ -532,9 +641,9 @@ export function Template1({
           {/* HERO */}
           <section className="mb-8">
             {hasHeroMedia && (
-              <div className="relative mb-9">
+              <div className="relative mb-14">
                 {banner && (
-                  <div className="relative h-28 sm:h-34 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
+                  <div className="relative h-38 sm:h-44 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900">
                     <Image
                       src={banner}
                       alt={name ? `${name} banner` : "Portfolio banner"}
@@ -548,13 +657,13 @@ export function Template1({
                   <Image
                     src={avatar}
                     alt={name || "Profile avatar"}
-                    width={56}
-                    height={56}
+                    width={46}
+                    height={46}
                     unoptimized
                     className={
                       banner
-                        ? "absolute left-4 -bottom-6 w-14 h-14 rounded-2xl object-cover ring-4 ring-[#0e0e0e] border border-zinc-700 bg-zinc-900"
-                        : "w-14 h-14 rounded-2xl object-cover border border-zinc-700 bg-zinc-900"
+                        ? "absolute left-3 -bottom-9 w-25 h-25 rounded-full object-cover "
+                        : "w-14 h-14 rounded-2xl object-cover ring-1 ring-zinc-700"
                     }
                   />
                 )}
@@ -577,18 +686,27 @@ export function Template1({
           {hasQuickActions && (
             <div className="flex flex-wrap gap-2 mb-4">
               {links.map((link) => (
-                <a
-                  key={link.id}
-                  href={link.href}
-                  target={shouldOpenInNewTab(link.href) ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-2.5 py-1.5 rounded-md text-[11px] text-zinc-500 border border-zinc-800 bg-zinc-900/60 hover:border-zinc-600 hover:text-zinc-200 transition-all duration-150"
-                >
-                  {link.label}
-                </a>
+                <Tooltip key={link.id}>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={link.href}
+                      target={
+                        shouldOpenInNewTab(link.href) ? "_blank" : undefined
+                      }
+                      rel="noopener noreferrer"
+                      title={link.label}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-md text-zinc-500 border border-zinc-800 bg-zinc-900/60 hover:border-zinc-600 hover:text-zinc-200 transition-all duration-150"
+                    >
+                      {getLinkIcon(link.label, link.href)}
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white text-zinc-950 border border-zinc-200 [&_.bg-foreground]:bg-white [&_.fill-foreground]:fill-white">
+                    <p>{link.label}</p>
+                  </TooltipContent>
+                </Tooltip>
               ))}
               {bookCallLink && (
-                <a
+                <Link
                   href={bookCallLink}
                   target={
                     shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
@@ -598,7 +716,7 @@ export function Template1({
                 >
                   Book a call
                   <ArrowRight size={10} />
-                </a>
+                </Link>
               )}
             </div>
           )}
@@ -862,7 +980,7 @@ export function Template1({
             <>
               <Divider />
               <section className="mb-2">
-                <a
+                <Link
                   href={bookCallLink}
                   target={
                     shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
@@ -887,7 +1005,7 @@ export function Template1({
                     size={11}
                     className="text-zinc-600 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition-all"
                   />
-                </a>
+                </Link>
               </section>
             </>
           )}
@@ -899,7 +1017,7 @@ export function Template1({
                 <SectionHeading>Let&apos;s connect</SectionHeading>
                 <div className="space-y-0.5">
                   {contactLinks.map((link) => (
-                    <a
+                    <Link
                       key={link.id}
                       href={link.href}
                       target={
@@ -908,8 +1026,11 @@ export function Template1({
                       rel="noopener noreferrer"
                       className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800/60 transition-all duration-150"
                     >
-                      <div className="flex items-center">
-                        <span className="text-[13px] text-zinc-500 group-hover:text-zinc-200 transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-zinc-500 group-hover:text-zinc-200 transition-colors">
+                          {getLinkIcon(link.label, link.href)}
+                        </span>
+                        <span className="text-[13px] text-zinc-400 group-hover:text-zinc-200 transition-colors">
                           {link.label}
                         </span>
                       </div>
@@ -917,7 +1038,7 @@ export function Template1({
                         size={11}
                         className="text-zinc-700 group-hover:text-zinc-500 transition-colors"
                       />
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </section>

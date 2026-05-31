@@ -27,18 +27,18 @@ const config: TemplateThemeConfig = {
   containerClass: "mx-auto max-w-[880px] px-5 py-12 sm:px-8 sm:py-18",
   quoteClass:
     "mb-10 max-w-xl border-l border-[#c9a227]/55 pl-4 font-serif-display text-[17px] italic leading-7 text-[#c8bda7]",
-  heroClass: "mb-9 grid gap-8 sm:grid-cols-[0.95fr_1.05fr] sm:items-end",
-  heroMediaClass: "relative",
+  heroClass: "mb-8",
+  heroMediaClass: "relative mb-9",
   bannerClass:
-    "relative h-52 overflow-hidden rounded-lg border border-[#3b352c] bg-[#171512] shadow-2xl sm:h-87",
+    "relative h-32 overflow-hidden rounded-xl border border-[#3b352c] bg-[#171512] sm:h-55",
   bannerOverlayClass:
     "absolute inset-0 bg-[linear-gradient(180deg,rgba(17,16,14,0.04),rgba(17,16,14,0.42))]",
   avatarWithBannerClass:
-    "absolute -bottom-6 left-5 h-[86px] w-[86px] rounded-lg object-cover ring-4 ring-[#11100e]",
+    "absolute left-4 -bottom-8 w-20 h-20 rounded-lg object-cover ring-1 ring-[#11100e] border border-[#3b352c] bg-[#171512]",
   avatarSoloClass:
-    "h-[86px] w-[86px] rounded-lg border   object-cover",
+    "w-20 h-20 rounded-lg object-cover border-1 border-[#3b352c] bg-[#171512]",
   nameClass:
-    "font-serif-display text-[44px] font-normal leading-[0.98] text-[#fff7df] sm:text-[68px]",
+    "font-serif-display text-[44px] font-normal leading-[0.98] text-[#fff7df] pt-5 sm:text-[58px]",
   taglineClass:
     "mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c9a227]",
   bioClass:

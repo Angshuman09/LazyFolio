@@ -19,6 +19,9 @@ export async function POST(req: NextRequest) {
       where: {
         username: username,
       },
+      select: {
+        id: true,
+      },
     });
 
     if (existingUsername) {
@@ -38,6 +41,11 @@ export async function POST(req: NextRequest) {
     create: {
         userId: userId,         
         username: username
+    },
+    select: {
+        id: true,
+        username: true,
+        userId: true
     }
 });
 

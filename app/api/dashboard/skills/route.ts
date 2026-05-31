@@ -19,6 +19,10 @@ export async function POST(req: NextRequest){
             },
             data:{
                 skills: skills.map((skill) => skill.value ?? "")
+            },
+            select:{
+                id: true,
+                skills: true
             }
         })
 
