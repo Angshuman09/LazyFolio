@@ -37,13 +37,13 @@ const config: TemplateThemeConfig = {
   avatarSoloClass:
     "h-[94px] w-[94px] rounded-lg border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md",
   nameClass:
-    "font-serif-display mt-4 text-[42px] font-normal leading-[0.95] text-[#1d2421] sm:text-[64px]",
+    "font-serif-display mt-4 text-[42px] font-normal leading-[0.95] text-[#1d2421] sm:text-[54px]",
   taglineClass:
     "mt-4 max-w-md font-sans text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7f1d1d]",
   bioClass: "mt-5 max-w-3xl text-[15px] leading-8 text-[#52645b] sm:text-[16px]",
   quickLinksClass: "mb-2 flex flex-wrap items-center gap-2",
   quickLinkClass:
-    "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d8cdbf] bg-[#fffdf8] text-[#52645b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/40 hover:text-[#7f1d1d]",
+    "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#d8cdbf] bg-[#fffdf8] text-[#52645b] transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/40 hover:text-[#7f1d1d]",
   quickCtaClass:
     "ml-auto inline-flex h-9 items-center gap-2 rounded-lg bg-[#25302b] px-4 font-sans text-[12px] font-semibold text-[#fffaf2] transition hover:bg-[#7f1d1d]",
   dividerClass: "my-12 h-px w-full bg-[#d8cdbf]",
@@ -63,7 +63,7 @@ const config: TemplateThemeConfig = {
   bulletMarkerClass: "mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#7f1d1d]/60",
   projectListClass: "grid gap-3",
   projectItemClass:
-    "group flex items-start gap-4 rounded-lg border border-[#d8cdbf] bg-[#fffdf8] p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/30",
+    "group flex items-start gap-4 rounded-lg border border-[#d8cdbf] bg-[#fffdf8] p-4 transition hover:-translate-y-0.5 hover:border-[#7f1d1d]/30",
   projectInitialClass:
     "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#f0f7f3] text-[#7f1d1d]",
   projectInitialTextClass:
@@ -78,8 +78,6 @@ const config: TemplateThemeConfig = {
   statusClass: {
     Live: "rounded-md border border-[#16745b]/20 bg-[#16745b]/10 px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#16745b]",
     WIP: "rounded-md border border-[#a16207]/25 bg-[#a16207]/10 px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#a16207]",
-    "Open Source":
-      "rounded-md border border-[#7f1d1d]/20 bg-[#7f1d1d]/10 px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#7f1d1d]",
   },
   fallbackStatusClass:
     "rounded-md border border-[#d8cdbf] bg-[#f7f2e8] px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-[#6d5f54]",
@@ -102,7 +100,7 @@ const config: TemplateThemeConfig = {
     "pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-[#fffdf8] to-transparent",
   stackTrackClass: "template4-ticker-track flex w-max gap-2",
   stackItemClass:
-    "shrink-0 rounded-md border border-[#d8cdbf] bg-[#f0f7f3] px-3 py-1.5",
+    "shrink-0 rounded-md border border-[#d8cdbf] bg-white px-3 py-1.5",
   stackTextClass:
     "font-sans text-[11px] font-semibold uppercase tracking-[0.1em] text-[#52645b]",
   footerCtaClass:
@@ -120,9 +118,9 @@ const config: TemplateThemeConfig = {
   footerClass:
     "mt-12 flex flex-col gap-2 border-t border-[#d8cdbf] pt-6 sm:flex-row sm:items-center sm:justify-between",
   footerTextClass:
-    "font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#9b8d80]",
+    "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#9b8d80]",
   footerBrandClass:
-    "font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#52645b]",
+    "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#52645b]",
   iconSize: 14,
   iconStrokeWidth: 1.7,
   // sectionIcons: {

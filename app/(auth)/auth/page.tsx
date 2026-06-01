@@ -70,7 +70,7 @@ export default function Auth() {
             {features.map(({ icon: Icon, label }) => (
               <div
                 key={label}
-                className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-(--lf-border-alpha) bg-(--lf-bg) backdrop-blur-sm shadow-sm"
+                className="flex items-center gap-3 px-4 py-3 rounded-2xl border border-(--lf-border-alpha) bg-(--lf-bg)"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-(--lf-accent-soft) text-(--lf-ink) shrink-0">
                   <Icon className="h-4 w-4" strokeWidth={2} />
@@ -81,12 +81,12 @@ export default function Auth() {
               </div>
             ))}
           </div>
-          <div className="mt-8 flex items-center gap-2">
+          {/* <div className="mt-8 flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span>
             <p className="text-xs font-medium text-(--lf-muted) font-sans-body">
               Online in seconds.
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Features — mobile compact pills */}
@@ -94,7 +94,7 @@ export default function Auth() {
           {features.map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex items-center gap-2 rounded-full border border-(--lf-border-alpha) bg-(--lf-bg) px-3 py-1.5 shadow-sm"
+              className="flex items-center gap-2 rounded-full border border-(--lf-border-alpha) bg-(--lf-bg) px-3 py-1.5"
             >
               <Icon
                 className="h-3.5 w-3.5 text-(--lf-ink) shrink-0"
@@ -136,14 +136,14 @@ export default function Auth() {
             </div>
           </div>
 
-          <div className="mt-12 flex justify-center md:hidden">
+          {/* <div className="mt-12 flex justify-center md:hidden">
             <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-(--lf-surface) border border-(--lf-border-alpha)">
               <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0"></span>
               <p className="text-xs font-medium text-(--lf-muted) font-sans-body">
                 Online in seconds.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

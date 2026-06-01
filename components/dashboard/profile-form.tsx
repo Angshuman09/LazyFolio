@@ -108,7 +108,7 @@ export default function ProfileForm({
       return;
     }
 
-    const response = await fetch("/api/username", {
+    const response = await fetch("/api/dashboard/username", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

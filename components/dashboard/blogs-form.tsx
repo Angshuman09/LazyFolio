@@ -1,14 +1,29 @@
 "use client";
 
-import { RefObject, useState } from "react";
-import { useEffect, useMemo } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { RefObject, useEffect, useMemo, useState } from "react";
+import {
+  useFieldArray,
+  useForm,
+  useWatch,
+  type Control,
+  type FieldArrayWithId,
+  type FieldErrors,
+  type UseFieldArrayRemove,
+  type UseFormRegister,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, Pencil, Check, BookOpen } from "lucide-react";
+import { Plus, Trash2, Pencil, Check, BookOpen, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/schemas/blogs";
+import { useCreateBlog, useDeleteBlog } from "@/hooks/blog";
+import {
+  readDashboardDraft,
+  writeDashboardDraft,
+} from "@/lib/dashboard-drafts";
 
 type ProfileBlog = {
+  id?: string | null;
   title?: string | null;
   description?: string | null;
   blogLink?: string | null;
@@ -16,10 +31,47 @@ type ProfileBlog = {
 };
 
 type Props = {
-  profile?: any;
+  profile?: BlogsProfile;
   formRef: RefObject<HTMLFormElement | null>;
-  onSubmit?: (data: BlogsSchema) => void;
+  onSubmit?: (data: BlogsSchema) => void | Promise<void>;
 };
+
+type BlogsProfile = {
+  id?: string;
+  blogs?: ProfileBlog[];
+};
+
+function blogsFromProfile(blogs: ProfileBlog[] = []): BlogsSchema {
+  return {
+    blogs: blogs.map((blog) => ({
+      id: blog.id || undefined,
+      title: blog.title ?? "",
+      description: blog.description ?? "",
+      blogLink: blog.blogLink ?? "",
+      enddate: blog.enddate ? String(blog.enddate) : "",
+    })),
+  };
+}
+
+function getInitialBlogs(profile?: BlogsProfile): BlogsSchema {
+  return (
+    readDashboardDraft<BlogsSchema>("blogs", profile?.id) ||
+    blogsFromProfile(profile?.blogs || [])
+  );
+}
+
+function isValidUrl(value?: string) {
+  if (!value?.trim()) {
+    return true;
+  }
+
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function BlogCard({
   field,
@@ -28,16 +80,93 @@ function BlogCard({
   register,
   errors,
   remove,
+  profile,
+  setValue,
 }: {
-  field: any;
+  field: FieldArrayWithId<BlogsSchema, "blogs", "fieldId">;
   index: number;
-  control: any;
-  register: any;
-  errors: any;
-  remove: (i: number) => void;
+  control: Control<BlogsSchema>;
+  register: UseFormRegister<BlogsSchema>;
+  errors: FieldErrors<BlogsSchema>;
+  remove: UseFieldArrayRemove;
+  profile?: BlogsProfile;
+  setValue: UseFormSetValue<BlogsSchema>;
 }) {
   const [confirmed, setConfirmed] = useState(() => !!(field?.title || field?.blogLink));
   const values = useWatch({ control, name: `blogs.${index}` });
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const createBlog = useCreateBlog();
+  const deleteBlog = useDeleteBlog();
+
+  const onSaveBlog = async () => {
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      return;
+    }
+
+    const hasContent = [
+      values?.title,
+      values?.description,
+      values?.blogLink,
+      values?.enddate,
+    ].some((value) => value?.trim());
+
+    if (!hasContent) {
+      toast.error("Add blog details before saving this post.");
+      return;
+    }
+
+    if (!isValidUrl(values?.blogLink)) {
+      toast.error("Please enter a valid URL before saving this post.");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const payload = await createBlog.mutateAsync({
+        blog: {
+          id: values?.id,
+          title: values?.title?.trim() || "",
+          description: values?.description?.trim() || "",
+          blogLink: values?.blogLink?.trim() || "",
+          enddate: values?.enddate?.trim() || "",
+        },
+        profileId: profile.id,
+      });
+
+      if (payload?.data?.id) {
+        setValue(`blogs.${index}.id`, payload.data.id, { shouldDirty: true });
+      }
+
+      toast.success("Blog saved successfully!");
+      setConfirmed(true);
+    } catch (error) {
+      console.error("Error saving blog:", error);
+      toast.error("An error occurred while saving the blog.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDeleteBlog = async () => {
+    if (!values?.id) {
+      remove(index);
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await deleteBlog.mutateAsync(values.id as string);
+      toast.success("Blog deleted successfully!");
+      remove(index);
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+      toast.error("An error occurred while deleting the blog.");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   if (confirmed) {
     return (
@@ -62,10 +191,11 @@ function BlogCard({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+        <div className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${deleting ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
           <button
             type="button"
             onClick={() => setConfirmed(false)}
+            disabled={deleting}
             className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
@@ -73,11 +203,12 @@ function BlogCard({
           </button>
           <button
             type="button"
-            onClick={() => remove(index)}
+            onClick={onDeleteBlog}
+            disabled={deleting}
             className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
             aria-label="Remove blog post"
           >
-            <Trash2 size={12} />
+            {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
           </button>
         </div>
       </div>
@@ -145,19 +276,24 @@ function BlogCard({
       <div className="flex items-center justify-between mt-4">
         <button
           type="button"
-          onClick={() => remove(index)}
+          onClick={() => (values?.id ? setConfirmed(true) : remove(index))}
+          disabled={saving}
           className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
-          <Trash2 size={11} />
-          Delete
+          Cancel
         </button>
         <button
           type="button"
-          onClick={() => setConfirmed(true)}
+          onClick={onSaveBlog}
+          disabled={saving}
           className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          <Check size={11} strokeWidth={2.5} />
-          Done
+          {saving ? (
+            <Loader2 size={11} className="animate-spin" />
+          ) : (
+            <Check size={11} strokeWidth={2.5} />
+          )}
+          {saving ? "Saving..." : "Done"}
         </button>
       </div>
     </div>
@@ -165,23 +301,15 @@ function BlogCard({
 }
 
 export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
-  const defaultValues = useMemo<BlogsSchema>(() => {
-    return {
-      blogs: (profile?.blogs ?? []).map((b:any) => ({
-        title: b.title ?? "",
-        description: b.description ?? "",
-        blogLink: b.blogLink ?? "",
-        enddate: b.enddate ? String(b.enddate) : "",
-      })),
-    };
-  }, [profile]);
+  const defaultValues = useMemo<BlogsSchema>(() => getInitialBlogs(profile), [profile]);
 
   const {
     register,
     handleSubmit,
     control,
     reset,
-    formState: { errors },
+    setValue,
+    formState: { errors, isDirty },
   } = useForm<BlogsSchema>({
     resolver: zodResolver(blogsSchema),
     defaultValues,
@@ -191,11 +319,25 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "blogs",
+    keyName: "fieldId",
   });
 
+  const watchedBlogs = useWatch({ control, name: "blogs" });
+
   useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+    if (!profile?.id) {
+      return;
+    }
+
+    const cachedDraft = readDashboardDraft<BlogsSchema>("blogs", profile.id);
+    reset(cachedDraft || blogsFromProfile(profile.blogs || []));
+  }, [profile?.id, profile?.blogs, reset]);
+
+  useEffect(() => {
+    if (profile?.id && isDirty) {
+      writeDashboardDraft("blogs", profile.id, { blogs: watchedBlogs || [] });
+    }
+  }, [isDirty, profile?.id, watchedBlogs]);
 
   return (
     <form
@@ -221,13 +363,15 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
 
         {fields.map((f, index) => (
           <BlogCard
-            key={f.id}
+            key={f.fieldId}
             field={f}
             index={index}
             control={control}
             register={register}
             errors={errors}
             remove={remove}
+            profile={profile}
+            setValue={setValue}
           />
         ))}
       </div>

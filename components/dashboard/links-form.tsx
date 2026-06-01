@@ -1,19 +1,74 @@
 "use client";
 
-import { RefObject, useState, useEffect } from "react";
-import { useForm, useFieldArray, useWatch } from "react-hook-form";
+import { RefObject, useEffect, useMemo, useState } from "react";
+import {
+  useForm,
+  useFieldArray,
+  useWatch,
+  type Control,
+  type FieldArrayWithId,
+  type FieldErrors,
+  type UseFieldArrayRemove,
+  type UseFormRegister,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, Pencil, Check, Link2, Loader2, Loader } from "lucide-react";
+import { Plus, Trash2, Pencil, Check, Link2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { linksSchema, LinksSchema } from "@/schemas/links";
 import { LinkType } from "@/db/enums";
 import { useCreateLink, useDeleteLink } from "@/hooks/link";
+import {
+  readDashboardDraft,
+  writeDashboardDraft,
+} from "@/lib/dashboard-drafts";
 
 type Props = {
-  profile?: any;
+  profile?: LinksProfile;
   formRef: RefObject<HTMLFormElement | null>;
-  onSubmit: (data: LinksSchema) => void;
+  onSubmit: (data: LinksSchema) => void | Promise<void>;
 };
+
+type ProfileLink = {
+  id?: string | null;
+  label?: string | null;
+  url?: string | null;
+};
+
+type LinksProfile = {
+  id?: string;
+  links?: ProfileLink[];
+};
+
+function linksFromProfile(links: ProfileLink[] = []): LinksSchema {
+  return {
+    links: links.map((link) => ({
+      id: link.id || undefined,
+      label: link.label || "",
+      url: link.url || "",
+    })),
+  };
+}
+
+function getInitialLinks(profile?: LinksProfile): LinksSchema {
+  return (
+    readDashboardDraft<LinksSchema>("links", profile?.id) ||
+    linksFromProfile(profile?.links || [])
+  );
+}
+
+function isValidUrl(value?: string) {
+  if (!value?.trim()) {
+    return true;
+  }
+
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function detectType(url: string): LinkType {
   if (url.includes("github.com")) return "GITHUB";
@@ -31,58 +86,84 @@ function LinkCard({
   errors,
   profile,
   remove,
+  setValue,
 }: {
-  field: any;
+  field: FieldArrayWithId<LinksSchema, "links", "fieldId">;
   index: number;
-  control: any;
-  register: any;
-  errors: any;
-  profile: any
-  remove: (i: number) => void;
+  control: Control<LinksSchema>;
+  register: UseFormRegister<LinksSchema>;
+  errors: FieldErrors<LinksSchema>;
+  profile?: LinksProfile;
+  remove: UseFieldArrayRemove;
+  setValue: UseFormSetValue<LinksSchema>;
 }) {
   const [confirmed, setConfirmed] = useState(
     () => !!(field?.label || field?.url),
   );
   const values = useWatch({ control, name: `links.${index}` });
-  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const createLink = useCreateLink();
   const deleteLink = useDeleteLink();
 
   const onSaveLink = async () => {
-    setConfirmed(true)
-    setLoading(true);
-    const linkType = detectType(values.url);
+    if (!profile?.id) {
+      toast.error("Profile not loaded.");
+      return;
+    }
+
+    if (!values?.label?.trim() && !values?.url?.trim()) {
+      toast.error("Add a label or URL before saving this link.");
+      return;
+    }
+
+    if (!isValidUrl(values?.url)) {
+      toast.error("Please enter a valid URL before saving this link.");
+      return;
+    }
+
+    setSaving(true);
+    const linkType = detectType(values?.url || "");
     try {
-      await createLink.mutateAsync({
+      const payload = await createLink.mutateAsync({
         link: {
-          label: values.label,
-          url: values.url,
+          id: values?.id,
+          label: values?.label?.trim() || "",
+          url: values?.url?.trim() || "",
           type: linkType,
         },
         profileId: profile?.id,
       });
+      if (payload?.data?.id) {
+        setValue(`links.${index}.id`, payload.data.id, { shouldDirty: true });
+      }
       toast.success("Link saved successfully!");
-      setLoading(false);
       setConfirmed(true);
     } catch (error) {
       console.error("Error saving link:", error);
       toast.error("An error occurred while saving the link.");
-      setLoading(false);
+    } finally {
+      setSaving(false);
     }
   };
 
   const onDeleteLink = async () => {
-    setLoading(true);
+    if (!values?.id) {
+      remove(index);
+      return;
+    }
+
+    setDeleting(true);
     try {
-      await deleteLink.mutateAsync(values?.id as string);
+      await deleteLink.mutateAsync(values.id as string);
       toast.success("Link deleted successfully!");
-      setLoading(false);
       remove(index);
     } catch (error) {
       console.error("Error deleting link:", error);
       toast.error("An error occurred while deleting the link.");
-      setLoading(false);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -104,10 +185,11 @@ function LinkCard({
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+        <div className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${deleting ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
           <button
             type="button"
             onClick={() => setConfirmed(false)}
+            disabled={deleting}
             className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
@@ -116,11 +198,11 @@ function LinkCard({
           <button
             type="button"
             onClick={onDeleteLink}
-            disabled={loading}
+            disabled={deleting}
             className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
             aria-label="Remove link"
           >
-           {loading? <Loader size={12} /> : <Trash2 size={12} />}
+           {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
           </button>
         </div>
       </div>
@@ -168,7 +250,8 @@ function LinkCard({
       <div className="flex items-center justify-between mt-3.5">
         <button
           type="button"
-          onClick={() => setConfirmed(true)}
+          onClick={() => (values?.id ? setConfirmed(true) : remove(index))}
+          disabled={saving}
           className="inline-flex items-center border-slate-400 gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border  text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
           {/* <Trash2 size={11} /> */}
@@ -177,11 +260,15 @@ function LinkCard({
         <button
           type="button"
           onClick={onSaveLink}
-          disabled={loading}
+          disabled={saving}
           className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          <Check size={11} strokeWidth={2.5} />
-          {loading ? "Saving..." : "Done"}
+          {saving ? (
+            <Loader2 size={11} className="animate-spin" />
+          ) : (
+            <Check size={11} strokeWidth={2.5} />
+          )}
+          {saving ? "Saving..." : "Done"}
         </button>
       </div>
     </div>
@@ -189,42 +276,42 @@ function LinkCard({
 }
 
 export default function LinksForm({ profile, formRef, onSubmit }: Props) {
+  const initialValues = useMemo(() => getInitialLinks(profile), [profile]);
   const {
     register,
     handleSubmit,
     control,
     reset,
-    formState: { errors },
+    setValue,
+    formState: { errors, isDirty },
   } = useForm<LinksSchema>({
     resolver: zodResolver(linksSchema),
-    defaultValues: {
-      links: profile?.links?.length
-        ? profile.links.map((l: any) => ({
-            id: l.id,
-            label: l.label || "",
-            url: l.url || "",
-          }))
-        : [],
-    },
+    defaultValues: initialValues,
     mode: "onSubmit",
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: "links",
+    keyName: "fieldId",
   });
 
+  const watchedLinks = useWatch({ control, name: "links" });
+
   useEffect(() => {
-    if (profile?.links) {
-      reset({
-        links: profile.links.map((l: any) => ({
-          id: l.id,
-          label: l.label || "",
-          url: l.url || "",
-        })),
-      });
+    if (!profile?.id) {
+      return;
     }
-  }, [profile?.links, reset]);
+
+    const cachedDraft = readDashboardDraft<LinksSchema>("links", profile.id);
+    reset(cachedDraft || linksFromProfile(profile.links || []));
+  }, [profile?.id, profile?.links, reset]);
+
+  useEffect(() => {
+    if (profile?.id && isDirty) {
+      writeDashboardDraft("links", profile.id, { links: watchedLinks || [] });
+    }
+  }, [isDirty, profile?.id, watchedLinks]);
 
   return (
     <form
@@ -250,14 +337,15 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
 
         {fields.map((f, index) => (
           <LinkCard
-            key={f.id}
+            key={f.fieldId}
             field={f}
             index={index}
             control={control}
             register={register}
             errors={errors}
             remove={remove}
-            profile = {profile}
+            setValue={setValue}
+            profile={profile}
           />
         ))}
       </div>

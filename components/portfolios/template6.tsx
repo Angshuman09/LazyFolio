@@ -132,8 +132,8 @@ const config: TemplateThemeConfig = {
   contactTextClass: "text-[12px] font-bold",
   footerClass:
     "mt-12 flex flex-col gap-2 border-t border-white/80 pt-6 sm:flex-row sm:items-center sm:justify-between",
-  footerTextClass: "text-[11px] font-bold uppercase tracking-[0.12em] text-[#829ab1]",
-  footerBrandClass: "text-[11px] font-bold uppercase tracking-[0.12em] text-[#0f766e]",
+  footerTextClass: "text-[11px] font-bold tracking-[0.12em] text-[#829ab1]",
+  footerBrandClass: "text-[11px] font-bold tracking-[0.12em] text-[#0f766e]",
   iconSize: 14,
   iconStrokeWidth: 1.9,
 };
@@ -608,11 +608,7 @@ export function Template6(props: ThemedPortfolioProps) {
           )}
 
           <footer className={`lf-themed-footer ${config.footerClass}`}>
-            <p className={config.footerTextClass}>
-              (c) {new Date().getFullYear()}
-              {name ? ` ${name}` : ""}
-            </p>
-            <p className={config.footerBrandClass}>built with lazyfolio</p>
+            <p className={config.footerBrandClass}>Built with lazyfolio</p>
           </footer>
         </div>
       </main>

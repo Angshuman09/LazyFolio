@@ -15,6 +15,7 @@ import { signOut, authClient } from "@/lib/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
@@ -41,6 +42,7 @@ import { useCreateBlogs } from "@/hooks/blogs";
 import { BlogsSchema } from "@/schemas/blogs";
 import { ProjectsSchema } from "@/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
+import { clearDashboardDraft } from "@/lib/dashboard-drafts";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
@@ -61,6 +63,12 @@ export default function DashboardPage() {
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
   const router = useRouter();
   const isSaveDisabled = isSaving || isLoading || isPending;
+
+  useEffect(() => {
+    if (!session && !isPending) {
+      router.push("/auth");
+  }
+  }, [session, isPending, router]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("lf-theme");
@@ -209,15 +217,13 @@ export default function DashboardPage() {
 
   const updateLinks = useCreateLinks();
 
-  const onLinksSubmit = (data: LinksSchema) => {
-    setIsSaving(true);
-
+  const onLinksSubmit = async (data: LinksSchema) => {
     if (!profile?.id) {
       toast.error("Profile not loaded.");
-      setIsSaving(false);
       return;
     }
 
+    setIsSaving(true);
     const formattedLinks = (data.links || [])
       .map((link) => ({
         id: link.id,
@@ -227,24 +233,20 @@ export default function DashboardPage() {
       }))
       .filter((link) => link.label || link.url);
 
-    updateLinks.mutate(
-      {
+    try {
+      await updateLinks.mutateAsync({
         profileId: profile.id,
         links: formattedLinks,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Links updated successfully!");
-          setIsSaving(false);
-        },
-        onError: (error) => {
-          toast.error(
-            getErrorMessage(error, "Failed to update links. Please try again."),
-          );
-          setIsSaving(false);
-        },
-      },
-    );
+      });
+      clearDashboardDraft("links", profile.id);
+      toast.success("Links updated successfully!");
+    } catch (error) {
+      toast.error(
+        getErrorMessage(error, "Failed to update links. Please try again."),
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const createExperience = useCreateExperience();
@@ -392,15 +394,13 @@ export default function DashboardPage() {
 
   const createBlogs = useCreateBlogs();
 
-  const onSubmitBlogs = (data: BlogsSchema) => {
-    setIsSaving(true);
-
+  const onSubmitBlogs = async (data: BlogsSchema) => {
     if (!profile?.id) {
       toast.error("Profile not loaded.");
-      setIsSaving(false);
       return;
     }
 
+    setIsSaving(true);
     const formattedBlogs = (data.blogs || [])
       .map((blog) => ({
         title: blog.title?.trim() || "",
@@ -410,24 +410,20 @@ export default function DashboardPage() {
       }))
       .filter((blog) => Object.values(blog).some((value) => value.length > 0));
 
-    createBlogs.mutate(
-      {
+    try {
+      await createBlogs.mutateAsync({
         profileId: profile.id,
         blogs: formattedBlogs,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Blogs updated successfully!");
-          setIsSaving(false);
-        },
-        onError: (error) => {
-          toast.error(
-            getErrorMessage(error, "Failed to update blogs. Please try again."),
-          );
-          setIsSaving(false);
-        },
-      },
-    );
+      });
+      clearDashboardDraft("blogs", profile.id);
+      toast.success("Blogs updated successfully!");
+    } catch (error) {
+      toast.error(
+        getErrorMessage(error, "Failed to update blogs. Please try again."),
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -569,7 +565,7 @@ export default function DashboardPage() {
               <button
                 key={n.id}
                 disabled={isDisabled}
-                className={`flex items-center gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
+                className={`flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
                   tab === n.id
                     ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
                     : ""
@@ -580,9 +576,6 @@ export default function DashboardPage() {
                   setSidebarOpen(false);
                 }}
               >
-                <span className={tab === n.id ? "opacity-100" : "opacity-65"}>
-                  {n.icon}
-                </span>
                 {n.label}
               </button>
             )})}
@@ -699,27 +692,38 @@ export default function DashboardPage() {
               anytime.
             </p>
 
-            <div className="grid grid-flow-col auto-cols-[minmax(220px,1fr)] gap-3 overflow-x-auto pb-2">
+            <div className="grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-3 overflow-x-auto pb-2">
               {TEMPLATES.map((t) => (
                 <button
                   type="button"
                   key={t.id}
                   disabled={isSaveDisabled}
-                  className={`flex min-h-34 flex-col items-start gap-3 p-4 rounded-xl border text-left transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id ? "border-(--lf-ink) bg-(--lf-accent-soft)" : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted)"}`}
+                  className={`flex min-h-72 flex-col items-start gap-3 p-3 rounded-xl border text-left transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id ? "border-(--lf-ink) bg-(--lf-accent-soft)" : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted)"}`}
                   onClick={() => {
                     setActiveTemplate(t.id);
                     setTemplateOpen(false);
                     applyTemplate(t.id);
                   }}
                 >
-                  <div
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${activeTemplate === t.id ? "bg-(--lf-ink) text-(--lf-bg)" : "bg-(--lf-border) text-(--lf-muted)"}`}
-                  >
-                    {activeTemplate === t.id ? (
-                      <Check size={16} />
-                    ) : (
-                      <span className="text-[1.1rem]">{t.emoji}</span>
-                    )}
+                  <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg border border-(--lf-border-alpha) bg-(--lf-border-alpha)">
+                    <Image
+                      src={t.image}
+                      alt={`${t.label} template preview`}
+                      fill
+                      sizes="(max-width: 640px) 260px, 320px"
+                      className="object-cover object-top"
+                    />
+                    <div
+                      className={`absolute left-2 top-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${activeTemplate === t.id ? "bg-(--lf-ink) text-(--lf-bg)" : "bg-(--lf-bg)/90 text-(--lf-muted) border border-(--lf-border-alpha)"}`}
+                    >
+                      {activeTemplate === t.id ? (
+                        <Check size={15} />
+                      ) : (
+                        <span className="text-[0.72rem] font-mono font-semibold">
+                          {t.emoji}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <div className="text-[0.88rem] font-semibold text-(--lf-ink)">

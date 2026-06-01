@@ -26,6 +26,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useRouter } from "next/navigation";
 
 type DateLike = string | Date | null | undefined;
 
@@ -690,6 +691,8 @@ export function ThemedPortfolioTemplate({
   const iconStrokeWidth = config.iconStrokeWidth ?? 1.8;
   // const CallIcon = config.sectionIcons?.call ?? CalendarDays;
 
+  const router = useRouter();
+
   return (
     <>
       <style>{`
@@ -1156,12 +1159,8 @@ export function ThemedPortfolioTemplate({
             </>
           )} */}
 
-          <footer className={`lf-themed-footer ${config.footerClass}`}>
-            <p className={config.footerTextClass}>
-              (c) {new Date().getFullYear()}
-              {name ? ` ${name}` : ""}
-            </p>
-            <p className={config.footerBrandClass}>built with lazyfolio</p>
+          <footer className={`lf-themed-footer flex justify-center items-center ${config.footerClass}`}>
+            <p onClick={()=>router.push('/')} className={config.footerBrandClass}>Built with lazyfolio</p>
           </footer>
         </div>
       </main>

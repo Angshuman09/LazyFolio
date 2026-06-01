@@ -119,11 +119,11 @@ const config: TemplateThemeConfig = {
   contactIconClass: "text-[#d8bd62]",
   contactTextClass: "text-[13px] font-semibold",
   footerClass:
-    "mt-12 flex flex-col gap-2 border-t border-[#3b352c] pt-6 sm:flex-row sm:items-center sm:justify-between",
+    "mt-12 flex flex-col gap-2 border-t cursor-pointer flex items-center justify-center border-[#3b352c] pt-6 sm:flex-row sm:items-center",
   footerTextClass:
-    "text-[11px] font-semibold uppercase tracking-[0.12em] text-[#857967]",
+    "text-[11px] font-semibold hover:outline-[#857967] flex items-center justify-center tracking-[0.12em] text-[#857967]",
   footerBrandClass:
-    "text-[11px] font-semibold uppercase tracking-[0.12em] text-[#d8bd62]",
+    "text-[11px] font-semibold hover:outline-[#857967] flex items-center justify-center tracking-[0.12em] text-[#d8bd62]",
   iconSize: 14,
   iconStrokeWidth: 1.8,
   // sectionIcons: {

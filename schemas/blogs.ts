@@ -9,6 +9,7 @@ export const blogsSchema = z.object({
   blogs: z
     .array(
       z.object({
+        id: z.string().optional(),
         title: stringOrEmpty(160).optional(),
         description: stringOrEmpty(800).optional(),
         blogLink: z.union([z.literal(""), z.string().url()]).optional(),

@@ -49,8 +49,6 @@ const config: TemplateThemeConfig = {
     "ml-auto inline-flex h-9 items-center gap-2 rounded-md border-2 border-[#241513] bg-[#ef4444] px-4 text-[12px] font-black text-white shadow-[3px_3px_0_#241513] transition hover:-translate-y-0.5",
   dividerClass: "my-11 h-[2px] w-full bg-[#241513]",
   sectionHeadingClass: "mb-5 flex items-center gap-3",
-  sectionIconClass:
-    "inline-flex h-8 w-8 items-center justify-center rounded-md border-2 border-[#241513] bg-[#bae6fd] text-[#241513]",
   sectionTitleClass:
     "text-[12px] font-black uppercase tracking-[0.18em] text-[#241513]",
   experienceListClass: "grid gap-3",
@@ -119,19 +117,11 @@ const config: TemplateThemeConfig = {
   footerClass:
     "mt-12 flex flex-col gap-2 border-t-2 border-[#241513] pt-6 sm:flex-row sm:items-center sm:justify-between",
   footerTextClass:
-    "text-[10px] font-black uppercase tracking-[0.12em] text-[#5c2d25]",
+    "text-[10px] font-black tracking-[0.12em] text-[#5c2d25]",
   footerBrandClass:
-    "text-[10px] font-black uppercase tracking-[0.12em] text-[#ef4444]",
+    "text-[10px] font-black tracking-[0.12em] text-[#ef4444]",
   iconSize: 14,
   iconStrokeWidth: 2.2,
-  sectionIcons: {
-    experience: BriefcaseBusiness,
-    projects: Grid2X2,
-    writing: BookText,
-    stack: Wrench,
-    contact: MessageSquareShare,
-    call: CalendarDays,
-  },
 };
 
 export function Template7(props: ThemedPortfolioProps) {

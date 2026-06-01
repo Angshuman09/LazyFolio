@@ -111,8 +111,8 @@ const config: TemplateThemeConfig = {
   contactTextClass: "text-[12px] font-medium",
   footerClass:
     "mt-12 flex flex-col gap-2 border-t border-[#1f4d36] pt-6 sm:flex-row sm:items-center sm:justify-between",
-  footerTextClass: "text-[10px] uppercase tracking-[0.14em] text-[#5aa77a]",
-  footerBrandClass: "text-[10px] uppercase tracking-[0.14em] text-[#86efac]",
+  footerTextClass: "text-[10px] tracking-[0.14em] text-[#5aa77a]",
+  footerBrandClass: "text-[10px] tracking-[0.14em] text-[#86efac]",
   iconSize: 14,
   iconStrokeWidth: 1.9
 };
