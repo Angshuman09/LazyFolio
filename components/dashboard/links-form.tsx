@@ -8,7 +8,9 @@ import {
   type Control,
   type FieldArrayWithId,
   type FieldErrors,
+  type UseFieldArrayInsert,
   type UseFieldArrayRemove,
+  type UseFormGetValues,
   type UseFormRegister,
   type UseFormSetValue,
 } from "react-hook-form";
@@ -86,7 +88,9 @@ function LinkCard({
   errors,
   profile,
   remove,
+  insert,
   setValue,
+  getValues,
 }: {
   field: FieldArrayWithId<LinksSchema, "links", "fieldId">;
   index: number;
@@ -95,17 +99,104 @@ function LinkCard({
   errors: FieldErrors<LinksSchema>;
   profile?: LinksProfile;
   remove: UseFieldArrayRemove;
+  insert: UseFieldArrayInsert<LinksSchema, "links">;
   setValue: UseFormSetValue<LinksSchema>;
+  getValues: UseFormGetValues<LinksSchema>;
 }) {
-  const [confirmed, setConfirmed] = useState(
-    () => !!(field?.label || field?.url),
+  const [isEditing, setIsEditing] = useState(
+    () => !(field?.label || field?.url),
   );
+  const [savedSnapshot, setSavedSnapshot] = useState<{
+    id?: string;
+    label: string;
+    url: string;
+  } | null>(() => {
+    if (!field.id) {
+      return null;
+    }
+
+    const profileLink = profile?.links?.find((link) => link.id === field.id);
+
+    return {
+      id: field.id,
+      label: profileLink?.label || field.label || "",
+      url: profileLink?.url || field.url || "",
+    };
+  });
   const values = useWatch({ control, name: `links.${index}` });
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const createLink = useCreateLink();
   const deleteLink = useDeleteLink();
+  const normalizedValues = {
+    id: values?.id,
+    label: values?.label?.trim() || "",
+    url: values?.url?.trim() || "",
+  };
+  const hasUnsavedChanges =
+    !savedSnapshot ||
+    normalizedValues.id !== savedSnapshot.id ||
+    normalizedValues.label !== savedSnapshot.label ||
+    normalizedValues.url !== savedSnapshot.url;
+
+  const updateLinksDraft = (links: LinksSchema["links"]) => {
+    if (profile?.id) {
+      writeDashboardDraft("links", profile.id, { links: links || [] });
+    }
+  };
+
+  const validateLink = () => {
+    if (!normalizedValues.label && !normalizedValues.url) {
+      toast.error("Add a label or URL before saving this link.");
+      return false;
+    }
+
+    if (!isValidUrl(normalizedValues.url)) {
+      toast.error("Please enter a valid URL before saving this link.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const onDoneEditing = () => {
+    if (!validateLink()) {
+      return;
+    }
+
+    setValue(`links.${index}.label`, normalizedValues.label, {
+      shouldDirty: true,
+    });
+    setValue(`links.${index}.url`, normalizedValues.url, {
+      shouldDirty: true,
+    });
+    setIsEditing(false);
+  };
+
+  const onCancelEditing = () => {
+    if (!savedSnapshot) {
+      const currentLinks = getValues("links") || [];
+      updateLinksDraft(
+        currentLinks.filter((_, linkIndex) => linkIndex !== index),
+      );
+      remove(index);
+      return;
+    }
+
+    setValue(`links.${index}.id`, savedSnapshot.id, { shouldDirty: false });
+    setValue(`links.${index}.label`, savedSnapshot.label, {
+      shouldDirty: false,
+    });
+    setValue(`links.${index}.url`, savedSnapshot.url, { shouldDirty: false });
+    const currentLinks = getValues("links") || [];
+    updateLinksDraft(
+      currentLinks.map((link, linkIndex) =>
+        linkIndex === index ? { ...link, ...savedSnapshot } : link,
+      ),
+    );
+    setIsEditing(false);
+  };
 
   const onSaveLink = async () => {
     if (!profile?.id) {
@@ -113,33 +204,42 @@ function LinkCard({
       return;
     }
 
-    if (!values?.label?.trim() && !values?.url?.trim()) {
-      toast.error("Add a label or URL before saving this link.");
-      return;
-    }
-
-    if (!isValidUrl(values?.url)) {
-      toast.error("Please enter a valid URL before saving this link.");
+    if (!validateLink()) {
       return;
     }
 
     setSaving(true);
-    const linkType = detectType(values?.url || "");
+    const linkType = detectType(normalizedValues.url);
     try {
       const payload = await createLink.mutateAsync({
         link: {
-          id: values?.id,
-          label: values?.label?.trim() || "",
-          url: values?.url?.trim() || "",
+          id: normalizedValues.id,
+          label: normalizedValues.label,
+          url: normalizedValues.url,
           type: linkType,
         },
         profileId: profile?.id,
       });
-      if (payload?.data?.id) {
-        setValue(`links.${index}.id`, payload.data.id, { shouldDirty: true });
-      }
+      const savedLink = {
+        id: payload?.data?.id || normalizedValues.id,
+        label: payload?.data?.label || normalizedValues.label,
+        url: payload?.data?.url || normalizedValues.url,
+      };
+
+      setValue(`links.${index}.id`, savedLink.id, { shouldDirty: false });
+      setValue(`links.${index}.label`, savedLink.label, {
+        shouldDirty: false,
+      });
+      setValue(`links.${index}.url`, savedLink.url, { shouldDirty: false });
+      const currentLinks = getValues("links") || [];
+      updateLinksDraft(
+        currentLinks.map((link, linkIndex) =>
+          linkIndex === index ? { ...link, ...savedLink } : link,
+        ),
+      );
+      setSavedSnapshot(savedLink);
+      setIsEditing(false);
       toast.success("Link saved successfully!");
-      setConfirmed(true);
     } catch (error) {
       console.error("Error saving link:", error);
       toast.error("An error occurred while saving the link.");
@@ -149,17 +249,27 @@ function LinkCard({
   };
 
   const onDeleteLink = async () => {
-    if (!values?.id) {
+    const currentLinks = getValues("links") || [];
+    const deletedLink = currentLinks[index];
+    const nextLinks = currentLinks.filter((_, linkIndex) => linkIndex !== index);
+
+    if (!normalizedValues.id) {
       remove(index);
+      updateLinksDraft(nextLinks);
       return;
     }
 
+    remove(index);
+    updateLinksDraft(nextLinks);
     setDeleting(true);
     try {
-      await deleteLink.mutateAsync(values.id as string);
+      await deleteLink.mutateAsync(normalizedValues.id);
       toast.success("Link deleted successfully!");
-      remove(index);
     } catch (error) {
+      if (deletedLink) {
+        insert(index, deletedLink);
+        updateLinksDraft(currentLinks);
+      }
       console.error("Error deleting link:", error);
       toast.error("An error occurred while deleting the link.");
     } finally {
@@ -167,10 +277,10 @@ function LinkCard({
     }
   };
 
-  if (confirmed) {
+  if (!isEditing) {
     return (
-      <div className="group flex items-center justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
+        <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
           <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0">
             <Link2 size={12} className="text-(--lf-muted)" />
           </div>
@@ -185,25 +295,40 @@ function LinkCard({
             </div>
           </div>
         </div>
-        <div className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${deleting ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+        <div className="flex items-center justify-end flex-wrap gap-1.5 shrink-0 w-full sm:w-auto">
           <button
             type="button"
-            onClick={() => setConfirmed(false)}
-            disabled={deleting}
+            onClick={onDeleteLink}
+            disabled={deleting || saving}
+            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
+          >
+            {deleting ? <Loader2 size={10} className="animate-spin" /> : <Trash2 size={10} />}
+            Delete
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            disabled={deleting || saving}
             className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
             Edit
           </button>
-          <button
-            type="button"
-            onClick={onDeleteLink}
-            disabled={deleting}
-            className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
-            aria-label="Remove link"
-          >
-           {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
-          </button>
+          {hasUnsavedChanges && (
+            <button
+              type="button"
+              onClick={onSaveLink}
+              disabled={deleting || saving}
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              {saving ? (
+                <Loader2 size={11} className="animate-spin" />
+              ) : (
+                <Check size={11} strokeWidth={2.5} />
+              )}
+              {saving ? "Saving..." : "Save"}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -250,7 +375,7 @@ function LinkCard({
       <div className="flex items-center justify-between mt-3.5">
         <button
           type="button"
-          onClick={() => (values?.id ? setConfirmed(true) : remove(index))}
+          onClick={onCancelEditing}
           disabled={saving}
           className="inline-flex items-center border-slate-400 gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border  text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
@@ -259,16 +384,12 @@ function LinkCard({
         </button>
         <button
           type="button"
-          onClick={onSaveLink}
+          onClick={onDoneEditing}
           disabled={saving}
           className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          {saving ? (
-            <Loader2 size={11} className="animate-spin" />
-          ) : (
-            <Check size={11} strokeWidth={2.5} />
-          )}
-          {saving ? "Saving..." : "Done"}
+          <Check size={11} strokeWidth={2.5} />
+          Done
         </button>
       </div>
     </div>
@@ -283,6 +404,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     control,
     reset,
     setValue,
+    getValues,
     formState: { errors, isDirty },
   } = useForm<LinksSchema>({
     resolver: zodResolver(linksSchema),
@@ -290,7 +412,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "links",
     keyName: "fieldId",
@@ -344,7 +466,9 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
             register={register}
             errors={errors}
             remove={remove}
+            insert={insert}
             setValue={setValue}
+            getValues={getValues}
             profile={profile}
           />
         ))}

@@ -12,12 +12,17 @@ export async function DELETE(
       where: {
         id,
       },
+      select: {
+        id: true,
+      },
     });
 
-    return NextResponse.json(
-      { message: "Link deleted successfully" },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      message: "Link deleted successfully",
+      data: {
+        id,
+      },
+    }, { status: 200 });
   } catch (error) {
     console.error("Error deleting link:", error);
     return NextResponse.json(

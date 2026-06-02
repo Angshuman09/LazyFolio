@@ -13,8 +13,8 @@ export function useDeleteLink(){
             if(!response.ok) throw new Error(payload?.error || "Failed to delete link");
             return payload;
         },
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["profile"] });
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         }
     });
 
@@ -37,8 +37,8 @@ export function useCreateLink(){
             if(!response.ok) throw new Error(payload?.error || "Failed to create link");
             return payload;
         },
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["profile"] });
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         }
     });
 
