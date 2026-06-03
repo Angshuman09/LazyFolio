@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { deleteFromCloudinary } from "../upload/route";
-
 const profileSelect = {
   id: true,
   avatar: true,
@@ -77,8 +75,6 @@ export async function POST(request: NextRequest) {
       name,
       bio,
       email,
-      avatar,
-      banner,
       quote,
       username,
       tagline,
@@ -107,34 +103,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const existingProfile = await prisma.profile.findUnique({
-      where: { userId },
-      select: { avatar: true, banner: true },
-    });
-
-    const newAvatar = optionalString(avatar);
-    const newBanner = optionalString(banner);
-
-    if (existingProfile?.avatar) {
-      const avatarChanged = newAvatar !== existingProfile.avatar;
-      if (avatarChanged) {
-        await deleteFromCloudinary(existingProfile.avatar);
-      }
-    }
-
-    if (existingProfile?.banner) {
-      const bannerChanged = newBanner !== existingProfile.banner;
-      if (bannerChanged) {
-        await deleteFromCloudinary(existingProfile.banner);
-      }
-    }
-
     const profileData = {
       name: clearableString(name),
       bio: clearableString(bio),
       email: clearableString(email),
-      avatar: optionalString(avatar),
-      banner: optionalString(banner),
       quote: clearableString(quote),
       username: optionalString(username),
       tagline: clearableString(tagline),

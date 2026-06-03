@@ -1,5 +1,4 @@
 import {v2 as cloudinary} from 'cloudinary';
-import { error } from 'console';
 import { NextRequest } from 'next/server';
 
 cloudinary.config({
@@ -57,6 +56,6 @@ export async function deleteFromCloudinary(url: string) {
     await cloudinary.uploader.destroy(publicId);
   } catch (err) {
     console.error("Failed to delete from Cloudinary:", err);
-    
+    throw new Error("Failed to delete from Cloudinary");
   }
 }

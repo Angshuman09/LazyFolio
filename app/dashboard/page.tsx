@@ -106,22 +106,6 @@ export default function DashboardPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const uploadImage = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const response = await fetch("/api/dashboard/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Image upload failed");
-    }
-
-    const data: { url: string } = await response.json();
-    return data.url;
-  };
   const updateProfile = useUpdateUserProfile();
 
   const applyTemplate = (templateId = activeTemplate) => {
@@ -171,19 +155,6 @@ export default function DashboardPage() {
     }
 
     setIsSaving(true);
-    const avatarFile =
-      data.avatar instanceof FileList ? data.avatar[0] : data.avatar;
-
-    const bannerFile =
-      data.banner instanceof FileList ? data.banner[0] : data.banner;
-    const [avatarUrl, bannerUrl] = await Promise.all([
-      avatarFile instanceof File ? uploadImage(avatarFile) : undefined,
-      bannerFile instanceof File ? uploadImage(bannerFile) : undefined,
-    ]);
-
-    console.log("Avatar URL:", avatarUrl);
-    console.log("Banner URL:", bannerUrl);
-
     updateProfile.mutate(
       {
         userId: session.user.id,
@@ -193,9 +164,7 @@ export default function DashboardPage() {
         quote: data?.quote,
         email: data.email,
         bio: data.bio,
-        avatar: avatarUrl,
         bookAcall: data.bookAcall,
-        banner: bannerUrl,
       },
       {
         onSuccess: () => {
