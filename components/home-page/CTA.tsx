@@ -2,14 +2,13 @@
 
 const CTA = () => {
   return (
-    <section className="max-w-5xl mx-auto px-5 md:px-6 mb-24">
+    <section className="max-w-4xl mx-auto px-5 md:px-6 mb-24">
       <div className="bg-(--lf-surface) border border-(--lf-border) text-(--lf-ink) rounded-lg px-6 sm:px-8 py-14 text-center">
         <h2 className="font-serif-display text-[clamp(2rem,5vw,3rem)] font-normal leading-tight mb-4">
-          Ready when your work is.
+          Ready to Share What You <span className="text-[#c6a87b]">Create</span>?
         </h2>
         <p className="text-[0.92rem] text-(--lf-muted) leading-relaxed mb-8 max-w-md mx-auto">
-          Start with a clean profile, add your best links, and publish a page
-          that feels considered from the first view.
+          Create a beautiful portfolio, share your favorite links, and publish blogs, all from a single page.
         </p>
         <a
           href="#"
