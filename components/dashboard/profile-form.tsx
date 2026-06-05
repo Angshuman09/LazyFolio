@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RefObject, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
-import { profileSchema, ProfileSchema } from "@/schemas/profile";
+import { profileSchema, ProfileSchema } from "@/lib/schemas/profile";
 import { useQueryClient } from "@tanstack/react-query";
 
 type ProfileData = Partial<

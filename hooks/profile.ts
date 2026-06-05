@@ -1,4 +1,4 @@
-import { ProfileSchema } from "@/schemas/profile";
+import { ProfileSchema } from "@/lib/schemas/profile";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetUserProfile = (userId?: string) => {

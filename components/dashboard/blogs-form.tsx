@@ -15,12 +15,13 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, BookOpen, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { blogsSchema, BlogsSchema } from "@/schemas/blogs";
+import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import { useCreateBlog, useDeleteBlog } from "@/hooks/blog";
 import {
   readDashboardDraft,
   writeDashboardDraft,
-} from "@/lib/dashboard-drafts";
+} from "@/lib/cache/dashboard-drafts";
+import { hasFieldArrayErrors } from "@/lib/utils";
 
 type ProfileBlog = {
   id?: string | null;
@@ -94,10 +95,17 @@ function BlogCard({
 }) {
   const [confirmed, setConfirmed] = useState(() => !!(field?.title || field?.blogLink));
   const values = useWatch({ control, name: `blogs.${index}` });
+  const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const createBlog = useCreateBlog();
   const deleteBlog = useDeleteBlog();
+
+  useEffect(() => {
+    if (hasErrors) {
+      setConfirmed(false);
+    }
+  }, [hasErrors]);
 
   const onSaveBlog = async () => {
     if (!profile?.id) {
@@ -259,6 +267,11 @@ function BlogCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="e.g. 2026-03-01"
           />
+          {errors.blogs?.[index]?.enddate?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.blogs[index]?.enddate?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25 sm:col-span-2">
@@ -270,6 +283,11 @@ function BlogCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
             placeholder="What is this post about?"
           />
+          {errors.blogs?.[index]?.description?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.blogs[index]?.description?.message as string}
+            </div>
+          )}
         </div>
       </div>
 

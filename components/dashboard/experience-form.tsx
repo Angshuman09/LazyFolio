@@ -6,10 +6,11 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Briefcase } from "lucide-react";
 import toast from "react-hot-toast";
-import { experienceSchema, ExperienceSchema } from "@/schemas/experience";
+import { experienceSchema, ExperienceSchema } from "@/lib/schemas/experience";
+import { hasFieldArrayErrors } from "@/lib/utils";
 
 type Props = {
-  profile?: any
+  profile?: any;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit?: (data: ExperienceSchema) => void;
 };
@@ -29,8 +30,21 @@ function ExperienceCard({
   errors: any;
   remove: (i: number) => void;
 }) {
-  const [confirmed, setConfirmed] = useState(() => !!(field?.role || field?.companyName));
+  const [confirmed, setConfirmed] = useState(
+    () => !!(field?.role || field?.companyName),
+  );
   const values = useWatch({ control, name: `experiences.${index}` });
+  const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
+
+  useEffect(() => {
+    if (hasErrors) {
+      setConfirmed(false);
+    }
+  }, [hasErrors]);
+
+  const handleSave = ()=>{
+    console.log("Saving experience at index", index, "with values", values);
+  }
 
   if (confirmed) {
     return (
@@ -41,13 +55,16 @@ function ExperienceCard({
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
-              {values?.role || <span className="text-(--lf-muted) italic">Untitled Role</span>}
+              {values?.role || (
+                <span className="text-(--lf-muted) italic">Untitled Role</span>
+              )}
             </div>
             <div className="text-[0.72rem] text-(--lf-muted) font-sans mt-0.5">
               {values?.companyName || "—"}
               {(values?.startdate || values?.enddate) && (
                 <span className="ml-2 font-mono opacity-70">
-                  {values.startdate} {values.enddate ? `→ ${values.enddate}` : ""}
+                  {values.startdate}{" "}
+                  {values.enddate ? `→ ${values.enddate}` : ""}
                 </span>
               )}
             </div>
@@ -61,19 +78,25 @@ function ExperienceCard({
         <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
           <button
             type="button"
+            onClick={() => remove(index)}
+            className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+            aria-label="Remove experience"
+          >
+            <Trash2 size={12} />
+          </button>
+          <button
+            type="button"
             onClick={() => setConfirmed(false)}
-            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
             Edit
           </button>
+
           <button
-            type="button"
-            onClick={() => remove(index)}
-            className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
-            aria-label="Remove experience"
-          >
-            <Trash2 size={12} />
+          onClick={handleSave}  
+          className="bg-(--lf-ink) text-(--lf-bg) px-2.5 py-1.5 rounded-lg text-[0.72rem] cursor-pointer hover:bg-(--lf-ink)/80 transition-all duration-150 font-sans">
+            Save
           </button>
         </div>
       </div>
@@ -124,6 +147,11 @@ function ExperienceCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="e.g. 2023-01-01"
           />
+          {errors.experiences?.[index]?.startdate?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.experiences[index]?.startdate?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25">
@@ -135,6 +163,11 @@ function ExperienceCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
             placeholder="e.g. 2024-12-31"
           />
+          {errors.experiences?.[index]?.enddate?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.experiences[index]?.enddate?.message as string}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.25 sm:col-span-2">
@@ -146,6 +179,11 @@ function ExperienceCard({
             className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
             placeholder="What did you do?"
           />
+          {errors.experiences?.[index]?.description?.message && (
+            <div className="text-[0.72rem] text-[#b91c1c]">
+              {errors.experiences[index]?.description?.message as string}
+            </div>
+          )}
         </div>
       </div>
 
@@ -153,10 +191,10 @@ function ExperienceCard({
         <button
           type="button"
           onClick={() => remove(index)}
-          className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+          className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
-          <Trash2 size={11} />
-          Delete
+          {/* <Trash2 size={11} /> */}
+          Cancel
         </button>
         <button
           type="button"
@@ -172,7 +210,6 @@ function ExperienceCard({
 }
 
 export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
-
   const {
     register,
     handleSubmit,
@@ -181,14 +218,16 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     formState: { errors },
   } = useForm<ExperienceSchema>({
     resolver: zodResolver(experienceSchema),
-    defaultValues:{
-      experiences: profile?.experiences?.length ? profile.experiences.map((exp: any)=>({
-        role: exp.role || '',
-        startdate: exp.startdate || '',
-        enddate: exp.enddate || '',
-        description: exp.description || '',
-        companyName: exp.companyName || ''
-      })) : []
+    defaultValues: {
+      experiences: profile?.experiences?.length
+        ? profile.experiences.map((exp: any) => ({
+            role: exp.role || "",
+            startdate: exp.startdate || "",
+            enddate: exp.enddate || "",
+            description: exp.description || "",
+            companyName: exp.companyName || "",
+          }))
+        : [],
     },
     mode: "onSubmit",
   });
@@ -199,16 +238,16 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
   });
 
   useEffect(() => {
-    if(profile?.experiences){
+    if (profile?.experiences) {
       reset({
-        experiences: profile.experiences.map((exp: any)=>({
-          role: exp.role || '',
-          startdate: exp.startdate || '',
-          enddate: exp.enddate || '',
-          companyName: exp.companyName || '',
-          description: exp.description || ''
-        }))
-      })
+        experiences: profile.experiences.map((exp: any) => ({
+          role: exp.role || "",
+          startdate: exp.startdate || "",
+          enddate: exp.enddate || "",
+          companyName: exp.companyName || "",
+          description: exp.description || "",
+        })),
+      });
     }
   }, [profile?.experiences, reset]);
 

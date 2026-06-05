@@ -32,17 +32,17 @@ import {
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
-import { LinksSchema } from "@/schemas/links";
+import { LinksSchema } from "@/lib/schemas/links";
 import { useCreateExperience } from "@/hooks/experience";
-import { ProfileSchema } from "@/schemas/profile";
-import { ExperienceSchema } from "@/schemas/experience";
+import { ProfileSchema } from "@/lib/schemas/profile";
+import { ExperienceSchema } from "@/lib/schemas/experience";
 import { useCreateSkills } from "@/hooks/skills";
-import { SkillsSchema } from "@/schemas/skills";
+import { SkillsSchema } from "@/lib/schemas/skills";
 import { useCreateBlogs } from "@/hooks/blogs";
-import { BlogsSchema } from "@/schemas/blogs";
-import { ProjectsSchema } from "@/schemas/projects";
+import { BlogsSchema } from "@/lib/schemas/blogs";
+import { ProjectsSchema } from "@/lib/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
-import { clearDashboardDraft } from "@/lib/dashboard-drafts";
+import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;

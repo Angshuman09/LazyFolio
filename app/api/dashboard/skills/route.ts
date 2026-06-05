@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
-import {SkillsSchema} from "@/schemas/skills";
+import {SkillsSchema} from "@/lib/schemas/skills";
 
 export async function POST(req: NextRequest){
     try {

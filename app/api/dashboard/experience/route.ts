@@ -1,50 +1,32 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
-import { ExperienceSchema } from "@/schemas/experience";
+import { NextResponse, NextRequest } from "next/server";
+import { SingleExperience } from "@/lib/schemas/experience";
+import {prisma} from "@/lib/prisma";
 
-function parseOptionalDate(value: string | null | undefined) {
-  if (!value?.trim()) {
-    return null;
-  }
+export async function POST(request: NextRequest){
+    try{
+        const { profileId, experience } = await request.json() as {
+            profileId?: string;
+            experience?: SingleExperience;
+        };
 
-  const parsedDate = new Date(value);
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}
+        if(!profileId ){
+            return NextResponse.json({error: "User ID is required"}, {status: 400});
+        }
 
-export async function POST(request: NextRequest) {
-  try {
-    const { profileId, experiences } = (await request.json()) as {
-      profileId?: string;
-      experiences?: ExperienceSchema["experiences"];
-    };
-    if (!profileId) {
-      return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 },
-      );
+        const createdExperience = await prisma.experience.create({
+            data: {
+                profileId: profileId,
+                companyName: experience?.companyName,
+                role: experience?.role,
+                startdate: experience?.startdate ? new Date(experience.startdate) : null,
+                enddate: experience?.enddate ? new Date(experience.enddate) : null,
+                description: experience?.description,
+            }
+        });
+
+        return NextResponse.json(createdExperience, {status: 200});
+    }catch(error){
+        console.log("Error in experience route", error);
+        return NextResponse.json({error: "Internal server error"}, {status: 500});
     }
-
-    await prisma.experience.deleteMany({
-      where: {profileId}
-    })
-
-    const experience = await prisma.experience.createMany({
-      data: (experiences ?? []).map((experience) => ({
-        profileId: profileId,
-        companyName: experience.companyName,
-        role: experience.role,
-        startdate: parseOptionalDate(experience.startdate),
-        enddate: parseOptionalDate(experience.enddate),
-        description: experience.description,
-      })),
-    });
-
-    return NextResponse.json(experience, { status: 200 });
-  } catch (error) {
-    console.log("Error in experience route", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
 }

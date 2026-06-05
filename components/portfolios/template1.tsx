@@ -970,7 +970,7 @@ export function Template1({
             <>
               <Divider />
               <section>
-                <SectionHeading>Stack I use</SectionHeading>
+                <SectionHeading>Skills</SectionHeading>
                 <StackTicker stack={stack} />
               </section>
             </>

@@ -17,13 +17,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Link2, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
-import { linksSchema, LinksSchema } from "@/schemas/links";
+import { linksSchema, LinksSchema } from "@/lib/schemas/links";
 import { LinkType } from "@/db/enums";
 import { useCreateLink, useDeleteLink } from "@/hooks/link";
 import {
   readDashboardDraft,
   writeDashboardDraft,
-} from "@/lib/dashboard-drafts";
+} from "@/lib/cache/dashboard-drafts";
+import { hasFieldArrayErrors } from "@/lib/utils";
 
 type Props = {
   profile?: LinksProfile;
@@ -124,11 +125,19 @@ function LinkCard({
     };
   });
   const values = useWatch({ control, name: `links.${index}` });
+  const hasErrors = hasFieldArrayErrors(errors, "links", index);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const createLink = useCreateLink();
   const deleteLink = useDeleteLink();
+
+  useEffect(() => {
+    if (hasErrors) {
+      setIsEditing(true);
+    }
+  }, [hasErrors]);
+
   const normalizedValues = {
     id: values?.id,
     label: values?.label?.trim() || "",
@@ -300,16 +309,15 @@ function LinkCard({
             type="button"
             onClick={onDeleteLink}
             disabled={deleting || saving}
-            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
+            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
           >
             {deleting ? <Loader2 size={10} className="animate-spin" /> : <Trash2 size={10} />}
-            Delete
           </button>
           <button
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={deleting || saving}
-            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
             Edit
@@ -319,7 +327,7 @@ function LinkCard({
               type="button"
               onClick={onSaveLink}
               disabled={deleting || saving}
-              className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
+              className="inline-flex items-center gap-1.5 px-3 h-7 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
             >
               {saving ? (
                 <Loader2 size={11} className="animate-spin" />
@@ -386,7 +394,7 @@ function LinkCard({
           type="button"
           onClick={onDoneEditing}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+          className="inline-flex items-center gap-1.5 px-3 h-7 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
           <Check size={11} strokeWidth={2.5} />
           Done
@@ -482,7 +490,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
         <button
           type="button"
           onClick={() => append({ label: "", url: "" })}
-          className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+          className="inline-flex items-center gap-1.5 px-4.5 h-8.5 rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
         >
           <Plus size={12} />
           Add link

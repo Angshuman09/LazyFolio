@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
-import {BlogsSchema} from "@/schemas/blogs";
+import {BlogsSchema} from "@/lib/schemas/blogs";
 
 function parseOptionalDate(value: string | null | undefined) {
     if (!value?.trim()) {

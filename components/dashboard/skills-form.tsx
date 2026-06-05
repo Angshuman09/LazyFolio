@@ -6,7 +6,8 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Pencil, Check, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
-import { skillsSchema, SkillsSchema } from "@/schemas/skills";
+import { skillsSchema, SkillsSchema } from "@/lib/schemas/skills";
+import { hasFieldArrayErrors } from "@/lib/utils";
 
 type Props = {
   profile?: {
@@ -33,6 +34,13 @@ function SkillCard({
 }) {
   const [confirmed, setConfirmed] = useState(() => !!field?.value);
   const values = useWatch({ control, name: `skills.${index}` });
+  const hasErrors = hasFieldArrayErrors(errors, "skills", index);
+
+  useEffect(() => {
+    if (hasErrors) {
+      setConfirmed(false);
+    }
+  }, [hasErrors]);
 
   if (confirmed) {
     return (
