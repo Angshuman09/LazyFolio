@@ -4,7 +4,7 @@ import { RefObject, useState } from "react";
 import { useEffect, useMemo } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, Pencil, Check, Sparkles } from "lucide-react";
+import { Plus, Trash2, Pencil, Check } from "lucide-react";
 import toast from "react-hot-toast";
 import { skillsSchema, SkillsSchema } from "@/lib/schemas/skills";
 import { hasFieldArrayErrors } from "@/lib/utils";

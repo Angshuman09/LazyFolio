@@ -26,7 +26,7 @@ const Features = () => {
         ~Features~
         </span>
       </h1>
-      <h2 className="text-4xl sm:text-5xl pb-8 font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
+      <h2 className="text-2xl sm:text-4xl pb-8 font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
         <span className="block font-serif-display font-semibold tracking-wide">Everything you need.</span><span className="italic tracking-wide text-[#c6a87b] font-semibold font-serif-display">Nothing extra.</span>
       </h2>
 
