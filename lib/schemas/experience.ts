@@ -9,6 +9,7 @@ const stringOrEmpty = (min = 1, max?: number) => {
 };
 
 const singleExperienceSchema = z.object({
+  id: z.string().optional(),
   companyName: stringOrEmpty(2, 120).optional(),
   role: stringOrEmpty(2, 120).optional(),
   startdate: stringOrEmpty(1, 50).optional(),

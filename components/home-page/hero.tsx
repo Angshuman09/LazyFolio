@@ -61,7 +61,6 @@ const Hero = () => {
             know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist</span>
           </Highlighter>
         </span>
-
         {/* <span className="block mt-4"> Start showing it.</span> */}
       </h1>
 

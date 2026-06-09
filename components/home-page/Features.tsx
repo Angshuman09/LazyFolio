@@ -45,7 +45,7 @@ const Features = () => {
 
             {/* Content pinned to bottom */}
             <div className="shrink-0">
-              <h3 className="font-serif-display pt-3 text-[0.95rem] leading-snug mb-1 text-(--lf-ink)">
+              <h3 className="font-serif-display pt-3 text-[1.2rem] leading-snug mb-1 text-(--lf-ink)">
                 {f.title}
               </h3>
               <p className="text-[0.72rem] leading-relaxed text-(--lf-muted)">
