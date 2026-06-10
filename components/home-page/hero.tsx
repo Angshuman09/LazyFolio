@@ -11,6 +11,7 @@ const Hero = () => {
   const router = useRouter();
   const { data: profile } = useGetUserProfile(session?.user.id);
   const [loading, setLoading] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
     if (profile?.username) {
@@ -53,15 +54,14 @@ const Hero = () => {
   return (
     // Stop building your portfolio. Start showing it.
     // Yes, you still need a portfolio.
-    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-15">
+    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
         <span className="block">
           Make the internet {" "}
-         
-            know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist</span>
+
+          know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist</span>
           </Highlighter>
         </span>
-
         {/* <span className="block mt-4"> Start showing it.</span> */}
       </h1>
 
@@ -103,10 +103,29 @@ const Hero = () => {
       </div>
 
       <div>
-        <h1 className="text-5xl font-normal pt-12 font-serif-display">
-          How to use?
+        <h1 className="text-xl font-semibold  text-[#c6a87b] pt-12 pb-5">
+          ~How to use?~
         </h1>
-        <p>video will be attached after deployment :)</p>
+        <div className="shadow-md rounded-md p-6 md:p-8">
+          {videoError ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="text-6xl mb-4"></div>
+              <p className="text-gray-600 text-lg">
+                Video failed to load. Please refresh the page.
+              </p>
+            </div>
+          ) : (
+            <video
+              src="/howtouse.mp4"
+              autoPlay
+              loop
+              muted
+              // controls
+              onError={() => setVideoError(true)}
+              className="rounded-md w-full max-h-[600px] object-contain"
+            />
+          )}
+        </div>
       </div>
     </section>
   );

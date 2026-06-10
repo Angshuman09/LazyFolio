@@ -9,6 +9,8 @@ import {
   type FieldArrayWithId,
   type FieldErrors,
   type UseFieldArrayRemove,
+  type UseFieldArrayInsert,
+  type UseFormGetValues,
   type UseFormRegister,
   type UseFormSetValue,
 } from "react-hook-form";
@@ -81,8 +83,10 @@ function BlogCard({
   register,
   errors,
   remove,
+  insert,
   profile,
   setValue,
+  getValues,
 }: {
   field: FieldArrayWithId<BlogsSchema, "blogs", "fieldId">;
   index: number;
@@ -90,10 +94,37 @@ function BlogCard({
   register: UseFormRegister<BlogsSchema>;
   errors: FieldErrors<BlogsSchema>;
   remove: UseFieldArrayRemove;
+  insert: UseFieldArrayInsert<BlogsSchema, "blogs">;
   profile?: BlogsProfile;
   setValue: UseFormSetValue<BlogsSchema>;
+  getValues: UseFormGetValues<BlogsSchema>;
 }) {
-  const [confirmed, setConfirmed] = useState(() => !!(field?.title || field?.blogLink));
+  const [isEditing, setIsEditing] = useState(
+    () => !(field?.title || field?.blogLink),
+  );
+
+  const [savedSnapshot, setSavedSnapshot] = useState<{
+    id?: string;
+    title: string;
+    description: string;
+    blogLink: string;
+    enddate: string;
+  } | null>(() => {
+    if (!field.id) {
+      return null;
+    }
+
+    const profileBlog = profile?.blogs?.find((blog) => blog.id === field.id);
+
+    return {
+      id: field.id,
+      title: profileBlog?.title || field.title || "",
+      description: profileBlog?.description || field.description || "",
+      blogLink: profileBlog?.blogLink || field.blogLink || "",
+      enddate: profileBlog?.enddate ? String(profileBlog.enddate) : (field.enddate || ""),
+    };
+  });
+
   const values = useWatch({ control, name: `blogs.${index}` });
   const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
   const [saving, setSaving] = useState(false);
@@ -103,9 +134,31 @@ function BlogCard({
 
   useEffect(() => {
     if (hasErrors) {
-      setConfirmed(false);
+      setIsEditing(true);
     }
   }, [hasErrors]);
+
+  const normalizedValues = {
+    id: values?.id,
+    title: values?.title || "",
+    description: values?.description || "",
+    blogLink: values?.blogLink || "",
+    enddate: values?.enddate || "",
+  };
+
+  const hasUnsavedChanges =
+    !savedSnapshot ||
+    normalizedValues.id !== savedSnapshot.id ||
+    normalizedValues.title !== savedSnapshot.title ||
+    normalizedValues.description !== savedSnapshot.description ||
+    normalizedValues.blogLink !== savedSnapshot.blogLink ||
+    normalizedValues.enddate !== savedSnapshot.enddate;
+
+  const updateBlogsDraft = (blogs: BlogsSchema["blogs"]) => {
+    if (profile?.id) {
+      writeDashboardDraft("blogs", profile.id, { blogs: blogs || [] });
+    }
+  };
 
   const onSaveBlog = async () => {
     if (!profile?.id) {
@@ -113,19 +166,12 @@ function BlogCard({
       return;
     }
 
-    const hasContent = [
-      values?.title,
-      values?.description,
-      values?.blogLink,
-      values?.enddate,
-    ].some((value) => value?.trim());
-
-    if (!hasContent) {
-      toast.error("Add blog details before saving this post.");
+    if (!normalizedValues.title) {
+      toast.error("Add a title before saving this post.");
       return;
     }
 
-    if (!isValidUrl(values?.blogLink)) {
+    if (normalizedValues.blogLink && !isValidUrl(normalizedValues.blogLink)) {
       toast.error("Please enter a valid URL before saving this post.");
       return;
     }
@@ -134,21 +180,38 @@ function BlogCard({
     try {
       const payload = await createBlog.mutateAsync({
         blog: {
-          id: values?.id,
-          title: values?.title?.trim() || "",
-          description: values?.description?.trim() || "",
-          blogLink: values?.blogLink?.trim() || "",
-          enddate: values?.enddate?.trim() || "",
+          id: normalizedValues.id || undefined,
+          title: normalizedValues.title,
+          description: normalizedValues.description,
+          blogLink: normalizedValues.blogLink,
+          enddate: normalizedValues.enddate,
         },
         profileId: profile.id,
       });
 
-      if (payload?.data?.id) {
-        setValue(`blogs.${index}.id`, payload.data.id, { shouldDirty: true });
-      }
+      const savedBlog = {
+        id: payload?.data?.id || normalizedValues.id,
+        title: payload?.data?.title || normalizedValues.title,
+        description: payload?.data?.description || normalizedValues.description,
+        blogLink: payload?.data?.blogLink || normalizedValues.blogLink,
+        enddate: payload?.data?.enddate ? String(payload.data.enddate) : normalizedValues.enddate,
+      };
 
+      setValue(`blogs.${index}.id`, savedBlog.id, { shouldDirty: false });
+      setValue(`blogs.${index}.title`, savedBlog.title, { shouldDirty: false });
+      setValue(`blogs.${index}.description`, savedBlog.description, { shouldDirty: false });
+      setValue(`blogs.${index}.blogLink`, savedBlog.blogLink, { shouldDirty: false });
+      setValue(`blogs.${index}.enddate`, savedBlog.enddate, { shouldDirty: false });
+
+      const currentBlogs = getValues("blogs") || [];
+      updateBlogsDraft(
+        currentBlogs.map((b, i) =>
+          i === index ? { ...b, ...savedBlog } : b,
+        ),
+      );
+      setSavedSnapshot(savedBlog);
+      setIsEditing(false);
       toast.success("Blog saved successfully!");
-      setConfirmed(true);
     } catch (error) {
       console.error("Error saving blog:", error);
       toast.error("An error occurred while saving the blog.");
@@ -158,17 +221,27 @@ function BlogCard({
   };
 
   const onDeleteBlog = async () => {
-    if (!values?.id) {
+    const currentBlogs = getValues("blogs") || [];
+    const deletedBlog = currentBlogs[index];
+    const nextBlogs = currentBlogs.filter((_, i) => i !== index);
+
+    if (!normalizedValues.id) {
       remove(index);
+      updateBlogsDraft(nextBlogs);
       return;
     }
 
+    remove(index);
+    updateBlogsDraft(nextBlogs);
     setDeleting(true);
     try {
-      await deleteBlog.mutateAsync(values.id as string);
+      await deleteBlog.mutateAsync(normalizedValues.id);
       toast.success("Blog deleted successfully!");
-      remove(index);
     } catch (error) {
+      if (deletedBlog) {
+        insert(index, deletedBlog);
+        updateBlogsDraft(currentBlogs);
+      }
       console.error("Error deleting blog:", error);
       toast.error("An error occurred while deleting the blog.");
     } finally {
@@ -176,7 +249,43 @@ function BlogCard({
     }
   };
 
-  if (confirmed) {
+  const onCancelEditing = () => {
+    if (!savedSnapshot) {
+      const currentBlogs = getValues("blogs") || [];
+      updateBlogsDraft(currentBlogs.filter((_, i) => i !== index));
+      remove(index);
+      return;
+    }
+
+    setValue(`blogs.${index}.id`, savedSnapshot.id, { shouldDirty: false });
+    setValue(`blogs.${index}.title`, savedSnapshot.title, { shouldDirty: false });
+    setValue(`blogs.${index}.description`, savedSnapshot.description, { shouldDirty: false });
+    setValue(`blogs.${index}.blogLink`, savedSnapshot.blogLink, { shouldDirty: false });
+    setValue(`blogs.${index}.enddate`, savedSnapshot.enddate, { shouldDirty: false });
+
+    const currentBlogs = getValues("blogs") || [];
+    updateBlogsDraft(
+      currentBlogs.map((b, i) =>
+        i === index ? { ...b, ...savedSnapshot } : b,
+      ),
+    );
+    setIsEditing(false);
+  };
+
+  const onDoneEditing = () => {
+    if (!normalizedValues.title) {
+      toast.error("Please add a title before completing this blog card.");
+      return;
+    }
+
+    setValue(`blogs.${index}.title`, normalizedValues.title, { shouldDirty: true });
+    setValue(`blogs.${index}.description`, normalizedValues.description, { shouldDirty: true });
+    setValue(`blogs.${index}.blogLink`, normalizedValues.blogLink, { shouldDirty: true });
+    setValue(`blogs.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
+    setIsEditing(false);
+  };
+
+  if (!isEditing) {
     return (
       <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3.5 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
         <div className="flex items-start gap-3 min-w-0 flex-1">
@@ -199,25 +308,40 @@ function BlogCard({
             )}
           </div>
         </div>
-        <div className={`flex items-center gap-1.5 shrink-0 transition-opacity duration-150 ${deleting ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-          <button
-            type="button"
-            onClick={() => setConfirmed(false)}
-            disabled={deleting}
-            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
-          >
-            <Pencil size={10} />
-            Edit
-          </button>
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={onDeleteBlog}
-            disabled={deleting}
+            disabled={deleting || saving}
             className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
             aria-label="Remove blog post"
           >
             {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
           </button>
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            disabled={deleting || saving}
+            className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+          >
+            <Pencil size={10} />
+            Edit
+          </button>
+          {hasUnsavedChanges && (
+            <button
+              type="button"
+              onClick={onSaveBlog}
+              disabled={deleting || saving}
+              className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
+            >
+              {saving ? (
+                <Loader2 size={11} className="animate-spin" />
+              ) : (
+                <Check size={11} strokeWidth={2.5} />
+              )}
+              {saving ? "Saving..." : "Save"}
+            </button>
+          )}
         </div>
       </div>
     );
@@ -294,7 +418,7 @@ function BlogCard({
       <div className="flex items-center justify-between mt-4">
         <button
           type="button"
-          onClick={() => (values?.id ? setConfirmed(true) : remove(index))}
+          onClick={onCancelEditing}
           disabled={saving}
           className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
@@ -302,16 +426,12 @@ function BlogCard({
         </button>
         <button
           type="button"
-          onClick={onSaveBlog}
+          onClick={onDoneEditing}
           disabled={saving}
           className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          {saving ? (
-            <Loader2 size={11} className="animate-spin" />
-          ) : (
-            <Check size={11} strokeWidth={2.5} />
-          )}
-          {saving ? "Saving..." : "Done"}
+          <Check size={11} strokeWidth={2.5} />
+          Done
         </button>
       </div>
     </div>
@@ -327,6 +447,7 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
     control,
     reset,
     setValue,
+    getValues,
     formState: { errors, isDirty },
   } = useForm<BlogsSchema>({
     resolver: zodResolver(blogsSchema),
@@ -334,7 +455,7 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "blogs",
     keyName: "fieldId",
@@ -388,8 +509,10 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
             register={register}
             errors={errors}
             remove={remove}
+            insert={insert}
             profile={profile}
             setValue={setValue}
+            getValues={getValues}
           />
         ))}
       </div>

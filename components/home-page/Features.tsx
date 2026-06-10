@@ -21,7 +21,7 @@ const Features = () => {
       id="features"
       className="max-w-7xl mx-auto px-5 md:px-6 pb-24 scroll-mt-24"
     >
-      <h1 className="text-4xl sm:text-xl font-semibold leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-4">
+      <h1 className="text-xl sm:text-xl font-semibold leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-4">
         <span className="block w-fit text-[#c6a87b] tracking-wide">
         ~Features~
         </span>
@@ -45,7 +45,7 @@ const Features = () => {
 
             {/* Content pinned to bottom */}
             <div className="shrink-0">
-              <h3 className="font-serif-display pt-3 text-[0.95rem] leading-snug mb-1 text-(--lf-ink)">
+              <h3 className="font-serif-display pt-3 text-[1.2rem] leading-snug mb-1 text-(--lf-ink)">
                 {f.title}
               </h3>
               <p className="text-[0.72rem] leading-relaxed text-(--lf-muted)">

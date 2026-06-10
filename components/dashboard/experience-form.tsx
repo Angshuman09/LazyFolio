@@ -1,255 +1,64 @@
 "use client";
 
-import { RefObject, useState } from "react";
-import { useEffect } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useEffect, useMemo, RefObject } from "react";
+import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2, Pencil, Check, Briefcase } from "lucide-react";
+import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { experienceSchema, ExperienceSchema } from "@/lib/schemas/experience";
-import { hasFieldArrayErrors } from "@/lib/utils";
+import { readDashboardDraft, writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { ExperienceCard } from "./experience-card";
+import {
+  experiencesFromProfile,
+  getInitialExperiences,
+  ExperienceProfile,
+} from "@/lib/utils/experience";
 
 type Props = {
-  profile?: any;
+  profile?: ExperienceProfile;
   formRef: RefObject<HTMLFormElement | null>;
   onSubmit?: (data: ExperienceSchema) => void;
 };
 
-function ExperienceCard({
-  field,
-  index,
-  control,
-  register,
-  errors,
-  remove,
-}: {
-  field: any;
-  index: number;
-  control: any;
-  register: any;
-  errors: any;
-  remove: (i: number) => void;
-}) {
-  const [confirmed, setConfirmed] = useState(
-    () => !!(field?.role || field?.companyName),
-  );
-  const values = useWatch({ control, name: `experiences.${index}` });
-  const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
-
-  useEffect(() => {
-    if (hasErrors) {
-      setConfirmed(false);
-    }
-  }, [hasErrors]);
-
-  const handleSave = ()=>{
-    console.log("Saving experience at index", index, "with values", values);
-  }
-
-  if (confirmed) {
-    return (
-      <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3.5 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
-        <div className="flex items-start gap-3 min-w-0 flex-1">
-          <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0 mt-0.5">
-            <Briefcase size={12} className="text-(--lf-muted)" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
-              {values?.role || (
-                <span className="text-(--lf-muted) italic">Untitled Role</span>
-              )}
-            </div>
-            <div className="text-[0.72rem] text-(--lf-muted) font-sans mt-0.5">
-              {values?.companyName || "—"}
-              {(values?.startdate || values?.enddate) && (
-                <span className="ml-2 font-mono opacity-70">
-                  {values.startdate}{" "}
-                  {values.enddate ? `→ ${values.enddate}` : ""}
-                </span>
-              )}
-            </div>
-            {values?.description && (
-              <div className="text-[0.72rem] text-(--lf-muted) mt-1 line-clamp-2 leading-relaxed">
-                {values.description}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          <button
-            type="button"
-            onClick={() => remove(index)}
-            className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
-            aria-label="Remove experience"
-          >
-            <Trash2 size={12} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setConfirmed(false)}
-            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
-          >
-            <Pencil size={10} />
-            Edit
-          </button>
-
-          <button
-          onClick={handleSave}  
-          className="bg-(--lf-ink) text-(--lf-bg) px-2.5 py-1.5 rounded-lg text-[0.72rem] cursor-pointer hover:bg-(--lf-ink)/80 transition-all duration-150 font-sans">
-            Save
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5 gap-y-3.5">
-        <div className="flex flex-col gap-1.25">
-          <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-            Role
-          </label>
-          <input
-            {...register(`experiences.${index}.role`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. Full Stack Developer"
-          />
-          {errors.experiences?.[index]?.role?.message && (
-            <div className="text-[0.72rem] text-[#b91c1c]">
-              {errors.experiences[index]?.role?.message as string}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1.25">
-          <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-            Company
-          </label>
-          <input
-            {...register(`experiences.${index}.companyName`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. Acme Corp"
-          />
-          {errors.experiences?.[index]?.companyName?.message && (
-            <div className="text-[0.72rem] text-[#b91c1c]">
-              {errors.experiences[index]?.companyName?.message as string}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1.25">
-          <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-            Start date
-          </label>
-          <input
-            {...register(`experiences.${index}.startdate`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. 2023-01-01"
-          />
-          {errors.experiences?.[index]?.startdate?.message && (
-            <div className="text-[0.72rem] text-[#b91c1c]">
-              {errors.experiences[index]?.startdate?.message as string}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1.25">
-          <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-            End date
-          </label>
-          <input
-            {...register(`experiences.${index}.enddate`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. 2024-12-31"
-          />
-          {errors.experiences?.[index]?.enddate?.message && (
-            <div className="text-[0.72rem] text-[#b91c1c]">
-              {errors.experiences[index]?.enddate?.message as string}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-1.25 sm:col-span-2">
-          <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-            Description
-          </label>
-          <textarea
-            {...register(`experiences.${index}.description`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
-            placeholder="What did you do?"
-          />
-          {errors.experiences?.[index]?.description?.message && (
-            <div className="text-[0.72rem] text-[#b91c1c]">
-              {errors.experiences[index]?.description?.message as string}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between mt-4">
-        <button
-          type="button"
-          onClick={() => remove(index)}
-          className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
-        >
-          {/* <Trash2 size={11} /> */}
-          Cancel
-        </button>
-        <button
-          type="button"
-          onClick={() => setConfirmed(true)}
-          className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
-        >
-          <Check size={11} strokeWidth={2.5} />
-          Done
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
+  
+  const initialValues = useMemo(() => getInitialExperiences(profile), [profile]);
+
   const {
     register,
     handleSubmit,
     control,
     reset,
-    formState: { errors },
+    getValues,
+    setValue,
+    formState: { errors, isDirty },
   } = useForm<ExperienceSchema>({
     resolver: zodResolver(experienceSchema),
-    defaultValues: {
-      experiences: profile?.experiences?.length
-        ? profile.experiences.map((exp: any) => ({
-            role: exp.role || "",
-            startdate: exp.startdate || "",
-            enddate: exp.enddate || "",
-            description: exp.description || "",
-            companyName: exp.companyName || "",
-          }))
-        : [],
-    },
+    defaultValues: initialValues, 
     mode: "onSubmit",
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "experiences",
+    keyName: "experiencefield",
   });
 
+  const watchedExperiences = useWatch({ control, name: "experiences" });
+
   useEffect(() => {
-    if (profile?.experiences) {
-      reset({
-        experiences: profile.experiences.map((exp: any) => ({
-          role: exp.role || "",
-          startdate: exp.startdate || "",
-          enddate: exp.enddate || "",
-          companyName: exp.companyName || "",
-          description: exp.description || "",
-        })),
+    if (!profile?.id) return;
+    const cached = readDashboardDraft<ExperienceSchema>("experience", profile.id);
+    reset(cached || experiencesFromProfile(profile.experiences || []));
+  }, [profile?.id, profile?.experiences, reset]);
+
+  useEffect(() => {
+    if (profile?.id && isDirty) {
+      writeDashboardDraft("experience", profile.id, {
+        experiences: watchedExperiences || [],
       });
     }
-  }, [profile?.experiences, reset]);
+  }, [isDirty, profile?.id, watchedExperiences]);
 
   return (
     <form
@@ -275,13 +84,17 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
 
         {fields.map((f, index) => (
           <ExperienceCard
-            key={f.id}
+            key={f.experiencefield}
             field={f}
             index={index}
             control={control}
             register={register}
             errors={errors}
             remove={remove}
+            getValues={getValues}
+            setValue={setValue}
+            profile={profile}
+            insert={insert}
           />
         ))}
       </div>
@@ -290,11 +103,11 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
         <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-3.5">
           New Role
         </div>
-
         <button
           type="button"
           onClick={() =>
             append({
+              id: "",        
               companyName: "",
               role: "",
               startdate: "",

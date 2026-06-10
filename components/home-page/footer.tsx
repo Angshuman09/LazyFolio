@@ -12,7 +12,7 @@ const Footer = () => {
     },
     {
       heading: "The Cool",
-      links: ["X", "Instagram", "Github"],
+      links: ["X", "Github"],
     },
   ];
 
@@ -37,7 +37,7 @@ const Footer = () => {
                   {col.links.map((link) => (
                     <li key={link} className="text-(--lf-muted) hover:text-(--lf-ink)">
                       <a
-                        href="#"
+                        href="/"
                         className="text-sm transition-colors duration-150"
                       >
                         {link}

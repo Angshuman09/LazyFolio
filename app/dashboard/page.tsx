@@ -34,7 +34,7 @@ import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
 import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
 import { LinksSchema } from "@/lib/schemas/links";
-import { useCreateExperience } from "@/hooks/experience";
+import { useCreateExperiences } from "@/hooks/experiences";
 import { ProfileSchema } from "@/lib/schemas/profile";
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { useCreateSkills } from "@/hooks/skills";
@@ -219,7 +219,7 @@ export default function DashboardPage() {
     }
   };
 
-  const createExperience = useCreateExperience();
+  const createExperience = useCreateExperiences();
 
   const onExperienceSubmit = (data: ExperienceSchema) => {
     setIsSaving(true);
@@ -626,6 +626,11 @@ export default function DashboardPage() {
                   onSubmit={onSubmitBlogs}
                 />
               )}
+              {
+                tab == "insights" && (
+                  <h1>working on it :)</h1>
+                )
+              }
             </>
           )}
         </main>

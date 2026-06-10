@@ -166,6 +166,7 @@ export function LinkCard({
         },
         profileId: profile?.id,
       });
+
       const savedLink = {
         id: payload?.data?.id || normalizedValues.id,
         label: payload?.data?.label || normalizedValues.label,
@@ -290,7 +291,7 @@ export function LinkCard({
             <input
               {...register(`links.${index}.label`)}
               className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-              placeholder="Twitter"
+              placeholder="X"
             />
             {errors.links?.[index]?.label?.message && (
               <div className="text-[0.72rem] text-[#b91c1c]">
