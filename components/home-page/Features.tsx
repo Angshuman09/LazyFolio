@@ -21,7 +21,7 @@ const Features = () => {
       id="features"
       className="max-w-7xl mx-auto px-5 md:px-6 pb-24 scroll-mt-24"
     >
-      <h1 className="text-4xl sm:text-xl font-semibold leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-4">
+      <h1 className="text-xl sm:text-xl font-semibold leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-4">
         <span className="block w-fit text-[#c6a87b] tracking-wide">
         ~Features~
         </span>

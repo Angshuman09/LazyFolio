@@ -9,11 +9,11 @@ export const projectsSchema = z.object({
   projects: z
     .array(
       z.object({
+        id: z.string().optional(),
         title: stringOrEmpty(160).optional(),
         description: stringOrEmpty(800).optional(),
         githubLink: z.union([z.literal(""), z.string().url()]).optional(),
         projectLink: z.union([z.literal(""), z.string().url()]).optional(),
-        // Stored as a comma-separated string in the form for simpler editing.
         techstack: stringOrEmpty(300).optional(),
         enddate: stringOrEmpty(50).optional(),
       }),

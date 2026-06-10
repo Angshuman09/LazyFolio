@@ -626,6 +626,11 @@ export default function DashboardPage() {
                   onSubmit={onSubmitBlogs}
                 />
               )}
+              {
+                tab == "insights" && (
+                  <h1>working on it :)</h1>
+                )
+              }
             </>
           )}
         </main>
