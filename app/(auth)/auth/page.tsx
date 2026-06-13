@@ -27,27 +27,32 @@ export default function Auth() {
           </h1>
         </div>
 
-        <div className="hidden md:flex flex-col relative z-10 my-auto pt-10">
-          <div className="relative group max-w-[460px] w-full p-2.5 rounded-2xl bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 backdrop-blur-md transition-all duration-500">
-            <div className="relative overflow-hidden rounded-xl">
+        <div className="hidden md:flex flex-col relative z-10 my-auto pt-10 items-start">
+          {/* Ambient heavenly glow orbs */}
+          <div className="absolute -inset-10 pointer-events-none">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-[#e8d5b0]/30 dark:bg-[#c6a87b]/15 blur-[80px] rounded-full" />
+            <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-[#c6a87b]/20 dark:bg-[#c6a87b]/10 blur-[70px] rounded-full" />
+            <div className="absolute top-1/3 right-0 w-48 h-48 bg-[#f5e6c8]/25 dark:bg-[#d4a853]/10 blur-[60px] rounded-full" />
+          </div>
+
+          <div className="relative w-full max-w-[500px] group">
+            {/* The square image with all-edge feathered mask */}
+            <div
+              className="relative w-full aspect-square"
+            >
               <Image
-                src="/auth.png"
+                src="/auth-flower.png"
                 alt="auth-image"
-                width={500}
-                height={500}
-                quality={100}
-                className="w-full h-auto object-cover transform scale-100 hover:scale-[1.015] transition-all duration-700 ease-out"
+                width={600}
+                height={600}
+                quality={40}
+                className="w-full h-full object-cover"
                 priority
-              />
-              <div
-                className="absolute inset-0 pointer-events-none rounded-xl"
-                style={{
-                  boxShadow: "inset 0 0 60px 40px var(--lf-surface)",
-                }}
               />
             </div>
           </div>
-          <p className="mt-8 text-(--lf-muted) font-serif-display text-lg leading-relaxed max-w-sm">
+
+          <p className="mt-6 text-(--lf-muted) font-serif-display text-lg leading-relaxed max-w-sm relative z-10 pl-9">
             No <span className="font-bold italic">deployment</span>. No <span className="font-bold italic">setup</span>. Just create and share. Show off your work
             effortlessly.
           </p>

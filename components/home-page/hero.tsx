@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useGetUserProfile } from "@/hooks/profile";
 import toast from "react-hot-toast";
+import Image from "next/image";
 const Hero = () => {
   const { data: session, isPending } = authClient.useSession();
   const [username, setUsername] = useState("");
@@ -52,9 +53,8 @@ const Hero = () => {
     }
   };
   return (
-    // Stop building your portfolio. Start showing it.
-    // Yes, you still need a portfolio.
-    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24">
+
+    <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
         <span className="block">
           Make the internet {" "}
@@ -102,29 +102,20 @@ const Hero = () => {
         </button>
       </div>
 
-      <div>
-        <h1 className="text-xl font-semibold  text-[#c6a87b] pt-12 pb-5">
-          ~How to use?~
-        </h1>
-        <div className="shadow-md rounded-md p-6 md:p-8">
-          {videoError ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="text-6xl mb-4"></div>
-              <p className="text-gray-600 text-lg">
-                Video failed to load. Please refresh the page.
-              </p>
-            </div>
-          ) : (
-            <video
-              src="/howtouse.mp4"
-              autoPlay
-              loop
-              muted
-              // controls
-              onError={() => setVideoError(true)}
-              className="rounded-md w-full max-h-[600px] object-contain"
-            />
-          )}
+      <div className="mt-15">
+        <h2 className="text-2xl sm:text-4xl font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
+          <span className="block font-serif-display font-semibold tracking-wide">Everything you need.</span>
+          <span className="italic tracking-wide text-[#c6a87b] font-semibold font-serif-display">Nothing extra.</span>
+        </h2>
+
+        <div className="relative">
+          <Image
+            src="/show.png"
+            alt="this image"
+            width={1000}
+            height={1000}
+            className="rounded-md w-full"
+          />
         </div>
       </div>
     </section>

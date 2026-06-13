@@ -1,24 +1,19 @@
-import   {Link2,
-  Briefcase,
-  Code2,
-  Sparkles,
-  BookOpen,
-  User} from "lucide-react";
+
 
 export const TEMPLATES = [
   {
     id: "1",
-    label: "Minimal dark",
+    label: "Minimal light",
     emoji: "01",
-    preview: "Dark, simple, minimal",
-    image: "/styles/template1.png",
+    preview: "Light, simple, minimal",
+    image: "/styles/template2.png",
   },
   {
     id: "2",
-    label: "Minimal light",
+    label: "Minimal dark",
     emoji: "02",
-    preview: "Light, simple, minimal",
-    image: "/styles/template2.png",
+    preview: "Dark, simple, minimal",
+    image: "/styles/template1.png",
   },
   {
     id: "3",

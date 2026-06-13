@@ -290,7 +290,7 @@ function getLinkIcon(label: string, href: string): ReactNode {
 const Divider = () => <div className="w-full h-px bg-stone-200/80 my-10" />;
 
 const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <h2 className="text-sm font-semibold text-stone-900 mb-6 tracking-tight">
+  <h2 className="text-md font-semibold text-stone-900 mb-6 tracking-tight">
     {children}
   </h2>
 );
@@ -704,35 +704,17 @@ export function Template2({
             <>
               <Divider />
               <section>
-                <SectionHeading>Professional Experience</SectionHeading>
+                <SectionHeading>Experience</SectionHeading>
                 <div className="space-y-8">
                   {experiences.map((exp) => (
                     <div key={exp.id}>
                       <div className="flex items-start justify-between gap-2 mb-3">
                         <div>
-                          {exp.company &&
-                            (exp.companyUrl && exp.companyUrl !== "#" ? (
-                              <a
-                                href={exp.companyUrl}
-                                target={
-                                  shouldOpenInNewTab(exp.companyUrl)
-                                    ? "_blank"
-                                    : undefined
-                                }
-                                rel="noopener noreferrer"
-                                className="group inline-flex items-center gap-1 text-sm font-semibold text-stone-900 hover:text-stone-700 transition-colors"
-                              >
-                                {exp.company}
-                                <MoveUpRight
-                                  size={10}
-                                  className="text-stone-400 group-hover:text-stone-600 transition-colors"
-                                />
-                              </a>
-                            ) : (
+                          {exp.company && (
                               <span className="text-sm font-semibold text-stone-900">
                                 {exp.company}
                               </span>
-                            ))}
+                            )}
                           {exp.role && (
                             <p className="text-[11px] text-stone-500 mt-0.5">
                               {exp.role}

@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from 'cloudinary';
 import { NextRequest } from 'next/server';
+import { Readable } from 'stream';
 
 cloudinary.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -21,7 +22,10 @@ export async function POST(req: NextRequest){
 
         const result = await new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
-                {folder:"lazyfolio"},
+                {
+                    folder: "lazyfolio",
+                    resource_type: "auto"
+                },
                 (error: any, result: any) => {
                     if (error) {
                         reject(error);
@@ -30,7 +34,7 @@ export async function POST(req: NextRequest){
                     }
                 }
             );
-            uploadStream.end(buffer);
+            Readable.from(buffer).pipe(uploadStream);
         });
 
         return Response.json({url: (result as any).secure_url});

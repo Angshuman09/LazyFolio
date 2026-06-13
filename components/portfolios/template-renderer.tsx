@@ -26,9 +26,9 @@ export function TemplateRenderer({ user, profile }: TemplateRendererProps) {
     const themeId = profile?.themeId || "1";
     switch (themeId) {
       case "1":
-        return <Template1 user={user ?? {}} profile={profile ?? {}} />;
-      case "2":
         return <Template2 user={user ?? {}} profile={profile ?? {}} />;
+      case "2":
+        return <Template1 user={user ?? {}} profile={profile ?? {}} />;
       case "3":
         return <Template3 user={user ?? {}} profile={profile ?? {}} />;
       case "4":

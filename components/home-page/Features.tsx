@@ -26,9 +26,6 @@ const Features = () => {
         ~Features~
         </span>
       </h1>
-      <h2 className="text-2xl sm:text-4xl pb-8 font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
-        <span className="block font-serif-display font-semibold tracking-wide">Everything you need.</span><span className="italic tracking-wide text-[#c6a87b] font-semibold font-serif-display">Nothing extra.</span>
-      </h2>
 
       {/* 2x2 Square Grid */}
       <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-7">
