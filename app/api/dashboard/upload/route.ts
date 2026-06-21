@@ -1,4 +1,4 @@
-import {v2 as cloudinary} from 'cloudinary';
+import {v2 as cloudinary, UploadApiResponse} from 'cloudinary';
 import { NextRequest } from 'next/server';
 import { Readable } from 'stream';
 
@@ -20,14 +20,14 @@ export async function POST(req: NextRequest){
         const bytes = await file?.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        const result = await new Promise((resolve, reject) => {
+        const result = await new Promise<UploadApiResponse>((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 {
                     folder: "lazyfolio",
                     resource_type: "auto"
                 },
-                (error: any, result: any) => {
-                    if (error) {
+                (error, result) => {
+                    if (error || !result) {
                         reject(error);
                     } else {
                         resolve(result);
@@ -37,27 +37,18 @@ export async function POST(req: NextRequest){
             Readable.from(buffer).pipe(uploadStream);
         });
 
-        return Response.json({url: (result as any).secure_url});
+        return Response.json({url: result.url, publicId: result.public_id});
     } catch (error) {
         console.error('Error uploading image:', error);
         return Response.json({error: 'Failed to upload image'}, {status: 500});
     }
 }
 
-function extractPublicId(url: string): string | null {
-  try {
-    const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[a-z]+)?$/i);
-    return match ? match[1] : null;
-  } catch {
-    return null;
-  }
-}
-
-export async function deleteFromCloudinary(url: string) {
-  const publicId = extractPublicId(url);
+export async function deleteFromCloudinary(publicId: string) {
   if (!publicId) return;
   try {
     await cloudinary.uploader.destroy(publicId);
+    console.log("deleted successfully");
   } catch (err) {
     console.error("Failed to delete from Cloudinary:", err);
     throw new Error("Failed to delete from Cloudinary");

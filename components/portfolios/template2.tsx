@@ -711,10 +711,10 @@ export function Template2({
                       <div className="flex items-start justify-between gap-2 mb-3">
                         <div>
                           {exp.company && (
-                              <span className="text-sm font-semibold text-stone-900">
-                                {exp.company}
-                              </span>
-                            )}
+                            <span className="text-sm font-semibold text-stone-900">
+                              {exp.company}
+                            </span>
+                          )}
                           {exp.role && (
                             <p className="text-[11px] text-stone-500 mt-0.5">
                               {exp.role}
@@ -753,7 +753,7 @@ export function Template2({
             <>
               <Divider />
               <section>
-                <SectionHeading>Proof of Work</SectionHeading>
+                <SectionHeading>Projects</SectionHeading>
                 <div className="space-y-0.5">
                   {visibleProjects.map((project) => (
                     <div
@@ -932,7 +932,26 @@ export function Template2({
               <Divider />
               <section>
                 <SectionHeading>Skills</SectionHeading>
-                <StackTicker stack={stack} />
+                {stack.length <= 8 ?
+                  <div className="relative overflow-hidden py-1 flex justify-start flex-wrap">
+                    <div
+                      className="flex gap-3 w-max"
+                    >
+                    {stack.map((tech, i) => (
+                      <div
+                        key={`${tech.name}-${i}`}
+                        className="flex items-center px-3 py-1.5 rounded-lg bg-white border border-stone-200 shrink-0"
+                      >
+                        <span className="text-[11px] text-stone-500 whitespace-nowrap font-medium">
+                          {tech.name}
+                        </span>
+                      </div>
+                    ))}
+                    </div>
+                  </div>
+                  :
+                  <StackTicker stack={stack} />
+                }
               </section>
             </>
           )}
@@ -1006,7 +1025,6 @@ export function Template2({
             </>
           )}
 
-          {/* FOOTER */}
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
             <p className="text-[11px] text-stone-400 font-mono">
               © {new Date().getFullYear()}

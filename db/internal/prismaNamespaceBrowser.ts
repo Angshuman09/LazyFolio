@@ -139,7 +139,9 @@ export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[k
 export const ProfileScalarFieldEnum = {
   id: 'id',
   avatar: 'avatar',
+  avatarPublicId: 'avatarPublicId',
   banner: 'banner',
+  bannerPublicId: 'bannerPublicId',
   name: 'name',
   email: 'email',
   quote: 'quote',
@@ -165,6 +167,7 @@ export const LinksScalarFieldEnum = {
   label: 'label',
   url: 'url',
   profileId: 'profileId',
+  isenable: 'isenable',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -180,6 +183,7 @@ export const ExperienceScalarFieldEnum = {
   enddate: 'enddate',
   description: 'description',
   profileId: 'profileId',
+  isenable: 'isenable',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -197,6 +201,7 @@ export const ProjectScalarFieldEnum = {
   live: 'live',
   techstack: 'techstack',
   order: 'order',
+  isenable: 'isenable',
   profileId: 'profileId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -211,6 +216,7 @@ export const BlogScalarFieldEnum = {
   description: 'description',
   enddate: 'enddate',
   blogLink: 'blogLink',
+  isenable: 'isenable',
   profileId: 'profileId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

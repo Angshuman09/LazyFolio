@@ -61,12 +61,6 @@ export default function ProfileForm({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-  const formatSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  };
-
   const {
     register,
     handleSubmit,
@@ -127,67 +121,73 @@ export default function ProfileForm({
   const [imageLoading, setImageLoading] = useState(false);
 
   const handleSubmitImages = async () => {
-  if (!avatarFile && !bannerFile) return;
+    if (!avatarFile && !bannerFile) return;
 
-  setImageLoading(true);
+    setImageLoading(true);
 
-  try {
-    let avatarUrl: string | undefined;
-    if (avatarFile) {
-      const formData = new FormData();
-      formData.append("file", avatarFile);
+    try {
+      let avatarUrl: string | undefined;
+      let avatarPublicId: string | undefined;
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append("file", avatarFile);
 
-      const res = await fetch("/api/dashboard/upload", {
+        const res = await fetch("/api/dashboard/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Failed to upload avatar");
+        avatarUrl = data.url;
+        avatarPublicId = data.publicId;
+      }
+
+      let bannerUrl: string | undefined;
+      let bannerPublicId: string | undefined;
+      if (bannerFile) {
+        const formData = new FormData();
+        formData.append("file", bannerFile);
+
+        const res = await fetch("/api/dashboard/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || "Failed to upload banner");
+        bannerUrl = data.url;
+        bannerPublicId = data.publicId;
+      }
+
+      const res = await fetch("/api/dashboard/images", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          avatar: avatarUrl,
+          avatarPublicId: avatarPublicId,
+          banner: bannerUrl,
+          bannerPublicId: bannerPublicId,
+          userId: profile?.userId,
+        }),
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Failed to upload avatar");
-      avatarUrl = data.url;
+      if (!res.ok) throw new Error(data.error || "Failed to save images");
+
+      toast.success("Images saved successfully");
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+
+      setAvatarFile(null);
+      setBannerFile(null);
+      setValue("avatar", undefined);
+      setValue("banner", undefined);
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setImageLoading(false);
     }
-
-    let bannerUrl: string | undefined;
-    if (bannerFile) {
-      const formData = new FormData();
-      formData.append("file", bannerFile);
-
-      const res = await fetch("/api/dashboard/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to upload banner");
-      bannerUrl = data.url;
-    }
-
-    const res = await fetch("/api/dashboard/images", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        avatar: avatarUrl,
-        banner: bannerUrl,
-        userId: profile?.userId,
-      }),
-    });
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.error || "Failed to save images");
-
-    toast.success("Images saved successfully");
-    await queryClient.invalidateQueries({ queryKey: ["profile"] });
-
-    setAvatarFile(null);
-    setBannerFile(null);
-    setValue("avatar", undefined);
-    setValue("banner", undefined);
-  } catch (err: any) {
-    toast.error(err.message || "Something went wrong");
-  } finally {
-    setImageLoading(false);
-  }
-};
+  };
 
   return (
     <form

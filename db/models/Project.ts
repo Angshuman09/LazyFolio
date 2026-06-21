@@ -43,6 +43,7 @@ export type ProjectMinAggregateOutputType = {
   projectLink: string | null
   live: boolean | null
   order: number | null
+  isenable: boolean | null
   profileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,6 +58,7 @@ export type ProjectMaxAggregateOutputType = {
   projectLink: string | null
   live: boolean | null
   order: number | null
+  isenable: boolean | null
   profileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -72,6 +74,7 @@ export type ProjectCountAggregateOutputType = {
   live: number
   techstack: number
   order: number
+  isenable: number
   profileId: number
   createdAt: number
   updatedAt: number
@@ -96,6 +99,7 @@ export type ProjectMinAggregateInputType = {
   projectLink?: true
   live?: true
   order?: true
+  isenable?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
@@ -110,6 +114,7 @@ export type ProjectMaxAggregateInputType = {
   projectLink?: true
   live?: true
   order?: true
+  isenable?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
@@ -125,6 +130,7 @@ export type ProjectCountAggregateInputType = {
   live?: true
   techstack?: true
   order?: true
+  isenable?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
@@ -227,6 +233,7 @@ export type ProjectGroupByOutputType = {
   live: boolean | null
   techstack: string[]
   order: number | null
+  isenable: boolean
   profileId: string
   createdAt: Date
   updatedAt: Date
@@ -265,6 +272,7 @@ export type ProjectWhereInput = {
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
   order?: Prisma.IntNullableFilter<"Project"> | number | null
+  isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -281,6 +289,7 @@ export type ProjectOrderByWithRelationInput = {
   live?: Prisma.SortOrderInput | Prisma.SortOrder
   techstack?: Prisma.SortOrder
   order?: Prisma.SortOrderInput | Prisma.SortOrder
+  isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,6 +309,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
   order?: Prisma.IntNullableFilter<"Project"> | number | null
+  isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -316,6 +326,7 @@ export type ProjectOrderByWithAggregationInput = {
   live?: Prisma.SortOrderInput | Prisma.SortOrder
   techstack?: Prisma.SortOrder
   order?: Prisma.SortOrderInput | Prisma.SortOrder
+  isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -339,6 +350,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   live?: Prisma.BoolNullableWithAggregatesFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
   order?: Prisma.IntNullableWithAggregatesFilter<"Project"> | number | null
+  isenable?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   profileId?: Prisma.StringWithAggregatesFilter<"Project"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
@@ -354,6 +366,7 @@ export type ProjectCreateInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.ProfileCreateNestedOneWithoutProjectsInput
@@ -369,6 +382,7 @@ export type ProjectUncheckedCreateInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   profileId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -384,6 +398,7 @@ export type ProjectUpdateInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.ProfileUpdateOneWithoutProjectsNestedInput
@@ -399,6 +414,7 @@ export type ProjectUncheckedUpdateInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -414,6 +430,7 @@ export type ProjectCreateManyInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   profileId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -429,6 +446,7 @@ export type ProjectUpdateManyMutationInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,6 +461,7 @@ export type ProjectUncheckedUpdateManyInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -468,6 +487,7 @@ export type ProjectCountOrderByAggregateInput = {
   live?: Prisma.SortOrder
   techstack?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -486,6 +506,7 @@ export type ProjectMaxOrderByAggregateInput = {
   projectLink?: Prisma.SortOrder
   live?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -500,6 +521,7 @@ export type ProjectMinOrderByAggregateInput = {
   projectLink?: Prisma.SortOrder
   live?: Prisma.SortOrder
   order?: Prisma.SortOrder
+  isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -582,6 +604,7 @@ export type ProjectCreateWithoutProfileInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -596,6 +619,7 @@ export type ProjectUncheckedCreateWithoutProfileInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -639,6 +663,7 @@ export type ProjectScalarWhereInput = {
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
   order?: Prisma.IntNullableFilter<"Project"> | number | null
+  isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -654,6 +679,7 @@ export type ProjectCreateManyProfileInput = {
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
   order?: number | null
+  isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -668,6 +694,7 @@ export type ProjectUpdateWithoutProfileInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -682,6 +709,7 @@ export type ProjectUncheckedUpdateWithoutProfileInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -696,6 +724,7 @@ export type ProjectUncheckedUpdateManyWithoutProfileInput = {
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
   order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -712,6 +741,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   live?: boolean
   techstack?: boolean
   order?: boolean
+  isenable?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -728,6 +758,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   live?: boolean
   techstack?: boolean
   order?: boolean
+  isenable?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -744,6 +775,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   live?: boolean
   techstack?: boolean
   order?: boolean
+  isenable?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -760,12 +792,13 @@ export type ProjectSelectScalar = {
   live?: boolean
   techstack?: boolean
   order?: boolean
+  isenable?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "enddate" | "githubLink" | "projectLink" | "live" | "techstack" | "order" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "enddate" | "githubLink" | "projectLink" | "live" | "techstack" | "order" | "isenable" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.Project$profileArgs<ExtArgs>
 }
@@ -791,6 +824,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     live: boolean | null
     techstack: string[]
     order: number | null
+    isenable: boolean
     profileId: string
     createdAt: Date
     updatedAt: Date
@@ -1227,6 +1261,7 @@ export interface ProjectFieldRefs {
   readonly live: Prisma.FieldRef<"Project", 'Boolean'>
   readonly techstack: Prisma.FieldRef<"Project", 'String[]'>
   readonly order: Prisma.FieldRef<"Project", 'Int'>
+  readonly isenable: Prisma.FieldRef<"Project", 'Boolean'>
   readonly profileId: Prisma.FieldRef<"Project", 'String'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Project", 'DateTime'>
