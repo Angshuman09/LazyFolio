@@ -7,6 +7,9 @@ type BlogInput = {
   description?: string;
   blogLink?: string;
   enddate?: string;
+  content?: string | null;
+  isPublished?: boolean;
+  slug?: string | null;
 };
 
 function parseOptionalDate(value: string | null | undefined) {
@@ -16,6 +19,24 @@ function parseOptionalDate(value: string | null | undefined) {
 
   const parsedDate = new Date(value);
   return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
+}
+
+function generateSlug(title: string) {
+  const baseSlug = slugify(title || "untitled");
+  const randomHash = Math.random().toString(36).substring(2, 7);
+  return `${baseSlug}-${randomHash}`;
 }
 
 export async function POST(request: NextRequest) {
@@ -32,12 +53,50 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const profile = await prisma.profile.findUnique({
+      where: { id: profileId },
+      select: { username: true },
+    });
+
+    if (!profile) {
+      return NextResponse.json(
+        { error: "Profile not found." },
+        { status: 404 },
+      );
+    }
+
+    let slug = blog.slug;
+    let blogLink = blog.blogLink?.trim() || null;
+    const isInternal = blog.content !== undefined && blog.content !== null;
+
+    if (isInternal) {
+      if (blog.id) {
+        const existing = await prisma.blog.findUnique({
+          where: { id: blog.id },
+        });
+        slug = existing?.slug || slug || generateSlug(blog.title || "untitled");
+      } else {
+        slug = slug || generateSlug(blog.title || "untitled");
+      }
+
+      if (profile.username && slug) {
+        blogLink = `/${profile.username}/blogs/${slug}`;
+      }
+    }
+
     const blogData = {
-      profileId,
+      profile: {
+        connect: {
+          id: profileId,
+        },
+      },
       title: blog.title?.trim() || null,
       description: blog.description?.trim() || null,
-      blogLink: blog.blogLink?.trim() || null,
+      blogLink: blogLink,
       enddate: parseOptionalDate(blog.enddate),
+      content: blog.content ?? null,
+      isPublished: blog.isPublished ?? false,
+      slug: slug || null,
     };
 
     if (blog.id) {
@@ -54,7 +113,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingBlog = blog.blogLink
+    // Check if there is an existing blog with the same link (only for external links)
+    const existingBlog = (!isInternal && blog.blogLink)
       ? await prisma.blog.findFirst({
           where: {
             blogLink: blog.blogLink,

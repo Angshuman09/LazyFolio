@@ -23,7 +23,12 @@ const publicProfileSelect = {
   user: true,
   experiences: true,
   projects: true,
-  blogs: true,
+  blogs: {
+    where: {
+      isenable: true,
+      isPublished: true,
+    },
+  },
   links: true,
 };
 

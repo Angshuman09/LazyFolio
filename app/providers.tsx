@@ -1,7 +1,6 @@
 "use client"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
-// import { ClerkProvider } from "@clerk/nextjs"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useState } from "react"
 

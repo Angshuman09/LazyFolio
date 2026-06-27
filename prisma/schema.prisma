@@ -168,4 +168,10 @@ model Blog {
   profile   Profile? @relation(fields: [profileId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  content     String?
+  isPublished Boolean   @default(false)
+  slug        String?
+
+  @@unique([profileId, slug])
 }

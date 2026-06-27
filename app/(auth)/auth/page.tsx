@@ -13,80 +13,91 @@ export default function Auth() {
   const [disable, setDisable] = useState(false);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen w-full bg-(--lf-bg) text-(--lf-ink)">
-      <div className="relative flex flex-col justify-between px-8 py-10 md:w-1/2 md:min-h-screen md:px-16 md:py-20 border-b md:border-b-0 md:border-r border-(--lf-border-alpha) bg-(--lf-surface) overflow-hidden shrink-0">
+    <div className="flex min-h-screen w-full bg-(--lf-bg) text-(--lf-ink)">
 
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#c6a87b]/8 dark:bg-[#c6a87b]/4 blur-[120px] pointer-events-none" />
+      {/* LEFT — full bleed image panel */}
+      <div className="relative hidden md:flex w-[52%] min-h-screen shrink-0 overflow-hidden">
+        <Image
+          src="/peace.jpg"
+          alt="wheat field"
+          fill
+          className="object-cover object-bottom"
+          priority
+          quality={60}
+        />
+        {/* gradient overlay — dark at top and bottom, clear in middle */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/5 to-black/55" />
 
-        <div className="relative z-10 flex items-center">
+        {/* content pinned top and bottom */}
+        <div className="relative z-10 flex flex-col justify-between p-10 h-full w-full">
           <h1
             onClick={() => router.push("/")}
-            className="font-serif-display text-4xl md:text-5xl tracking-tight text-(--lf-ink) cursor-pointer select-none group"
+            className="font-serif-display text-[1.75rem] tracking-tight text-[#F5EFE4] cursor-pointer select-none"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.25)" }}
           >
-            Lazy<span className="font-bold text-[#c6a87b] transition-all duration-300 group-hover:text-[#dbbd8e]">folio</span>
+            Lazy<span className="font-bold text-[#E8C98A]">folio</span>
           </h1>
-        </div>
 
-        <div className="hidden md:flex flex-col relative z-10 my-auto pt-10 items-start">
-          {/* Ambient heavenly glow orbs */}
-          <div className="absolute -inset-10 pointer-events-none">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-[#e8d5b0]/30 dark:bg-[#c6a87b]/15 blur-[80px] rounded-full" />
-            <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-[#c6a87b]/20 dark:bg-[#c6a87b]/10 blur-[70px] rounded-full" />
-            <div className="absolute top-1/3 right-0 w-48 h-48 bg-[#f5e6c8]/25 dark:bg-[#d4a853]/10 blur-[60px] rounded-full" />
-          </div>
-
-          <div className="relative w-full max-w-[500px] group">
-            {/* The square image with all-edge feathered mask */}
-            <div
-              className="relative w-full aspect-square"
+          <div className="flex flex-col gap-2">
+            <p
+              className="font-serif-display text-[1.9rem] font-normal leading-[1.25] text-[#F5EFE4] max-w-[300px]"
+              style={{ textShadow: "0 1px 12px rgba(0,0,0,0.3)" }}
             >
-              <Image
-                src="/auth-flower.png"
-                alt="auth-image"
-                width={600}
-                height={600}
-                quality={40}
-                className="w-full h-full object-cover"
-                priority
-              />
-            </div>
+              Your work,{" "}
+              <em className="italic text-[#E8C98A]">beautifully</em> shared.
+            </p>
+            <p className="text-[0.8rem] font-light text-[#F5EFE4]/65 tracking-wide">
+              No deployment. No setup. Just a link.
+            </p>
           </div>
-
-          <p className="mt-6 text-(--lf-muted) font-serif-display text-lg leading-relaxed max-w-sm relative z-10 pl-9">
-            No <span className="font-bold italic">deployment</span>. No <span className="font-bold italic">setup</span>. Just create and share. Show off your work
-            effortlessly.
-          </p>
         </div>
       </div>
 
-      <div className="flex flex-col justify-center flex-1 px-8 py-16 md:px-16 md:py-20 relative bg-(--lf-bg) overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 rounded-full bg-[#c6a87b]/4 blur-[140px] pointer-events-none" />
+      {/* RIGHT — clean form */}
+      <div className="flex flex-col flex-1 items-center justify-center px-8 py-16 relative bg-(--lf-bg)">
 
-        <div className="w-full max-w-sm mx-auto relative z-10">
-          <div className="mb-10 text-center md:text-left">
-            <h2 className="font-serif-display text-4xl font-normal tracking-tight text-(--lf-ink) sm:text-5xl leading-tight">
-              Welcome back Senpai
+        {/* back link top-right */}
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/")}
+          className="absolute top-6 right-6 text-(--lf-muted) hover:text-(--lf-ink) text-xs font-normal px-3"
+        >
+          <ArrowLeft className="h-3 w-3 mr-1.5" />
+          Back to home
+        </Button>
+
+        <div className="w-full max-w-[340px]">
+          <div className="mb-10">
+            <p className="text-[0.68rem] font-medium tracking-[0.14em] uppercase text-[#C6A87B] mb-3">
+              Welcome back
+            </p>
+            <h2 className="font-serif-display text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15] mb-2">
+              Hello,{" "}
+              <em className="italic text-[#8C6B3E]">Senpai.</em>
             </h2>
-            <p className="mt-3 text-[0.88rem] text-(--lf-muted) font-sans-body">
+            <p className="text-[0.84rem] text-(--lf-muted) font-light leading-relaxed">
               Sign in to manage your portfolio and settings.
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
+          {/* subtle divider */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="flex-1 h-px bg-(--lf-border)" />
+            <span className="text-[0.7rem] text-(--lf-muted) tracking-wide font-light">continue with</span>
+            <div className="flex-1 h-px bg-(--lf-border)" />
+          </div>
+
+          <div className="flex flex-col gap-3">
             <GoogleAuth disable={disable} setDisable={setDisable} />
             <GithubAuth disable={disable} setDisable={setDisable} />
-
-            <div className="mt-8 flex items-center justify-center">
-              <Button
-                variant="ghost"
-                onClick={() => router.push("/")}
-                className="text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) text-sm font-medium transition-colors font-sans-body rounded-2xl px-6"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to home
-              </Button>
-            </div>
           </div>
+
+          <p className="mt-8 text-center text-[0.7rem] text-(--lf-muted) font-light leading-relaxed">
+            By signing in you agree to our{" "}
+            <span className="text-[#C6A87B] cursor-pointer hover:text-[#8C6B3E]">Terms</span>{" "}
+            and{" "}
+            <span className="text-[#C6A87B] cursor-pointer hover:text-[#8C6B3E]">Privacy Policy</span>.
+          </p>
         </div>
       </div>
     </div>

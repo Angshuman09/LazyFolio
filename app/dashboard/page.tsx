@@ -20,12 +20,12 @@ import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 import ProfileForm from "@/components/dashboard/profile-form";
-import LinksForm from "@/components/dashboard/links-form";
+import LinksForm from "@/components/dashboard/links/links-form";
 import { detectType } from "@/lib/utils/links";
-import ExperienceForm from "@/components/dashboard/experience-form";
-import ProjectsForm from "@/components/dashboard/projects-form";
-import SkillsForm from "@/components/dashboard/skills-form";
-import BlogsForm from "@/components/dashboard/blogs-form";
+import ExperienceForm from "@/components/dashboard/experiences/experience-form";
+import ProjectsForm from "@/components/dashboard/projects/projects-form";
+import SkillsForm from "@/components/dashboard/skills/skills-form";
+import BlogsForm from "@/components/dashboard/blogs/blogs-form";
 import {
   DashboardSkeleton,
   TemplateRendererSkeleton,
@@ -373,12 +373,16 @@ export default function DashboardPage() {
     setIsSaving(true);
     const formattedBlogs = (data.blogs || [])
       .map((blog) => ({
+        id: blog.id,
         title: blog.title?.trim() || "",
         description: blog.description?.trim() || "",
         blogLink: blog.blogLink?.trim() || "",
         enddate: blog.enddate?.trim() || "",
+        content: blog.content,
+        isPublished: blog.isPublished ?? false,
+        slug: blog.slug,
       }))
-      .filter((blog) => Object.values(blog).some((value) => value.length > 0));
+      .filter((blog) => blog.title || blog.description || blog.blogLink || blog.content);
 
     try {
       await createBlogs.mutateAsync({
@@ -680,7 +684,7 @@ export default function DashboardPage() {
                     applyTemplate(t.id);
                   }}
                 >
-                  <div className="relative w-full aspect-[4/3] overflow-hidden rounded-lg border border-(--lf-border-alpha) bg-(--lf-border-alpha)">
+                  <div className="relative w-full aspect-4/3 overflow-hidden rounded-lg border border-(--lf-border-alpha) bg-(--lf-border-alpha)">
                     <Image
                       src={t.image}
                       alt={`${t.label} template preview`}

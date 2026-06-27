@@ -16,7 +16,7 @@ import {getInitialLinks} from "@/lib/utils/links";
 import { linksSchema } from "@/lib/schemas/links";
 import {Props} from "@/lib/utils/links";
 import { readDashboardDraft } from "@/lib/cache/dashboard-drafts";
-import {LinkCard} from '@/components/dashboard/link-card';
+import {LinkCard} from '@/components/dashboard/links/link-card';
 
 export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialLinks(profile), [profile]);

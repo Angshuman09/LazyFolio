@@ -74,7 +74,7 @@ export const MOCK_SKILLS = [
   "AWS",
 ];
 
-export type Tab = "profile" | "links" | "experience" | "projects" | "skills" | "blogs" | "writeBlogs" | "insights";
+export type Tab = "profile" | "links" | "experience" | "projects" | "skills" | "blogs" | "insights";
 
 export const NAV: { id: Tab; label: string}[] = [
   { id: "profile", label: "Profile" },
@@ -83,6 +83,5 @@ export const NAV: { id: Tab; label: string}[] = [
   { id: "projects", label: "Projects"},
   { id: "skills", label: "Skills"},
   { id: "blogs", label: "Blogs"},
-  {id: "writeBlogs", label:"Write Blogs"},
   {id: "insights", label: "Insights"},
 ];

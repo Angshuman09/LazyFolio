@@ -1,31 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RefObject, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/lib/schemas/profile";
 import { useQueryClient } from "@tanstack/react-query";
-
-type ProfileData = Partial<
-  Pick<
-    ProfileSchema,
-    "name" | "username" | "tagline" | "quote" | "email" | "bio" | "bookAcall"
-  >
-> | null;
-
-type SessionData = {
-  user?: {
-    id?: string | null;
-  } | null;
-} | null;
-
-type Props = {
-  profile?: ProfileSchema;
-  session?: SessionData;
-  formRef: RefObject<HTMLFormElement | null>;
-  onSubmit: (data: ProfileSchema) => void;
-};
+import { Props } from "@/lib/types/profile";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) {
