@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
@@ -15,11 +17,23 @@ export async function DELETE(
       );
     }
 
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        content: true,
+      },
+    });
+
     await prisma.blog.delete({
       where: {
         id,
       },
     });
+
+    const publicIds = extractBlogImagePublicIds(blog?.content);
+    await Promise.all(publicIds.map((publicId) => deleteFromCloudinary(publicId)));
 
     return NextResponse.json(
       { message: "Blog deleted successfully" },

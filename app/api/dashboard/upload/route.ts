@@ -1,12 +1,6 @@
-import {v2 as cloudinary, UploadApiResponse} from 'cloudinary';
 import { NextRequest } from 'next/server';
 import { Readable } from 'stream';
-
-cloudinary.config({
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-    api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
-})
+import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/cloudinary';
 
 export async function POST(req: NextRequest){
     try {
@@ -44,13 +38,18 @@ export async function POST(req: NextRequest){
     }
 }
 
-export async function deleteFromCloudinary(publicId: string) {
-  if (!publicId) return;
+export async function DELETE(req: NextRequest) {
   try {
-    await cloudinary.uploader.destroy(publicId);
-    console.log("deleted successfully");
-  } catch (err) {
-    console.error("Failed to delete from Cloudinary:", err);
-    throw new Error("Failed to delete from Cloudinary");
+    const { publicId } = (await req.json()) as { publicId?: string };
+
+    if (!publicId) {
+      return Response.json({ error: 'Missing publicId' }, { status: 400 });
+    }
+
+    await deleteFromCloudinary(publicId);
+    return Response.json({ message: 'Image deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    return Response.json({ error: 'Failed to delete image' }, { status: 500 });
   }
 }

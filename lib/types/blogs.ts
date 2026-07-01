@@ -1,5 +1,6 @@
 import { RefObject } from "react";
 import { BlogsSchema } from "../schemas/blogs";
+import type { Control, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 export type ProfileBlog = {
     id?: string | null;
@@ -21,4 +22,13 @@ export type Props = {
 export type BlogsProfile = {
     id?: string;
     blogs?: ProfileBlog[];
+  };
+
+
+export type MarkdownEditorProps = {
+    index: number;
+    control: Control<BlogsSchema>;
+    register: UseFormRegister<BlogsSchema>;
+    setValue: UseFormSetValue<BlogsSchema>;
+    onClose: () => void;
   };

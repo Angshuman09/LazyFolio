@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 
 type BlogInput = {
@@ -100,12 +102,26 @@ export async function POST(request: NextRequest) {
     };
 
     if (blog.id) {
+      const existingBlog = await prisma.blog.findUnique({
+        where: {
+          id: blog.id,
+        },
+        select: {
+          content: true,
+        },
+      });
+
       const updatedBlog = await prisma.blog.update({
         where: {
           id: blog.id,
         },
         data: blogData,
       });
+
+      const previousIds = extractBlogImagePublicIds(existingBlog?.content);
+      const nextIds = extractBlogImagePublicIds(updatedBlog.content);
+      const removedIds = previousIds.filter((id) => !nextIds.includes(id));
+      await Promise.all(removedIds.map((id) => deleteFromCloudinary(id)));
 
       return NextResponse.json(
         { data: updatedBlog, message: "Blog updated successfully." },

@@ -78,6 +78,7 @@ export function BlogCard({
     });
   
     const values = useWatch({ control, name: `blogs.${index}` });
+    // console.log("values: ",values);
     const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);

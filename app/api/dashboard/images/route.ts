@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-import { deleteFromCloudinary } from "../upload/route";
+import { deleteFromCloudinary } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
     try {

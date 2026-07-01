@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextResponse, NextRequest } from "next/server";
 
 type BlogInput = {
@@ -66,6 +68,11 @@ export async function POST(req: NextRequest) {
       .map((b) => b.id)
       .filter(Boolean) as string[];
 
+    const deletedBlogs = existingBlogs.filter((blog) => !incomingIds.includes(blog.id));
+    const deletedImageIds = deletedBlogs.flatMap((blog) =>
+      extractBlogImagePublicIds(blog.content),
+    );
+
     // 1. Delete blogs that are not in the incoming list
     await prisma.blog.deleteMany({
       where: {
@@ -75,6 +82,8 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+
+    await Promise.all(deletedImageIds.map((id) => deleteFromCloudinary(id)));
 
     // 2. Perform updates and creations
     const operations = blogs.map(async (blog) => {
@@ -111,10 +120,16 @@ export async function POST(req: NextRequest) {
       };
 
       if (blog.id) {
-        return prisma.blog.update({
+        const updatedBlog = await prisma.blog.update({
           where: { id: blog.id },
           data,
         });
+        const existing = existingBlogs.find((b) => b.id === blog.id);
+        const previousIds = extractBlogImagePublicIds(existing?.content);
+        const nextIds = extractBlogImagePublicIds(updatedBlog.content);
+        const removedIds = previousIds.filter((id) => !nextIds.includes(id));
+        await Promise.all(removedIds.map((id) => deleteFromCloudinary(id)));
+        return updatedBlog;
       } else {
         return prisma.blog.create({
           data,

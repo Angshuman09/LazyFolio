@@ -48,7 +48,7 @@ export default async function PublicBlogPage(props: PageProps) {
     notFound();
   }
 
-  const previewHtml = parseMarkdown(blog.content || "");
+  const previewHtml = await parseMarkdown(blog.content || "");
   const formattedDate = blog.enddate
     ? String(blog.enddate)
     : new Date(blog.createdAt).toLocaleDateString("en-US", {
