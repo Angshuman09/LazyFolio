@@ -22,7 +22,7 @@ const config: TemplateThemeConfig = {
   pageStyle: {
     fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, monospace",
   },
-  containerClass: "mx-auto max-w-[900px] px-5 py-10 sm:px-8 sm:py-14",
+  containerClass: "mx-auto max-w-[680px] px-5 py-10 sm:px-8 sm:py-14",
   quoteClass:
     "mb-8 rounded-lg border border-[#1f4d36] bg-[#0a1a13] px-4 py-3 text-[12px] leading-6 text-[#86efac]",
   heroClass:

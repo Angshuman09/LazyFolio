@@ -1066,7 +1066,17 @@ export function ThemedPortfolioTemplate({
                 >
                   Skills
                 </SectionHeading>
-                <StackTicker stack={stack} config={config} />
+                {stack.length <= 8 ? (
+                  <div className="flex flex-wrap gap-2 py-1">
+                    {stack.map((tech, i) => (
+                      <div key={`${tech.name}-${i}`} className={config.stackItemClass}>
+                        <span className={config.stackTextClass}>{tech.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <StackTicker stack={stack} config={config} />
+                )}
               </section>
             </>
           )}

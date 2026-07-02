@@ -44,7 +44,7 @@ const config: TemplateThemeConfig = {
       "linear-gradient(135deg, #effaf8 0%, #f8fbff 46%, #eef4ff 100%)",
     fontFamily: "var(--font-sans), 'DM Sans', system-ui, sans-serif",
   },
-  containerClass: "mx-auto max-w-[960px] px-5 py-10 sm:px-8 sm:py-16",
+  containerClass: "mx-auto max-w-[680px] px-5 py-10 sm:px-8 sm:py-16",
   quoteClass:
     "mb-8 rounded-lg border border-white/80 bg-white/55 px-4 py-3 text-[13px] leading-6 text-[#486581] shadow-sm backdrop-blur",
   heroClass:
@@ -546,7 +546,17 @@ export function Template6(props: ThemedPortfolioProps) {
               <Divider config={config} />
               <section>
                 <SectionHeading config={config}>Skills</SectionHeading>
-                <StackTicker stack={stack} config={config} />
+                {stack.length <= 8 ? (
+                  <div className="flex flex-wrap gap-2 py-1">
+                    {stack.map((tech, i) => (
+                      <div key={`${tech.name}-${i}`} className={config.stackItemClass}>
+                        <span className={config.stackTextClass}>{tech.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <StackTicker stack={stack} config={config} />
+                )}
               </section>
             </>
           )}

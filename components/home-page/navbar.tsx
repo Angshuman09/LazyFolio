@@ -91,7 +91,9 @@ const Navbar = () => {
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-          {session?.user ? (
+          {isPending ? (
+            <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-xl" />
+          ) : session?.user ? (
             <>
               <Button
                 onClick={() => router.push("/dashboard")}
@@ -169,12 +171,29 @@ const Navbar = () => {
           <Github className="h-4 w-4" />
           <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
         </Link>
-        <button
-          onClick={() => router.push("/auth")}
-          className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
-        >
-          Get started
-        </button>
+        {isPending ? (
+          <div className="h-11 w-full bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-xl" />
+        ) : session?.user ? (
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              router.push("/dashboard");
+            }}
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
+          >
+            Dashboard
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              router.push("/auth");
+            }}
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
+          >
+            Get started
+          </button>
+        )}
       </div>
     </nav>
   );

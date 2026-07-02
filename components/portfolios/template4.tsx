@@ -24,7 +24,7 @@ const config: TemplateThemeConfig = {
       "linear-gradient(180deg, #f7f2e8 0%, #f0f7f3 42%, #f9faf7 100%)",
     fontFamily: "'Lora', Georgia, serif",
   },
-  containerClass: "mx-auto max-w-[850px] px-5 py-12 sm:px-8 sm:py-16",
+  containerClass: "mx-auto max-w-[680px] px-5 py-12 sm:px-8 sm:py-16",
   quoteClass:
     "mb-10 max-w-xl border-l-2 border-[#7f1d1d]/35 pl-4 text-[13px] italic leading-7 text-[#6d5f54]",
   heroClass: "mb-9 flex flex-col gap-6",

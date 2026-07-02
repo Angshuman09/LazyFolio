@@ -42,7 +42,24 @@ export const useUpdateUserProfile = () => {
 
       return payload;
     },
-    onSuccess: async () => {
+    onMutate: async (newProfileData: ProfileSchema) => {
+      await queryClient.cancelQueries({ queryKey: ["profile", newProfileData.userId] });
+      const previousProfile = queryClient.getQueryData(["profile", newProfileData.userId]);
+      queryClient.setQueryData(["profile", newProfileData.userId], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          ...newProfileData,
+        };
+      });
+      return { previousProfile, userId: newProfileData.userId };
+    },
+    onError: (err, newProfile, context: any) => {
+      if (context) {
+        queryClient.setQueryData(["profile", context.userId], context.previousProfile);
+      }
+    },
+    onSettled: async (data, error, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
   });

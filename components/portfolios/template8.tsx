@@ -24,7 +24,7 @@ const config: TemplateThemeConfig = {
       "linear-gradient(180deg, #11100e 0%, #191714 50%, #0f0e0c 100%)",
     fontFamily: "var(--font-sans), 'DM Sans', system-ui, sans-serif",
   },
-  containerClass: "mx-auto max-w-[880px] px-5 py-12 sm:px-8 sm:py-18",
+  containerClass: "mx-auto max-w-[680px] px-5 py-12 sm:px-8 sm:py-18",
   quoteClass:
     "mb-10 max-w-xl border-l border-[#c9a227]/55 pl-4 font-serif-display text-[17px] italic leading-7 text-[#c8bda7]",
   heroClass: "mb-8",
@@ -32,7 +32,7 @@ const config: TemplateThemeConfig = {
   bannerClass:
     "relative h-32 overflow-hidden rounded-xl border border-[#3b352c] bg-[#171512] sm:h-55",
   bannerOverlayClass:
-    "absolute inset-0 bg-[linear-gradient(180deg,rgba(17,16,14,0.04),rgba(17,16,14,0.42))]",
+    "absolute inset-0",
   avatarWithBannerClass:
     "absolute left-4 -bottom-8 w-20 h-20 rounded-lg object-cover ring-1 ring-[#11100e] border border-[#3b352c] bg-[#171512]",
   avatarSoloClass:
