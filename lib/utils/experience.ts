@@ -15,14 +15,15 @@ export function experiencesFromProfile(experiences: SingleExperience[] = []): Ex
         companyName: experience.companyName || "",
         description: experience.description || "",
         startdate: experience.startdate || "",
-        enddate: experience.enddate || ""
+        enddate: experience.enddate || "",
+        isenable: experience.isenable ?? true,
       })),
     };
   }
 
 export function getInitialExperiences(profile?: ExperienceProfile): ExperienceSchema {
     return (
-      readDashboardDraft<ExperienceSchema>("links", profile?.id) ||
+      readDashboardDraft<ExperienceSchema>("experience", profile?.id) ||
       experiencesFromProfile(profile?.experiences || [])
     );
   }

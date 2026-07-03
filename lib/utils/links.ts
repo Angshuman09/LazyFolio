@@ -7,6 +7,7 @@ export type ProfileLink = {
   id?: string | null;
   label?: string | null;
   url?: string | null;
+  isenable?: boolean | null;
 };
 
 export type LinksProfile = {
@@ -26,6 +27,7 @@ export function linksFromProfile(links: ProfileLink[] = []): LinksSchema {
       id: link.id || undefined,
       label: link.label || "",
       url: link.url || "",
+      isenable: link.isenable ?? true,
     })),
   };
 }

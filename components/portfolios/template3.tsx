@@ -465,7 +465,7 @@ export function Template3({
                   <div
                     className={
                       banner
-                        ? "absolute left-5 -bottom-9 ring-3 ring-white rounded-xl overflow-hidden shadow-sm"
+                        ? "absolute left-5 -bottom-9 ring-1 ring-black rounded-xl overflow-hidden shadow-sm"
                         : "mb-6 rounded-xl overflow-hidden w-[68px] h-[68px]"
                     }
                   >
@@ -527,7 +527,7 @@ export function Template3({
                   href={bookCallLink}
                   target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[11px] font-semibold tracking-wide text-white bg-slate-900 hover:bg-slate-800 transition-colors duration-150 ml-auto"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] text-[11px] font-semibold tracking-wide text-white bg-slate-900 hover:bg-slate-800 transition-colors duration-150 ml-auto"
                 >
                   Book a call
                   <ArrowRight size={10} className="stroke-[2.5]" />

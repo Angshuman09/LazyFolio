@@ -46,6 +46,7 @@ export type ProfileMinAggregateOutputType = {
   userId: string | null
   username: string | null
   bio: string | null
+  skillsIsenable: boolean | null
   themeId: string | null
   resume: string | null
   tagline: string | null
@@ -67,6 +68,7 @@ export type ProfileMaxAggregateOutputType = {
   userId: string | null
   username: string | null
   bio: string | null
+  skillsIsenable: boolean | null
   themeId: string | null
   resume: string | null
   tagline: string | null
@@ -89,6 +91,7 @@ export type ProfileCountAggregateOutputType = {
   username: number
   bio: number
   skills: number
+  skillsIsenable: number
   themeId: number
   resume: number
   tagline: number
@@ -120,6 +123,7 @@ export type ProfileMinAggregateInputType = {
   userId?: true
   username?: true
   bio?: true
+  skillsIsenable?: true
   themeId?: true
   resume?: true
   tagline?: true
@@ -141,6 +145,7 @@ export type ProfileMaxAggregateInputType = {
   userId?: true
   username?: true
   bio?: true
+  skillsIsenable?: true
   themeId?: true
   resume?: true
   tagline?: true
@@ -163,6 +168,7 @@ export type ProfileCountAggregateInputType = {
   username?: true
   bio?: true
   skills?: true
+  skillsIsenable?: true
   themeId?: true
   resume?: true
   tagline?: true
@@ -272,6 +278,7 @@ export type ProfileGroupByOutputType = {
   username: string | null
   bio: string | null
   skills: string[]
+  skillsIsenable: boolean
   themeId: string
   resume: string | null
   tagline: string | null
@@ -317,6 +324,7 @@ export type ProfileWhereInput = {
   username?: Prisma.StringNullableFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableFilter<"Profile"> | string | null
   skills?: Prisma.StringNullableListFilter<"Profile">
+  skillsIsenable?: Prisma.BoolFilter<"Profile"> | boolean
   themeId?: Prisma.StringFilter<"Profile"> | string
   resume?: Prisma.StringNullableFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableFilter<"Profile"> | string | null
@@ -344,6 +352,7 @@ export type ProfileOrderByWithRelationInput = {
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   skills?: Prisma.SortOrder
+  skillsIsenable?: Prisma.SortOrder
   themeId?: Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   tagline?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -374,6 +383,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   quote?: Prisma.StringNullableFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableFilter<"Profile"> | string | null
   skills?: Prisma.StringNullableListFilter<"Profile">
+  skillsIsenable?: Prisma.BoolFilter<"Profile"> | boolean
   themeId?: Prisma.StringFilter<"Profile"> | string
   resume?: Prisma.StringNullableFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableFilter<"Profile"> | string | null
@@ -401,6 +411,7 @@ export type ProfileOrderByWithAggregationInput = {
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   skills?: Prisma.SortOrder
+  skillsIsenable?: Prisma.SortOrder
   themeId?: Prisma.SortOrder
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   tagline?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -431,6 +442,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   username?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   skills?: Prisma.StringNullableListFilter<"Profile">
+  skillsIsenable?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   themeId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   resume?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
@@ -452,6 +464,7 @@ export type ProfileCreateInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -479,6 +492,7 @@ export type ProfileUncheckedCreateInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -504,6 +518,7 @@ export type ProfileUpdateInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -531,6 +546,7 @@ export type ProfileUncheckedUpdateInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -557,6 +573,7 @@ export type ProfileCreateManyInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -578,6 +595,7 @@ export type ProfileUpdateManyMutationInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -600,6 +618,7 @@ export type ProfileUncheckedUpdateManyInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -635,6 +654,7 @@ export type ProfileCountOrderByAggregateInput = {
   username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   skills?: Prisma.SortOrder
+  skillsIsenable?: Prisma.SortOrder
   themeId?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
@@ -660,6 +680,7 @@ export type ProfileMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  skillsIsenable?: Prisma.SortOrder
   themeId?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
@@ -681,6 +702,7 @@ export type ProfileMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   username?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  skillsIsenable?: Prisma.SortOrder
   themeId?: Prisma.SortOrder
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
@@ -822,6 +844,7 @@ export type ProfileCreateWithoutUserInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -847,6 +870,7 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -888,6 +912,7 @@ export type ProfileUpdateWithoutUserInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -913,6 +938,7 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -938,6 +964,7 @@ export type ProfileCreateWithoutLinksInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -964,6 +991,7 @@ export type ProfileUncheckedCreateWithoutLinksInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1004,6 +1032,7 @@ export type ProfileUpdateWithoutLinksInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1030,6 +1059,7 @@ export type ProfileUncheckedUpdateWithoutLinksInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1054,6 +1084,7 @@ export type ProfileCreateWithoutExperiencesInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1080,6 +1111,7 @@ export type ProfileUncheckedCreateWithoutExperiencesInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1120,6 +1152,7 @@ export type ProfileUpdateWithoutExperiencesInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1146,6 +1179,7 @@ export type ProfileUncheckedUpdateWithoutExperiencesInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1170,6 +1204,7 @@ export type ProfileCreateWithoutProjectsInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1196,6 +1231,7 @@ export type ProfileUncheckedCreateWithoutProjectsInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1236,6 +1272,7 @@ export type ProfileUpdateWithoutProjectsInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1262,6 +1299,7 @@ export type ProfileUncheckedUpdateWithoutProjectsInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1286,6 +1324,7 @@ export type ProfileCreateWithoutBlogsInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1312,6 +1351,7 @@ export type ProfileUncheckedCreateWithoutBlogsInput = {
   username?: string | null
   bio?: string | null
   skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
   themeId?: string
   resume?: string | null
   tagline?: string | null
@@ -1352,6 +1392,7 @@ export type ProfileUpdateWithoutBlogsInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1378,6 +1419,7 @@ export type ProfileUncheckedUpdateWithoutBlogsInput = {
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   themeId?: Prisma.StringFieldUpdateOperationsInput | string
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1461,6 +1503,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   username?: boolean
   bio?: boolean
   skills?: boolean
+  skillsIsenable?: boolean
   themeId?: boolean
   resume?: boolean
   tagline?: boolean
@@ -1489,6 +1532,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   username?: boolean
   bio?: boolean
   skills?: boolean
+  skillsIsenable?: boolean
   themeId?: boolean
   resume?: boolean
   tagline?: boolean
@@ -1512,6 +1556,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   username?: boolean
   bio?: boolean
   skills?: boolean
+  skillsIsenable?: boolean
   themeId?: boolean
   resume?: boolean
   tagline?: boolean
@@ -1535,6 +1580,7 @@ export type ProfileSelectScalar = {
   username?: boolean
   bio?: boolean
   skills?: boolean
+  skillsIsenable?: boolean
   themeId?: boolean
   resume?: boolean
   tagline?: boolean
@@ -1544,7 +1590,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "avatarPublicId" | "banner" | "bannerPublicId" | "name" | "email" | "quote" | "userId" | "username" | "bio" | "skills" | "themeId" | "resume" | "tagline" | "bookAcall" | "views" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "avatarPublicId" | "banner" | "bannerPublicId" | "name" | "email" | "quote" | "userId" | "username" | "bio" | "skills" | "skillsIsenable" | "themeId" | "resume" | "tagline" | "bookAcall" | "views" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
   projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
@@ -1582,6 +1628,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     username: string | null
     bio: string | null
     skills: string[]
+    skillsIsenable: boolean
     themeId: string
     resume: string | null
     tagline: string | null
@@ -2029,6 +2076,7 @@ export interface ProfileFieldRefs {
   readonly username: Prisma.FieldRef<"Profile", 'String'>
   readonly bio: Prisma.FieldRef<"Profile", 'String'>
   readonly skills: Prisma.FieldRef<"Profile", 'String[]'>
+  readonly skillsIsenable: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly themeId: Prisma.FieldRef<"Profile", 'String'>
   readonly resume: Prisma.FieldRef<"Profile", 'String'>
   readonly tagline: Prisma.FieldRef<"Profile", 'String'>

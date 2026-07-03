@@ -92,6 +92,7 @@ model Profile {
   username    String?      @unique
   bio         String?
   skills      String[]
+  skillsIsenable Boolean  @default(true)
   experiences Experience[]
   projects    Project[]
   blogs       Blog[]

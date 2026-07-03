@@ -13,6 +13,7 @@ const publicProfileSelect = {
   username: true,
   bio: true,
   skills: true,
+  skillsIsenable: true,
   themeId: true,
   resume: true,
   tagline: true,
@@ -21,15 +22,27 @@ const publicProfileSelect = {
   createdAt: true,
   updatedAt: true,
   user: true,
-  experiences: true,
-  projects: true,
+  experiences: {
+    where: {
+      isenable: true,
+    },
+  },
+  projects: {
+    where: {
+      isenable: true,
+    },
+  },
   blogs: {
     where: {
       isenable: true,
       isPublished: true,
     },
   },
-  links: true,
+  links: {
+    where: {
+      isenable: true,
+    },
+  },
 };
 
 interface PageProps {
@@ -54,13 +67,18 @@ export default async function UserPortfolioPage(props: PageProps) {
     notFound();
   }
 
-  const { user, ...profileData } = profile;
+  const { user, skillsIsenable = true, ...profileData } = profile;
+
+  const visibleProfileData = {
+    ...profileData,
+    skills: skillsIsenable ? profileData.skills : [],
+  };
 
   return (
     <TemplateRenderer 
       // slug={params} 
       user={user} 
-      profile={profileData} 
+      profile={visibleProfileData} 
     />
   );
 }

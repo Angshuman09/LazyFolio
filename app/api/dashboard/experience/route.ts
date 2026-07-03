@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       startdate: experience?.startdate ? new Date(experience.startdate) : null,
       enddate: experience?.enddate ? new Date(experience.enddate) : null,
       description: experience?.description || null,
+      ...(typeof experience?.isenable === "boolean" ? { isenable: experience.isenable } : {}),
     };
 
     if (experience?.id) {

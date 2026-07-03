@@ -117,6 +117,7 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
                 enddate: "",
                 content: null,
                 isPublished: false,
+                isenable: true,
                 slug: null,
               })
             }

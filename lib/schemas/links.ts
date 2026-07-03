@@ -13,6 +13,7 @@ export const linksSchema = z.object({
         label: stringOrEmpty(120).optional(),
         url: z.union([z.literal(""), z.string().url()]).optional(),
         type: z.enum(["GITHUB", "LINKEDIN", "X", "INSTAGRAM", "CUSTOM"]).optional(),
+        isenable: z.boolean().optional(),
       }),
     )
     .optional(),

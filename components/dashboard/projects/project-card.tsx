@@ -15,6 +15,8 @@ import { ProjectsSchema } from '@/lib/schemas/projects';
 import { ProfileProject } from '@/lib/types/projects';
 import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import toast from 'react-hot-toast';
+import { Switch } from "@/components/ui/switch";
+import { useUpdateVisibility } from "@/hooks/visibility";
 
 export function ProjectCard({
     field,
@@ -54,6 +56,7 @@ export function ProjectCard({
       projectLink: string;
       techstack: string;
       enddate: string;
+      isenable: boolean;
     } | null>(() => {
       if (!field.id) {
         return null;
@@ -71,11 +74,13 @@ export function ProjectCard({
           ? profileProject.techstack.join(", ")
           : (field.techstack || ""),
         enddate: profileProject?.enddate ? String(profileProject.enddate) : (field.enddate || ""),
+        isenable: profileProject?.isenable ?? field.isenable ?? true,
       };
     });
   
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const updateVisibility = useUpdateVisibility();
   
     const values = useWatch({ control, name: `projects.${index}` });
     const hasErrors = hasFieldArrayErrors(errors, "projects", index);
@@ -94,6 +99,7 @@ export function ProjectCard({
       projectLink: values?.projectLink || "",
       techstack: values?.techstack || "",
       enddate: values?.enddate || "",
+      isenable: values?.isenable ?? true,
     };
   
     const hasUnsavedChanges =
@@ -134,6 +140,7 @@ export function ProjectCard({
             projectLink: normalizedValues.projectLink,
             techstack: normalizedValues.techstack,
             enddate: normalizedValues.enddate,
+            isenable: normalizedValues.isenable,
           },
           profileId: profile.id,
         });
@@ -148,6 +155,7 @@ export function ProjectCard({
             ? payload.data.techstack.join(", ")
             : normalizedValues.techstack,
           enddate: payload?.data?.enddate ? String(payload.data.enddate) : normalizedValues.enddate,
+          isenable: payload?.data?.isenable ?? normalizedValues.isenable,
         };
   
         setValue(`projects.${index}.id`, savedProject.id, { shouldDirty: false });
@@ -157,6 +165,7 @@ export function ProjectCard({
         setValue(`projects.${index}.projectLink`, savedProject.projectLink, { shouldDirty: false });
         setValue(`projects.${index}.techstack`, savedProject.techstack, { shouldDirty: false });
         setValue(`projects.${index}.enddate`, savedProject.enddate, { shouldDirty: false });
+        setValue(`projects.${index}.isenable`, savedProject.isenable, { shouldDirty: false });
   
         const currentProjects = getValues("projects") || [];
         updateProjectsDraft(
@@ -219,6 +228,7 @@ export function ProjectCard({
       setValue(`projects.${index}.projectLink`, savedSnapshot.projectLink, { shouldDirty: false });
       setValue(`projects.${index}.techstack`, savedSnapshot.techstack, { shouldDirty: false });
       setValue(`projects.${index}.enddate`, savedSnapshot.enddate, { shouldDirty: false });
+      setValue(`projects.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
   
       const currentProjects = getValues("projects") || [];
       updateProjectsDraft(
@@ -242,6 +252,44 @@ export function ProjectCard({
       setValue(`projects.${index}.techstack`, normalizedValues.techstack, { shouldDirty: true });
       setValue(`projects.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
       setIsEditing(false);
+    };
+
+    const handleVisibilityChange = async (isenable: boolean) => {
+      if (!normalizedValues.id) {
+        toast.error("Save this project before changing visibility.");
+        return;
+      }
+
+      const previousValue = normalizedValues.isenable;
+      const loadingToast = toast.loading(
+        isenable ? "Showing project on profile..." : "Hiding project from profile...",
+      );
+      setValue(`projects.${index}.isenable`, isenable, { shouldDirty: false });
+
+      try {
+        await updateVisibility.mutateAsync({
+          target: "project",
+          id: normalizedValues.id,
+          isenable,
+        });
+        const currentProjects = getValues("projects") || [];
+        updateProjectsDraft(
+          currentProjects.map((project, projectIndex) =>
+            projectIndex === index ? { ...project, isenable } : project,
+          ),
+        );
+        setSavedSnapshot((snapshot) =>
+          snapshot ? { ...snapshot, isenable } : snapshot,
+        );
+        toast.success(
+          isenable ? "Project shown on profile." : "Project hidden from profile.",
+          { id: loadingToast },
+        );
+      } catch (error) {
+        setValue(`projects.${index}.isenable`, previousValue, { shouldDirty: false });
+        console.error("Error updating project visibility:", error);
+        toast.error("Could not update project visibility.", { id: loadingToast });
+      }
     };
   
     if (!isEditing) {
@@ -316,6 +364,16 @@ export function ProjectCard({
               <Pencil size={10} />
               Edit
             </button>
+            <Switch
+              checked={normalizedValues.isenable}
+              onCheckedChange={handleVisibilityChange}
+              disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
+              aria-label={
+                normalizedValues.isenable
+                  ? "Hide project from profile"
+                  : "Show project on profile"
+              }
+            />
             {hasUnsavedChanges && (
               <button
                 type="button"

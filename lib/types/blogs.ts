@@ -10,6 +10,7 @@ export type ProfileBlog = {
     enddate?: string | Date | null;
     content?: string | null;
     isPublished?: boolean | null;
+    isenable?: boolean | null;
     slug?: string | null;
   };
   

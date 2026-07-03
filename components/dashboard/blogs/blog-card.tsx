@@ -18,6 +18,8 @@ import {  type FieldArrayWithId,
     UseFormSetValue,
     useWatch} from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { Switch } from "@/components/ui/switch";
+import { useUpdateVisibility } from "@/hooks/visibility";
 
 
 export function BlogCard({
@@ -57,6 +59,7 @@ export function BlogCard({
       enddate: string;
       content?: string | null;
       isPublished?: boolean;
+      isenable: boolean;
       slug?: string | null;
     } | null>(() => {
       if (!field.id) {
@@ -73,6 +76,7 @@ export function BlogCard({
         enddate: profileBlog?.enddate ? String(profileBlog.enddate) : (field.enddate || ""),
         content: profileBlog?.content ?? field.content ?? null,
         isPublished: profileBlog?.isPublished ?? field.isPublished ?? false,
+        isenable: profileBlog?.isenable ?? field.isenable ?? true,
         slug: profileBlog?.slug ?? field.slug ?? null,
       };
     });
@@ -84,6 +88,7 @@ export function BlogCard({
     const [deleting, setDeleting] = useState(false);
     const createBlog = useCreateBlog();
     const deleteBlog = useDeleteBlog();
+    const updateVisibility = useUpdateVisibility();
   
     useEffect(() => {
       if (hasErrors) {
@@ -99,6 +104,7 @@ export function BlogCard({
       enddate: values?.enddate || "",
       content: values?.content ?? null,
       isPublished: values?.isPublished ?? false,
+      isenable: values?.isenable ?? true,
       slug: values?.slug ?? null,
     };
   
@@ -146,6 +152,7 @@ export function BlogCard({
             enddate: normalizedValues.enddate,
             content: normalizedValues.content,
             isPublished: normalizedValues.isPublished,
+            isenable: normalizedValues.isenable,
             slug: normalizedValues.slug,
           },
           profileId: profile.id,
@@ -159,6 +166,7 @@ export function BlogCard({
           enddate: payload?.data?.enddate ? String(payload.data.enddate) : normalizedValues.enddate,
           content: payload?.data?.content ?? normalizedValues.content,
           isPublished: payload?.data?.isPublished ?? normalizedValues.isPublished,
+          isenable: payload?.data?.isenable ?? normalizedValues.isenable,
           slug: payload?.data?.slug ?? normalizedValues.slug,
         };
   
@@ -169,6 +177,7 @@ export function BlogCard({
         setValue(`blogs.${index}.enddate`, savedBlog.enddate, { shouldDirty: false });
         setValue(`blogs.${index}.content`, savedBlog.content, { shouldDirty: false });
         setValue(`blogs.${index}.isPublished`, savedBlog.isPublished, { shouldDirty: false });
+        setValue(`blogs.${index}.isenable`, savedBlog.isenable, { shouldDirty: false });
         setValue(`blogs.${index}.slug`, savedBlog.slug, { shouldDirty: false });
   
         const currentBlogs = getValues("blogs") || [];
@@ -232,6 +241,7 @@ export function BlogCard({
       setValue(`blogs.${index}.enddate`, savedSnapshot.enddate, { shouldDirty: false });
       setValue(`blogs.${index}.content`, savedSnapshot.content, { shouldDirty: false });
       setValue(`blogs.${index}.isPublished`, savedSnapshot.isPublished, { shouldDirty: false });
+      setValue(`blogs.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
       setValue(`blogs.${index}.slug`, savedSnapshot.slug, { shouldDirty: false });
   
       const currentBlogs = getValues("blogs") || [];
@@ -257,6 +267,44 @@ export function BlogCard({
       setValue(`blogs.${index}.isPublished`, normalizedValues.isPublished, { shouldDirty: true });
       setValue(`blogs.${index}.slug`, normalizedValues.slug, { shouldDirty: true });
       setIsEditing(false);
+    };
+
+    const handleVisibilityChange = async (isenable: boolean) => {
+      if (!normalizedValues.id) {
+        toast.error("Save this blog before changing visibility.");
+        return;
+      }
+
+      const previousValue = normalizedValues.isenable;
+      const loadingToast = toast.loading(
+        isenable ? "Showing blog on profile..." : "Hiding blog from profile...",
+      );
+      setValue(`blogs.${index}.isenable`, isenable, { shouldDirty: false });
+
+      try {
+        await updateVisibility.mutateAsync({
+          target: "blog",
+          id: normalizedValues.id,
+          isenable,
+        });
+        const currentBlogs = getValues("blogs") || [];
+        updateBlogsDraft(
+          currentBlogs.map((blog, blogIndex) =>
+            blogIndex === index ? { ...blog, isenable } : blog,
+          ),
+        );
+        setSavedSnapshot((snapshot) =>
+          snapshot ? { ...snapshot, isenable } : snapshot,
+        );
+        toast.success(
+          isenable ? "Blog shown on profile." : "Blog hidden from profile.",
+          { id: loadingToast },
+        );
+      } catch (error) {
+        setValue(`blogs.${index}.isenable`, previousValue, { shouldDirty: false });
+        console.error("Error updating blog visibility:", error);
+        toast.error("Could not update blog visibility.", { id: loadingToast });
+      }
     };
   
     const isInternal = values?.content !== null && values?.content !== undefined;
@@ -325,6 +373,16 @@ export function BlogCard({
               <Pencil size={10} />
               Edit
             </button>
+            <Switch
+              checked={normalizedValues.isenable}
+              onCheckedChange={handleVisibilityChange}
+              disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
+              aria-label={
+                normalizedValues.isenable
+                  ? "Hide blog from profile"
+                  : "Show blog on profile"
+              }
+            />
             {hasUnsavedChanges && (
               <button
                 type="button"

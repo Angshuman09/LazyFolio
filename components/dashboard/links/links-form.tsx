@@ -103,7 +103,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
 
         <button
           type="button"
-          onClick={() => append({ label: "", url: "" })}
+          onClick={() => append({ label: "", url: "" , isenable: true})}
           className="inline-flex items-center gap-1.5 px-4.5 h-8.5 rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
         >
           <Plus size={12} />

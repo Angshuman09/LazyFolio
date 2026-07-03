@@ -9,6 +9,7 @@ type ProjectInput = {
   projectLink?: string;
   techstack?: string;
   enddate?: string;
+  isenable?: boolean;
 };
 
 function parseOptionalDate(value: string | null | undefined) {
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
       projectLink: project.projectLink?.trim() || null,
       techstack: techstackArray,
       enddate: parseOptionalDate(project.enddate),
+      ...(typeof project.isenable === "boolean" ? { isenable: project.isenable } : {}),
     };
 
     if (project.id) {

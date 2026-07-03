@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
         startdate: parseOptionalDate(experience.startdate),
         enddate: parseOptionalDate(experience.enddate),
         description: experience.description,
+        isenable: experience.isenable ?? true,
       })),
     });
 

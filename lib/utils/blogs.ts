@@ -12,6 +12,7 @@ export function blogsFromProfile(blogs: ProfileBlog[] = []): BlogsSchema {
         enddate: blog.enddate ? String(blog.enddate) : "",
         content: blog.content ?? null,
         isPublished: blog.isPublished ?? false,
+        isenable: blog.isenable ?? true,
         slug: blog.slug ?? null,
       })),
     };

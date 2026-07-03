@@ -6,6 +6,7 @@ type LinkInput = {
   type?: LinkType;
   label?: string;
   url?: string;
+  isenable?: boolean;
 };
 
 export async function POST(req: NextRequest){
@@ -27,7 +28,8 @@ export async function POST(req: NextRequest){
         profileId: profileId,
         type: link.type ?? LinkType.CUSTOM,
         label: link.label,
-        url: link.url
+        url: link.url,
+        isenable: link.isenable ?? true,
       }))
     })
 

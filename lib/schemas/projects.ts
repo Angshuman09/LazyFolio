@@ -16,6 +16,7 @@ export const projectsSchema = z.object({
         projectLink: z.union([z.literal(""), z.string().url()]).optional(),
         techstack: stringOrEmpty(300).optional(),
         enddate: stringOrEmpty(50).optional(),
+        isenable: z.boolean().optional(),
       }),
     )
     .optional(),

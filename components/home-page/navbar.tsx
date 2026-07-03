@@ -92,12 +92,12 @@ const Navbar = () => {
           </button>
 
           {isPending ? (
-            <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-xl" />
+            <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-[10px]" />
           ) : session?.user ? (
             <>
               <Button
                 onClick={() => router.push("/dashboard")}
-                className="bg-(--lf-ink) text-(--lf-surface) hover:cursor-pointer border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2  hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="bg-(--lf-ink) text-(--lf-surface) rounded-[6px] hover:cursor-pointer border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2  hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Dashboard
               </Button>
@@ -117,7 +117,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push("/auth")}
-              className="bg-(--lf-ink) text-(--lf-surface) text-[0.8rem]  border-2 border-(--lf-ink) font-semibold px-4 py-2 rounded-xl hover:opacity-80 transition-opacity flex items-center gap-1.5"
+              className="bg-(--lf-ink) rounded-[6px] text-(--lf-surface) text-[0.8rem]  border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
             >
               Get started
               <span className="btn-arrow w-4 h-4 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[9px] font-bold leading-none">
@@ -189,7 +189,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/auth");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-[10px] hover:opacity-80 transition-opacity"
           >
             Get started
           </button>

@@ -9,6 +9,7 @@ export type ProfileProject = {
     projectLink?: string | null;
     techstack?: string[] | null;
     enddate?: string | Date | null;
+    isenable?: boolean | null;
   };
   
 export  type Props = {

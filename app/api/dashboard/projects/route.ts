@@ -34,7 +34,8 @@ export async function POST(req: NextRequest) {
             enddate: parseOptionalDate(project.enddate),
             githubLink: project.githubLink,
             projectLink: project.projectLink,
-            techstack: Array.isArray(project.techstack) ? project.techstack : []
+            techstack: Array.isArray(project.techstack) ? project.techstack : [],
+            isenable: project.isenable ?? true,
         }))
     });
 

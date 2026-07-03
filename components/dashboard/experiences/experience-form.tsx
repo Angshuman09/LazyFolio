@@ -113,6 +113,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
               startdate: "",
               enddate: "",
               description: "",
+              isenable: true,
             })
           }
           className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"

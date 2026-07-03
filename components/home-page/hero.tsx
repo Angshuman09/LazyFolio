@@ -59,7 +59,7 @@ const Hero = () => {
         <span className="block">
           Make the internet {" "}
 
-          know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist</span>
+          know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist.</span>
           </Highlighter>
         </span>
         {/* <span className="block mt-4"> Start showing it.</span> */}
@@ -93,7 +93,7 @@ const Hero = () => {
         <button
           disabled={loading}
           onClick={handleSubmitUsername}
-          className="group inline-flex items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[56px] sm:min-h-[52px] px-6 rounded-[14px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
+          className="group inline-flex items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[42px] sm:min-h-[42px] px-4 rounded-[6px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
         >
           {loading ? "Claiming..." : "Claim username"}
           <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">

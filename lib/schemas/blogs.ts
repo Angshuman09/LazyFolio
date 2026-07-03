@@ -16,6 +16,7 @@ export const blogsSchema = z.object({
         enddate: stringOrEmpty(50).optional(),
         content: z.string().optional().nullable(),
         isPublished: z.boolean().optional(),
+        isenable: z.boolean().optional(),
         slug: z.string().optional().nullable(),
       }),
     )

@@ -42,6 +42,23 @@ function clearableString(value: string | null | undefined) {
   return trimmedValue === "" ? null : trimmedValue;
 }
 
+async function getSkillsIsenable(profileId?: string | null) {
+  if (!profileId) {
+    return true;
+  }
+
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { id: profileId },
+      select: { skillsIsenable: true },
+    });
+    return profile?.skillsIsenable ?? true;
+  } catch (error) {
+    console.error("Failed to read skills visibility", error);
+    return true;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
@@ -58,7 +75,12 @@ export async function GET(request: NextRequest) {
       where: { userId },
       select: profileSelect,
     });
-    return NextResponse.json(profile, { status: 200 });
+    if (!profile) {
+      return NextResponse.json(profile, { status: 200 });
+    }
+
+    const skillsIsenable = await getSkillsIsenable(profile.id);
+    return NextResponse.json({ ...profile, skillsIsenable }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch profile", error);
     return NextResponse.json(
@@ -80,6 +102,7 @@ export async function POST(request: NextRequest) {
       tagline,
       bookAcall,
       themeId,
+      skillsIsenable,
     } = await request.json();
 
     if (!userId) {
@@ -124,7 +147,26 @@ export async function POST(request: NextRequest) {
       select: profileSelect,
     });
 
-    return NextResponse.json(profile, { status: 200 });
+    if (typeof skillsIsenable === "boolean") {
+      try {
+        await prisma.profile.update({
+          where: { id: profile.id },
+          data: { skillsIsenable },
+        });
+      } catch (error) {
+        console.error("Failed to update skills visibility", error);
+      }
+    }
+
+    const nextSkillsIsenable =
+      typeof skillsIsenable === "boolean"
+        ? skillsIsenable
+        : await getSkillsIsenable(profile.id);
+
+    return NextResponse.json(
+      { ...profile, skillsIsenable: nextSkillsIsenable },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Failed to post profile", error);
     return NextResponse.json(

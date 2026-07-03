@@ -25,6 +25,7 @@ function projectsFromProfile(projects: ProfileProject[] = []): ProjectsSchema {
       projectLink: p.projectLink ?? "",
       techstack: Array.isArray(p.techstack) ? p.techstack.join(", ") : "",
       enddate: p.enddate ? String(p.enddate) : "",
+      isenable: p.isenable ?? true,
     })),
   };
 }
@@ -133,6 +134,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
               projectLink: "",
               techstack: "",
               enddate: "",
+              isenable: true,
             })
           }
           className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"

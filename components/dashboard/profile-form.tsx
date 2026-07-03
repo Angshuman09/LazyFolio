@@ -236,7 +236,7 @@ export default function ProfileForm({
                 type="button"
                 onClick={handleSubmitImages}
                 disabled={!avatarFile && !bannerFile || imageLoading}
-                className="inline-flex items-center gap-1.5 px-4 h-8 rounded-md border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold transition-opacity duration-150 font-sans-body
+                className="inline-flex items-center gap-1.5 px-4 h-8 rounded-[6px] border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold transition-opacity duration-150 font-sans-body
         disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {imageLoading ? "Saving..." : "Save changes"}
@@ -245,7 +245,7 @@ export default function ProfileForm({
             {/* Preview / Upload area */}
             <div className="flex items-center gap-2 mb-4">
               {/* Avatar — circle */}
-              <div className="relative flex-shrink-0">
+              <div className="relative shrink-0">
                 <input
                   id="avatar-upload"
                   type="file"

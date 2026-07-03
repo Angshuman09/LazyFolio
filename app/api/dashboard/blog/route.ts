@@ -11,6 +11,7 @@ type BlogInput = {
   enddate?: string;
   content?: string | null;
   isPublished?: boolean;
+  isenable?: boolean;
   slug?: string | null;
 };
 
@@ -98,6 +99,7 @@ export async function POST(request: NextRequest) {
       enddate: parseOptionalDate(blog.enddate),
       content: blog.content ?? null,
       isPublished: blog.isPublished ?? false,
+      ...(typeof blog.isenable === "boolean" ? { isenable: blog.isenable } : {}),
       slug: slug || null,
     };
 

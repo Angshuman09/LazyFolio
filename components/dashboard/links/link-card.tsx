@@ -17,6 +17,8 @@ import { detectType } from "@/lib/utils/links";
 import {LinksSchema} from "@/lib/schemas/links";
 import { writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import toast from "react-hot-toast";
+import { Switch } from "@/components/ui/switch";
+import { useUpdateVisibility } from "@/hooks/visibility";
 
 export function LinkCard({
   field,
@@ -48,6 +50,7 @@ export function LinkCard({
     id?: string;
     label: string;
     url: string;
+    isenable: boolean;
   } | null>(() => {
     if (!field.id) {
       return null;
@@ -59,6 +62,7 @@ export function LinkCard({
       id: field.id,
       label: profileLink?.label || field.label || "",
       url: profileLink?.url || field.url || "",
+      isenable: profileLink?.isenable ?? field.isenable ?? true,
     };
   });
   const values = useWatch({ control, name: `links.${index}` });
@@ -68,6 +72,8 @@ export function LinkCard({
 
   const createLink = useCreateLink();
   const deleteLink = useDeleteLink();
+  const updateVisibility = useUpdateVisibility();
+
 
   useEffect(() => {
     if (hasErrors) {
@@ -79,6 +85,7 @@ export function LinkCard({
     id: values?.id,
     label: values?.label?.trim() || "",
     url: values?.url?.trim() || "",
+    isenable: values?.isenable ?? true,
   };
   const hasUnsavedChanges =
     !savedSnapshot ||
@@ -135,6 +142,7 @@ export function LinkCard({
       shouldDirty: false,
     });
     setValue(`links.${index}.url`, savedSnapshot.url, { shouldDirty: false });
+    setValue(`links.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
     const currentLinks = getValues("links") || [];
     updateLinksDraft(
       currentLinks.map((link, linkIndex) =>
@@ -163,6 +171,7 @@ export function LinkCard({
           label: normalizedValues.label,
           url: normalizedValues.url,
           type: linkType,
+          isenable: normalizedValues.isenable,
         },
         profileId: profile?.id,
       });
@@ -171,6 +180,7 @@ export function LinkCard({
         id: payload?.data?.id || normalizedValues.id,
         label: payload?.data?.label || normalizedValues.label,
         url: payload?.data?.url || normalizedValues.url,
+        isenable: payload?.data?.isenable ?? normalizedValues.isenable,
       };
 
       setValue(`links.${index}.id`, savedLink.id, { shouldDirty: false });
@@ -178,6 +188,7 @@ export function LinkCard({
         shouldDirty: false,
       });
       setValue(`links.${index}.url`, savedLink.url, { shouldDirty: false });
+      setValue(`links.${index}.isenable`, savedLink.isenable, { shouldDirty: false });
       const currentLinks = getValues("links") || [];
       updateLinksDraft(
         currentLinks.map((link, linkIndex) =>
@@ -224,6 +235,43 @@ export function LinkCard({
     }
   };
 
+  const handleVisibilityChange = async (isenable: boolean) => {
+    if (!normalizedValues.id) {
+      toast.error("Save this link before changing visibility.");
+      return;
+    }
+
+    const previousValue = normalizedValues.isenable;
+    const loadingToast = toast.loading(
+      isenable ? "Showing link on profile..." : "Hiding link from profile...",
+    );
+    setValue(`links.${index}.isenable`, isenable, { shouldDirty: false });
+
+    try {
+      await updateVisibility.mutateAsync({
+        target: "link",
+        id: normalizedValues.id,
+        isenable,
+      });
+      const currentLinks = getValues("links") || [];
+      updateLinksDraft(
+        currentLinks.map((link, linkIndex) =>
+          linkIndex === index ? { ...link, isenable } : link,
+        ),
+      );
+      setSavedSnapshot((snapshot) =>
+        snapshot ? { ...snapshot, isenable } : snapshot,
+      );
+      toast.success(isenable ? "Link shown on profile." : "Link hidden from profile.", {
+        id: loadingToast,
+      });
+    } catch (error) {
+      setValue(`links.${index}.isenable`, previousValue, { shouldDirty: false });
+      console.error("Error updating link visibility:", error);
+      toast.error("Could not update link visibility.", { id: loadingToast });
+    }
+  };
+
   if (!isEditing) {
     return (
       <div className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
@@ -260,6 +308,12 @@ export function LinkCard({
             <Pencil size={10} />
             Edit
           </button>
+          <Switch
+            checked={normalizedValues.isenable}
+            onCheckedChange={handleVisibilityChange}
+            disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
+            aria-label={normalizedValues.isenable ? "Hide link from profile" : "Show link on profile"}
+          />
           {hasUnsavedChanges && (
             <button
               type="button"
@@ -325,7 +379,6 @@ export function LinkCard({
           disabled={saving}
           className="inline-flex items-center border-slate-400 gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border  text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
         >
-          {/* <Trash2 size={11} /> */}
           Cancel
         </button>
         <button

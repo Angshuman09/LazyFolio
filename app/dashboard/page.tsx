@@ -64,6 +64,20 @@ export default function DashboardPage() {
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
   const router = useRouter();
   const isSaveDisabled = isSaving || isLoading || isPending;
+  const previewProfile = profile
+    ? {
+        ...profile,
+        links: (profile.links || []).filter((link: { isenable?: boolean | null }) => link.isenable ?? true),
+        experiences: (profile.experiences || []).filter(
+          (experience: { isenable?: boolean | null }) => experience.isenable ?? true,
+        ),
+        projects: (profile.projects || []).filter(
+          (project: { isenable?: boolean | null }) => project.isenable ?? true,
+        ),
+        blogs: (profile.blogs || []).filter((blog: { isenable?: boolean | null }) => blog.isenable ?? true),
+        skills: profile.skillsIsenable === false ? [] : profile.skills,
+      }
+    : profile;
 
   useEffect(() => {
     if (!session && !isPending) {
@@ -200,6 +214,7 @@ export default function DashboardPage() {
         label: link.label?.trim() || "",
         url: link.url?.trim() || "",
         type: detectType(link.url || ""),
+        isenable: link.isenable ?? true,
       }))
       .filter((link) => link.label || link.url);
 
@@ -237,9 +252,16 @@ export default function DashboardPage() {
         startdate: experience.startdate?.trim() || "",
         enddate: experience.enddate?.trim() || "",
         description: experience.description?.trim() || "",
+        isenable: experience.isenable ?? true,
       }))
       .filter((experience) =>
-        Object.values(experience).some((value) => value.length > 0),
+        [
+          experience.role,
+          experience.companyName,
+          experience.startdate,
+          experience.enddate,
+          experience.description,
+        ].some((value) => value.length > 0),
       );
 
     createExperience.mutate(
@@ -288,6 +310,7 @@ export default function DashboardPage() {
             .map((item) => item.trim())
             .filter(Boolean) || [],
         enddate: project.enddate?.trim() || "",
+        isenable: project.isenable ?? true,
       }))
       .filter(
         (project) =>
@@ -380,6 +403,7 @@ export default function DashboardPage() {
         enddate: blog.enddate?.trim() || "",
         content: blog.content,
         isPublished: blog.isPublished ?? false,
+        isenable: blog.isenable ?? true,
         slug: blog.slug,
       }))
       .filter((blog) => blog.title || blog.description || blog.blogLink || blog.content);
@@ -430,7 +454,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-1.5 md:gap-2">
           <button
           disabled={!profile?.username}
-            className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
+            className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
             onClick={() => {
               setActiveTemplate(profile?.themeId || "1");
               setTemplateOpen(true);
@@ -444,7 +468,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
+            className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
             onClick={() => {
               setActiveTemplate(profile?.themeId || "1");
               setTemplateOpen(true);
@@ -455,7 +479,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={() => setDark((current) => !current)}
             aria-label="Toggle theme"
           >
@@ -466,7 +490,7 @@ export default function DashboardPage() {
           disabled={!profile?.username}
     
           onClick={()=> window.open(`/${profile?.username || username}`, "_blank")}
-          className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
+          className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-[6px] bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
           </button>
@@ -475,7 +499,7 @@ export default function DashboardPage() {
             type="submit"
             form="dashboard-form"
             disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
-            className="inline-flex items-center gap-1.5 px-4 md:px-3.5 h-7.5 rounded-md bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
+            className="inline-flex items-center gap-1.5 px-4 md:px-3.5 h-7.5 rounded-[6px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
               <>
@@ -645,9 +669,9 @@ export default function DashboardPage() {
               <TemplateRendererSkeleton />
             ) : (
               <TemplateRenderer
-                slug={{ username: profile?.username || username }}
+                slug={{ username: previewProfile?.username || username }}
                 user={session?.user}
-                profile={profile}
+                profile={previewProfile}
               />
             )}
           </div>

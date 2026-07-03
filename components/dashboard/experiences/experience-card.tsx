@@ -16,6 +16,8 @@ import { writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { useCreateExperience, useDeleteExperience } from "@/hooks/experience";
 import toast from "react-hot-toast";
 import { ExperienceProfile } from "@/lib/utils/experience";
+import { Switch } from "@/components/ui/switch";
+import { useUpdateVisibility } from "@/hooks/visibility";
 
 export function ExperienceCard({
   field,
@@ -54,6 +56,7 @@ export function ExperienceCard({
     description: string;
     startdate: string;
     enddate: string;
+    isenable: boolean;
   } | null>(() => {
     if (!field.id) {
       return null;
@@ -67,12 +70,14 @@ export function ExperienceCard({
       companyName: profileExperience?.companyName || field.companyName || "",
       description: profileExperience?.description || field.description || "",
       startdate: profileExperience?.startdate || field.startdate || "",
-      enddate: profileExperience?.enddate || field.enddate || ""
+      enddate: profileExperience?.enddate || field.enddate || "",
+      isenable: profileExperience?.isenable ?? field.isenable ?? true,
     };
   });
 
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const updateVisibility = useUpdateVisibility();
 
   const values = useWatch({ control, name: `experiences.${index}` });
   const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
@@ -83,7 +88,8 @@ export function ExperienceCard({
     companyName: values?.companyName || "",
     description: values?.description || "",
     startdate: values?.startdate || "",
-    enddate: values?.enddate || ""
+    enddate: values?.enddate || "",
+    isenable: values?.isenable ?? true,
   };
 
   const hasUnsavedChanges =
@@ -128,7 +134,8 @@ export function ExperienceCard({
           companyName: normalizedValues.companyName,
           description: normalizedValues.description,
           startdate: normalizedValues.startdate,
-          enddate: normalizedValues.enddate
+          enddate: normalizedValues.enddate,
+          isenable: normalizedValues.isenable,
         },
         profileId: profile?.id,
       });
@@ -141,7 +148,8 @@ export function ExperienceCard({
         companyName: payload?.data?.companyName || normalizedValues.companyName,
         description: payload?.data?.description || normalizedValues.description,
         startdate: payload?.data?.startdate || normalizedValues.startdate,
-        enddate: payload?.data?.enddate || normalizedValues.enddate
+        enddate: payload?.data?.enddate || normalizedValues.enddate,
+        isenable: payload?.data?.isenable ?? normalizedValues.isenable,
       };
 
       console.log("save experience: ", saveExperience);
@@ -152,6 +160,7 @@ export function ExperienceCard({
       setValue(`experiences.${index}.description`, saveExperience.description, { shouldDirty: false });
       setValue(`experiences.${index}.startdate`, saveExperience.startdate, { shouldDirty: false });
       setValue(`experiences.${index}.enddate`, saveExperience.enddate, { shouldDirty: false });
+      setValue(`experiences.${index}.isenable`, saveExperience.isenable, { shouldDirty: false });
 
       const currentExperiences = getValues("experiences") || [];
       updateExperienceDraft(
@@ -222,6 +231,7 @@ export function ExperienceCard({
     setValue(`experiences.${index}.description`, savedSnapshot.description, { shouldDirty: false });
     setValue(`experiences.${index}.startdate`, savedSnapshot.startdate, { shouldDirty: false });
     setValue(`experiences.${index}.enddate`, savedSnapshot.enddate, { shouldDirty: false });
+    setValue(`experiences.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
 
     const currentExperiences = getValues("experiences") || [];
     updateExperienceDraft(
@@ -241,6 +251,44 @@ export function ExperienceCard({
     setValue(`experiences.${index}.startdate`, normalizedValues.startdate, { shouldDirty: true });
     setValue(`experiences.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
     setIsEditing(false);
+  };
+
+  const handleVisibilityChange = async (isenable: boolean) => {
+    if (!normalizedValues.id) {
+      toast.error("Save this experience before changing visibility.");
+      return;
+    }
+
+    const previousValue = normalizedValues.isenable;
+    const loadingToast = toast.loading(
+      isenable ? "Showing experience on profile..." : "Hiding experience from profile...",
+    );
+    setValue(`experiences.${index}.isenable`, isenable, { shouldDirty: false });
+
+    try {
+      await updateVisibility.mutateAsync({
+        target: "experience",
+        id: normalizedValues.id,
+        isenable,
+      });
+      const currentExperiences = getValues("experiences") || [];
+      updateExperienceDraft(
+        currentExperiences.map((experience, experienceIndex) =>
+          experienceIndex === index ? { ...experience, isenable } : experience,
+        ),
+      );
+      setSavedSnapshot((snapshot) =>
+        snapshot ? { ...snapshot, isenable } : snapshot,
+      );
+      toast.success(
+        isenable ? "Experience shown on profile." : "Experience hidden from profile.",
+        { id: loadingToast },
+      );
+    } catch (error) {
+      setValue(`experiences.${index}.isenable`, previousValue, { shouldDirty: false });
+      console.error("Error updating experience visibility:", error);
+      toast.error("Could not update experience visibility.", { id: loadingToast });
+    }
   };
 
   if (!isEditing) {
@@ -291,6 +339,16 @@ export function ExperienceCard({
             <Pencil size={10} />
             Edit
           </button>
+          <Switch
+            checked={normalizedValues.isenable}
+            onCheckedChange={handleVisibilityChange}
+            disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
+            aria-label={
+              normalizedValues.isenable
+                ? "Hide experience from profile"
+                : "Show experience on profile"
+            }
+          />
           {hasUnsavedChanges && (
             <button
               type="button"

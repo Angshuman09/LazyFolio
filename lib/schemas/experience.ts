@@ -15,6 +15,7 @@ const singleExperienceSchema = z.object({
   startdate: stringOrEmpty(1, 50).optional(),
   enddate: stringOrEmpty(1, 50).optional(),
   description: stringOrEmpty(10, 800).optional(),
+  isenable: z.boolean().optional(),
 });
 
 export const experienceSchema = z.object({

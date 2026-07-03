@@ -6,7 +6,8 @@ type LinkInput = {
     id?: string;
     url: string;
     label: string;
-    type: LinkType
+    type: LinkType;
+    isenable?: boolean;
 }
 
 type ProfileId = string;
@@ -24,7 +25,8 @@ export async function POST(request: NextRequest) {
             url: link.url,
             label: link.label,
             type: link.type ?? LinkType.CUSTOM,
-            profileId: profileId
+            profileId: profileId,
+            ...(typeof link.isenable === "boolean" ? { isenable: link.isenable } : {}),
         };
 
         if (link.id) {
