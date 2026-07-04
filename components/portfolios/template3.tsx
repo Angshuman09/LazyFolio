@@ -465,7 +465,7 @@ export function Template3({
                   <div
                     className={
                       banner
-                        ? "absolute left-5 -bottom-9 ring-1 ring-black rounded-xl overflow-hidden shadow-sm"
+                        ? "absolute left-5 -bottom-9 ring-1 ring-white border border-[#bfbfbf] bg-white rounded-xl overflow-hidden shadow-sm"
                         : "mb-6 rounded-xl overflow-hidden w-[68px] h-[68px]"
                     }
                   >

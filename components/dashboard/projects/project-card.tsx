@@ -6,7 +6,9 @@ import {  type Control,
     type UseFormGetValues,
     type UseFormRegister,
     type UseFormSetValue,
-    useWatch} from 'react-hook-form'
+    useWatch,
+    Controller
+} from 'react-hook-form'
 import { Trash2, Pencil, Check, Code2, Github, ExternalLink, Loader2} from 'lucide-react'
 import { useCreateProject, useDeleteProject } from "@/hooks/project";
 import { hasFieldArrayErrors } from "@/lib/utils";
@@ -17,6 +19,7 @@ import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import toast from 'react-hot-toast';
 import { Switch } from "@/components/ui/switch";
 import { useUpdateVisibility } from "@/hooks/visibility";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export function ProjectCard({
     field,
@@ -449,10 +452,16 @@ export function ProjectCard({
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               End date
             </label>
-            <input
-              {...register(`projects.${index}.enddate`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-              placeholder="e.g. 2024-03-01"
+            <Controller
+              control={control}
+              name={`projects.${index}.enddate`}
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Pick project end date"
+                />
+              )}
             />
           </div>
   

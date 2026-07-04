@@ -43,6 +43,7 @@ import { useCreateBlogs } from "@/hooks/blogs";
 import { BlogsSchema } from "@/lib/schemas/blogs";
 import { ProjectsSchema } from "@/lib/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
+import { parseSkill } from "@/lib/utils";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
@@ -75,7 +76,10 @@ export default function DashboardPage() {
           (project: { isenable?: boolean | null }) => project.isenable ?? true,
         ),
         blogs: (profile.blogs || []).filter((blog: { isenable?: boolean | null }) => blog.isenable ?? true),
-        skills: profile.skillsIsenable === false ? [] : profile.skills,
+        skills: ((profile.skills || []) as string[])
+          .map(parseSkill)
+          .filter((s) => s.isenable && s.value)
+          .map((s) => s.value),
       }
     : profile;
 
@@ -359,6 +363,7 @@ export default function DashboardPage() {
     const formattedSkills = (data.skills || [])
       .map((skill) => ({
         value: skill.value?.trim() || "",
+        isenable: skill.isenable ?? true,
       }))
       .filter((skill) => skill.value);
 

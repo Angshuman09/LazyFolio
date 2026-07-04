@@ -14,12 +14,14 @@ import {  type FieldArrayWithId,
     type UseFieldArrayInsert,
     type UseFormGetValues,
     Control,
+    Controller,
     UseFormRegister,
     UseFormSetValue,
     useWatch} from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Switch } from "@/components/ui/switch";
 import { useUpdateVisibility } from "@/hooks/visibility";
+import { DatePicker } from "@/components/ui/date-picker";
 
 
 export function BlogCard({
@@ -525,12 +527,18 @@ export function BlogCard({
   
           <div className="flex flex-col gap-1.25">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-              Date / Read Time
+              Date
             </label>
-            <input
-              {...register(`blogs.${index}.enddate`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-              placeholder="e.g. 2026-03-01 or 5 min read"
+            <Controller
+              control={control}
+              name={`blogs.${index}.enddate`}
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Pick blog date"
+                />
+              )}
             />
             {errors.blogs?.[index]?.enddate?.message && (
               <div className="text-[0.72rem] text-[#b91c1c]">

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest){
                 id: userId
             },
             data:{
-                skills: skills.map((skill) => skill.value ?? "")
+                skills: skills.map((skill) => JSON.stringify({ value: skill.value ?? "", isenable: skill.isenable ?? true }))
             },
             select:{
                 id: true,

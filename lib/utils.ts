@@ -29,3 +29,27 @@ export function hasFieldArrayErrors(
     return "message" in error && Boolean((error as { message?: string }).message)
   })
 }
+
+export interface ParsedSkill {
+  value: string;
+  isenable: boolean;
+}
+
+export function parseSkill(s: string): ParsedSkill {
+  try {
+    const parsed = JSON.parse(s);
+    if (parsed && typeof parsed === "object" && "value" in parsed) {
+      return {
+        value: parsed.value || "",
+        isenable: typeof parsed.isenable === "boolean" ? parsed.isenable : true,
+      };
+    }
+  } catch (e) {
+    console.log("error in parsing skills");
+  }
+  return {
+    value: s || "",
+    isenable: true,
+  };
+}
+

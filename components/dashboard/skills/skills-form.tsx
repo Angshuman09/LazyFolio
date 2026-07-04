@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useEffect, useMemo, useState } from "react";
+import { RefObject, useEffect, useMemo } from "react";
 import {
   useFieldArray,
   useForm,
@@ -12,8 +12,7 @@ import toast from "react-hot-toast";
 import { skillsSchema, SkillsSchema } from "@/lib/schemas/skills";
 import { readDashboardDraft, writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { SkillCard } from "./skills-card";
-import { Switch } from "@/components/ui/switch";
-import { useUpdateVisibility } from "@/hooks/visibility";
+import { parseSkill } from "@/lib/utils";
 
 type Props = {
   profile?: {
@@ -27,9 +26,13 @@ type Props = {
 
 function skillsFromProfile(skills: string[] = []): SkillsSchema {
   return {
-    skills: skills.map((s) => ({
-      value: s ?? "",
-    })),
+    skills: skills.map((s) => {
+      const parsed = parseSkill(s);
+      return {
+        value: parsed.value,
+        isenable: parsed.isenable,
+      };
+    }),
   };
 }
 
@@ -43,9 +46,6 @@ function getInitialSkills(profile?: { id?: string; skills?: string[] | null }): 
 
 export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialSkills(profile), [profile]);
-  const [optimisticSkillsEnabled, setOptimisticSkillsEnabled] = useState<boolean | null>(null);
-  const skillsEnabled = optimisticSkillsEnabled ?? profile?.skillsIsenable ?? true;
-  const updateVisibility = useUpdateVisibility();
 
   const {
     register,
@@ -84,35 +84,6 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     }
   }, [isDirty, profile?.id, watchedSkills]);
 
-  const handleSkillsVisibilityChange = async (isenable: boolean) => {
-    if (!profile?.id) {
-      toast.error("Profile not loaded.");
-      return;
-    }
-
-    const previousValue = skillsEnabled;
-    const loadingToast = toast.loading(
-      isenable ? "Showing skills on profile..." : "Hiding skills from profile...",
-    );
-    setOptimisticSkillsEnabled(isenable);
-
-    try {
-      await updateVisibility.mutateAsync({
-        target: "skills",
-        id: profile.id,
-        isenable,
-      });
-      toast.success(
-        isenable ? "Skills shown on profile." : "Skills hidden from profile.",
-        { id: loadingToast },
-      );
-    } catch (error) {
-      setOptimisticSkillsEnabled(previousValue);
-      console.error("Error updating skills visibility:", error);
-      toast.error("Could not update skills visibility.", { id: loadingToast });
-    }
-  };
-
   return (
     <form
       id="dashboard-form"
@@ -130,12 +101,6 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
             Technologies and tools you work with
           </p>
         </div>
-        <Switch
-          checked={skillsEnabled}
-          onCheckedChange={handleSkillsVisibilityChange}
-          disabled={updateVisibility.isPending || !profile?.id}
-          aria-label={skillsEnabled ? "Hide skills from profile" : "Show skills on profile"}
-        />
       </div>
 
       <div className="mb-4">

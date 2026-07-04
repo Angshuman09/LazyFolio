@@ -19,6 +19,7 @@ import { SkillsSchema } from '@/lib/schemas/skills';
 import { useEffect, useState } from 'react';
 import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import toast from 'react-hot-toast';
+import { Switch } from "@/components/ui/switch";
 
 export function SkillCard({
     field,
@@ -51,12 +52,14 @@ export function SkillCard({
 
     const [savedSnapshot, setSavedSnapshot] = useState<{
         value: string;
+        isenable: boolean;
     } | null>(() => {
         if (!field.value) {
             return null;
         }
         return {
             value: field.value,
+            isenable: field.isenable ?? true,
         };
     });
 
@@ -74,11 +77,13 @@ export function SkillCard({
 
     const normalizedValues = {
         value: values?.value || "",
+        isenable: values?.isenable ?? true,
     };
 
     const hasUnsavedChanges =
         !savedSnapshot ||
-        normalizedValues.value !== savedSnapshot.value;
+        normalizedValues.value !== savedSnapshot.value ||
+        normalizedValues.isenable !== savedSnapshot.isenable;
 
     const updateSkillsDraft = (skills: SkillsSchema["skills"]) => {
         if (profile?.id) {
@@ -86,11 +91,13 @@ export function SkillCard({
         }
     };
 
-    const onSaveSkill = async () => {
+    const onSaveSkill = async (newIsenable?: boolean) => {
         if (!profile?.id) {
             toast.error("Profile not loaded.");
             return;
         }
+
+        const isenableToSave = newIsenable !== undefined ? newIsenable : normalizedValues.isenable;
 
         if (!normalizedValues.value) {
             toast.error("Please enter a skill name before saving.");
@@ -101,7 +108,7 @@ export function SkillCard({
         try {
             const currentSkills = getValues("skills") || [];
             const updatedSkills = currentSkills.map((s, i) =>
-                i === index ? { value: normalizedValues.value } : s,
+                i === index ? { value: normalizedValues.value, isenable: isenableToSave } : s,
             ).filter((s) => s.value);
 
             await createSkills.mutateAsync({
@@ -109,8 +116,9 @@ export function SkillCard({
                 skills: updatedSkills,
             });
 
-            const savedSkill = { value: normalizedValues.value };
+            const savedSkill = { value: normalizedValues.value, isenable: isenableToSave };
             setValue(`skills.${index}.value`, savedSkill.value, { shouldDirty: false });
+            setValue(`skills.${index}.isenable`, savedSkill.isenable, { shouldDirty: false });
 
             updateSkillsDraft(updatedSkills);
             setSavedSnapshot(savedSkill);
@@ -171,6 +179,7 @@ export function SkillCard({
         }
 
         setValue(`skills.${index}.value`, savedSnapshot.value, { shouldDirty: false });
+        setValue(`skills.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
         const currentSkills = getValues("skills") || [];
         updateSkillsDraft(
             currentSkills.map((s, i) =>
@@ -187,7 +196,13 @@ export function SkillCard({
         }
 
         setValue(`skills.${index}.value`, normalizedValues.value, { shouldDirty: true });
+        setValue(`skills.${index}.isenable`, normalizedValues.isenable, { shouldDirty: true });
         setIsEditing(false);
+    };
+
+    const handleVisibilityToggle = async (checked: boolean) => {
+        setValue(`skills.${index}.isenable`, checked, { shouldDirty: false });
+        await onSaveSkill(checked);
     };
 
     if (!isEditing) {
@@ -217,10 +232,20 @@ export function SkillCard({
                         <Pencil size={10} />
                         Edit
                     </button>
+                    <Switch
+                        checked={normalizedValues.isenable}
+                        onCheckedChange={handleVisibilityToggle}
+                        disabled={deleting || saving}
+                        aria-label={
+                            normalizedValues.isenable
+                                ? "Hide skill from profile"
+                                : "Show skill on profile"
+                        }
+                    />
                     {hasUnsavedChanges && (
                         <button
                             type="button"
-                            onClick={onSaveSkill}
+                            onClick={() => onSaveSkill()}
                             disabled={deleting || saving}
                             className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
                         >

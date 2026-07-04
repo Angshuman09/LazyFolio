@@ -9,6 +9,7 @@ import {
   type UseFormGetValues,
   type UseFormRegister,
   type UseFormSetValue,
+  Controller,
 } from "react-hook-form";
 import { Trash2, Pencil, Check, Briefcase, Loader2 } from 'lucide-react'
 import { ExperienceSchema } from "@/lib/schemas/experience";
@@ -18,6 +19,7 @@ import toast from "react-hot-toast";
 import { ExperienceProfile } from "@/lib/utils/experience";
 import { Switch } from "@/components/ui/switch";
 import { useUpdateVisibility } from "@/hooks/visibility";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export function ExperienceCard({
   field,
@@ -402,10 +404,16 @@ export function ExperienceCard({
 
         <div className="flex flex-col gap-1.25">
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">Start date</label>
-          <input
-            {...register(`experiences.${index}.startdate`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. 2023-01-01"
+          <Controller
+            control={control}
+            name={`experiences.${index}.startdate`}
+            render={({ field }) => (
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Pick start date"
+              />
+            )}
           />
           {errors.experiences?.[index]?.startdate?.message && (
             <div className="text-[0.72rem] text-[#b91c1c]">
@@ -416,10 +424,16 @@ export function ExperienceCard({
 
         <div className="flex flex-col gap-1.25">
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">End date</label>
-          <input
-            {...register(`experiences.${index}.enddate`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-            placeholder="e.g. 2024-12-31"
+          <Controller
+            control={control}
+            name={`experiences.${index}.enddate`}
+            render={({ field }) => (
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Pick end date (or current)"
+              />
+            )}
           />
           {errors.experiences?.[index]?.enddate?.message && (
             <div className="text-[0.72rem] text-[#b91c1c]">

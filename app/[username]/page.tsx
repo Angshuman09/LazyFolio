@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
+import { parseSkill } from "@/lib/utils";
 
 const publicProfileSelect = {
   id: true,
@@ -13,7 +14,6 @@ const publicProfileSelect = {
   username: true,
   bio: true,
   skills: true,
-  skillsIsenable: true,
   themeId: true,
   resume: true,
   tagline: true,
@@ -50,7 +50,6 @@ interface PageProps {
 }
 
 export default async function UserPortfolioPage(props: PageProps) {
-  // Await params to support both Next.js 14 and 15
   const params = await props.params;
   const username = params?.username;
 
@@ -67,11 +66,16 @@ export default async function UserPortfolioPage(props: PageProps) {
     notFound();
   }
 
-  const { user, skillsIsenable = true, ...profileData } = profile;
+  const { user, ...profileData } = profile;
+
+  const parsedSkills = (profileData.skills || [])
+    .map(parseSkill)
+    .filter((s) => s.isenable && s.value)
+    .map((s) => s.value);
 
   const visibleProfileData = {
     ...profileData,
-    skills: skillsIsenable ? profileData.skills : [],
+    skills: parsedSkills,
   };
 
   return (

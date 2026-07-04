@@ -5,6 +5,7 @@ export const skillsSchema = z.object({
     .array(
       z.object({
         value: z.string().max(80).optional().or(z.literal("")),
+        isenable: z.boolean().optional(),
       }),
     )
     .optional(),
