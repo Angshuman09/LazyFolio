@@ -57,12 +57,15 @@ const Hero = () => {
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
         <span className="block">
-          Make the internet {" "}
+          Make the internet
+        </span>
 
-          know <Highlighter action="underline" color="#B08D57"> <span className="text-[#c6a87b]">You Exist.</span>
+        <span className="block mt-2">
+          know{" "}
+          <Highlighter action="underline" color="#B08D57">
+            <span className="text-[#c6a87b]">You Exist.</span>
           </Highlighter>
         </span>
-        {/* <span className="block mt-4"> Start showing it.</span> */}
       </h1>
 
       <p className="tracking-wider font-serif-display">
