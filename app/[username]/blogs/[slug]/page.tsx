@@ -1,9 +1,32 @@
+
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { parseMarkdown } from "@/lib/utils/markdown";
 import { ArrowLeft, Calendar, BookOpen } from "lucide-react";
+import { cacheLife, cacheTag } from "next/cache";
+
+async function getBlogProfile(username: string) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("profile", `profile-${username}`);
+
+  return prisma.profile.findUnique({
+    where: { username },
+    select: { id: true, name: true, avatar: true, themeId: true, username: true },
+  });
+}
+
+async function getBlogPost(profileId: string, slug: string) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("blog", `blog-${profileId}-${slug}`);
+
+  return prisma.blog.findFirst({
+    where: { profileId, slug, isPublished: true, isenable: true },
+  });
+}
 
 interface PageProps {
   params: Promise<{ username: string; slug: string }> | { username: string; slug: string };
@@ -19,47 +42,32 @@ export default async function PublicBlogPage(props: PageProps) {
   }
 
   // 1. Fetch Profile
-  const profile = await prisma.profile.findUnique({
-    where: { username },
-    select: {
-      id: true,
-      name: true,
-      avatar: true,
-      themeId: true,
-      username: true,
-    },
-  });
+  const profile = await getBlogProfile(username);
 
   if (!profile) {
     notFound();
   }
 
   // 2. Fetch Blog Post (only if published)
-  const blog = await prisma.blog.findFirst({
-    where: {
-      profileId: profile.id,
-      slug: slug,
-      isPublished: true,
-      isenable: true,
-    },
-  });
+  const blog = await getBlogPost(profile.id, slug);
 
   if (!blog) {
     notFound();
   }
 
   const previewHtml = await parseMarkdown(blog.content || "");
-  const formattedDate = blog.enddate
-    ? String(blog.enddate)
-    : new Date(blog.createdAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
+  
+  const date = blog.enddate ?? blog.createdAt;
+
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="min-h-screen bg-(--lf-bg) text-(--lf-ink) font-sans transition-colors duration-200 noise-overlay relative">
-      {/* Back button and profile header */}
+
       <nav className="sticky top-0 z-40 w-full bg-(--lf-bg)/80 backdrop-blur-md border-b border-(--lf-border-alpha) px-6 py-4 flex items-center justify-between">
         <Link
           href={`/${profile.username}`}
@@ -69,7 +77,6 @@ export default async function PublicBlogPage(props: PageProps) {
           Back to Profile
         </Link>
 
-        {/* Mini author profile */}
         <Link
           href={`/${profile.username}`}
           className="flex items-center gap-2 hover:opacity-85 transition-opacity"
@@ -92,10 +99,8 @@ export default async function PublicBlogPage(props: PageProps) {
         </Link>
       </nav>
 
-      {/* Main content container */}
       <main className="max-w-2xl mx-auto px-6 py-14 sm:py-20 relative z-10">
         <header className="mb-10 text-left">
-          {/* Metadata */}
           <div className="flex items-center gap-4 text-xs text-(--lf-muted) font-mono mb-4">
             <span className="flex items-center gap-1">
               <Calendar size={12} />
@@ -119,11 +124,9 @@ export default async function PublicBlogPage(props: PageProps) {
             </p>
           )}
 
-          {/* Separation Divider */}
-          <div className="w-full h-[1px] bg-(--lf-border) mt-8" />
+          <div className="w-full h-px bg-(--lf-border) mt-8" />
         </header>
 
-        {/* Blog Post Content Body */}
         {blog.content ? (
           <article
             className="prose dark:prose-invert font-sans leading-relaxed select-text"

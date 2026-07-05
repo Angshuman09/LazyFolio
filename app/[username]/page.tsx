@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { parseSkill } from "@/lib/utils";
+import { cacheLife, cacheTag } from "next/cache";
 
 const publicProfileSelect = {
   id: true,
@@ -22,28 +23,22 @@ const publicProfileSelect = {
   createdAt: true,
   updatedAt: true,
   user: true,
-  experiences: {
-    where: {
-      isenable: true,
-    },
-  },
-  projects: {
-    where: {
-      isenable: true,
-    },
-  },
-  blogs: {
-    where: {
-      isenable: true,
-      isPublished: true,
-    },
-  },
-  links: {
-    where: {
-      isenable: true,
-    },
-  },
+  experiences: { where: { isenable: true } },
+  projects: { where: { isenable: true } },
+  blogs: { where: { isenable: true, isPublished: true } },
+  links: { where: { isenable: true } },
 };
+
+async function getProfileByUsername(username: string) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("profile", `profile-${username}`);
+
+  return prisma.profile.findUnique({
+    where: { username },
+    select: publicProfileSelect,
+  });
+}
 
 interface PageProps {
   params: Promise<{ username: string }> | { username: string };
@@ -57,10 +52,7 @@ export default async function UserPortfolioPage(props: PageProps) {
     notFound();
   }
 
-  const profile = await prisma.profile.findUnique({
-    where: { username },
-    select: publicProfileSelect,
-  });
+  const profile = await getProfileByUsername(username);
 
   if (!profile) {
     notFound();
@@ -80,7 +72,6 @@ export default async function UserPortfolioPage(props: PageProps) {
 
   return (
     <TemplateRenderer 
-      // slug={params} 
       user={user} 
       profile={visibleProfileData} 
     />
