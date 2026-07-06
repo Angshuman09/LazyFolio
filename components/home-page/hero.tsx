@@ -106,9 +106,9 @@ const Hero = () => {
       </div>
 
       <div className="mt-15">
-        <h2 className="text-2xl sm:text-4xl font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
-          <span className="block font-semibold tracking-wide font-serif-display">Everything you need.</span>
-          <span className="italic tracking-wide text-[#c6a87b] font-semibold font-serif-display">Nothing extra.</span>
+        <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
+          <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">Everything you need.</span>
+          <span className="italic tracking-wide text-[#d0bea3] font-semibold font-serif-display">Nothing extra.</span>
         </h2>
 
         <div className="relative">

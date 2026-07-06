@@ -15,20 +15,17 @@ export default function Auth() {
   return (
     <div className="flex min-h-screen w-full bg-(--lf-bg) text-(--lf-ink)">
 
-      {/* LEFT — full bleed image panel */}
       <div className="relative hidden md:flex w-[52%] min-h-screen shrink-0 overflow-hidden">
         <Image
-          src="/peace.jpg"
+          src="/peace.jpeg"
           alt="wheat field"
           fill
           className="object-cover object-bottom"
           priority
           quality={60}
         />
-        {/* gradient overlay — dark at top and bottom, clear in middle */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/5 to-black/55" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/5 to-black/55" />
 
-        {/* content pinned top and bottom */}
         <div className="relative z-10 flex flex-col justify-between p-10 h-full w-full">
           <h1
             onClick={() => router.push("/")}
@@ -40,7 +37,7 @@ export default function Auth() {
 
           <div className="flex flex-col gap-2">
             <p
-              className="font-serif-display text-[1.9rem] font-normal leading-[1.25] text-[#F5EFE4] max-w-[300px]"
+              className="font-serif-display text-[1.9rem] font-normal leading-tight text-[#F5EFE4] max-w-[300px]"
               style={{ textShadow: "0 1px 12px rgba(0,0,0,0.3)" }}
             >
               Your work,{" "}
@@ -53,10 +50,8 @@ export default function Auth() {
         </div>
       </div>
 
-      {/* RIGHT — clean form */}
       <div className="flex flex-col flex-1 items-center justify-center px-8 py-16 relative bg-(--lf-bg)">
 
-        {/* back link top-right */}
         <Button
           variant="ghost"
           onClick={() => router.push("/")}
@@ -68,19 +63,18 @@ export default function Auth() {
 
         <div className="w-full max-w-[340px]">
           <div className="mb-10">
-            <p className="text-[0.68rem] font-medium tracking-[0.14em] uppercase text-[#C6A87B] mb-3">
+            <p className="text-[0.68rem] font-medium tracking-[0.14em] text-[#C6A87B] mb-3">
               Welcome back
             </p>
             <h2 className="font-serif-display text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15] mb-2">
               Hello,{" "}
-              <em className="italic text-[#8C6B3E]">Senpai.</em>
+              <span className="text-[#8C6B3E]">Senpai.</span>
             </h2>
             <p className="text-[0.84rem] text-(--lf-muted) font-light leading-relaxed">
               Sign in to manage your portfolio and settings.
             </p>
           </div>
 
-          {/* subtle divider */}
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1 h-px bg-(--lf-border)" />
             <span className="text-[0.7rem] text-(--lf-muted) tracking-wide font-light">continue with</span>

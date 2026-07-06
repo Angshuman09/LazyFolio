@@ -139,6 +139,8 @@ const Navbar = () => {
           <button
             className="p-1 text-(--lf-muted)"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
           >
             {menuOpen ? <X /> : <Menu />}
           </button>
