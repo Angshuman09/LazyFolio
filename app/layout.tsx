@@ -47,8 +47,9 @@ export default function RootLayout({
           {children}
           {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
             <Script
-              src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+              src="/stats/js/script.js"
               data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+              data-host-url="/stats"
               strategy="afterInteractive"
             />
           )}

@@ -25,8 +25,21 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'images.unsplash.com',
         pathname: '/**',
-      }
+      },
     ],
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/stats/js/script.js',
+        destination: 'https://cloud.umami.is/script.js',
+      },
+      {
+        source: '/stats/api/send',
+        destination: 'https://cloud.umami.is/api/send',
+      },
+    ]
   },
 };
 
