@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { DM_Sans, Instrument_Serif, Geist } from "next/font/google";
+import { Instrument_Serif, Geist } from "next/font/google";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const serif = Instrument_Serif({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const serif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "Lazyfolio",
   description: "Make the internet know You Exist",
-  icons:{
+  icons: {
     icon: "/logo-crop.png",
   }
 };
@@ -30,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn( serif.variable, "font-sans", geist.variable)}
+      className={cn(serif.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
     >
       <head>
@@ -44,6 +45,13 @@ export default function RootLayout({
         <Toaster position="bottom-right" />
         <Providers>
           {children}
+          {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+            <Script
+              src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
+              data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+              strategy="afterInteractive"
+            />
+          )}
         </Providers>
       </body>
     </html>
