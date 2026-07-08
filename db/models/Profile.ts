@@ -20,18 +20,8 @@ export type ProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$Profile
 
 export type AggregateProfile = {
   _count: ProfileCountAggregateOutputType | null
-  _avg: ProfileAvgAggregateOutputType | null
-  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
-}
-
-export type ProfileAvgAggregateOutputType = {
-  views: number | null
-}
-
-export type ProfileSumAggregateOutputType = {
-  views: number | null
 }
 
 export type ProfileMinAggregateOutputType = {
@@ -51,7 +41,6 @@ export type ProfileMinAggregateOutputType = {
   resume: string | null
   tagline: string | null
   bookAcall: string | null
-  views: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -73,7 +62,6 @@ export type ProfileMaxAggregateOutputType = {
   resume: string | null
   tagline: string | null
   bookAcall: string | null
-  views: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -96,20 +84,11 @@ export type ProfileCountAggregateOutputType = {
   resume: number
   tagline: number
   bookAcall: number
-  views: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
-
-export type ProfileAvgAggregateInputType = {
-  views?: true
-}
-
-export type ProfileSumAggregateInputType = {
-  views?: true
-}
 
 export type ProfileMinAggregateInputType = {
   id?: true
@@ -128,7 +107,6 @@ export type ProfileMinAggregateInputType = {
   resume?: true
   tagline?: true
   bookAcall?: true
-  views?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -150,7 +128,6 @@ export type ProfileMaxAggregateInputType = {
   resume?: true
   tagline?: true
   bookAcall?: true
-  views?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -173,7 +150,6 @@ export type ProfileCountAggregateInputType = {
   resume?: true
   tagline?: true
   bookAcall?: true
-  views?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -217,18 +193,6 @@ export type ProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ProfileAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ProfileSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProfileMinAggregateInputType
@@ -259,8 +223,6 @@ export type ProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ProfileCountAggregateInputType | true
-  _avg?: ProfileAvgAggregateInputType
-  _sum?: ProfileSumAggregateInputType
   _min?: ProfileMinAggregateInputType
   _max?: ProfileMaxAggregateInputType
 }
@@ -283,17 +245,14 @@ export type ProfileGroupByOutputType = {
   resume: string | null
   tagline: string | null
   bookAcall: string | null
-  views: number
   createdAt: Date
   updatedAt: Date
   _count: ProfileCountAggregateOutputType | null
-  _avg: ProfileAvgAggregateOutputType | null
-  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
 }
 
-type GetProfileGroupByPayload<T extends ProfileGroupByArgs> = Prisma.PrismaPromise<
+export type GetProfileGroupByPayload<T extends ProfileGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ProfileGroupByOutputType, T['by']> &
       {
@@ -329,12 +288,13 @@ export type ProfileWhereInput = {
   resume?: Prisma.StringNullableFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableFilter<"Profile"> | string | null
   bookAcall?: Prisma.StringNullableFilter<"Profile"> | string | null
-  views?: Prisma.IntFilter<"Profile"> | number
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   experiences?: Prisma.ExperienceListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
   blogs?: Prisma.BlogListRelationFilter
+  linkClicks?: Prisma.LinkClickListRelationFilter
+  pageViews?: Prisma.PageViewListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   links?: Prisma.LinksListRelationFilter
 }
@@ -357,12 +317,13 @@ export type ProfileOrderByWithRelationInput = {
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   tagline?: Prisma.SortOrderInput | Prisma.SortOrder
   bookAcall?: Prisma.SortOrderInput | Prisma.SortOrder
-  views?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   experiences?: Prisma.ExperienceOrderByRelationAggregateInput
   projects?: Prisma.ProjectOrderByRelationAggregateInput
   blogs?: Prisma.BlogOrderByRelationAggregateInput
+  linkClicks?: Prisma.LinkClickOrderByRelationAggregateInput
+  pageViews?: Prisma.PageViewOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
   links?: Prisma.linksOrderByRelationAggregateInput
 }
@@ -388,12 +349,13 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   resume?: Prisma.StringNullableFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableFilter<"Profile"> | string | null
   bookAcall?: Prisma.StringNullableFilter<"Profile"> | string | null
-  views?: Prisma.IntFilter<"Profile"> | number
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   experiences?: Prisma.ExperienceListRelationFilter
   projects?: Prisma.ProjectListRelationFilter
   blogs?: Prisma.BlogListRelationFilter
+  linkClicks?: Prisma.LinkClickListRelationFilter
+  pageViews?: Prisma.PageViewListRelationFilter
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   links?: Prisma.LinksListRelationFilter
 }, "id" | "userId" | "username">
@@ -416,14 +378,11 @@ export type ProfileOrderByWithAggregationInput = {
   resume?: Prisma.SortOrderInput | Prisma.SortOrder
   tagline?: Prisma.SortOrderInput | Prisma.SortOrder
   bookAcall?: Prisma.SortOrderInput | Prisma.SortOrder
-  views?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProfileCountOrderByAggregateInput
-  _avg?: Prisma.ProfileAvgOrderByAggregateInput
   _max?: Prisma.ProfileMaxOrderByAggregateInput
   _min?: Prisma.ProfileMinOrderByAggregateInput
-  _sum?: Prisma.ProfileSumOrderByAggregateInput
 }
 
 export type ProfileScalarWhereWithAggregatesInput = {
@@ -447,7 +406,6 @@ export type ProfileScalarWhereWithAggregatesInput = {
   resume?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   tagline?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   bookAcall?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
-  views?: Prisma.IntWithAggregatesFilter<"Profile"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
 }
@@ -469,12 +427,13 @@ export type ProfileCreateInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
   links?: Prisma.linksCreateNestedManyWithoutProfileInput
 }
@@ -497,12 +456,13 @@ export type ProfileUncheckedCreateInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
   links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
 }
 
@@ -523,12 +483,13 @@ export type ProfileUpdateInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   links?: Prisma.linksUpdateManyWithoutProfileNestedInput
 }
@@ -551,12 +512,13 @@ export type ProfileUncheckedUpdateInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
 }
 
@@ -578,7 +540,6 @@ export type ProfileCreateManyInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -600,7 +561,6 @@ export type ProfileUpdateManyMutationInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -623,7 +583,6 @@ export type ProfileUncheckedUpdateManyInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -659,13 +618,8 @@ export type ProfileCountOrderByAggregateInput = {
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
   bookAcall?: Prisma.SortOrder
-  views?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type ProfileAvgOrderByAggregateInput = {
-  views?: Prisma.SortOrder
 }
 
 export type ProfileMaxOrderByAggregateInput = {
@@ -685,7 +639,6 @@ export type ProfileMaxOrderByAggregateInput = {
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
   bookAcall?: Prisma.SortOrder
-  views?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -707,13 +660,8 @@ export type ProfileMinOrderByAggregateInput = {
   resume?: Prisma.SortOrder
   tagline?: Prisma.SortOrder
   bookAcall?: Prisma.SortOrder
-  views?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type ProfileSumOrderByAggregateInput = {
-  views?: Prisma.SortOrder
 }
 
 export type ProfileScalarRelationFilter = {
@@ -760,14 +708,6 @@ export type ProfileCreateskillsInput = {
 export type ProfileUpdateskillsInput = {
   set?: string[]
   push?: string | string[]
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type ProfileCreateNestedOneWithoutLinksInput = {
@@ -832,6 +772,34 @@ export type ProfileUpdateOneWithoutBlogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutBlogsInput, Prisma.ProfileUpdateWithoutBlogsInput>, Prisma.ProfileUncheckedUpdateWithoutBlogsInput>
 }
 
+export type ProfileCreateNestedOneWithoutPageViewsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutPageViewsInput, Prisma.ProfileUncheckedCreateWithoutPageViewsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPageViewsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutPageViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutPageViewsInput, Prisma.ProfileUncheckedCreateWithoutPageViewsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPageViewsInput
+  upsert?: Prisma.ProfileUpsertWithoutPageViewsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutPageViewsInput, Prisma.ProfileUpdateWithoutPageViewsInput>, Prisma.ProfileUncheckedUpdateWithoutPageViewsInput>
+}
+
+export type ProfileCreateNestedOneWithoutLinkClicksInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutLinkClicksInput, Prisma.ProfileUncheckedCreateWithoutLinkClicksInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutLinkClicksInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutLinkClicksNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutLinkClicksInput, Prisma.ProfileUncheckedCreateWithoutLinkClicksInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutLinkClicksInput
+  upsert?: Prisma.ProfileUpsertWithoutLinkClicksInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutLinkClicksInput, Prisma.ProfileUpdateWithoutLinkClicksInput>, Prisma.ProfileUncheckedUpdateWithoutLinkClicksInput>
+}
+
 export type ProfileCreateWithoutUserInput = {
   id?: string
   avatar?: string | null
@@ -849,12 +817,13 @@ export type ProfileCreateWithoutUserInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   links?: Prisma.linksCreateNestedManyWithoutProfileInput
 }
 
@@ -875,12 +844,13 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
   links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
 }
 
@@ -917,12 +887,13 @@ export type ProfileUpdateWithoutUserInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUpdateManyWithoutProfileNestedInput
 }
 
@@ -943,12 +914,13 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
 }
 
@@ -969,12 +941,13 @@ export type ProfileCreateWithoutLinksInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
 }
 
@@ -996,12 +969,13 @@ export type ProfileUncheckedCreateWithoutLinksInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
 }
 
 export type ProfileCreateOrConnectWithoutLinksInput = {
@@ -1037,12 +1011,13 @@ export type ProfileUpdateWithoutLinksInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
 }
 
@@ -1064,12 +1039,13 @@ export type ProfileUncheckedUpdateWithoutLinksInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
 }
 
 export type ProfileCreateWithoutExperiencesInput = {
@@ -1089,11 +1065,12 @@ export type ProfileCreateWithoutExperiencesInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
   links?: Prisma.linksCreateNestedManyWithoutProfileInput
 }
@@ -1116,11 +1093,12 @@ export type ProfileUncheckedCreateWithoutExperiencesInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
   links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
 }
 
@@ -1157,11 +1135,12 @@ export type ProfileUpdateWithoutExperiencesInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   links?: Prisma.linksUpdateManyWithoutProfileNestedInput
 }
@@ -1184,11 +1163,12 @@ export type ProfileUncheckedUpdateWithoutExperiencesInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
 }
 
@@ -1209,11 +1189,12 @@ export type ProfileCreateWithoutProjectsInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
   links?: Prisma.linksCreateNestedManyWithoutProfileInput
 }
@@ -1236,11 +1217,12 @@ export type ProfileUncheckedCreateWithoutProjectsInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
   blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
   links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
 }
 
@@ -1277,11 +1259,12 @@ export type ProfileUpdateWithoutProjectsInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   links?: Prisma.linksUpdateManyWithoutProfileNestedInput
 }
@@ -1304,11 +1287,12 @@ export type ProfileUncheckedUpdateWithoutProjectsInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
   blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
 }
 
@@ -1329,11 +1313,12 @@ export type ProfileCreateWithoutBlogsInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
   user: Prisma.UserCreateNestedOneWithoutProfileInput
   links?: Prisma.linksCreateNestedManyWithoutProfileInput
 }
@@ -1356,11 +1341,12 @@ export type ProfileUncheckedCreateWithoutBlogsInput = {
   resume?: string | null
   tagline?: string | null
   bookAcall?: string | null
-  views?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
   links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
 }
 
@@ -1397,11 +1383,12 @@ export type ProfileUpdateWithoutBlogsInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   links?: Prisma.linksUpdateManyWithoutProfileNestedInput
 }
@@ -1424,11 +1411,260 @@ export type ProfileUncheckedUpdateWithoutBlogsInput = {
   resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  views?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
+  links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileCreateWithoutPageViewsInput = {
+  id?: string
+  avatar?: string | null
+  avatarPublicId?: string | null
+  banner?: string | null
+  bannerPublicId?: string | null
+  name?: string | null
+  email?: string | null
+  quote?: string | null
+  username?: string | null
+  bio?: string | null
+  skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
+  themeId?: string
+  resume?: string | null
+  tagline?: string | null
+  bookAcall?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickCreateNestedManyWithoutProfileInput
+  user: Prisma.UserCreateNestedOneWithoutProfileInput
+  links?: Prisma.linksCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutPageViewsInput = {
+  id?: string
+  avatar?: string | null
+  avatarPublicId?: string | null
+  banner?: string | null
+  bannerPublicId?: string | null
+  name?: string | null
+  email?: string | null
+  quote?: string | null
+  userId: string
+  username?: string | null
+  bio?: string | null
+  skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
+  themeId?: string
+  resume?: string | null
+  tagline?: string | null
+  bookAcall?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  linkClicks?: Prisma.LinkClickUncheckedCreateNestedManyWithoutProfileInput
+  links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutPageViewsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutPageViewsInput, Prisma.ProfileUncheckedCreateWithoutPageViewsInput>
+}
+
+export type ProfileUpsertWithoutPageViewsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutPageViewsInput, Prisma.ProfileUncheckedUpdateWithoutPageViewsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutPageViewsInput, Prisma.ProfileUncheckedCreateWithoutPageViewsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutPageViewsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutPageViewsInput, Prisma.ProfileUncheckedUpdateWithoutPageViewsInput>
+}
+
+export type ProfileUpdateWithoutPageViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  themeId?: Prisma.StringFieldUpdateOperationsInput | string
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUpdateManyWithoutProfileNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+  links?: Prisma.linksUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutPageViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  themeId?: Prisma.StringFieldUpdateOperationsInput | string
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  linkClicks?: Prisma.LinkClickUncheckedUpdateManyWithoutProfileNestedInput
+  links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileCreateWithoutLinkClicksInput = {
+  id?: string
+  avatar?: string | null
+  avatarPublicId?: string | null
+  banner?: string | null
+  bannerPublicId?: string | null
+  name?: string | null
+  email?: string | null
+  quote?: string | null
+  username?: string | null
+  bio?: string | null
+  skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
+  themeId?: string
+  resume?: string | null
+  tagline?: string | null
+  bookAcall?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewCreateNestedManyWithoutProfileInput
+  user: Prisma.UserCreateNestedOneWithoutProfileInput
+  links?: Prisma.linksCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutLinkClicksInput = {
+  id?: string
+  avatar?: string | null
+  avatarPublicId?: string | null
+  banner?: string | null
+  bannerPublicId?: string | null
+  name?: string | null
+  email?: string | null
+  quote?: string | null
+  userId: string
+  username?: string | null
+  bio?: string | null
+  skills?: Prisma.ProfileCreateskillsInput | string[]
+  skillsIsenable?: boolean
+  themeId?: string
+  resume?: string | null
+  tagline?: string | null
+  bookAcall?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutProfileInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutProfileInput
+  blogs?: Prisma.BlogUncheckedCreateNestedManyWithoutProfileInput
+  pageViews?: Prisma.PageViewUncheckedCreateNestedManyWithoutProfileInput
+  links?: Prisma.linksUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutLinkClicksInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutLinkClicksInput, Prisma.ProfileUncheckedCreateWithoutLinkClicksInput>
+}
+
+export type ProfileUpsertWithoutLinkClicksInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutLinkClicksInput, Prisma.ProfileUncheckedUpdateWithoutLinkClicksInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutLinkClicksInput, Prisma.ProfileUncheckedCreateWithoutLinkClicksInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutLinkClicksInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutLinkClicksInput, Prisma.ProfileUncheckedUpdateWithoutLinkClicksInput>
+}
+
+export type ProfileUpdateWithoutLinkClicksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  themeId?: Prisma.StringFieldUpdateOperationsInput | string
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  experiences?: Prisma.ExperienceUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUpdateManyWithoutProfileNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+  links?: Prisma.linksUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutLinkClicksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banner?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bannerPublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  quote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.ProfileUpdateskillsInput | string[]
+  skillsIsenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  themeId?: Prisma.StringFieldUpdateOperationsInput | string
+  resume?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tagline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bookAcall?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutProfileNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutProfileNestedInput
+  blogs?: Prisma.BlogUncheckedUpdateManyWithoutProfileNestedInput
+  pageViews?: Prisma.PageViewUncheckedUpdateManyWithoutProfileNestedInput
   links?: Prisma.linksUncheckedUpdateManyWithoutProfileNestedInput
 }
 
@@ -1441,6 +1677,8 @@ export type ProfileCountOutputType = {
   experiences: number
   projects: number
   blogs: number
+  linkClicks: number
+  pageViews: number
   links: number
 }
 
@@ -1448,6 +1686,8 @@ export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   experiences?: boolean | ProfileCountOutputTypeCountExperiencesArgs
   projects?: boolean | ProfileCountOutputTypeCountProjectsArgs
   blogs?: boolean | ProfileCountOutputTypeCountBlogsArgs
+  linkClicks?: boolean | ProfileCountOutputTypeCountLinkClicksArgs
+  pageViews?: boolean | ProfileCountOutputTypeCountPageViewsArgs
   links?: boolean | ProfileCountOutputTypeCountLinksArgs
 }
 
@@ -1485,6 +1725,20 @@ export type ProfileCountOutputTypeCountBlogsArgs<ExtArgs extends runtime.Types.E
 /**
  * ProfileCountOutputType without action
  */
+export type ProfileCountOutputTypeCountLinkClicksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LinkClickWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountPageViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PageViewWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
 export type ProfileCountOutputTypeCountLinksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.linksWhereInput
 }
@@ -1508,12 +1762,13 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   resume?: boolean
   tagline?: boolean
   bookAcall?: boolean
-  views?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
   projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
   blogs?: boolean | Prisma.Profile$blogsArgs<ExtArgs>
+  linkClicks?: boolean | Prisma.Profile$linkClicksArgs<ExtArgs>
+  pageViews?: boolean | Prisma.Profile$pageViewsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   links?: boolean | Prisma.Profile$linksArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -1537,7 +1792,6 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   resume?: boolean
   tagline?: boolean
   bookAcall?: boolean
-  views?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1561,7 +1815,6 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   resume?: boolean
   tagline?: boolean
   bookAcall?: boolean
-  views?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1585,16 +1838,17 @@ export type ProfileSelectScalar = {
   resume?: boolean
   tagline?: boolean
   bookAcall?: boolean
-  views?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "avatarPublicId" | "banner" | "bannerPublicId" | "name" | "email" | "quote" | "userId" | "username" | "bio" | "skills" | "skillsIsenable" | "themeId" | "resume" | "tagline" | "bookAcall" | "views" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "avatar" | "avatarPublicId" | "banner" | "bannerPublicId" | "name" | "email" | "quote" | "userId" | "username" | "bio" | "skills" | "skillsIsenable" | "themeId" | "resume" | "tagline" | "bookAcall" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   experiences?: boolean | Prisma.Profile$experiencesArgs<ExtArgs>
   projects?: boolean | Prisma.Profile$projectsArgs<ExtArgs>
   blogs?: boolean | Prisma.Profile$blogsArgs<ExtArgs>
+  linkClicks?: boolean | Prisma.Profile$linkClicksArgs<ExtArgs>
+  pageViews?: boolean | Prisma.Profile$pageViewsArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   links?: boolean | Prisma.Profile$linksArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -1612,6 +1866,8 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     experiences: Prisma.$ExperiencePayload<ExtArgs>[]
     projects: Prisma.$ProjectPayload<ExtArgs>[]
     blogs: Prisma.$BlogPayload<ExtArgs>[]
+    linkClicks: Prisma.$LinkClickPayload<ExtArgs>[]
+    pageViews: Prisma.$PageViewPayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs>
     links: Prisma.$linksPayload<ExtArgs>[]
   }
@@ -1633,7 +1889,6 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     resume: string | null
     tagline: string | null
     bookAcall: string | null
-    views: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["profile"]>
@@ -2033,6 +2288,8 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   experiences<T extends Prisma.Profile$experiencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$experiencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExperiencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   projects<T extends Prisma.Profile$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   blogs<T extends Prisma.Profile$blogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$blogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  linkClicks<T extends Prisma.Profile$linkClicksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$linkClicksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LinkClickPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pageViews<T extends Prisma.Profile$pageViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$pageViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PageViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   links<T extends Prisma.Profile$linksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$linksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$linksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2081,7 +2338,6 @@ export interface ProfileFieldRefs {
   readonly resume: Prisma.FieldRef<"Profile", 'String'>
   readonly tagline: Prisma.FieldRef<"Profile", 'String'>
   readonly bookAcall: Prisma.FieldRef<"Profile", 'String'>
-  readonly views: Prisma.FieldRef<"Profile", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Profile", 'DateTime'>
 }
@@ -2554,6 +2810,54 @@ export type Profile$blogsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.BlogScalarFieldEnum | Prisma.BlogScalarFieldEnum[]
+}
+
+/**
+ * Profile.linkClicks
+ */
+export type Profile$linkClicksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LinkClick
+   */
+  select?: Prisma.LinkClickSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LinkClick
+   */
+  omit?: Prisma.LinkClickOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LinkClickInclude<ExtArgs> | null
+  where?: Prisma.LinkClickWhereInput
+  orderBy?: Prisma.LinkClickOrderByWithRelationInput | Prisma.LinkClickOrderByWithRelationInput[]
+  cursor?: Prisma.LinkClickWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LinkClickScalarFieldEnum | Prisma.LinkClickScalarFieldEnum[]
+}
+
+/**
+ * Profile.pageViews
+ */
+export type Profile$pageViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PageView
+   */
+  select?: Prisma.PageViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PageView
+   */
+  omit?: Prisma.PageViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PageViewInclude<ExtArgs> | null
+  where?: Prisma.PageViewWhereInput
+  orderBy?: Prisma.PageViewOrderByWithRelationInput | Prisma.PageViewOrderByWithRelationInput[]
+  cursor?: Prisma.PageViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PageViewScalarFieldEnum | Prisma.PageViewScalarFieldEnum[]
 }
 
 /**

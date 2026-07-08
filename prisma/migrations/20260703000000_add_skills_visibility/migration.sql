@@ -1,1 +1,0 @@
-ALTER TABLE "Profile" ADD COLUMN "skillsIsenable" BOOLEAN NOT NULL DEFAULT true;

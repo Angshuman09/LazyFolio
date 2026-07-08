@@ -193,7 +193,7 @@ export type ExperienceGroupByOutputType = {
   _max: ExperienceMaxAggregateOutputType | null
 }
 
-type GetExperienceGroupByPayload<T extends ExperienceGroupByArgs> = Prisma.PrismaPromise<
+export type GetExperienceGroupByPayload<T extends ExperienceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ExperienceGroupByOutputType, T['by']> &
       {

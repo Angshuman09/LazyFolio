@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { parseSkill } from "@/lib/utils";
 import { cacheLife, cacheTag } from "next/cache";
+import { after } from "next/server";
+import { headers } from "next/headers";
+import { trackPageView } from "@/lib/analytics";
 
 const publicProfileSelect = {
   id: true,
@@ -19,7 +22,6 @@ const publicProfileSelect = {
   resume: true,
   tagline: true,
   bookAcall: true,
-  views: true,
   createdAt: true,
   updatedAt: true,
   user: true,
@@ -58,6 +60,24 @@ export default async function UserPortfolioPage(props: PageProps) {
     notFound();
   }
 
+  const headersList = await headers();
+
+  const ip =
+    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    headersList.get("x-real-ip");
+
+  const country = headersList.get("x-vercel-ip-country");
+  const userAgent = headersList.get("user-agent");
+
+  after(async () => {
+    await trackPageView({
+      profileId: profile.id,
+      country,
+      userAgent,
+      ip,
+    });
+  });
+
   const { user, ...profileData } = profile;
 
   const parsedSkills = (profileData.skills || [])
@@ -71,9 +91,9 @@ export default async function UserPortfolioPage(props: PageProps) {
   };
 
   return (
-    <TemplateRenderer 
-      user={user} 
-      profile={visibleProfileData} 
+    <TemplateRenderer
+      user={user}
+      profile={visibleProfileData}
     />
   );
 }

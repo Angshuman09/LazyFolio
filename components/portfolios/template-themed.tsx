@@ -5,8 +5,6 @@ import type { ComponentType, CSSProperties, ReactNode } from "react";
 import {
   ArrowRight,
   BookOpen,
-  BriefcaseBusiness,
-  CalendarDays,
   Code2,
   ExternalLink,
   FileText,
@@ -16,9 +14,7 @@ import {
   Layers3,
   Linkedin,
   Mail,
-  MoveUpRight,
   Phone,
-  Send,
   Sparkles,
   Youtube,
 } from "lucide-react";
@@ -76,6 +72,7 @@ type ProfileBlog = {
 };
 
 type ProfileData = {
+  id?: string | null,
   name?: string | null;
   avatar?: string | null;
   banner?: string | null;

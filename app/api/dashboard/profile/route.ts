@@ -15,7 +15,6 @@ const profileSelect = {
   resume: true,
   tagline: true,
   bookAcall: true,
-  views: true,
   createdAt: true,
   updatedAt: true,
   experiences: true,

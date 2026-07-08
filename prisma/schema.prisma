@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../db"
@@ -77,42 +72,35 @@ model Verification {
 }
 
 model Profile {
-  id          String       @id @default(cuid())
-  
-  avatar      String?
+  id String @id @default(cuid())
+
+  avatar         String?
   avatarPublicId String?
 
-  banner      String?
+  banner         String?
   bannerPublicId String?
 
-  name        String?
-  email       String?
-  quote       String?
-  userId      String       @unique
-  username    String?      @unique
-  bio         String?
-  skills      String[]
-  skillsIsenable Boolean  @default(true)
-  experiences Experience[]
-  projects    Project[]
-  blogs       Blog[]
-  themeId     String       @default("1")
-  resume      String?
-  tagline     String?
-  bookAcall   String? //cal.com link
-  views       Int          @default(0)
-  user        User         @relation(fields: [userId], references: [id])
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  links       links[]
-}
-
-enum LinkType {
-  X
-  INSTAGRAM
-  GITHUB
-  LINKEDIN
-  CUSTOM
+  name           String?
+  email          String?
+  quote          String?
+  userId         String       @unique
+  username       String?      @unique
+  bio            String?
+  skills         String[]
+  skillsIsenable Boolean      @default(true)
+  experiences    Experience[]
+  projects       Project[]
+  blogs          Blog[]
+  themeId        String       @default("1")
+  resume         String?
+  tagline        String?
+  bookAcall      String?
+  linkClicks     LinkClick[]
+  pageViews      PageView[]
+  user           User         @relation(fields: [userId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  links          links[]
 }
 
 model links {
@@ -141,6 +129,7 @@ model Experience {
   updatedAt   DateTime  @updatedAt
 }
 
+
 model Project {
   id          String    @id @default(cuid())
   title       String?
@@ -157,6 +146,7 @@ model Project {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
 
 model Blog {
   id          String    @id @default(cuid())
@@ -175,4 +165,34 @@ model Blog {
   slug        String?
 
   @@unique([profileId, slug])
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  profileId   String
+  visitorHash String
+  country     String?
+  device      String?
+  createdAt   DateTime @default(now())
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, createdAt])
+}
+
+model LinkClick {
+  id        String   @id @default(cuid())
+  profileId String
+  label     String
+  createdAt DateTime @default(now())
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, createdAt])
+}
+
+enum LinkType {
+  X
+  INSTAGRAM
+  GITHUB
+  LINKEDIN
+  CUSTOM
 }

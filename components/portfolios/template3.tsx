@@ -71,6 +71,7 @@ type ProfileBlog = {
 };
 
 type ProfileData = {
+  id?: string | null,
   name?: string | null;
   avatar?: string | null;
   banner?: string | null;

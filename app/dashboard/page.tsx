@@ -45,6 +45,7 @@ import { ProjectsSchema } from "@/lib/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
 import { parseSkill } from "@/lib/utils";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import InsightsPage from "@/components/dashboard/insights/insight";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
@@ -661,7 +662,7 @@ export default function DashboardPage() {
               )}
               {
                 tab == "insights" && (
-                  <h1>working on it :)</h1>
+                  <InsightsPage profile={profile} />
                 )
               }
             </>

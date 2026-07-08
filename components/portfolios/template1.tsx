@@ -20,6 +20,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { trackClick } from "@/lib/utils/track-click";
 
 type DateLike = string | Date | null | undefined;
 
@@ -69,6 +70,7 @@ type ProfileBlog = {
 };
 
 type ProfileData = {
+  id?: string | null,
   name?: string | null;
   avatar?: string | null;
   banner?: string | null;
@@ -690,6 +692,7 @@ export function Template1({
                   <TooltipTrigger asChild>
                     <Link
                       href={link.href}
+                      onClick={() => trackClick(profile?.id ?? undefined, link.label)}
                       target={
                         shouldOpenInNewTab(link.href) ? "_blank" : undefined
                       }
@@ -1038,6 +1041,7 @@ export function Template1({
                       target={
                         shouldOpenInNewTab(link.href) ? "_blank" : undefined
                       }
+                      onClick={() => trackClick(profile?.id ?? undefined, link.label)}
                       rel="noopener noreferrer"
                       className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800/60 transition-all duration-150"
                     >

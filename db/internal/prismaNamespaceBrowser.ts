@@ -59,7 +59,9 @@ export const ModelName = {
   links: 'links',
   Experience: 'Experience',
   Project: 'Project',
-  Blog: 'Blog'
+  Blog: 'Blog',
+  PageView: 'PageView',
+  LinkClick: 'LinkClick'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -154,7 +156,6 @@ export const ProfileScalarFieldEnum = {
   resume: 'resume',
   tagline: 'tagline',
   bookAcall: 'bookAcall',
-  views: 'views',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -227,6 +228,28 @@ export const BlogScalarFieldEnum = {
 } as const
 
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
+
+
+export const PageViewScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  visitorHash: 'visitorHash',
+  country: 'country',
+  device: 'device',
+  createdAt: 'createdAt'
+} as const
+
+export type PageViewScalarFieldEnum = (typeof PageViewScalarFieldEnum)[keyof typeof PageViewScalarFieldEnum]
+
+
+export const LinkClickScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  label: 'label',
+  createdAt: 'createdAt'
+} as const
+
+export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
 
 
 export const SortOrder = {
