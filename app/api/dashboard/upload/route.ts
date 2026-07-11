@@ -1,8 +1,12 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
 import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/cloudinary';
+import { verifySession } from '@/lib/auth-api';
 
 export async function POST(req: NextRequest){
+    const { errorResponse } = await verifySession();
+    if (errorResponse) return errorResponse;
+
     try {
         const formData = await req.formData();
         const file = formData.get('file') as File | null;
@@ -39,6 +43,9 @@ export async function POST(req: NextRequest){
 }
 
 export async function DELETE(req: NextRequest) {
+  const { errorResponse } = await verifySession();
+  if (errorResponse) return errorResponse;
+
   try {
     const { publicId } = (await req.json()) as { publicId?: string };
 

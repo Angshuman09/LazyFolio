@@ -1,21 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
-import {SkillsSchema} from "@/lib/schemas/skills";
+import { SkillsSchema } from "@/lib/schemas/skills";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 export async function POST(req: NextRequest){
+    const { errorResponse, profile } = await verifySessionAndProfile();
+    if (errorResponse) return errorResponse;
+
     try {
-        const { userId, skills } = (await req.json()) as {
-            userId?: string;
+        const { skills } = (await req.json()) as {
             skills?: SkillsSchema["skills"];
         };
 
-        if(!userId || !skills){
-            return NextResponse.json({error: "fields are missing in the skills form"}, {status:404});
+        if(!skills){
+            return NextResponse.json({error: "fields are missing in the skills form"}, {status:400});
         }
 
         const createskills = await prisma.profile.update({
             where:{
-                id: userId
+                id: profile!.id
             },
             data:{
                 skills: skills.map((skill) => JSON.stringify({ value: skill.value ?? "", isenable: skill.isenable ?? true }))

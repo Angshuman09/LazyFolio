@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
+import crypto from "crypto";
 
 type BlogInput = {
   id?: string;
@@ -38,34 +40,39 @@ function slugify(text: string) {
 
 function generateSlug(title: string) {
   const baseSlug = slugify(title || "untitled");
-  const randomHash = Math.random().toString(36).substring(2, 7);
+  const randomHash = crypto.randomBytes(4).toString("hex");
   return `${baseSlug}-${randomHash}`;
 }
 
 export async function POST(request: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { blog, profileId } = (await request.json()) as {
+    const { blog } = (await request.json()) as {
       blog?: BlogInput;
-      profileId?: string;
     };
 
-    if (!blog || !profileId) {
+    if (!blog) {
       return NextResponse.json(
-        { error: "Missing blog or profileId in request body." },
+        { error: "Missing blog in request body." },
         { status: 400 },
       );
     }
 
-    const profile = await prisma.profile.findUnique({
-      where: { id: profileId },
-      select: { username: true },
-    });
+    const profileId = profile!.id;
 
-    if (!profile) {
-      return NextResponse.json(
-        { error: "Profile not found." },
-        { status: 404 },
-      );
+    let existing: any = null;
+    if (blog.id) {
+      existing = await prisma.blog.findFirst({
+        where: { id: blog.id, profileId },
+      });
+      if (!existing) {
+        return NextResponse.json(
+          { error: "Blog not found or unauthorized." },
+          { status: 403 },
+        );
+      }
     }
 
     let slug = blog.slug;
@@ -74,9 +81,6 @@ export async function POST(request: NextRequest) {
 
     if (isInternal) {
       if (blog.id) {
-        const existing = await prisma.blog.findUnique({
-          where: { id: blog.id },
-        });
         slug = existing?.slug || slug || generateSlug(blog.title || "untitled");
       } else {
         slug = slug || generateSlug(blog.title || "untitled");
@@ -104,14 +108,6 @@ export async function POST(request: NextRequest) {
     };
 
     if (blog.id) {
-      const existingBlog = await prisma.blog.findUnique({
-        where: {
-          id: blog.id,
-        },
-        select: {
-          content: true,
-        },
-      });
 
       const updatedBlog = await prisma.blog.update({
         where: {
@@ -120,7 +116,7 @@ export async function POST(request: NextRequest) {
         data: blogData,
       });
 
-      const previousIds = extractBlogImagePublicIds(existingBlog?.content);
+      const previousIds = extractBlogImagePublicIds(existing?.content);
       const nextIds = extractBlogImagePublicIds(updatedBlog.content);
       const removedIds = previousIds.filter((id) => !nextIds.includes(id));
       await Promise.all(removedIds.map((id) => deleteFromCloudinary(id)));

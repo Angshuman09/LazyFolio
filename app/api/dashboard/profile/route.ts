@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { verifySession } from "@/lib/auth-api";
 const profileSelect = {
   id: true,
   avatar: true,
@@ -59,6 +60,9 @@ async function getSkillsIsenable(profileId?: string | null) {
 }
 
 export async function GET(request: NextRequest) {
+  const { errorResponse, session } = await verifySession();
+  if (errorResponse) return errorResponse;
+
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
 
@@ -66,6 +70,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       { error: "Missing userId parameter" },
       { status: 400 },
+    );
+  }
+
+  if (userId !== session!.user.id) {
+    return NextResponse.json(
+      { error: "Forbidden: You do not own this profile" },
+      { status: 403 },
     );
   }
 
@@ -90,6 +101,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const { errorResponse, session } = await verifySession();
+  if (errorResponse) return errorResponse;
+
   try {
     const {
       userId,
@@ -104,12 +118,7 @@ export async function POST(request: NextRequest) {
       skillsIsenable,
     } = await request.json();
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Missing userId parameter" },
-        { status: 400 }
-      );
-    }
+    const targetUserId = session!.user.id;
 
     if (username) {
       const existingUser = await prisma.profile.findUnique({
@@ -117,7 +126,7 @@ export async function POST(request: NextRequest) {
         select: { userId: true },
       });
 
-      if (existingUser && existingUser.userId !== userId) {
+      if (existingUser && existingUser.userId !== targetUserId) {
         return NextResponse.json(
           { error: "Username already taken" },
           { status: 409 }
@@ -137,10 +146,10 @@ export async function POST(request: NextRequest) {
     };
 
     const profile = await prisma.profile.upsert({
-      where: { userId },
+      where: { userId: targetUserId },
       update: profileData,
       create: {
-        userId,
+        userId: targetUserId,
         ...profileData,
       },
       select: profileSelect,

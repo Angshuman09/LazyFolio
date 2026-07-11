@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextResponse, NextRequest } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
+import crypto from "crypto";
 
 type BlogInput = {
   id?: string;
@@ -38,28 +40,27 @@ function slugify(text: string) {
 
 function generateSlug(title: string) {
   const baseSlug = slugify(title || "untitled");
-  const randomHash = Math.random().toString(36).substring(2, 7);
+  const randomHash = crypto.randomBytes(4).toString("hex");
   return `${baseSlug}-${randomHash}`;
 }
 
 export async function POST(req: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { profileId, blogs } = (await req.json()) as {
-      profileId?: string;
+    const { blogs } = (await req.json()) as {
       blogs?: BlogInput[];
     };
 
-    if (!profileId || !blogs) {
+    if (!blogs) {
       return NextResponse.json(
         { error: "Fields are missing in the blog form" },
         { status: 400 },
       );
     }
 
-    const profile = await prisma.profile.findUnique({
-      where: { id: profileId },
-      select: { username: true },
-    });
+    const profileId = profile!.id;
 
     const existingBlogs = await prisma.blog.findMany({
       where: { profileId },
@@ -92,9 +93,16 @@ export async function POST(req: NextRequest) {
       let blogLink = blog.blogLink?.trim() || null;
       const isInternal = blog.content !== undefined && blog.content !== null;
 
+      let existing: any = null;
+      if (blog.id) {
+        existing = existingBlogs.find((b) => b.id === blog.id);
+        if (!existing) {
+          throw new Error("Unauthorized access to blog record: " + blog.id);
+        }
+      }
+
       if (isInternal) {
         if (blog.id) {
-          const existing = existingBlogs.find((b) => b.id === blog.id);
           slug = existing?.slug || slug || generateSlug(blog.title || "untitled");
         } else {
           slug = slug || generateSlug(blog.title || "untitled");

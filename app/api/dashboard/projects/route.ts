@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import {ProjectsSchema} from "@/lib/schemas/projects";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 function parseOptionalDate(value: string | null | undefined) {
     if (!value?.trim()) {
@@ -12,15 +13,19 @@ function parseOptionalDate(value: string | null | undefined) {
 }
 
 export async function POST(req: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { profileId, projects } = (await req.json()) as {
-        profileId?: string;
+    const { projects } = (await req.json()) as {
         projects?: ProjectsSchema["projects"];
     };
 
-    if(!profileId || !projects){
-        return NextResponse.json({error:"Fields are missing in project form"}, {status: 404});
+    if(!projects){
+        return NextResponse.json({error:"Fields are missing in project form"}, {status: 400});
     }
+
+    const profileId = profile!.id;
     
     await prisma.project.deleteMany({
         where: { profileId }

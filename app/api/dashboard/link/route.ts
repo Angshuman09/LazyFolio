@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 type LinkInput = {
     id?: string;
@@ -14,12 +15,17 @@ type ProfileId = string;
 
 
 export async function POST(request: NextRequest) {
-    try {
-        const { link, profileId } = (await request.json()) as { link: LinkInput; profileId: ProfileId };
+    const { errorResponse, profile } = await verifySessionAndProfile();
+    if (errorResponse) return errorResponse;
 
-        if (!link || !profileId) {
-            return NextResponse.json({ error: "Missing link or profileId in request body." }, { status: 400 });
+    try {
+        const { link } = (await request.json()) as { link: LinkInput };
+
+        if (!link) {
+            return NextResponse.json({ error: "Missing link in request body." }, { status: 400 });
         }
+
+        const profileId = profile!.id;
 
         const linkData = {
             url: link.url,
@@ -30,6 +36,17 @@ export async function POST(request: NextRequest) {
         };
 
         if (link.id) {
+            const existingLink = await prisma.links.findFirst({
+                where: {
+                    id: link.id,
+                    profileId: profileId,
+                },
+            });
+
+            if (!existingLink) {
+                return NextResponse.json({ error: "Link not found or unauthorized." }, { status: 403 });
+            }
+
             const updatedLink = await prisma.links.update({
                 where: {
                     id: link.id

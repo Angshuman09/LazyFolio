@@ -1,17 +1,18 @@
 import { NextResponse, NextRequest } from "next/server";
 import { SingleExperience } from "@/lib/schemas/experience";
 import { prisma } from "@/lib/prisma";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 export async function POST(request: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { profileId, experience } = await request.json() as {
-      profileId?: string;
+    const { experience } = await request.json() as {
       experience?: SingleExperience;
     };
 
-    if (!profileId) {
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-    }
+    const profileId = profile!.id;
 
     const data = {
       profileId: profileId,
@@ -24,6 +25,14 @@ export async function POST(request: NextRequest) {
     };
 
     if (experience?.id) {
+      const existingExp = await prisma.experience.findFirst({
+        where: { id: experience.id, profileId },
+      });
+
+      if (!existingExp) {
+        return NextResponse.json({ error: "Experience not found or unauthorized." }, { status: 403 });
+      }
+
       const updatedExperience = await prisma.experience.update({
         where: { id: experience.id },
         data: data,

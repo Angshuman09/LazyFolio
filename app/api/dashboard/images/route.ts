@@ -1,20 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { verifySession } from "@/lib/auth-api";
 
 export async function POST(request: NextRequest) {
+    const { errorResponse, session } = await verifySession();
+    if (errorResponse) return errorResponse;
+
     try {
-        const { avatar, avatarPublicId, banner, bannerPublicId, userId } = (await request.json()) as { 
+        const { avatar, avatarPublicId, banner, bannerPublicId } = (await request.json()) as { 
             avatar?: string | null, 
             avatarPublicId?: string | null,
             banner?: string | null, 
             bannerPublicId?: string | null,
-            userId?: string 
         };
 
-        if (!userId) {
-            return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
-        }
+        const userId = session!.user.id;
 
         if (avatar === undefined && banner === undefined) {
             return NextResponse.json({ error: 'No images provided' }, { status: 400 });

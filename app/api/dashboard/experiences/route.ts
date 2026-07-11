@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { ExperienceSchema } from "@/lib/schemas/experience";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 function parseOptionalDate(value: string | null | undefined) {
   if (!value?.trim()) {
@@ -12,17 +13,15 @@ function parseOptionalDate(value: string | null | undefined) {
 }
 
 export async function POST(request: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { profileId, experiences } = (await request.json()) as {
-      profileId?: string;
+    const { experiences } = (await request.json()) as {
       experiences?: ExperienceSchema["experiences"];
     };
-    if (!profileId) {
-      return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 },
-      );
-    }
+
+    const profileId = profile!.id;
 
     await prisma.experience.deleteMany({
       where: {profileId}

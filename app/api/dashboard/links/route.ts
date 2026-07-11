@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 type LinkInput = {
   type?: LinkType;
@@ -10,14 +11,18 @@ type LinkInput = {
 };
 
 export async function POST(req: NextRequest){
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { profileId, links } = (await req.json()) as {
-      profileId?: string;
+    const { links } = (await req.json()) as {
       links?: LinkInput[];
     };
-    if(!profileId || !links){
+    if(!links){
       return NextResponse.json({error: "field are missing in links form"}, {status: 400});
     }
+
+    const profileId = profile!.id;
 
     await prisma.links.deleteMany({
       where: {profileId}

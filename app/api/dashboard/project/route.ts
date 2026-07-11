@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 type ProjectInput = {
   id?: string;
@@ -22,18 +23,22 @@ function parseOptionalDate(value: string | null | undefined) {
 }
 
 export async function POST(request: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { project, profileId } = (await request.json()) as {
+    const { project } = (await request.json()) as {
       project?: ProjectInput;
-      profileId?: string;
     };
 
-    if (!project || !profileId) {
+    if (!project) {
       return NextResponse.json(
-        { error: "Missing project or profileId in request body." },
+        { error: "Missing project in request body." },
         { status: 400 }
       );
     }
+
+    const profileId = profile!.id;
 
     const techstackArray = project.techstack
       ? project.techstack
@@ -54,6 +59,20 @@ export async function POST(request: NextRequest) {
     };
 
     if (project.id) {
+      const existingProject = await prisma.project.findFirst({
+        where: {
+          id: project.id,
+          profileId: profileId,
+        },
+      });
+
+      if (!existingProject) {
+        return NextResponse.json(
+          { error: "Project not found or unauthorized." },
+          { status: 403 }
+        );
+      }
+
       const updatedProject = await prisma.project.update({
         where: {
           id: project.id,

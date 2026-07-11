@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySession } from "@/lib/auth-api";
 
 export async function POST(req: NextRequest) {
+  const { errorResponse, session } = await verifySession();
+  if (errorResponse) return errorResponse;
+
   try {
-    const { username, userId } = (await req.json()) as {
+    const { username } = (await req.json()) as {
       username?: string;
-      userId: string;
     };
+    const userId = session!.user.id;
 
     if (!username) {
       return NextResponse.json(

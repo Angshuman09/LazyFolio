@@ -2,11 +2,15 @@ import { prisma } from "@/lib/prisma";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
     const { id } = await params;
 
@@ -17,14 +21,22 @@ export async function DELETE(
       );
     }
 
-    const blog = await prisma.blog.findUnique({
+    const blog = await prisma.blog.findFirst({
       where: {
         id,
+        profileId: profile!.id,
       },
       select: {
         content: true,
       },
     });
+
+    if (!blog) {
+      return NextResponse.json(
+        { error: "Blog not found or unauthorized" },
+        { status: 403 },
+      );
+    }
 
     await prisma.blog.delete({
       where: {

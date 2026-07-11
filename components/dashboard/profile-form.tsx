@@ -511,7 +511,7 @@ export default function ProfileForm({
               <textarea
                 {...register("bio")}
                 placeholder="Tell us about yourself"
-                className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
+                className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-22.5 resize-vertical"
               />
               <FieldError message={errors.bio?.message} />
             </div>

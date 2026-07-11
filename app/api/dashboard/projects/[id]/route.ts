@@ -1,10 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
     const { id } = await params;
 
@@ -12,6 +16,18 @@ export async function DELETE(
       return NextResponse.json(
         { error: "Missing project id" },
         { status: 400 }
+      );
+    }
+
+    const project = await prisma.project.findFirst({
+      where: { id, profileId: profile!.id },
+      select: { id: true }
+    });
+
+    if (!project) {
+      return NextResponse.json(
+        { error: "Project not found or unauthorized" },
+        { status: 403 }
       );
     }
 

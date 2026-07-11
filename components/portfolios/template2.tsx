@@ -23,7 +23,6 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { trackClick } from "@/lib/utils/track-click";
 
-// ─── TYPES ───────────────────────────────────────────────────────────────────
 type DateLike = string | Date | null | undefined;
 
 type ProfileLink = {
@@ -195,7 +194,6 @@ const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
   },
 ];
 
-// ─── ICON RESOLVER ────────────────────────────────────────────────────────────
 function getLinkIcon(label: string, href: string): ReactNode {
   const domain = getDomain(href);
   const lowerLabel = label.toLowerCase();
@@ -223,17 +221,14 @@ function getLinkIcon(label: string, href: string): ReactNode {
     );
   }
 
-  // LinkedIn
   if (lowerDomain.includes("linkedin") || lowerLabel === "linkedin") {
     return <Linkedin {...iconProps} />;
   }
 
-  // Instagram
   if (lowerDomain.includes("instagram") || lowerLabel === "instagram") {
     return <Instagram {...iconProps} />;
   }
 
-  // YouTube
   if (
     lowerDomain.includes("youtube") ||
     lowerDomain.includes("youtu.be") ||
@@ -242,7 +237,6 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <Youtube {...iconProps} />;
   }
 
-  // Medium
   if (lowerDomain.includes("medium") || lowerLabel === "medium") {
     return (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -251,12 +245,10 @@ function getLinkIcon(label: string, href: string): ReactNode {
     );
   }
 
-  // LeetCode
   if (lowerDomain.includes("leetcode") || lowerLabel === "leetcode") {
     return <Code2 {...iconProps} />;
   }
 
-  // Dev.to
   if (
     lowerDomain.includes("dev.to") ||
     lowerLabel === "dev.to" ||
@@ -265,7 +257,6 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <BookOpen {...iconProps} />;
   }
 
-  // Mail
   if (
     href.startsWith("mailto:") ||
     lowerLabel === "mail" ||
@@ -274,21 +265,17 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <Mail {...iconProps} />;
   }
 
-  // Phone
   if (href.startsWith("tel:") || lowerLabel === "phone") {
     return <Phone {...iconProps} />;
   }
 
-  // Resume
   if (lowerLabel === "resume" || lowerLabel === "cv") {
     return <FileText {...iconProps} />;
   }
 
-  // Fallback
   return <Globe {...iconProps} />;
 }
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 const Divider = () => <div className="w-full h-px bg-stone-200/80 my-10" />;
 
 const SectionHeading = ({ children }: { children: ReactNode }) => (
@@ -540,7 +527,6 @@ function getBookCallLink(profile?: ProfileData) {
   return cleanUrl(profile?.bookAcall);
 }
 
-// ─── STACK TICKER ─────────────────────────────────────────────────────────────
 function StackTicker({ stack }: { stack: StackItem[] }) {
   const items = [...stack, ...stack];
   return (
@@ -566,7 +552,6 @@ function StackTicker({ stack }: { stack: StackItem[] }) {
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
 export function Template2({
   user,
   profile,
@@ -654,16 +639,6 @@ export function Template2({
             )}
             {bio && <p className="text-sm text-stone-600 leading-[1.8]">{bio}</p>}
           </section>
-
-          {/* QUICK LINKS — icon-only buttons */}
-          {/* <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Hover</Button>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>Add to library</p>
-      </TooltipContent>
-    </Tooltip>*/}
           {hasQuickActions && (
             <div className="flex flex-wrap gap-2 mb-4">
               {links.map((link) => (
@@ -1030,10 +1005,6 @@ export function Template2({
           )}
 
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
-            <p className="text-[11px] text-stone-400 font-mono">
-              © {new Date().getFullYear()}
-              {name ? ` ${name}` : ""}
-            </p>
             <p className="text-[11px] text-stone-300">
               built with{" "}
               <span className="text-stone-500 font-medium">lazyfolio</span>

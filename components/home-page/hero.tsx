@@ -7,12 +7,17 @@ import { useGetUserProfile } from "@/hooks/profile";
 import toast from "react-hot-toast";
 import Image from "next/image";
 const Hero = () => {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending: isSessionLoading } =
+    authClient.useSession();
   const [username, setUsername] = useState("");
   const router = useRouter();
-  const { data: profile } = useGetUserProfile(session?.user.id);
-  const [loading, setLoading] = useState(false);
-  const [videoError, setVideoError] = useState(false);
+  const { data: profile, isPending: isProfileLoading } = useGetUserProfile(
+    session?.user.id,
+  );
+  const [isClaiming, setisClaiming] = useState(false);
+
+  const isLoading =
+    isSessionLoading || (!!session && isProfileLoading) || isClaiming;
 
   useEffect(() => {
     if (profile?.username) {
@@ -21,7 +26,7 @@ const Hero = () => {
   }, [profile?.username]);
 
   const handleSubmitUsername = async () => {
-    setLoading(true);
+    setisClaiming(true);
     if (!session) {
       router.push("/auth");
       return;
@@ -45,20 +50,19 @@ const Hero = () => {
       const data = await response.json();
       console.log("Username claimed successfully:", data);
       toast.success("Username claimed successfully!");
-      setLoading(false);
+      setisClaiming(false);
     } catch (error) {
       console.error("Error claiming username:", error);
       toast.error("An error occurred while claiming the username.");
-      setLoading(false);
+      setisClaiming(false);
+    } finally {
+      setisClaiming(false);
     }
   };
   return (
-
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
-        <span className="block">
-          Make the internet
-        </span>
+        <span className="block">Make the internet</span>
 
         <span className="block mt-2">
           know{" "}
@@ -94,11 +98,11 @@ const Hero = () => {
           />
         </label>
         <button
-          disabled={loading}
+          disabled={isLoading}
           onClick={handleSubmitUsername}
-          className="group inline-flex items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[42px] sm:min-h-[42px] px-4 rounded-[6px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
+          className="group inline-flex disabled:cursor-not-allowed disabled:opacity-40 items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[42px] sm:min-h-[42px] px-4 rounded-[6px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
         >
-          {loading ? "Claiming..." : "Claim username"}
+          {isClaiming ? "Claiming..." : "Claim username"}
           <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">
             ↗
           </span>
@@ -107,8 +111,12 @@ const Hero = () => {
 
       <div className="mt-15">
         <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">
-          <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">Everything you need.</span>
-          <span className="italic tracking-wide text-[#d0bea3] font-semibold font-serif-display">Nothing extra.</span>
+          <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">
+            Everything you need.
+          </span>
+          <span className="italic tracking-wide text-[#d0bea3] font-semibold font-serif-display">
+            Nothing extra.
+          </span>
         </h2>
 
         <div className="relative">

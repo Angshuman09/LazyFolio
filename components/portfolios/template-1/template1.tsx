@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { trackClick } from "@/lib/utils/track-click";
 
 type DateLike = string | Date | null | undefined;
@@ -193,7 +193,6 @@ const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
   },
 ];
 
-// ─── ICON RESOLVER ────────────────────────────────────────────────────────────
 function getLinkIcon(label: string, href: string): ReactNode {
   const domain = getDomain(href);
   const lowerLabel = label.toLowerCase();
@@ -213,7 +212,6 @@ function getLinkIcon(label: string, href: string): ReactNode {
     lowerLabel === "x" ||
     lowerLabel === "twitter"
   ) {
-    // X logo as SVG since lucide doesn't have it
     return (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -221,17 +219,14 @@ function getLinkIcon(label: string, href: string): ReactNode {
     );
   }
 
-  // LinkedIn
   if (lowerDomain.includes("linkedin") || lowerLabel === "linkedin") {
     return <Linkedin {...iconProps} />;
   }
 
-  // Instagram
   if (lowerDomain.includes("instagram") || lowerLabel === "instagram") {
     return <Instagram {...iconProps} />;
   }
 
-  // YouTube
   if (
     lowerDomain.includes("youtube") ||
     lowerDomain.includes("youtu.be") ||
@@ -240,7 +235,6 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <Youtube {...iconProps} />;
   }
 
-  // Medium
   if (lowerDomain.includes("medium") || lowerLabel === "medium") {
     return (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -249,12 +243,10 @@ function getLinkIcon(label: string, href: string): ReactNode {
     );
   }
 
-  // LeetCode
   if (lowerDomain.includes("leetcode") || lowerLabel === "leetcode") {
     return <Code2 {...iconProps} />;
   }
 
-  // Dev.to
   if (
     lowerDomain.includes("dev.to") ||
     lowerLabel === "dev.to" ||
@@ -263,7 +255,6 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <BookOpen {...iconProps} />;
   }
 
-  // Mail
   if (
     href.startsWith("mailto:") ||
     lowerLabel === "mail" ||
@@ -272,21 +263,17 @@ function getLinkIcon(label: string, href: string): ReactNode {
     return <Mail {...iconProps} />;
   }
 
-  // Phone
   if (href.startsWith("tel:") || lowerLabel === "phone") {
     return <Phone {...iconProps} />;
   }
 
-  // Resume
   if (lowerLabel === "resume" || lowerLabel === "cv") {
     return <FileText {...iconProps} />;
   }
 
-  // Fallback
   return <Globe {...iconProps} />;
 }
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
 const Divider = () => <div className="w-full h-px bg-zinc-800/80 my-10" />;
 
 const SectionHeading = ({ children }: { children: ReactNode }) => (
@@ -575,7 +562,6 @@ function getBookCallLink(profile?: ProfileData) {
   return cleanUrl(profile?.bookAcall);
 }
 
-// ─── STACK TICKER ─────────────────────────────────────────────────────────────
 function StackTicker({ stack }: { stack: StackItem[] }) {
   const items = [...stack, ...stack];
   return (
@@ -601,7 +587,6 @@ function StackTicker({ stack }: { stack: StackItem[] }) {
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
 export function Template1({
   user,
   profile,
@@ -1064,7 +1049,7 @@ export function Template1({
             </>
           )}
 
-          {/* FOOTER */}
+
           <div className="mt-14 pt-6 border-t border-zinc-800/60 flex items-center justify-between">
             <p className="text-[11px] text-zinc-700 font-mono">
               © {new Date().getFullYear()}

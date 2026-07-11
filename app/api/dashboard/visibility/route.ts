@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { verifySessionAndProfile } from "@/lib/auth-api";
 
 type VisibilityTarget = "link" | "experience" | "project" | "blog" | "skills";
 
@@ -10,6 +11,9 @@ type VisibilityPayload = {
 };
 
 export async function PATCH(request: NextRequest) {
+  const { errorResponse, profile } = await verifySessionAndProfile();
+  if (errorResponse) return errorResponse;
+
   try {
     const { target, id, isenable } = (await request.json()) as VisibilityPayload;
 
@@ -21,6 +25,9 @@ export async function PATCH(request: NextRequest) {
     }
 
     if (target === "skills") {
+      if (id !== profile!.id) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
       await prisma.profile.update({
         where: { id },
         data: { skillsIsenable: isenable },
@@ -32,16 +39,28 @@ export async function PATCH(request: NextRequest) {
     }
 
     const data = { isenable };
-    const result =
-      target === "link"
-        ? await prisma.links.update({ where: { id }, data })
-        : target === "experience"
-          ? await prisma.experience.update({ where: { id }, data })
-          : target === "project"
-            ? await prisma.project.update({ where: { id }, data })
-            : await prisma.blog.update({ where: { id }, data });
 
-    return NextResponse.json({ data: result }, { status: 200 });
+    if (target === "link") {
+      const link = await prisma.links.findFirst({ where: { id, profileId: profile!.id } });
+      if (!link) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      const result = await prisma.links.update({ where: { id }, data });
+      return NextResponse.json({ data: result }, { status: 200 });
+    } else if (target === "experience") {
+      const exp = await prisma.experience.findFirst({ where: { id, profileId: profile!.id } });
+      if (!exp) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      const result = await prisma.experience.update({ where: { id }, data });
+      return NextResponse.json({ data: result }, { status: 200 });
+    } else if (target === "project") {
+      const proj = await prisma.project.findFirst({ where: { id, profileId: profile!.id } });
+      if (!proj) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      const result = await prisma.project.update({ where: { id }, data });
+      return NextResponse.json({ data: result }, { status: 200 });
+    } else {
+      const blog = await prisma.blog.findFirst({ where: { id, profileId: profile!.id } });
+      if (!blog) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+      const result = await prisma.blog.update({ where: { id }, data });
+      return NextResponse.json({ data: result }, { status: 200 });
+    }
   } catch (error) {
     console.error("Failed to update visibility", error);
     return NextResponse.json(
