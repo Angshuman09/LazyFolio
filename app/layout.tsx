@@ -6,6 +6,7 @@ import { Instrument_Serif, Geist } from "next/font/google";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next"
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
     title: "Lazyfolio - Make the internet know You Exist.",
     description: "Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch >◡<",
     siteName:"Lazyfolio",
-    images:[{url:"/opengraph.png"}]
+    images:[{url:"/graphimage.png"}]
   }
 };
 
@@ -62,6 +63,7 @@ export default function RootLayout({
               strategy="afterInteractive"
             />
           )}
+          <Analytics/>
         </Providers>
       </body>
     </html>

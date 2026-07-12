@@ -165,7 +165,7 @@ const Navbar = () => {
           href="https://github.com/Angshuman09/lazyfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
+          className="flex items-center justify-center gap-2 rounded-[6px] hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
         >
           <Github className="h-4 w-4" />
           <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
@@ -178,7 +178,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/dashboard");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-xl hover:opacity-80 transition-opacity"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-[6px] hover:opacity-80 transition-opacity"
           >
             Dashboard
           </button>
