@@ -1,0 +1,26 @@
+import { StackItem } from "../types/template.types";
+
+export function StackTicker({ stack }: { stack: StackItem[] }) {
+    const items = [...stack, ...stack];
+    return (
+      <div className="relative overflow-hidden py-1">
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-10 z-10 bg-linear-to-r from-[#0e0e0e] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-10 z-10 bg-linear-to-l from-[#0e0e0e] to-transparent" />
+        <div
+          className="flex gap-3 w-max"
+          style={{ animation: "ticker 30s linear infinite" }}
+        >
+          {items.map((tech, i) => (
+            <div
+              key={`${tech.name}-${i}`}
+              className="flex items-center px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 shrink-0"
+            >
+              <span className="text-[11px] text-zinc-500 whitespace-nowrap">
+                {tech.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }

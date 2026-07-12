@@ -125,6 +125,7 @@ const Hero = () => {
             alt="this image"
             width={1000}
             height={1000}
+            loading="eager"
             className="rounded-md w-full"
           />
         </div>

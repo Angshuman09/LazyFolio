@@ -785,7 +785,7 @@ export function Template2({
                       {(project.github || project.demo) && (
                         <div className="flex gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 mt-0.5">
                           {project.github && (
-                            <a
+                            <Link
                               href={project.github}
                               target={
                                 shouldOpenInNewTab(project.github)
@@ -801,7 +801,7 @@ export function Template2({
                               }
                             >
                               <Github size={12} />
-                            </a>
+                            </Link>
                           )}
                           {project.demo && (
                             <Link
@@ -879,7 +879,7 @@ export function Template2({
                       </>
                     );
 
-                    return blog.url ? (
+                    return blog.url? (
                       <Link
                         key={blog.id}
                         href={blog.url}

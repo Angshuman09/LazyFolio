@@ -13,7 +13,7 @@ import ProfileMenuOpen from "./profile-menu-open";
 
 const NAV_LEFT = [
   { label: "Features", href: "#features" },
-  { label: "Templates", href: "#" },
+  { label: "Templates", href: "/templates" },
 ];
 
 const Navbar = () => {
@@ -52,22 +52,20 @@ const Navbar = () => {
       className= "sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Left nav links */}
         <ul className="hidden md:flex gap-8 text-[0.8rem] text-(--lf-muted) font-medium tracking-wide">
           {NAV_LEFT.map((item) => (
             <li key={item.label}>
-              <a
+              <Link
                 href={item.href}
                 className="hover:text-(--lf-ink) transition-colors duration-150"
               >
                 {item.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
-        {/* Centered wordmark */}
-        <span className="font-serif-display text-[1.3rem] font-normal tracking-tight absolute left-1/2 -translate-x-1/2 select-none">
+        <span onClick={()=>router.push("/")} className="font-serif-display cursor-pointer text-[1.3rem] font-normal tracking-tight absolute left-1/2 -translate-x-1/2 select-none">
           Lazyfolio
         </span>
 
@@ -147,7 +145,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div
         className={[
           "md:hidden absolute top-full left-0 right-0 bg-(--lf-surface) border-b border-(--lf-border-alpha) flex flex-col gap-3 px-6 overflow-hidden transition-all duration-300",
@@ -155,14 +152,14 @@ const Navbar = () => {
         ].join(" ")}
       >
         {NAV_LEFT.map((item) => (
-          <a
+          <Link
             key={item.label}
             href={item.href}
             className="text-[0.85rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {item.label}
-          </a>
+          </Link>
         ))}
         <Link
           href="https://github.com/Angshuman09/lazyfolio"

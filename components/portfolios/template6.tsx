@@ -423,7 +423,7 @@ export function Template6(props: ThemedPortfolioProps) {
                       {(project.github || project.demo) && (
                         <div className="flex shrink-0 gap-1.5">
                           {project.github && (
-                            <a
+                            <Link
                               href={project.github}
                               target={
                                 shouldOpenInNewTab(project.github)
@@ -439,7 +439,7 @@ export function Template6(props: ThemedPortfolioProps) {
                               }
                             >
                               <Github size={13} strokeWidth={iconStrokeWidth} />
-                            </a>
+                            </Link>
                           )}
                           {project.demo && (
                             <Link

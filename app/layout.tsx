@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+//@ts-ignore
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Instrument_Serif, Geist } from "next/font/google";
@@ -20,6 +21,14 @@ export const metadata: Metadata = {
   description: "Make the internet know You Exist",
   icons: {
     icon: "/logo-crop.png",
+  },
+  openGraph:{
+    type:"website",
+    url:"https://lazy-folio.vercel.app",
+    title: "Lazyfolio - Make the internet know You Exist.",
+    description: "Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch >◡<",
+    siteName:"Lazyfolio",
+    images:[{url:"/opengraph.png"}]
   }
 };
 

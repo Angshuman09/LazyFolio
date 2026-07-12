@@ -550,7 +550,7 @@ export function Template3({
                         <div>
                           {exp.company &&
                             (exp.companyUrl && exp.companyUrl !== "#" ? (
-                              <a
+                              <Link
                                 href={exp.companyUrl}
                                 target={shouldOpenInNewTab(exp.companyUrl) ? "_blank" : undefined}
                                 rel="noopener noreferrer"
@@ -558,7 +558,7 @@ export function Template3({
                               >
                                 {exp.company}
                                 <MoveUpRight size={11} className="text-slate-300" />
-                              </a>
+                              </Link>
                             ) : (
                               <span className="text-[14px] font-semibold text-slate-900">
                                 {exp.company}
@@ -652,7 +652,7 @@ export function Template3({
                       {(project.github || project.demo) && (
                         <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 self-start pt-0.5">
                           {project.github && (
-                            <a
+                            <Link
                               href={project.github}
                               target={shouldOpenInNewTab(project.github) ? "_blank" : undefined}
                               rel="noopener noreferrer"
@@ -660,7 +660,7 @@ export function Template3({
                               aria-label={project.name ? `${project.name} source` : "Project source"}
                             >
                               <Github size={12} />
-                            </a>
+                            </Link>
                           )}
                           {project.demo && (
                             <Link
