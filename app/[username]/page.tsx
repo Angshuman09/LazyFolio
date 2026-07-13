@@ -27,7 +27,15 @@ const publicProfileSelect = {
   user: true,
   experiences: { where: { isenable: true } },
   projects: { where: { isenable: true } },
-  blogs: { where: { isenable: true, isPublished: true } },
+  blogs: {
+    where: {
+      isenable: true,
+      OR: [
+        { content: { not: null }, isPublished: true },
+        { content: null },
+      ],
+    },
+  },
   links: { where: { isenable: true } },
 };
 

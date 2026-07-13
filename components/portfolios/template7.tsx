@@ -22,7 +22,7 @@ const config: TemplateThemeConfig = {
   pageStyle: {
     fontFamily: "'DM Sans', var(--font-sans), system-ui, sans-serif",
   },
-  containerClass: "mx-auto max-w-[680px] px-5 py-10 sm:px-8 sm:py-14",
+  containerClass: "mx-auto max-w-[780px] px-5 py-10 sm:px-8 sm:py-14",
   quoteClass:
     "mb-8 rotate-[-0.4deg] rounded-lg border-2 border-[#241513] bg-[#fef08a] px-4 py-3 text-[13px] font-bold leading-6 text-[#241513] shadow-[4px_4px_0_#241513]",
   heroClass:

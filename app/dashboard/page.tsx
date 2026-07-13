@@ -605,7 +605,7 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        <main className="flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full max-w-full md:max-w-215">
+        <main className={`flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full ${tab === "insights" ? "max-w-full" : "max-w-full md:max-w-215"}`}>
           {isLoading || isPending ? (
             <DashboardSkeleton />
           ) : !profile?.username && tab !== "profile" ? (
@@ -669,7 +669,7 @@ export default function DashboardPage() {
           )}
         </main>
 
-        <div className="hidden lg:flex flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full">
+        <div className={`${tab === "insights" ? "hidden" : "hidden lg:flex"} flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full`}>
           <div className="w-full h-full overflow-y-auto overflow-x-hidden">
             {isLoading || isPending ? (
               <TemplateRendererSkeleton />

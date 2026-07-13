@@ -3,6 +3,7 @@ import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 import crypto from "crypto";
 
 type BlogInput = {
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
       blogLink: blogLink,
       enddate: parseOptionalDate(blog.enddate),
       content: blog.content ?? null,
-      isPublished: blog.isPublished ?? false,
+      isPublished: isInternal ? (blog.isPublished ?? false) : true,
       ...(typeof blog.isenable === "boolean" ? { isenable: blog.isenable } : {}),
       slug: slug || null,
     };
@@ -121,13 +122,14 @@ export async function POST(request: NextRequest) {
       const removedIds = previousIds.filter((id) => !nextIds.includes(id));
       await Promise.all(removedIds.map((id) => deleteFromCloudinary(id)));
 
+      revalidateProfile(profile.username);
+
       return NextResponse.json(
         { data: updatedBlog, message: "Blog updated successfully." },
         { status: 200 },
       );
     }
 
-    // Check if there is an existing blog with the same link (only for external links)
     const existingBlog = (!isInternal && blog.blogLink)
       ? await prisma.blog.findFirst({
           where: {
@@ -154,6 +156,8 @@ export async function POST(request: NextRequest) {
     const createdBlog = await prisma.blog.create({
       data: blogData,
     });
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json(
       { data: createdBlog, message: "Blog created successfully." },

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import {ProjectsSchema} from "@/lib/schemas/projects";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 function parseOptionalDate(value: string | null | undefined) {
     if (!value?.trim()) {
@@ -43,6 +44,8 @@ export async function POST(req: NextRequest) {
             isenable: project.isenable ?? true,
         }))
     });
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json({data: createProjects}, {status: 200});
 

@@ -119,7 +119,7 @@ const Hero = () => {
           </span>
         </h2>
 
-        <div className="relative border border-(--lf-tan)">
+        <div className="relative rounded-2xl border-11 border-(--lf-tan)">
           <Image
             src="/preview.png"
             alt="this image"

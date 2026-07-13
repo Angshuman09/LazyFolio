@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server"; 
 import { SkillsSchema } from "@/lib/schemas/skills";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 export async function POST(req: NextRequest){
     const { errorResponse, profile } = await verifySessionAndProfile();
@@ -28,6 +29,8 @@ export async function POST(req: NextRequest){
                 skills: true
             }
         })
+
+        revalidateProfile(profile.username);
 
         return NextResponse.json({dat: createskills}, {status: 200});
         

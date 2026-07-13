@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 type LinkInput = {
   type?: LinkType;
@@ -37,6 +38,8 @@ export async function POST(req: NextRequest){
         isenable: link.isenable ?? true,
       }))
     })
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json({data: createLinks}, {status: 200});
     

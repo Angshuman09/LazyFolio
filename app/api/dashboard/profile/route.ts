@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 const profileSelect = {
   id: true,
   avatar: true,
@@ -170,6 +171,8 @@ export async function POST(request: NextRequest) {
       typeof skillsIsenable === "boolean"
         ? skillsIsenable
         : await getSkillsIsenable(profile.id);
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json(
       { ...profile, skillsIsenable: nextSkillsIsenable },

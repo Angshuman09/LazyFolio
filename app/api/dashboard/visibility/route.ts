@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 type VisibilityTarget = "link" | "experience" | "project" | "blog" | "skills";
 
@@ -32,6 +33,7 @@ export async function PATCH(request: NextRequest) {
         where: { id },
         data: { skillsIsenable: isenable },
       });
+      revalidateProfile(profile!.username);
       return NextResponse.json(
         { data: { id, skillsIsenable: isenable } },
         { status: 200 },
@@ -59,6 +61,7 @@ export async function PATCH(request: NextRequest) {
       const blog = await prisma.blog.findFirst({ where: { id, profileId: profile!.id } });
       if (!blog) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
       const result = await prisma.blog.update({ where: { id }, data });
+      revalidateProfile(profile!.username);
       return NextResponse.json({ data: result }, { status: 200 });
     }
   } catch (error) {

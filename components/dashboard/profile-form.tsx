@@ -1,27 +1,62 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/lib/schemas/profile";
 import { useQueryClient } from "@tanstack/react-query";
 import { Props } from "@/lib/types/profile";
+import {
+  Camera,
+  Image as ImageIcon,
+  User,
+  Mail,
+  Zap,
+  Quote,
+  Phone,
+  FileText,
+  X,
+  Check,
+  Loader2,
+  AtSign,
+} from "lucide-react";
 
 function FieldError({ message }: { message?: string }) {
-  if (!message) {
-    return null;
-  }
-
-  return <p className="text-[0.72rem] text-[#b91c1c]">{message}</p>;
+  if (!message) return null;
+  return <p className="text-[0.72rem] text-red-500 mt-1 pl-1">{message}</p>;
 }
 
-export default function ProfileForm({
-  profile,
-  formRef,
-  onSubmit,
-  session,
-}: Props) {
+interface FieldRowProps {
+  icon: React.ReactNode;
+  label: string;
+  children: React.ReactNode;
+  action?: React.ReactNode;
+  error?: string;
+  noBorder?: boolean;
+}
+
+function FieldRow({ icon, label, children, action, error, noBorder }: FieldRowProps) {
+  return (
+    <div>
+      <div
+        className={`flex items-center gap-3.5 px-4 min-h-[62px] hover:bg-(--lf-accent-soft) transition-colors group ${!noBorder ? "border-b border-(--lf-border)" : ""}`}
+      >
+       
+        <div className="flex-1 min-w-0 py-3">
+          <p className="text-[0.6rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-0.5">
+            {label}
+          </p>
+          {children}
+        </div>
+        {action && <div className="shrink-0">{action}</div>}
+      </div>
+      {error && <div className="px-4"><FieldError message={error} /></div>}
+    </div>
+  );
+}
+
+export default function ProfileForm({ profile, formRef, onSubmit, session }: Props) {
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
       userId: session?.user?.id || "",
@@ -41,6 +76,10 @@ export default function ProfileForm({
   const [loading, setLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageSaved, setImageSaved] = useState(false);
 
   const {
     register,
@@ -59,6 +98,14 @@ export default function ProfileForm({
     reset(defaultValues);
   }, [defaultValues, reset]);
 
+  // Cleanup object URLs on unmount
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+    };
+  }, [avatarPreview, bannerPreview]);
+
   const queryClient = useQueryClient();
   const emailValue = useWatch({ control, name: "email" });
   const taglineValue = useWatch({ control, name: "tagline" });
@@ -66,28 +113,20 @@ export default function ProfileForm({
   const quoteValue = useWatch({ control, name: "quote" });
   const bioValue = useWatch({ control, name: "bio" });
 
-  console.log(session?.user?.id);
-
   const handleSubmitUsername = async () => {
     setLoading(true);
     const username = getValues("username");
-
     if (!username) {
       toast.error("Username cannot be empty");
+      setLoading(false);
       return;
     }
 
     const response = await fetch("/api/dashboard/username", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        userId: (await session?.user?.id) as string,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, userId: session?.user?.id as string }),
     });
-
     const data = await response.json();
 
     if (response.ok) {
@@ -99,26 +138,17 @@ export default function ProfileForm({
     setLoading(false);
   };
 
-  const [imageLoading, setImageLoading] = useState(false);
-
   const handleSubmitImages = async () => {
     if (!avatarFile && !bannerFile) return;
-
     setImageLoading(true);
-
     try {
       let avatarUrl: string | undefined;
       let avatarPublicId: string | undefined;
       if (avatarFile) {
         const formData = new FormData();
         formData.append("file", avatarFile);
-
-        const res = await fetch("/api/dashboard/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch("/api/dashboard/upload", { method: "POST", body: formData });
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || "Failed to upload avatar");
         avatarUrl = data.url;
         avatarPublicId = data.publicId;
@@ -129,13 +159,8 @@ export default function ProfileForm({
       if (bannerFile) {
         const formData = new FormData();
         formData.append("file", bannerFile);
-
-        const res = await fetch("/api/dashboard/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch("/api/dashboard/upload", { method: "POST", body: formData });
         const data = await res.json();
-
         if (!res.ok) throw new Error(data.error || "Failed to upload banner");
         bannerUrl = data.url;
         bannerPublicId = data.publicId;
@@ -146,21 +171,24 @@ export default function ProfileForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           avatar: avatarUrl,
-          avatarPublicId: avatarPublicId,
+          avatarPublicId,
           banner: bannerUrl,
-          bannerPublicId: bannerPublicId,
+          bannerPublicId,
           userId: profile?.userId,
         }),
       });
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Failed to save images");
 
       toast.success("Images saved successfully");
+      setImageSaved(true);
+      setTimeout(() => setImageSaved(false), 2500);
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
 
+      // Clear files AFTER successful save
       setAvatarFile(null);
       setBannerFile(null);
+      // Keep preview URLs so the user sees the newly saved image
       setValue("avatar", undefined);
       setValue("banner", undefined);
     } catch (err: any) {
@@ -170,6 +198,13 @@ export default function ProfileForm({
     }
   };
 
+  const currentBanner = bannerPreview || profile?.banner;
+  const currentAvatar = avatarPreview || profile?.avatar;
+
+  const hasPendingImages = !!(avatarFile || bannerFile);
+  // Button is visible while there are pending files OR while the upload is in progress
+  const showSaveButton = hasPendingImages || imageLoading;
+
   return (
     <form
       id="dashboard-form"
@@ -178,342 +213,355 @@ export default function ProfileForm({
         toast.error("Please fix the highlighted fields before saving.");
       })}
     >
-      <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink)">
-        Profile
-      </h1>
-      <p className="text-[0.78rem] text-(--lf-muted) mb-3">
-        How you appear on your public portfolio page
-      </p>
+      {/* Page title */}
+      <div className="mb-7">
+        <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink)">
+          Profile
+        </h1>
+        <p className="text-[0.78rem] text-(--lf-muted)">
+          How you appear on your public portfolio page
+        </p>
+      </div>
 
-      <div className="flex flex-col gap-1.25 mb-5">
-        <label className="text-[0.7rem] font-semibold text-(--lf-muted) font-mono tracking-wider">
+      {/* ── Username row ── */}
+      <div className="mb-6">
+        <label className="text-[0.65rem] font-semibold text-(--lf-muted) font-mono tracking-widest uppercase mb-1.5 block">
           Username
         </label>
-        <div className="flex items-stretch">
-          <div className="flex items-center flex-1 rounded-l-xl border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 py-2 gap-1.5 transition-colors duration-150 focus-within:border-(--lf-muted)">
-            <span className="text-[0.78rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
+        <div className="flex items-stretch h-10">
+          <div className="flex items-center flex-1 rounded-l-xl border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 gap-1.5 focus-within:border-(--lf-muted) transition-colors">
+            <span className="text-[0.75rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
               lazyfolio.com/
             </span>
             <input
               {...register("username")}
               placeholder="username"
-              className="bg-transparent border-none outline-none text-[0.85rem] text-(--lf-ink) font-medium w-full placeholder:text-(--lf-dimmed) font-sans-body"
+              className="bg-transparent border-none outline-none text-[0.85rem] text-(--lf-ink) font-medium w-full placeholder:text-(--lf-dimmed)"
             />
           </div>
           <button
             type="button"
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-4 rounded-r-md border border-(--lf-ink) disabled:cursor-not-allowed disabled:opacity-30 bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans-body whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
             onClick={handleSubmitUsername}
           >
-            {loading ? "Updating..." : "Change"}
+            {loading ? <Loader2 size={13} className="animate-spin" /> : null}
+            {loading ? "Saving…" : "Change"}
           </button>
         </div>
         <FieldError message={errors.username?.message} />
       </div>
 
       {!profile?.username ? (
-        <div className="p-8 border border-(--lf-border) rounded-xl bg-(--lf-surface) text-center mb-7 flex flex-col items-center">
-          <div className="text-[1.1rem] font-serif-display text-(--lf-ink) mb-1.5">
-            Set your username first
+        <div className="p-10 border border-(--lf-border) rounded-2xl bg-(--lf-surface) text-center flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-(--lf-accent-soft) flex items-center justify-center text-(--lf-muted)">
+            <AtSign size={22} />
           </div>
-          <div className="text-[0.82rem] text-(--lf-muted) max-w-md leading-relaxed">
-            You need to claim a username before you can update your profile
-            avatar, banner, and basic information. Your username will also be
-            your public portfolio link!
+          <div>
+            <p className="text-[1rem] font-serif-display text-(--lf-ink) mb-1">
+              Set your username first
+            </p>
+            <p className="text-[0.82rem] text-(--lf-muted) max-w-xs leading-relaxed">
+              Claim a username to unlock avatar, banner, and all profile fields.
+            </p>
           </div>
         </div>
       ) : (
         <>
-          {/* image section */}
-          <div className="bg-(--lf-bg) p-4 rounded-xl border border-(--lf-border) mb-4">
-          {/* Save button — disabled until something is selected */}
-            <div className="flex justify-between items-center pb-3">
-              <p className="text-[0.7rem] font-semibold text-(--lf-muted) font-mono tracking-wider">
-                Avatar and Banner
-              </p>
-              <button
-                type="button"
-                onClick={handleSubmitImages}
-                disabled={!avatarFile && !bannerFile || imageLoading}
-                className="inline-flex items-center gap-1.5 px-4 h-8 rounded-[6px] border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold transition-opacity duration-150 font-sans-body
-        disabled:opacity-30 disabled:cursor-not-allowed"
+          {/* ── Hero card: banner + avatar ── */}
+          <div className="rounded-2xl border border-(--lf-border) overflow-hidden mb-5 bg-(--lf-surface) relative">
+            {/* Banner upload */}
+            <div className="relative h-36 sm:h-44 bg-(--lf-border) overflow-hidden group/banner">
+              {currentBanner ? (
+                <img
+                  src={currentBanner}
+                  alt="Banner"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-(--lf-border) to-(--lf-tan)/40">
+                  <div className="flex flex-col items-center gap-1.5 text-(--lf-muted) opacity-50">
+                    <ImageIcon size={24} />
+                    <span className="text-[0.65rem] font-mono">no banner</span>
+                  </div>
+                </div>
+              )}
+
+              <label
+                htmlFor="banner-upload"
+                className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/banner:bg-black/30 cursor-pointer transition-all duration-200"
               >
-                {imageLoading ? "Saving..." : "Save changes"}
-              </button>
+                <div className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-black/70 text-white text-[0.72rem] font-medium opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 backdrop-blur-sm">
+                  <ImageIcon size={12} />
+                  Change banner
+                </div>
+              </label>
+              <input
+                id="banner-upload"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                {...register("banner")}
+                onChange={(e) => {
+                  register("banner").onChange(e);
+                  const file = e.target.files?.[0] ?? null;
+                  setBannerFile(file);
+                  if (file) {
+                    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+                    setBannerPreview(URL.createObjectURL(file));
+                  }
+                }}
+              />
+
+              {bannerFile && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBannerFile(null);
+                    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+                    setBannerPreview(null);
+                    setValue("banner", undefined);
+                  }}
+                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition-colors z-10"
+                >
+                  <X size={11} />
+                </button>
+              )}
             </div>
-            {/* Preview / Upload area */}
-            <div className="flex items-center gap-2 mb-4">
-              {/* Avatar — circle */}
-              <div className="relative shrink-0">
+
+            {/* Avatar + name overlay */}
+            <div className="px-5 pb-5 pt-0">
+              {/* Avatar */}
+              <div className="relative -mt-10 mb-3 w-fit">
+                <label
+                  htmlFor="avatar-upload"
+                  className="block w-20 h-20 rounded-full border-3 border-(--lf-surface) bg-(--lf-border) cursor-pointer overflow-hidden relative group/avatar shadow-sm"
+                >
+                  {currentAvatar ? (
+                    <img
+                      src={currentAvatar}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-(--lf-border) text-(--lf-muted)">
+                      <User size={22} />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/0 group-hover/avatar:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+                    <Camera
+                      size={16}
+                      className="text-white opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-200"
+                    />
+                  </div>
+                </label>
                 <input
                   id="avatar-upload"
                   type="file"
-                  accept="image/png,image/jpeg"
+                  accept="image/png,image/jpeg,image/webp"
                   className="hidden"
                   {...register("avatar")}
                   onChange={(e) => {
                     register("avatar").onChange(e);
-                    setAvatarFile(e.target.files?.[0] ?? null);
+                    const file = e.target.files?.[0] ?? null;
+                    setAvatarFile(file);
+                    if (file) {
+                      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+                      setAvatarPreview(URL.createObjectURL(file));
+                    }
                   }}
                 />
-                <label
-                  htmlFor="avatar-upload"
-                  className="block w-29.5 h-29.5 rounded-full border-2 border-dashed border-(--lf-border) bg-(--lf-surface) cursor-pointer overflow-hidden relative group"
-                >
-                  {avatarFile || profile?.avatar ? (
-                    <img
-                      src={avatarFile ? URL.createObjectURL(avatarFile) : profile.avatar}
-                      alt="Avatar preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-(--lf-muted) group-hover:text-(--lf-ink) transition-colors">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                      </svg>
-                      <span className="text-[0.65rem] font-mono text-center leading-tight px-2">
-                        upload avatar
-                      </span>
-                    </div>
-                  )}
-                </label>
                 {avatarFile && (
                   <button
                     type="button"
                     onClick={() => {
                       setAvatarFile(null);
+                      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+                      setAvatarPreview(null);
                       setValue("avatar", undefined);
                     }}
-                    className="absolute top-1 right-1 w-6 h-6 rounded-full bg-(--lf-ink) text-(--lf-bg) flex items-center justify-center text-[0.7rem] font-bold hover:opacity-80 transition-opacity shadow-sm z-10"
+                    className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-black/70 text-white flex items-center justify-center z-10"
                   >
-                    ✕
+                    <X size={9} />
                   </button>
                 )}
               </div>
 
-              {/* Banner — rounded rect */}
-              <div className="relative flex-1">
-                <input
-                  id="banner-upload"
-                  type="file"
-                  accept="image/png,image/jpeg"
-                  className="hidden"
-                  {...register("banner")}
-                  onChange={(e) => {
-                    register("banner").onChange(e);
-                    setBannerFile(e.target.files?.[0] ?? null);
-                  }}
-                />
-                <label
-                  htmlFor="banner-upload"
-                  className="block w-full h-29.5 rounded-xl border-2 border-dashed border-(--lf-border) bg-(--lf-surface) cursor-pointer overflow-hidden relative group"
-                >
-                  {bannerFile || profile?.banner ? (
-                    <img
-                      src={bannerFile ? URL.createObjectURL(bannerFile) : profile.banner}
-                      alt="Banner preview"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-(--lf-muted) group-hover:text-(--lf-ink) transition-colors">
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      >
-                        <rect x="3" y="5" width="18" height="14" rx="2" />
-                        <path d="m3 15 4-4 4 4 4-5 4 5" />
-                      </svg>
-                      <span className="text-[0.65rem] font-mono">
-                        upload banner
-                      </span>
-                    </div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="text-[1rem] font-semibold text-(--lf-ink) leading-tight">
+                    {profile?.name || (
+                      <span className="text-(--lf-dimmed) font-normal text-[0.9rem]">Your Name</span>
+                    )}
+                  </p>
+                  {profile?.tagline && (
+                    <p className="text-[0.78rem] text-(--lf-muted) mt-0.5">{profile.tagline}</p>
                   )}
-                </label>
-                {bannerFile && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setBannerFile(null);
-                      setValue("banner", undefined);
-                    }}
-                    className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-(--lf-ink) text-(--lf-bg) flex items-center justify-center text-[0.7rem] font-bold hover:opacity-80 transition-opacity shadow-sm z-10"
-                  >
-                    ✕
-                  </button>
-                )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSubmitImages}
+                  disabled={!hasPendingImages || imageLoading}
+                  className={`inline-flex items-center gap-1.5 px-4 h-8 rounded-lg border text-[0.75rem] font-semibold transition-all duration-200 font-sans-body shrink-0
+                    border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) cursor-pointer hover:opacity-85
+                    disabled:opacity-60 disabled:cursor-not-allowed
+                    ${showSaveButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
+                  `}
+                >
+                  {imageLoading ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : imageSaved ? (
+                    <Check size={12} />
+                  ) : null}
+                  {imageLoading ? "Saving…" : imageSaved ? "Saved!" : "Save photos"}
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) transition-colors duration-150 hover:border-(--lf-muted) mb-7">
-            <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) font-mono mb-4">
-              Basic Info
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5 gap-y-3.5">
-              <div className="flex flex-col gap-1.25">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Full Name
-                </label>
+          <div className="mb-4">
+            <p className="text-[0.62rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-2 pl-0.5">
+              Identity
+            </p>
+            <div className="rounded-2xl border border-(--lf-border) overflow-hidden bg-(--lf-surface)">
+              <FieldRow
+                icon={<User size={14} />}
+                label="Full name"
+                error={errors.name?.message}
+              >
                 <input
                   {...register("name")}
-                  placeholder="Enter your name"
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                  placeholder="Your full name"
+                  className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed)"
                 />
-                <FieldError message={errors.name?.message} />
-              </div>
+              </FieldRow>
 
-              <div className="flex flex-col gap-1.25">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                    Email
-                  </label>
-                  {emailValue && (
+              <FieldRow
+                icon={<Mail size={14} />}
+                label="Email"
+                error={errors.email?.message}
+                action={
+                  emailValue ? (
                     <button
                       type="button"
-                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
-                      onClick={() =>
-                        setValue("email", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }
+                      onClick={() => setValue("email", "", { shouldDirty: true, shouldValidate: true })}
+                      className="text-[0.68rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-md hover:bg-(--lf-border) transition-colors"
                     >
                       Clear
                     </button>
-                  )}
-                </div>
+                  ) : undefined
+                }
+              >
                 <input
                   {...register("email")}
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-                  placeholder="enter your email address"
+                  placeholder="you@example.com"
+                  className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed)"
                 />
-                <FieldError message={errors.email?.message} />
-              </div>
+              </FieldRow>
 
-              <div className=" flex flex-col gap-1.25">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                    Tagline
-                  </label>
-                  {taglineValue && (
+              <FieldRow
+                icon={<Zap size={14} />}
+                label="Tagline"
+                error={errors.tagline?.message}
+                noBorder
+                action={
+                  taglineValue ? (
                     <button
                       type="button"
-                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
-                      onClick={() =>
-                        setValue("tagline", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }
+                      onClick={() => setValue("tagline", "", { shouldDirty: true, shouldValidate: true })}
+                      className="text-[0.68rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-md hover:bg-(--lf-border) transition-colors"
                     >
                       Clear
                     </button>
-                  )}
-                </div>
+                  ) : undefined
+                }
+              >
                 <input
                   {...register("tagline")}
-                  placeholder="e.g. Full Stack Developer · Open to work"
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                  placeholder="Full Stack Developer · Open to work"
+                  className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed)"
                 />
-                <FieldError message={errors.tagline?.message} />
-              </div>
+              </FieldRow>
+            </div>
+          </div>
 
-              <div className=" flex flex-col gap-1.25">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                    Book a Call Link
-                  </label>
-                  {bookCallValue && (
+          <div className="mb-4">
+            <p className="text-[0.62rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-2 pl-0.5">
+              Presence
+            </p>
+            <div className="rounded-2xl border border-(--lf-border) overflow-hidden bg-(--lf-surface)">
+              <FieldRow
+                icon={<Quote size={14} />}
+                label="Quote"
+                error={errors.quote?.message}
+                action={
+                  quoteValue ? (
                     <button
                       type="button"
-                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
-                      onClick={() =>
-                        setValue("bookAcall", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }
+                      onClick={() => setValue("quote", "", { shouldDirty: true, shouldValidate: true })}
+                      className="text-[0.68rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-md hover:bg-(--lf-border) transition-colors"
                     >
                       Clear
                     </button>
-                  )}
-                </div>
+                  ) : undefined
+                }
+              >
+                <input
+                  {...register("quote")}
+                  placeholder="Art is never finished, only abandoned."
+                  className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed)"
+                />
+              </FieldRow>
+
+              <FieldRow
+                icon={<Phone size={14} />}
+                label="Book a call"
+                error={errors.bookAcall?.message}
+                action={
+                  bookCallValue ? (
+                    <button
+                      type="button"
+                      onClick={() => setValue("bookAcall", "", { shouldDirty: true, shouldValidate: true })}
+                      className="text-[0.68rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-md hover:bg-(--lf-border) transition-colors"
+                    >
+                      Clear
+                    </button>
+                  ) : undefined
+                }
+              >
                 <input
                   {...register("bookAcall")}
-                  placeholder="e.g. https://cal.com/angshuman-kashyap-qmfpnk/let-s-talk"
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                  placeholder="https://cal.com/your-link"
+                  className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed)"
                 />
-                <FieldError message={errors.bookAcall?.message} />
-              </div>
+              </FieldRow>
 
-              <div className="flex flex-col gap-1.25 sm:col-span-2">
-                <div className="flex items-center justify-between gap-2">
-                  <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                    Quote
-                  </label>
-                  {quoteValue && (
+              <div className="hover:bg-(--lf-accent-soft) transition-colors group">
+                <div className="flex items-start gap-3.5 px-4 py-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[0.6rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-1">
+                      Bio
+                    </p>
+                    <textarea
+                      {...register("bio")}
+                      placeholder="Tell visitors a bit about yourself…"
+                      rows={4}
+                      className="bg-transparent border-none outline-none w-full text-[0.85rem] text-(--lf-ink) placeholder:text-(--lf-dimmed) resize-none leading-relaxed"
+                    />
+                  </div>
+                  {bioValue && (
                     <button
                       type="button"
-                      className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
-                      onClick={() =>
-                        setValue("quote", "", {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }
+                      onClick={() => setValue("bio", "", { shouldDirty: true, shouldValidate: true })}
+                      className="text-[0.68rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-md hover:bg-(--lf-border) transition-colors shrink-0 mt-0.5"
                     >
                       Clear
                     </button>
                   )}
                 </div>
-                <input
-                  type="text"
-                  {...register("quote")}
-                  placeholder="e.g. Art is never finished, only abandoned. ~ Leonardo da Vinci"
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
-                />
-                <FieldError message={errors.quote?.message} />
+                <FieldError message={errors.bio?.message} />
               </div>
-            </div>
-            <div className="flex flex-col gap-1.25 mt-3.5">
-              <div className="flex items-center justify-between gap-2">
-                <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-                  Bio
-                </label>
-                {bioValue && (
-                  <button
-                    type="button"
-                    className="text-[0.68rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
-                    onClick={() =>
-                      setValue("bio", "", {
-                        shouldDirty: true,
-                        shouldValidate: true,
-                      })
-                    }
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-              <textarea
-                {...register("bio")}
-                placeholder="Tell us about yourself"
-                className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-22.5 resize-vertical"
-              />
-              <FieldError message={errors.bio?.message} />
             </div>
           </div>
         </>

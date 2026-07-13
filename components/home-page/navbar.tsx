@@ -95,7 +95,7 @@ const Navbar = () => {
             <>
               <Button
                 onClick={() => router.push("/dashboard")}
-                className="bg-(--lf-ink) text-(--lf-surface) rounded-[6px] hover:cursor-pointer border-2 border-(--lf-ink) text-[0.8rem] font-semibold px-5 py-2  hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="bg-(--lf-ink) text-(--lf-surface) rounded-[6px] hover:cursor-pointer text-[0.8rem] font-semibold px-5 py-2  hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Dashboard
               </Button>

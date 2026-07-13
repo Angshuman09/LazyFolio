@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 function parseOptionalDate(value: string | null | undefined) {
   if (!value?.trim()) {
@@ -38,6 +39,8 @@ export async function POST(request: NextRequest) {
         isenable: experience.isenable ?? true,
       })),
     });
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json(experience, { status: 200 });
   } catch (error) {

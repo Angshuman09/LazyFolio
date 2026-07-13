@@ -3,6 +3,7 @@ import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextResponse, NextRequest } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 import crypto from "crypto";
 
 type BlogInput = {
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest) {
         blogLink,
         enddate: parseOptionalDate(blog.enddate),
         content: blog.content ?? null,
-        isPublished: blog.isPublished ?? false,
+        isPublished: isInternal ? (blog.isPublished ?? false) : true,
         isenable: blog.isenable ?? true,
         slug: slug || null,
       };
@@ -148,6 +149,8 @@ export async function POST(req: NextRequest) {
     });
 
     const results = await Promise.all(operations);
+
+    revalidateProfile(profile.username);
 
     return NextResponse.json({ data: results }, { status: 200 });
   } catch (error) {

@@ -408,29 +408,38 @@ export function BlogCard({
     return (
       <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
         {/* Blog Type Selector */}
-        <div className="flex items-center gap-1.5 mb-4 p-0.5 border border-(--lf-border) rounded-lg bg-(--lf-bg) w-fit">
-          <button
-            type="button"
-            onClick={() => setBlogType("external")}
-            className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all cursor-pointer ${
-              !isInternal
-                ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
-                : "text-(--lf-muted) hover:text-(--lf-ink)"
-            }`}
-          >
-            External Link
-          </button>
-          <button
-            type="button"
-            onClick={() => setBlogType("internal")}
-            className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all cursor-pointer ${
-              isInternal
-                ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
-                : "text-(--lf-muted) hover:text-(--lf-ink)"
-            }`}
-          >
-            Write Article
-          </button>
+        <div className="flex flex-col gap-1.5 mb-4">
+          <div className="flex items-center gap-1.5 p-0.5 border border-(--lf-border) rounded-lg bg-(--lf-bg) w-fit">
+            <button
+              type="button"
+              onClick={() => !savedSnapshot && setBlogType("external")}
+              disabled={!!savedSnapshot}
+              className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all ${
+                !isInternal
+                  ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
+                  : "text-(--lf-muted) hover:text-(--lf-ink)"
+              } ${savedSnapshot ? "cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              External Link
+            </button>
+            <button
+              type="button"
+              onClick={() => !savedSnapshot && setBlogType("internal")}
+              disabled={!!savedSnapshot}
+              className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all ${
+                isInternal
+                  ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
+                  : "text-(--lf-muted) hover:text-(--lf-ink)"
+              } ${savedSnapshot ? "cursor-not-allowed" : "cursor-pointer"}`}
+            >
+              Write Article
+            </button>
+          </div>
+          {savedSnapshot && (
+            <p className="text-[0.65rem] text-(--lf-muted) font-mono pl-0.5">
+              Type cannot be changed after saving. Delete and re-add to switch.
+            </p>
+          )}
         </div>
   
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5 gap-y-3.5">
