@@ -1,19 +1,12 @@
 "use client";
 
 import {
-  Binary,
-  BookMarked,
-  Braces,
-  Briefcase,
-  CalendarClock,
-  Radio,
-} from "lucide-react";
-
-import {
   ThemedPortfolioTemplate,
-  type TemplateThemeConfig,
   type ThemedPortfolioProps,
 } from "./template-themed";
+
+import { TemplateThemeConfig } from "./shared/types";
+
 
 const config: TemplateThemeConfig = {
   key: "template5",

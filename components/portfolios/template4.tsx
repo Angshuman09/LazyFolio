@@ -1,19 +1,11 @@
 "use client";
 
 import {
-  BriefcaseBusiness,
-  CalendarDays,
-  LibraryBig,
-  PenLine,
-  Send,
-  Sparkles,
-} from "lucide-react";
-
-import {
   ThemedPortfolioTemplate,
-  type TemplateThemeConfig,
   type ThemedPortfolioProps,
 } from "./template-themed";
+
+import { TemplateThemeConfig } from "./shared/types";
 
 const config: TemplateThemeConfig = {
   key: "template4",
@@ -123,14 +115,6 @@ const config: TemplateThemeConfig = {
     "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#52645b]",
   iconSize: 14,
   iconStrokeWidth: 1.7,
-  // sectionIcons: {
-  //   experience: BriefcaseBusiness,
-  //   projects: LibraryBig,
-  //   writing: PenLine,
-  //   stack: Sparkles,
-  //   contact: Send,
-  //   call: CalendarDays,
-  // },
 };
 
 export function Template4(props: ThemedPortfolioProps) {

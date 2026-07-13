@@ -1,19 +1,10 @@
 "use client";
 
 import {
-  BookOpenText,
-  BriefcaseBusiness,
-  CalendarCheck,
-  Orbit,
-  Send,
-  SquareStack,
-} from "lucide-react";
-
-import {
   ThemedPortfolioTemplate,
-  type TemplateThemeConfig,
   type ThemedPortfolioProps,
 } from "./template-themed";
+import { TemplateThemeConfig } from "./shared/types";
 
 const config: TemplateThemeConfig = {
   key: "template8",
@@ -126,14 +117,6 @@ const config: TemplateThemeConfig = {
     "text-[11px] font-semibold hover:outline-[#857967] flex items-center justify-center tracking-[0.12em] text-[#d8bd62]",
   iconSize: 14,
   iconStrokeWidth: 1.8,
-  // sectionIcons: {
-  //   experience: BriefcaseBusiness,
-  //   projects: SquareStack,
-  //   writing: BookOpenText,
-  //   stack: Orbit,
-  //   contact: Send,
-  //   call: CalendarCheck,
-  // },
 };
 
 export function Template8(props: ThemedPortfolioProps) {

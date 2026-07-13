@@ -1,288 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import type { ReactNode } from "react";
 import {
-  Github,
-  ExternalLink,
   ArrowRight,
+  ExternalLink,
+  Github,
   MoveUpRight,
-  Linkedin,
-  Youtube,
-  Mail,
-  Globe,
-  FileText,
-  Code2,
-  BookOpen,
-  Instagram,
-  Phone,
 } from "lucide-react";
-
 import Image from "next/image";
 import Link from "next/link";
+
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { trackClick } from "@/lib/utils/track-click";
 
-type DateLike = string | Date | null | undefined;
+import type { ProfileData, UserData } from "./shared/types";
+import {
+  textValue,
+  cleanUrl,
+  shouldOpenInNewTab,
+  addProfileContactLinks,
+  getBookCallLink,
+} from "./shared/utils";
+import {
+  normalizeLinks,
+  normalizeExperiences,
+  normalizeProjects,
+  normalizeBlogs,
+  normalizeStack,
+} from "./shared/normalize";
+import { getLinkIcon } from "./shared/link-icon";
 
-type ProfileLink = {
-  id?: string;
-  type?: string | null;
-  label?: string | null;
-  name?: string | null;
-  url?: string | null;
-  href?: string | null;
-};
-
-type ProfileExperience = {
-  id?: string;
-  companyName?: string | null;
-  company?: string | null;
-  role?: string | null;
-  startdate?: DateLike;
-  enddate?: DateLike;
-  description?: string | null;
-};
-
-type ProfileProject = {
-  id?: string;
-  title?: string | null;
-  name?: string | null;
-  description?: string | null;
-  githubLink?: string | null;
-  projectLink?: string | null;
-  github?: string | null;
-  demo?: string | null;
-  live?: boolean | null;
-  techstack?: string[] | null;
-  tags?: string[] | null;
-  enddate?: DateLike;
-  status?: string | null;
-};
-
-type ProfileBlog = {
-  id?: string;
-  title?: string | null;
-  description?: string | null;
-  blogLink?: string | null;
-  url?: string | null;
-  enddate?: DateLike;
-  readTime?: string | null;
-};
-
-type ProfileData = {
-  id?: string | null,
-  name?: string | null;
-  avatar?: string | null;
-  banner?: string | null;
-  quote?: string | null;
-  tagline?: string | null;
-  bio?: string | null;
-  email?: string | null;
-  resume?: string | null;
-  bookAcall?: string | null;
-  links?: ProfileLink[] | null;
-  experiences?: ProfileExperience[] | null;
-  projects?: ProfileProject[] | null;
-  skills?: string[] | null;
-  blogs?: ProfileBlog[] | null;
-};
-
-type UserData = {
-  name?: string | null;
-  image?: string | null;
-};
-
-type NormalizedLink = {
-  id: string;
-  label: string;
-  href: string;
-};
-
-type PortfolioExperience = {
-  id: string;
-  company?: string;
-  companyUrl?: string;
-  role?: string;
-  period?: string;
-  bullets: string[];
-};
-
-type PortfolioProject = {
-  id: string;
-  name?: string;
-  description?: string;
-  tags: string[];
-  github?: string;
-  demo?: string;
-  status?: string;
-};
-
-type PortfolioBlog = {
-  id: string;
-  title?: string;
-  description?: string;
-  readTime?: string;
-  url?: string;
-};
-
-type StackItem = {
-  name: string;
-};
-
-type KnownLinkMetadata = {
-  type?: string;
-  label: string;
-  domains: readonly string[];
-  labels: readonly string[];
-};
-
-const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
-  {
-    type: "GITHUB",
-    label: "GitHub",
-    domains: ["github.com", "github.io"],
-    labels: ["github"],
-  },
-  {
-    type: "X",
-    label: "X",
-    domains: ["x.com", "twitter.com"],
-    labels: ["x", "twitter"],
-  },
-  {
-    type: "LINKEDIN",
-    label: "LinkedIn",
-    domains: ["linkedin.com", "lnkd.in"],
-    labels: ["linkedin"],
-  },
-  {
-    type: "INSTAGRAM",
-    label: "Instagram",
-    domains: ["instagram.com"],
-    labels: ["instagram"],
-  },
-  {
-    label: "YouTube",
-    domains: ["youtube.com", "youtu.be"],
-    labels: ["youtube"],
-  },
-  {
-    label: "Medium",
-    domains: ["medium.com"],
-    labels: ["medium"],
-  },
-  {
-    label: "Dev.to",
-    domains: ["dev.to"],
-    labels: ["dev.to", "dev"],
-  },
-  {
-    label: "LeetCode",
-    domains: ["leetcode.com"],
-    labels: ["leetcode"],
-  },
-  {
-    label: "Dribbble",
-    domains: ["dribbble.com"],
-    labels: ["dribbble"],
-  },
-  {
-    label: "Behance",
-    domains: ["behance.net"],
-    labels: ["behance"],
-  },
-];
-
-function getLinkIcon(label: string, href: string): ReactNode {
-  const domain = getDomain(href);
-  const lowerLabel = label.toLowerCase();
-  const lowerDomain = domain.toLowerCase();
-
-  const iconProps = { size: 14 };
-
-  // GitHub
-  if (lowerDomain.includes("github") || lowerLabel === "github") {
-    return <Github {...iconProps} />;
-  }
-
-  // X / Twitter
-  if (
-    lowerDomain.includes("x.com") ||
-    lowerDomain.includes("twitter") ||
-    lowerLabel === "x" ||
-    lowerLabel === "twitter"
-  ) {
-    // X logo as SVG since lucide doesn't have it
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    );
-  }
-
-  if (lowerDomain.includes("linkedin") || lowerLabel === "linkedin") {
-    return <Linkedin {...iconProps} />;
-  }
-
-  if (lowerDomain.includes("instagram") || lowerLabel === "instagram") {
-    return <Instagram {...iconProps} />;
-  }
-
-  if (
-    lowerDomain.includes("youtube") ||
-    lowerDomain.includes("youtu.be") ||
-    lowerLabel === "youtube"
-  ) {
-    return <Youtube {...iconProps} />;
-  }
-
-  if (lowerDomain.includes("medium") || lowerLabel === "medium") {
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-      </svg>
-    );
-  }
-
-  if (lowerDomain.includes("leetcode") || lowerLabel === "leetcode") {
-    return <Code2 {...iconProps} />;
-  }
-
-  if (
-    lowerDomain.includes("dev.to") ||
-    lowerLabel === "dev.to" ||
-    lowerLabel === "dev"
-  ) {
-    return <BookOpen {...iconProps} />;
-  }
-
-  if (
-    href.startsWith("mailto:") ||
-    lowerLabel === "mail" ||
-    lowerLabel === "email"
-  ) {
-    return <Mail {...iconProps} />;
-  }
-
-  if (href.startsWith("tel:") || lowerLabel === "phone") {
-    return <Phone {...iconProps} />;
-  }
-
-  if (lowerLabel === "resume" || lowerLabel === "cv") {
-    return <FileText {...iconProps} />;
-  }
-
-  return <Globe {...iconProps} />;
-}
-
-const Divider = () => <div className="w-full h-px bg-stone-200/80 my-10" />;
-
-const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <h2 className="text-md font-semibold text-stone-900 mb-6 tracking-tight">
-    {children}
-  </h2>
-);
 
 const statusStyle: Record<string, string> = {
   Live: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20",
@@ -290,244 +37,18 @@ const statusStyle: Record<string, string> = {
   "Open Source": "text-sky-600 bg-sky-500/10 border-sky-500/20",
 };
 
-const fallbackStatusStyle =
-  "text-stone-500 bg-stone-500/10 border-stone-500/20";
+const fallbackStatusStyle = "text-stone-500 bg-stone-500/10 border-stone-500/20";
 
-function textValue(value: unknown) {
-  return typeof value === "string" ? value.trim() : "";
-}
 
-function cleanUrl(value?: string | null) {
-  const url = textValue(value);
+const Divider = () => <div className="w-full h-px bg-stone-200/80 my-10" />;
 
-  if (!url) return "";
+const SectionHeading = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="text-md font-semibold text-stone-900 mb-6 tracking-tight">
+    {children}
+  </h2>
+);
 
-  if (
-    url.startsWith("#") ||
-    url.startsWith("/") ||
-    /^(https?:|mailto:|tel:)/i.test(url)
-  ) {
-    return url;
-  }
-
-  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(url)) {
-    return `mailto:${url}`;
-  }
-
-  return `https://${url}`;
-}
-
-function shouldOpenInNewTab(href?: string) {
-  return !!href && /^https?:\/\//i.test(href);
-}
-
-function getDomain(href?: string) {
-  if (!href) return "";
-  if (href.startsWith("mailto:")) return "email";
-  try {
-    return new URL(href).hostname.replace(/^www\./, "");
-  } catch {
-    return "";
-  }
-}
-
-function domainToLabel(domain: string) {
-  const firstPart = domain.replace(/^www\./, "").split(".")[0] || "Link";
-  return firstPart
-    .split(/[-_]/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
-function findKnownLink(type?: string, label?: string, href?: string) {
-  const normalizedType = textValue(type).toUpperCase();
-  const normalizedLabel = textValue(label).toLowerCase();
-  const domain = getDomain(href);
-
-  return KNOWN_LINKS.find((item) => {
-    const typeMatches = item.type === normalizedType;
-    const labelMatches = item.labels.some((itemLabel) =>
-      normalizedLabel.includes(itemLabel),
-    );
-    const domainMatches = item.domains.some(
-      (itemDomain) =>
-        domain === itemDomain || domain.endsWith(`.${itemDomain}`),
-    );
-    return typeMatches || labelMatches || domainMatches;
-  });
-}
-
-function normalizeLink(
-  link: ProfileLink,
-  index: number,
-): NormalizedLink | null {
-  const href = cleanUrl(link.url || link.href);
-  if (!href) return null;
-
-  const explicitLabel = textValue(link.label || link.name);
-  const known = findKnownLink(link.type || undefined, explicitLabel, href);
-  const domain = getDomain(href);
-  const isEmail = href.startsWith("mailto:");
-  const label =
-    explicitLabel ||
-    known?.label ||
-    (isEmail ? "Email" : domain ? domainToLabel(domain) : "Link");
-
-  return { id: link.id || `${label}-${index}`, label, href };
-}
-
-function normalizeLinks(links?: ProfileLink[] | null) {
-  return (links || [])
-    .map((link, index) => normalizeLink(link, index))
-    .filter(Boolean) as NormalizedLink[];
-}
-
-function addProfileContactLinks(
-  links: NormalizedLink[],
-  profile?: ProfileData | null,
-) {
-  const contactLinks = [...links];
-  const email = textValue(profile?.email);
-  const resume = cleanUrl(profile?.resume);
-
-  if (
-    email &&
-    !contactLinks.some(
-      (link) => link.href.startsWith("mailto:") || link.label === "Email",
-    )
-  ) {
-    contactLinks.unshift({
-      id: "profile-email",
-      label: "Email",
-      href: `mailto:${email}`,
-    });
-  }
-
-  if (resume && !contactLinks.some((link) => link.href === resume)) {
-    contactLinks.push({ id: "profile-resume", label: "Resume", href: resume });
-  }
-
-  return contactLinks;
-}
-
-function formatDate(value: DateLike) {
-  if (!value) return "";
-  if (value instanceof Date || typeof value === "string") {
-    const parsed = value instanceof Date ? value : new Date(value);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toLocaleDateString("en", {
-        month: "short",
-        year: "numeric",
-      });
-    }
-  }
-  return textValue(value);
-}
-
-function formatDateRange(startdate: DateLike, enddate: DateLike) {
-  const start = formatDate(startdate);
-  if (!start && !enddate) return "";
-  const end = enddate ? formatDate(enddate) : "Present";
-  if (start && end) return `${start} - ${end}`;
-  return start || end;
-}
-
-function splitDescription(description?: string | null) {
-  return textValue(description)
-    .split(/\n|•/)
-    .map((item) => item.replace(/^[-–]\s*/, "").trim())
-    .filter(Boolean);
-}
-
-function normalizeExperiences(
-  experiences?: ProfileExperience[] | null,
-): PortfolioExperience[] {
-  const normalized = (experiences || [])
-    .map((experience, index) => {
-      const company = textValue(experience.companyName || experience.company);
-      const role = textValue(experience.role);
-      const bullets = splitDescription(experience.description);
-      if (!company && !role && bullets.length === 0) return null;
-      return {
-        id: experience.id || `${company || role}-${index}`,
-        company: company || undefined,
-        role: role || undefined,
-        period: formatDateRange(experience.startdate, experience.enddate),
-        bullets,
-      };
-    })
-    .filter(Boolean) as PortfolioExperience[];
-
-  return normalized;
-}
-
-function normalizeProjects(
-  projects?: ProfileProject[] | null,
-): PortfolioProject[] {
-  const normalized = (projects || [])
-    .map((project, index) => {
-      const name = textValue(project.title || project.name);
-      const description = textValue(project.description);
-      const github = cleanUrl(project.githubLink || project.github);
-      const demo = cleanUrl(project.projectLink || project.demo);
-      const tags = (project.techstack || project.tags || [])
-        .map(textValue)
-        .filter(Boolean);
-      if (!name && !description && !github && !demo && tags.length === 0)
-        return null;
-      const status =
-        textValue(project.status) ||
-        (project.live || demo ? "Live" : github ? "Open Source" : "");
-      return {
-        id: project.id || `${name || "project"}-${index}`,
-        name: name || undefined,
-        description: description || undefined,
-        tags,
-        github,
-        demo,
-        status: status || undefined,
-      };
-    })
-    .filter(Boolean) as PortfolioProject[];
-
-  return normalized;
-}
-
-function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
-  const normalized = (blogs || [])
-    .map((blog, index) => {
-      const title = textValue(blog.title);
-      const description = textValue(blog.description);
-      const url = cleanUrl(blog.blogLink || blog.url);
-      if (!title && !description && !url) return null;
-      return {
-        id: blog.id || `${title || "blog"}-${index}`,
-        title: title || undefined,
-        description: description || undefined,
-        readTime:
-          textValue(blog.readTime) || formatDate(blog.enddate) || undefined,
-        url,
-      };
-    })
-    .filter(Boolean) as PortfolioBlog[];
-
-  return normalized;
-}
-
-function normalizeStack(skills?: string[] | null): StackItem[] {
-  const normalized = (skills || [])
-    .map(textValue)
-    .filter(Boolean)
-    .map((skill) => ({ name: skill }));
-  return normalized;
-}
-
-function getBookCallLink(profile?: ProfileData) {
-  return cleanUrl(profile?.bookAcall);
-}
-
-function StackTicker({ stack }: { stack: StackItem[] }) {
+function StackTicker({ stack }: { stack: { name: string }[] }) {
   const items = [...stack, ...stack];
   return (
     <div className="relative overflow-hidden py-1">
@@ -587,7 +108,8 @@ export function Template2({
       `}</style>
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
         <div className="max-w-[800px] mx-auto px-6 py-16 sm:py-20">
-          {/* QUOTE */}
+
+          {/* ── QUOTE ── */}
           {quote && (
             <div className="mb-12 border-l-2 border-stone-300 pl-4">
               <p className="text-xs text-stone-500 italic leading-relaxed">
@@ -596,7 +118,7 @@ export function Template2({
             </div>
           )}
 
-          {/* HERO */}
+          {/* ── HERO ── */}
           <section className="mb-8">
             {hasHeroMedia && (
               <div className="relative mb-9">
@@ -633,12 +155,14 @@ export function Template2({
               </h1>
             )}
             {tagline && (
-              <p className="text-xs text-stone-400 font-mono mb-5">
-                {tagline}
-              </p>
+              <p className="text-xs text-stone-400 font-mono mb-5">{tagline}</p>
             )}
-            {bio && <p className="text-sm text-stone-600 leading-[1.8]">{bio}</p>}
+            {bio && (
+              <p className="text-sm text-stone-600 leading-[1.8]">{bio}</p>
+            )}
           </section>
+
+          {/* ── QUICK LINKS ── */}
           {hasQuickActions && (
             <div className="flex flex-wrap gap-2 mb-4">
               {links.map((link) => (
@@ -646,9 +170,7 @@ export function Template2({
                   <TooltipTrigger asChild>
                     <Link
                       href={link.href}
-                      target={
-                        shouldOpenInNewTab(link.href) ? "_blank" : undefined
-                      }
+                      target={shouldOpenInNewTab(link.href) ? "_blank" : undefined}
                       rel="noopener noreferrer"
                       onClick={() => trackClick(profile?.id ?? undefined, link.label)}
                       title={link.label}
@@ -665,9 +187,7 @@ export function Template2({
               {bookCallLink && (
                 <Link
                   href={bookCallLink}
-                  target={
-                    shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
-                  }
+                  target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] text-stone-700 border border-stone-200 bg-stone-100 hover:bg-stone-200 transition-all duration-150 ml-auto font-medium"
                 >
@@ -678,6 +198,7 @@ export function Template2({
             </div>
           )}
 
+          {/* ── EXPERIENCE ── */}
           {experiences.length > 0 && (
             <>
               <Divider />
@@ -712,9 +233,7 @@ export function Template2({
                               key={`${exp.id}-${i}`}
                               className="flex gap-2.5 text-[13px] text-stone-600 leading-relaxed"
                             >
-                              <span className="text-stone-300 shrink-0 select-none mt-0.5">
-                                •
-                              </span>
+                              <span className="text-stone-300 shrink-0 select-none mt-0.5">•</span>
                               {bullet}
                             </li>
                           ))}
@@ -727,6 +246,7 @@ export function Template2({
             </>
           )}
 
+          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <>
               <Divider />
@@ -745,7 +265,6 @@ export function Template2({
                           </span>
                         </div>
                       )}
-
                       <div className="flex-1 min-w-0">
                         {(project.name || project.status) && (
                           <div className="flex items-center gap-2 mb-0.5 flex-wrap">
@@ -787,18 +306,10 @@ export function Template2({
                           {project.github && (
                             <Link
                               href={project.github}
-                              target={
-                                shouldOpenInNewTab(project.github)
-                                  ? "_blank"
-                                  : undefined
-                              }
+                              target={shouldOpenInNewTab(project.github) ? "_blank" : undefined}
                               rel="noopener noreferrer"
                               className="text-stone-400 hover:text-stone-600 transition-colors"
-                              aria-label={
-                                project.name
-                                  ? `${project.name} source`
-                                  : "Project source"
-                              }
+                              aria-label={project.name ? `${project.name} source` : "Project source"}
                             >
                               <Github size={12} />
                             </Link>
@@ -806,18 +317,10 @@ export function Template2({
                           {project.demo && (
                             <Link
                               href={project.demo}
-                              target={
-                                shouldOpenInNewTab(project.demo)
-                                  ? "_blank"
-                                  : undefined
-                              }
+                              target={shouldOpenInNewTab(project.demo) ? "_blank" : undefined}
                               rel="noopener noreferrer"
                               className="text-stone-400 hover:text-stone-600 transition-colors"
-                              aria-label={
-                                project.name
-                                  ? `${project.name} live link`
-                                  : "Project live link"
-                              }
+                              aria-label={project.name ? `${project.name} live link` : "Project live link"}
                             >
                               <ExternalLink size={12} />
                             </Link>
@@ -840,6 +343,7 @@ export function Template2({
             </>
           )}
 
+          {/* ── BLOGS ── */}
           {blogs.length > 0 && (
             <>
               <Divider />
@@ -879,13 +383,11 @@ export function Template2({
                       </>
                     );
 
-                    return blog.url? (
+                    return blog.url ? (
                       <Link
                         key={blog.id}
                         href={blog.url}
-                        target={
-                          shouldOpenInNewTab(blog.url) ? "_blank" : undefined
-                        }
+                        target={shouldOpenInNewTab(blog.url) ? "_blank" : undefined}
                         rel="noopener noreferrer"
                         className="group flex items-center justify-between px-3 py-3 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
                       >
@@ -905,44 +407,42 @@ export function Template2({
             </>
           )}
 
+          {/* ── STACK ── */}
           {stack.length > 0 && (
             <>
               <Divider />
               <section>
                 <SectionHeading>Skills</SectionHeading>
-                {stack.length <= 8 ?
+                {stack.length <= 8 ? (
                   <div className="relative overflow-hidden py-1 flex justify-start flex-wrap">
-                    <div
-                      className="flex gap-3 w-max"
-                    >
-                    {stack.map((tech, i) => (
-                      <div
-                        key={`${tech.name}-${i}`}
-                        className="flex items-center px-3 py-1.5 rounded-lg bg-white border border-stone-200 shrink-0"
-                      >
-                        <span className="text-[11px] text-stone-500 whitespace-nowrap font-medium">
-                          {tech.name}
-                        </span>
-                      </div>
-                    ))}
+                    <div className="flex gap-3 w-max">
+                      {stack.map((tech, i) => (
+                        <div
+                          key={`${tech.name}-${i}`}
+                          className="flex items-center px-3 py-1.5 rounded-lg bg-white border border-stone-200 shrink-0"
+                        >
+                          <span className="text-[11px] text-stone-500 whitespace-nowrap font-medium">
+                            {tech.name}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  :
+                ) : (
                   <StackTicker stack={stack} />
-                }
+                )}
               </section>
             </>
           )}
 
+          {/* ── BOOK A CALL ── */}
           {bookCallLink && (
             <>
               <Divider />
               <section className="mb-2">
                 <Link
                   href={bookCallLink}
-                  target={
-                    shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined
-                  }
+                  target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white border border-stone-200 hover:border-stone-300 transition-all duration-200"
                 >
@@ -968,6 +468,7 @@ export function Template2({
             </>
           )}
 
+          {/* ── CONTACT LINKS ── */}
           {contactLinks.length > 0 && (
             <>
               <Divider />
@@ -978,9 +479,7 @@ export function Template2({
                     <Link
                       key={link.id}
                       href={link.href}
-                      target={
-                        shouldOpenInNewTab(link.href) ? "_blank" : undefined
-                      }
+                      target={shouldOpenInNewTab(link.href) ? "_blank" : undefined}
                       onClick={() => trackClick(profile?.id ?? undefined, link.label)}
                       rel="noopener noreferrer"
                       className="group flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-stone-50 border border-transparent hover:border-stone-200 transition-all duration-150"
@@ -1004,6 +503,7 @@ export function Template2({
             </>
           )}
 
+          {/* ── FOOTER ── */}
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
             <p className="text-[11px] text-stone-300">
               built with{" "}

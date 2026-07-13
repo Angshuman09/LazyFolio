@@ -1,0 +1,157 @@
+// ─── Shared Portfolio Normalize Functions ─────────────────────────────────────
+// Transform raw profile data (from the DB/API) into clean, display-ready
+// structures. Shared by all portfolio templates.
+
+import type {
+  NormalizedLink,
+  PortfolioBlog,
+  PortfolioExperience,
+  PortfolioProject,
+  ProfileBlog,
+  ProfileExperience,
+  ProfileLink,
+  ProfileProject,
+  StackItem,
+} from "./types";
+
+import {
+  cleanUrl,
+  domainToLabel,
+  findKnownLink,
+  formatDate,
+  formatDateRange,
+  getDomain,
+  splitDescription,
+  textValue,
+} from "./utils";
+
+// ─── Links ────────────────────────────────────────────────────────────────────
+
+/** Normalises a single raw link into a display-ready object. */
+export function normalizeLink(
+  link: ProfileLink,
+  index: number,
+): NormalizedLink | null {
+  const href = cleanUrl(link.url || link.href);
+  if (!href) return null;
+
+  const explicitLabel = textValue(link.label || link.name);
+  const known = findKnownLink(link.type || undefined, explicitLabel, href);
+  const domain = getDomain(href);
+  const isEmail = href.startsWith("mailto:");
+  const label =
+    explicitLabel ||
+    known?.label ||
+    (isEmail ? "Email" : domain ? domainToLabel(domain) : "Link");
+
+  return { id: link.id || `${label}-${index}`, label, href };
+}
+
+/** Normalises an array of raw links, filtering out invalid ones. */
+export function normalizeLinks(
+  links?: ProfileLink[] | null,
+): NormalizedLink[] {
+  return (links || [])
+    .map((link, index) => normalizeLink(link, index))
+    .filter(Boolean) as NormalizedLink[];
+}
+
+// ─── Experiences ──────────────────────────────────────────────────────────────
+
+/** Normalises raw experience entries into display-ready structures. */
+export function normalizeExperiences(
+  experiences?: ProfileExperience[] | null,
+): PortfolioExperience[] {
+  return (experiences || [])
+    .map((experience, index) => {
+      const company = textValue(
+        experience.companyName || experience.company,
+      );
+      const role = textValue(experience.role);
+      const bullets = splitDescription(experience.description);
+
+      if (!company && !role && bullets.length === 0) return null;
+
+      return {
+        id: experience.id || `${company || role}-${index}`,
+        company: company || undefined,
+        role: role || undefined,
+        period: formatDateRange(experience.startdate, experience.enddate),
+        bullets,
+      };
+    })
+    .filter(Boolean) as PortfolioExperience[];
+}
+
+// ─── Projects ─────────────────────────────────────────────────────────────────
+
+/** Normalises raw project entries into display-ready structures. */
+export function normalizeProjects(
+  projects?: ProfileProject[] | null,
+): PortfolioProject[] {
+  return (projects || [])
+    .map((project, index) => {
+      const name = textValue(project.title || project.name);
+      const description = textValue(project.description);
+      const github = cleanUrl(project.githubLink || project.github);
+      const demo = cleanUrl(project.projectLink || project.demo);
+      const tags = (project.techstack || project.tags || [])
+        .map(textValue)
+        .filter(Boolean);
+
+      if (!name && !description && !github && !demo && tags.length === 0) {
+        return null;
+      }
+
+      const status =
+        textValue(project.status) ||
+        (project.live || demo ? "Live" : github ? "Open Source" : "");
+
+      return {
+        id: project.id || `${name || "project"}-${index}`,
+        name: name || undefined,
+        description: description || undefined,
+        tags,
+        github,
+        demo,
+        status: status || undefined,
+      };
+    })
+    .filter(Boolean) as PortfolioProject[];
+}
+
+// ─── Blogs ────────────────────────────────────────────────────────────────────
+
+/** Normalises raw blog entries into display-ready structures. */
+export function normalizeBlogs(
+  blogs?: ProfileBlog[] | null,
+): PortfolioBlog[] {
+  return (blogs || [])
+    .map((blog, index) => {
+      const title = textValue(blog.title);
+      const description = textValue(blog.description);
+      const url = cleanUrl(blog.blogLink || blog.url);
+
+      if (!title && !description && !url) return null;
+
+      return {
+        id: blog.id || `${title || "blog"}-${index}`,
+        title: title || undefined,
+        description: description || undefined,
+        readTime:
+          textValue(blog.readTime) || formatDate(blog.enddate) || undefined,
+        url,
+      };
+    })
+    .filter(Boolean) as PortfolioBlog[];
+}
+
+// ─── Stack / Skills ───────────────────────────────────────────────────────────
+
+/** Converts a raw skills string array into typed StackItem objects. */
+export function normalizeStack(skills?: string[] | null): StackItem[] {
+  return (skills || [])
+    .map(textValue)
+    .filter(Boolean)
+    .map((skill) => ({ name: skill }));
+}

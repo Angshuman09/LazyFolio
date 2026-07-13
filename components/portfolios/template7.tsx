@@ -1,19 +1,10 @@
 "use client";
 
 import {
-  BookText,
-  BriefcaseBusiness,
-  CalendarDays,
-  Grid2X2,
-  MessageSquareShare,
-  Wrench,
-} from "lucide-react";
-
-import {
   ThemedPortfolioTemplate,
-  type TemplateThemeConfig,
   type ThemedPortfolioProps,
 } from "./template-themed";
+import { TemplateThemeConfig } from "./shared/types";
 
 const config: TemplateThemeConfig = {
   key: "template7",

@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { ComponentType, ReactNode } from "react";
 import {
   ArrowRight,
   ExternalLink,
   Github,
-  Sparkles,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,14 +24,13 @@ import {
   addProfileContactLinks,
   textValue,
   type ThemedPortfolioProps,
-  type TemplateThemeConfig,
 } from "./template-themed";
 
-type IconComponent = ComponentType<{
-  size?: number;
-  className?: string;
-  strokeWidth?: number;
-}>;
+import { TemplateThemeConfig } from "./shared/types";
+
+import { SectionHeading } from "./shared/components/section-heading";
+import { StackTicker } from "./shared/components/stack-ticker";
+import { Divider } from "./shared/components/divider";
 
 const config: TemplateThemeConfig = {
   key: "template6",
@@ -138,49 +135,6 @@ const config: TemplateThemeConfig = {
   iconStrokeWidth: 1.9,
 };
 
-function SectionHeading({
-  children,
-  icon: Icon = Sparkles,
-  config,
-}: {
-  children: ReactNode;
-  icon?: IconComponent;
-  config: TemplateThemeConfig;
-}) {
-  return (
-    <div className={config.sectionHeadingClass}>
-      <h2 className={config.sectionTitleClass}>{children}</h2>
-    </div>
-  );
-}
-
-function StackTicker({
-  stack,
-  config,
-}: {
-  stack: { name: string }[];
-  config: TemplateThemeConfig;
-}) {
-  const items = [...stack, ...stack];
-
-  return (
-    <div className={config.stackShellClass}>
-      <div className={config.stackFadeLeftClass} />
-      <div className={config.stackFadeRightClass} />
-      <div className={config.stackTrackClass}>
-        {items.map((tech, index) => (
-          <div key={`${tech.name}-${index}`} className={config.stackItemClass}>
-            <span className={config.stackTextClass}>{tech.name}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Divider({ config }: { config: TemplateThemeConfig }) {
-  return <div className={config.dividerClass} />;
-}
 
 export function Template6(props: ThemedPortfolioProps) {
   const { user, profile } = props;

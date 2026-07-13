@@ -1,252 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import type { ReactNode } from "react";
 import {
-  Github,
-  ExternalLink,
   ArrowRight,
+  ExternalLink,
+  Github,
   MoveUpRight,
-  Linkedin,
-  Youtube,
-  Mail,
-  Globe,
-  FileText,
-  Code2,
-  BookOpen,
-  Instagram,
-  Phone,
 } from "lucide-react";
-
 import Image from "next/image";
 import Link from "next/link";
+
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-// ─── TYPES ───────────────────────────────────────────────────────────────────
-type DateLike = string | Date | null | undefined;
+// ─── Shared imports ───────────────────────────────────────────────────────────
+import type { ProfileData, UserData } from "./shared/types";
+import {
+  textValue,
+  cleanUrl,
+  shouldOpenInNewTab,
+  addProfileContactLinks,
+  getBookCallLink,
+} from "./shared/utils";
+import {
+  normalizeLinks,
+  normalizeExperiences,
+  normalizeProjects,
+  normalizeBlogs,
+  normalizeStack,
+} from "./shared/normalize";
+import { getLinkIcon } from "./shared/link-icon";
 
-type ProfileLink = {
-  id?: string;
-  type?: string | null;
-  label?: string | null;
-  name?: string | null;
-  url?: string | null;
-  href?: string | null;
-};
+// ─── Template-local styles (slate/minimal palette specific to Template3) ──────
 
-type ProfileExperience = {
-  id?: string;
-  companyName?: string | null;
-  company?: string | null;
-  role?: string | null;
-  startdate?: DateLike;
-  enddate?: DateLike;
-  description?: string | null;
-};
-
-type ProfileProject = {
-  id?: string;
-  title?: string | null;
-  name?: string | null;
-  description?: string | null;
-  githubLink?: string | null;
-  projectLink?: string | null;
-  github?: string | null;
-  demo?: string | null;
-  live?: boolean | null;
-  techstack?: string[] | null;
-  tags?: string[] | null;
-  enddate?: DateLike;
-  status?: string | null;
-};
-
-type ProfileBlog = {
-  id?: string;
-  title?: string | null;
-  description?: string | null;
-  blogLink?: string | null;
-  url?: string | null;
-  enddate?: DateLike;
-  readTime?: string | null;
-};
-
-type ProfileData = {
-  id?: string | null,
-  name?: string | null;
-  avatar?: string | null;
-  banner?: string | null;
-  quote?: string | null;
-  tagline?: string | null;
-  bio?: string | null;
-  email?: string | null;
-  resume?: string | null;
-  bookAcall?: string | null;
-  links?: ProfileLink[] | null;
-  experiences?: ProfileExperience[] | null;
-  projects?: ProfileProject[] | null;
-  skills?: string[] | null;
-  blogs?: ProfileBlog[] | null;
-};
-
-type UserData = {
-  name?: string | null;
-  image?: string | null;
-};
-
-type NormalizedLink = {
-  id: string;
-  label: string;
-  href: string;
-};
-
-type PortfolioExperience = {
-  id: string;
-  company?: string;
-  companyUrl?: string;
-  role?: string;
-  period?: string;
-  bullets: string[];
-};
-
-type PortfolioProject = {
-  id: string;
-  name?: string;
-  description?: string;
-  tags: string[];
-  github?: string;
-  demo?: string;
-  status?: string;
-};
-
-type PortfolioBlog = {
-  id: string;
-  title?: string;
-  description?: string;
-  readTime?: string;
-  url?: string;
-};
-
-type StackItem = {
-  name: string;
-};
-
-type KnownLinkMetadata = {
-  type?: string;
-  label: string;
-  domains: readonly string[];
-  labels: readonly string[];
-};
-
-const KNOWN_LINKS: readonly KnownLinkMetadata[] = [
-  {
-    type: "GITHUB",
-    label: "GitHub",
-    domains: ["github.com", "github.io"],
-    labels: ["github"],
-  },
-  {
-    type: "X",
-    label: "X",
-    domains: ["x.com", "twitter.com"],
-    labels: ["x", "twitter"],
-  },
-  {
-    type: "LINKEDIN",
-    label: "LinkedIn",
-    domains: ["linkedin.com", "lnkd.in"],
-    labels: ["linkedin"],
-  },
-  {
-    type: "INSTAGRAM",
-    label: "Instagram",
-    domains: ["instagram.com"],
-    labels: ["instagram"],
-  },
-  {
-    label: "YouTube",
-    domains: ["youtube.com", "youtu.be"],
-    labels: ["youtube"],
-  },
-  {
-    label: "Medium",
-    domains: ["medium.com"],
-    labels: ["medium"],
-  },
-  {
-    label: "Dev.to",
-    domains: ["dev.to"],
-    labels: ["dev.to", "dev"],
-  },
-  {
-    label: "LeetCode",
-    domains: ["leetcode.com"],
-    labels: ["leetcode"],
-  },
-  {
-    label: "Dribbble",
-    domains: ["dribbble.com"],
-    labels: ["dribbble"],
-  },
-  {
-    label: "Behance",
-    domains: ["behance.net"],
-    labels: ["behance"],
-  },
-];
-
-// ─── ICON RESOLVER ────────────────────────────────────────────────────────────
-function getLinkIcon(label: string, href: string): ReactNode {
-  const domain = getDomain(href);
-  const lowerLabel = label.toLowerCase();
-  const lowerDomain = domain.toLowerCase();
-  const iconProps = { size: 14, strokeWidth: 1.75 };
-
-  if (lowerDomain.includes("github") || lowerLabel === "github")
-    return <Github {...iconProps} />;
-  if (lowerDomain.includes("x.com") || lowerDomain.includes("twitter") || lowerLabel === "x" || lowerLabel === "twitter")
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    );
-  if (lowerDomain.includes("linkedin") || lowerLabel === "linkedin")
-    return <Linkedin {...iconProps} />;
-  if (lowerDomain.includes("instagram") || lowerLabel === "instagram")
-    return <Instagram {...iconProps} />;
-  if (lowerDomain.includes("youtube") || lowerDomain.includes("youtu.be") || lowerLabel === "youtube")
-    return <Youtube {...iconProps} />;
-  if (lowerDomain.includes("medium") || lowerLabel === "medium")
-    return (
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-      </svg>
-    );
-  if (lowerDomain.includes("leetcode") || lowerLabel === "leetcode")
-    return <Code2 {...iconProps} />;
-  if (lowerDomain.includes("dev.to") || lowerLabel === "dev.to" || lowerLabel === "dev")
-    return <BookOpen {...iconProps} />;
-  if (href.startsWith("mailto:") || lowerLabel === "mail" || lowerLabel === "email")
-    return <Mail {...iconProps} />;
-  if (href.startsWith("tel:") || lowerLabel === "phone")
-    return <Phone {...iconProps} />;
-  if (lowerLabel === "resume" || lowerLabel === "cv")
-    return <FileText {...iconProps} />;
-  return <Globe {...iconProps} />;
-}
-
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-
-const Divider = () => (
-  <div className="w-full h-px bg-slate-100 my-12" />
-);
-
-const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-6">
-    {children}
-  </h2>
-);
-
-// Status: muted, text-only feel — no colorful backgrounds
 const statusColors: Record<string, string> = {
   Live:          "text-slate-500 bg-slate-100 border-slate-200",
   WIP:           "text-slate-500 bg-slate-100 border-slate-200",
@@ -254,119 +39,19 @@ const statusColors: Record<string, string> = {
 };
 const fallbackStatusStyle = "text-slate-400 bg-slate-50 border-slate-150";
 
-function textValue(value: unknown) {
-  return typeof value === "string" ? value.trim() : "";
-}
-function cleanUrl(value?: string | null) {
-  const url = textValue(value);
-  if (!url) return "";
-  if (url.startsWith("#") || url.startsWith("/") || /^(https?:|mailto:|tel:)/i.test(url)) return url;
-  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(url)) return `mailto:${url}`;
-  return `https://${url}`;
-}
-function shouldOpenInNewTab(href?: string) {
-  return !!href && /^https?:\/\//i.test(href);
-}
-function getDomain(href?: string) {
-  if (!href) return "";
-  if (href.startsWith("mailto:")) return "email";
-  try { return new URL(href).hostname.replace(/^www\./, ""); } catch { return ""; }
-}
-function domainToLabel(domain: string) {
-  const firstPart = domain.replace(/^www\./, "").split(".")[0] || "Link";
-  return firstPart.split(/[-_]/).filter(Boolean)
-    .map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
-}
-function findKnownLink(type?: string, label?: string, href?: string) {
-  const normalizedType = textValue(type).toUpperCase();
-  const normalizedLabel = textValue(label).toLowerCase();
-  const domain = getDomain(href);
-  return KNOWN_LINKS.find((item) => {
-    return item.type === normalizedType ||
-      item.labels.some((l) => normalizedLabel.includes(l)) ||
-      item.domains.some((d) => domain === d || domain.endsWith(`.${d}`));
-  });
-}
-function normalizeLink(link: ProfileLink, index: number): NormalizedLink | null {
-  const href = cleanUrl(link.url || link.href);
-  if (!href) return null;
-  const explicitLabel = textValue(link.label || link.name);
-  const known = findKnownLink(link.type || undefined, explicitLabel, href);
-  const domain = getDomain(href);
-  const isEmail = href.startsWith("mailto:");
-  const label = explicitLabel || known?.label || (isEmail ? "Email" : domain ? domainToLabel(domain) : "Link");
-  return { id: link.id || `${label}-${index}`, label, href };
-}
-function normalizeLinks(links?: ProfileLink[] | null) {
-  return (links || []).map((l, i) => normalizeLink(l, i)).filter(Boolean) as NormalizedLink[];
-}
-function addProfileContactLinks(links: NormalizedLink[], profile?: ProfileData | null) {
-  const out = [...links];
-  const email = textValue(profile?.email);
-  const resume = cleanUrl(profile?.resume);
-  if (email && !out.some((l) => l.href.startsWith("mailto:") || l.label === "Email"))
-    out.unshift({ id: "profile-email", label: "Email", href: `mailto:${email}` });
-  if (resume && !out.some((l) => l.href === resume))
-    out.push({ id: "profile-resume", label: "Resume", href: resume });
-  return out;
-}
-function formatDate(value: DateLike) {
-  if (!value) return "";
-  const parsed = value instanceof Date ? value : new Date(value as string);
-  if (!Number.isNaN(parsed.getTime()))
-    return parsed.toLocaleDateString("en", { month: "short", year: "numeric" });
-  return textValue(value);
-}
-function formatDateRange(startdate: DateLike, enddate: DateLike) {
-  const start = formatDate(startdate);
-  if (!start && !enddate) return "";
-  const end = enddate ? formatDate(enddate) : "Present";
-  if (start && end) return `${start} – ${end}`;
-  return start || end;
-}
-function splitDescription(description?: string | null) {
-  return textValue(description).split(/\n|•/)
-    .map((item) => item.replace(/^[-–]\s*/, "").trim()).filter(Boolean);
-}
-function normalizeExperiences(experiences?: ProfileExperience[] | null): PortfolioExperience[] {
-  return (experiences || []).map((exp, i) => {
-    const company = textValue(exp.companyName || exp.company);
-    const role = textValue(exp.role);
-    const bullets = splitDescription(exp.description);
-    if (!company && !role && bullets.length === 0) return null;
-    return { id: exp.id || `${company || role}-${i}`, company: company || undefined, role: role || undefined, period: formatDateRange(exp.startdate, exp.enddate), bullets };
-  }).filter(Boolean) as PortfolioExperience[];
-}
-function normalizeProjects(projects?: ProfileProject[] | null): PortfolioProject[] {
-  return (projects || []).map((p, i) => {
-    const name = textValue(p.title || p.name);
-    const description = textValue(p.description);
-    const github = cleanUrl(p.githubLink || p.github);
-    const demo = cleanUrl(p.projectLink || p.demo);
-    const tags = (p.techstack || p.tags || []).map(textValue).filter(Boolean);
-    if (!name && !description && !github && !demo && tags.length === 0) return null;
-    const status = textValue(p.status) || (p.live || demo ? "Live" : github ? "Open Source" : "");
-    return { id: p.id || `${name || "project"}-${i}`, name: name || undefined, description: description || undefined, tags, github, demo, status: status || undefined };
-  }).filter(Boolean) as PortfolioProject[];
-}
-function normalizeBlogs(blogs?: ProfileBlog[] | null): PortfolioBlog[] {
-  return (blogs || []).map((b, i) => {
-    const title = textValue(b.title);
-    const description = textValue(b.description);
-    const url = cleanUrl(b.blogLink || b.url);
-    if (!title && !description && !url) return null;
-    return { id: b.id || `${title || "blog"}-${i}`, title: title || undefined, description: description || undefined, readTime: textValue(b.readTime) || formatDate(b.enddate) || undefined, url };
-  }).filter(Boolean) as PortfolioBlog[];
-}
-function normalizeStack(skills?: string[] | null): StackItem[] {
-  return (skills || []).map(textValue).filter(Boolean).map((s) => ({ name: s }));
-}
-function getBookCallLink(profile?: ProfileData) {
-  return cleanUrl(profile?.bookAcall);
-}
+// ─── Local sub-components (template-specific styling) ────────────────────────
 
-// ─── STACK TICKER ─────────────────────────────────────────────────────────────
-function StackTicker({ stack }: { stack: StackItem[] }) {
+const Divider = () => (
+  <div className="w-full h-px bg-slate-100 my-12" />
+);
+
+const SectionHeading = ({ children }: { children: React.ReactNode }) => (
+  <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-6">
+    {children}
+  </h2>
+);
+
+function StackTicker({ stack }: { stack: { name: string }[] }) {
   const items = [...stack, ...stack];
   return (
     <div className="relative overflow-hidden py-2 bg-white rounded-xl border border-slate-100">
@@ -388,14 +73,15 @@ function StackTicker({ stack }: { stack: StackItem[] }) {
   );
 }
 
-// ─── FOOTER ───────────────────────────────────────────────────────────────────
 function Footer() {
   return (
     <footer className="pb-5">
       <div className="flex items-center justify-center gap-2 select-none">
-        <span className="text-[10px] font-medium text-slate-300  tracking-wide">Built with</span>
+        <span className="text-[10px] font-medium text-slate-300 tracking-wide">
+          Built with
+        </span>
         <Link
-          href={`http:://${process.env.NEXT_PUBLIC_SITE_URL}`}
+          href={`http://${process.env.NEXT_PUBLIC_SITE_URL}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-slate-400 hover:text-slate-700 transition-colors duration-200"
@@ -407,7 +93,8 @@ function Footer() {
   );
 }
 
-// ─── PAGE ─────────────────────────────────────────────────────────────────────
+// ─── Template3 ────────────────────────────────────────────────────────────────
+
 export function Template3({
   user,
   profile,
@@ -445,7 +132,7 @@ export function Template3({
       <main className="relative min-h-screen bg-white text-slate-700 antialiased selection:bg-slate-100 selection:text-slate-900">
         <div className="max-w-[680px] mx-auto px-6 py-10 sm:py-15">
 
-          {/* ── HERO ─────────────────────────────────────────────────── */}
+          {/* ── HERO ── */}
           <section className="mb-10">
             {hasHeroMedia && (
               <div className="relative mb-2">
@@ -458,7 +145,6 @@ export function Template3({
                       unoptimized
                       className="object-cover"
                     />
-                    {/* subtle dark overlay for readability */}
                     <div className="absolute inset-0 bg-black/5" />
                   </div>
                 )}
@@ -502,7 +188,7 @@ export function Template3({
             </div>
           </section>
 
-          {/* ── QUICK LINKS ──────────────────────────────────────────── */}
+          {/* ── QUICK LINKS ── */}
           {hasQuickActions && (
             <div className="flex flex-wrap items-center gap-2 mb-2">
               {links.map((link) => (
@@ -537,7 +223,7 @@ export function Template3({
             </div>
           )}
 
-          {/* ── EXPERIENCES ──────────────────────────────────────────── */}
+          {/* ── EXPERIENCE ── */}
           {experiences.length > 0 && (
             <>
               <Divider />
@@ -578,13 +264,15 @@ export function Template3({
                       </div>
 
                       {exp.bullets.length > 0 && (
-                        <ul className="space-y-2 ml-0">
+                        <ul className="space-y-2">
                           {exp.bullets.map((bullet, i) => (
                             <li
                               key={`${exp.id}-${i}`}
                               className="flex gap-2.5 text-[13px] text-slate-500 leading-relaxed"
                             >
-                              <span className="text-slate-300 shrink-0 select-none mt-[4px] text-[10px]">—</span>
+                              <span className="text-slate-300 shrink-0 select-none mt-[4px] text-[10px]">
+                                —
+                              </span>
                               <span>{bullet}</span>
                             </li>
                           ))}
@@ -597,7 +285,7 @@ export function Template3({
             </>
           )}
 
-          {/* ── PROJECTS ─────────────────────────────────────────────── */}
+          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <>
               <Divider />
@@ -691,7 +379,7 @@ export function Template3({
             </>
           )}
 
-          {/* ── BLOGS ────────────────────────────────────────────────── */}
+          {/* ── BLOGS ── */}
           {blogs.length > 0 && (
             <>
               <Divider />
@@ -720,7 +408,10 @@ export function Template3({
                             </span>
                           )}
                           {blog.url && (
-                            <ArrowRight size={11} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-150" />
+                            <ArrowRight
+                              size={11}
+                              className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-150"
+                            />
                           )}
                         </div>
                       </>
@@ -737,7 +428,10 @@ export function Template3({
                         {inner}
                       </Link>
                     ) : (
-                      <div key={blog.id} className="group flex items-center justify-between py-3.5 border-b border-slate-100 last:border-b-0">
+                      <div
+                        key={blog.id}
+                        className="group flex items-center justify-between py-3.5 border-b border-slate-100 last:border-b-0"
+                      >
                         {inner}
                       </div>
                     );
@@ -747,7 +441,7 @@ export function Template3({
             </>
           )}
 
-          {/* ── STACK ────────────────────────────────────────────────── */}
+          {/* ── STACK ── */}
           {stack.length > 0 && (
             <>
               <Divider />
@@ -773,7 +467,7 @@ export function Template3({
             </>
           )}
 
-          {/* ── FOOTER CALL TO ACTION ─────────────────────────────────── */}
+          {/* ── BOOK A CALL ── */}
           {bookCallLink && (
             <>
               <Divider />
@@ -797,19 +491,22 @@ export function Template3({
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-slate-900">
-                      Let's build together
+                      Let&apos;s build together
                     </p>
                     <p className="text-[12px] text-slate-400 mt-0.5">
                       Book a slot on my calendar to talk.
                     </p>
                   </div>
-                  <ArrowRight size={13} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-150 shrink-0" />
+                  <ArrowRight
+                    size={13}
+                    className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all duration-150 shrink-0"
+                  />
                 </Link>
               </section>
             </>
           )}
 
-          {/* ── QUOTE ─────────────────────────────────────────────────── */}
+          {/* ── QUOTE ── */}
           {quote && (
             <div className="mt-16 flex flex-col items-start gap-3">
               <p className="text-[14px] md:whitespace-nowrap text-slate-400 italic leading-relaxed max-w-sm border-l-2 border-slate-100 pl-4">
@@ -818,7 +515,7 @@ export function Template3({
             </div>
           )}
         </div>
-        <Footer/>
+        <Footer />
       </main>
     </>
   );
