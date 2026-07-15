@@ -1,14 +1,9 @@
 "use client";
 
-// ─── Link Icon Resolver ───────────────────────────────────────────────────────
-// Returns the correct React icon element for a given link label + href.
-// Shared by all portfolio templates.
-
 import type { ReactNode } from "react";
 import {
   BookOpen,
   Code2,
-  ExternalLink,
   FileText,
   Github,
   Globe,
@@ -20,14 +15,6 @@ import {
 } from "lucide-react";
 import { getDomain } from "./utils";
 
-/**
- * Returns a React icon node for a link based on its label and href.
- *
- * @param label       - The display label of the link
- * @param href        - The full URL / mailto / tel href
- * @param iconSize    - Size in px (default 14)
- * @param strokeWidth - Lucide stroke width (default 1.8)
- */
 export function getLinkIcon(
   label: string,
   href: string,

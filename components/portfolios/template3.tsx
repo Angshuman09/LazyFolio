@@ -12,7 +12,6 @@ import Link from "next/link";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-// ─── Shared imports ───────────────────────────────────────────────────────────
 import type { ProfileData, UserData } from "./shared/types";
 import {
   textValue,

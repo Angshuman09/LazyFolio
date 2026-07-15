@@ -1,11 +1,11 @@
 
 import Link from 'next/link'
-import { NormalizedLink, ProfileData } from '../types/template.types'
-import { shouldOpenInNewTab } from '../utils/template.utils'
 import { Divider, SectionHeading } from './divider-sectionheading'
 import { trackClick } from '@/lib/utils/track-click'
 import { getLinkIcon } from './github-links'
 import { MoveUpRight } from 'lucide-react'
+import { NormalizedLink, ProfileData } from '../../shared/types'
+import { shouldOpenInNewTab } from '../../shared/utils'
 
 const ContactInfo = ({contactLinks, profile}: {contactLinks:NormalizedLink[], profile: ProfileData}) => {
   return (

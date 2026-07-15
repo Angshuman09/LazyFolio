@@ -1,6 +1,3 @@
-import { ProfileData, UserData } from "./types/template.types";
-import { addProfileContactLinks, cleanUrl, getBookCallLink, textValue } from "./utils/template.utils";
-import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "./utils/template.normalize";
 
 import Hero from "./components/hero";
 import Links from "./components/links";
@@ -10,6 +7,9 @@ import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
 import ContactInfo from "./components/contactinfo";
+import { ProfileData, UserData } from "../shared/types";
+import { addProfileContactLinks, cleanUrl, getBookCallLink, textValue } from "../shared/utils";
+import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "../shared/normalize";
 
 export function Template1({
   user,
@@ -72,10 +72,6 @@ export function Template1({
           )}
 
           <div className="mt-14 pt-6 border-t border-zinc-800/60 flex items-center justify-between">
-            <p className="text-[11px] text-zinc-700 font-mono">
-              © {new Date().getFullYear()}
-              {name ? ` ${name}` : ""}
-            </p>
             <p className="text-[11px] text-zinc-800">
               built with <span className="text-zinc-600">lazyfolio</span>
             </p>

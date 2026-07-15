@@ -1,6 +1,3 @@
-// ─── Shared Portfolio Normalize Functions ─────────────────────────────────────
-// Transform raw profile data (from the DB/API) into clean, display-ready
-// structures. Shared by all portfolio templates.
 
 import type {
   NormalizedLink,
@@ -25,9 +22,6 @@ import {
   textValue,
 } from "./utils";
 
-// ─── Links ────────────────────────────────────────────────────────────────────
-
-/** Normalises a single raw link into a display-ready object. */
 export function normalizeLink(
   link: ProfileLink,
   index: number,
@@ -47,7 +41,6 @@ export function normalizeLink(
   return { id: link.id || `${label}-${index}`, label, href };
 }
 
-/** Normalises an array of raw links, filtering out invalid ones. */
 export function normalizeLinks(
   links?: ProfileLink[] | null,
 ): NormalizedLink[] {
@@ -56,9 +49,6 @@ export function normalizeLinks(
     .filter(Boolean) as NormalizedLink[];
 }
 
-// ─── Experiences ──────────────────────────────────────────────────────────────
-
-/** Normalises raw experience entries into display-ready structures. */
 export function normalizeExperiences(
   experiences?: ProfileExperience[] | null,
 ): PortfolioExperience[] {
@@ -83,9 +73,6 @@ export function normalizeExperiences(
     .filter(Boolean) as PortfolioExperience[];
 }
 
-// ─── Projects ─────────────────────────────────────────────────────────────────
-
-/** Normalises raw project entries into display-ready structures. */
 export function normalizeProjects(
   projects?: ProfileProject[] | null,
 ): PortfolioProject[] {
@@ -120,9 +107,6 @@ export function normalizeProjects(
     .filter(Boolean) as PortfolioProject[];
 }
 
-// ─── Blogs ────────────────────────────────────────────────────────────────────
-
-/** Normalises raw blog entries into display-ready structures. */
 export function normalizeBlogs(
   blogs?: ProfileBlog[] | null,
 ): PortfolioBlog[] {
@@ -146,9 +130,6 @@ export function normalizeBlogs(
     .filter(Boolean) as PortfolioBlog[];
 }
 
-// ─── Stack / Skills ───────────────────────────────────────────────────────────
-
-/** Converts a raw skills string array into typed StackItem objects. */
 export function normalizeStack(skills?: string[] | null): StackItem[] {
   return (skills || [])
     .map(textValue)

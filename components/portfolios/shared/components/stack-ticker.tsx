@@ -1,10 +1,6 @@
 "use client";
 
-// ─── Shared StackTicker Component ─────────────────────────────────────────────
-// Horizontally scrolling ticker of tech-stack items, themed via config.
-
-import type { StackItem } from "../types";
-import type { TemplateThemeConfig } from "../../template-themed";
+import type { StackItem, TemplateThemeConfig } from "../types";
 
 type StackTickerProps = {
   stack: StackItem[];
@@ -12,7 +8,6 @@ type StackTickerProps = {
 };
 
 export function StackTicker({ stack, config }: StackTickerProps) {
-  // Duplicate items so the CSS animation loops seamlessly
   const items = [...stack, ...stack];
 
   return (

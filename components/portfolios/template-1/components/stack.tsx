@@ -1,5 +1,4 @@
-
-import { StackItem } from '../types/template.types'
+import { StackItem } from '../../shared/types'
 import { Divider, SectionHeading } from './divider-sectionheading'
 import { StackTicker } from './stack-ticker'
 

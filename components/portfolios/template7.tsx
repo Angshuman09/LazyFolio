@@ -2,9 +2,8 @@
 
 import {
   ThemedPortfolioTemplate,
-  type ThemedPortfolioProps,
 } from "./template-themed";
-import { TemplateThemeConfig } from "./shared/types";
+import { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
 
 const config: TemplateThemeConfig = {
   key: "template7",

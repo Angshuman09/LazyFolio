@@ -11,26 +11,14 @@ import Link from "next/link";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-import {
-  cleanUrl,
-  shouldOpenInNewTab,
-  normalizeLinks,
-  normalizeExperiences,
-  normalizeProjects,
-  normalizeBlogs,
-  normalizeStack,
-  getBookCallLink,
-  getLinkIcon,
-  addProfileContactLinks,
-  textValue,
-  type ThemedPortfolioProps,
-} from "./template-themed";
-
-import { TemplateThemeConfig } from "./shared/types";
+import { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
 
 import { SectionHeading } from "./shared/components/section-heading";
 import { StackTicker } from "./shared/components/stack-ticker";
 import { Divider } from "./shared/components/divider";
+import { addProfileContactLinks, cleanUrl, getBookCallLink, shouldOpenInNewTab, textValue } from "./shared/utils";
+import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "./shared/normalize";
+import { getLinkIcon } from "./shared/link-icon";
 
 const config: TemplateThemeConfig = {
   key: "template6",

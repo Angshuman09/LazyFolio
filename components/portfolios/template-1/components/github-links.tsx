@@ -1,6 +1,6 @@
 import { BookOpen, Code2, FileText, Github, Globe, Instagram, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 import { ReactNode } from "react";
-import { getDomain } from "../utils/template.utils";
+import { getDomain } from "../../shared/utils";
 
 export function getLinkIcon(label: string, href: string): ReactNode {
     const domain = getDomain(href);

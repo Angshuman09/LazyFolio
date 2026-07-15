@@ -1,4 +1,4 @@
-import { StackItem } from "../types/template.types";
+import { StackItem } from "../../shared/types";
 
 export function StackTicker({ stack }: { stack: StackItem[] }) {
     const items = [...stack, ...stack];

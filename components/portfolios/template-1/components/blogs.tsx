@@ -1,9 +1,8 @@
-import React from 'react'
 import { Divider, SectionHeading } from './divider-sectionheading';
-import { PortfolioBlog } from '../types/template.types';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { shouldOpenInNewTab } from '../utils/template.utils';
+import { PortfolioBlog } from '../../shared/types';
+import { shouldOpenInNewTab } from '../../shared/utils';
 
 const Blogs = ({blogs}:{blogs:PortfolioBlog[]}) => {
   return (

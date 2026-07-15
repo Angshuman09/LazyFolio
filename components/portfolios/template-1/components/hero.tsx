@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { cleanUrl, textValue } from "../../shared/utils";
-import { ProfileData, UserData } from "../types/template.types";
+import { ProfileData, UserData } from "../../shared/types";
 
 const Hero = ({ profile, user, avatar, name }: { profile: ProfileData, user: UserData, avatar: string, name: string }) => {
     const tagline = textValue(profile?.tagline);

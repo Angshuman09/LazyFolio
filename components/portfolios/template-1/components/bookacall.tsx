@@ -1,9 +1,8 @@
-import React from 'react'
 import { Divider } from './divider-sectionheading'
-import { shouldOpenInNewTab } from '../utils/template.utils'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
+import { shouldOpenInNewTab } from '../../shared/utils'
 
 const BookACall = ({avatar, bookCallLink, name}:{avatar:string, bookCallLink:string, name:string}) => {
   return (

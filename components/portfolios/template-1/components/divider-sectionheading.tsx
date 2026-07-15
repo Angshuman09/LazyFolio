@@ -1,3 +1,5 @@
+'use client'
+
 import { ReactNode } from "react";
 
 export const Divider = () => <div className="w-full h-px bg-zinc-800/80 my-10" />;

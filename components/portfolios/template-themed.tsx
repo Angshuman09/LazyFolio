@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import type { CSSProperties, ComponentType } from "react";
 import {
   ArrowRight,
   ExternalLink,
   Github,
 } from "lucide-react";
-import Image from "next/image";
+import Image from "next/image"; 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-import type { ProfileData, UserData, StackItem } from "./shared/types";
+import type { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
 import {
   textValue,
   cleanUrl,
@@ -32,28 +31,6 @@ import { getLinkIcon } from "./shared/link-icon";
 import { SectionHeading } from "./shared/components/section-heading";
 import { StackTicker } from "./shared/components/stack-ticker";
 import { Divider } from "./shared/components/divider";
-import { TemplateThemeConfig } from "./shared/types";
-
-export type { ProfileData, UserData };
-
-export type ThemedPortfolioProps = {
-  user: UserData;
-  profile: ProfileData;
-};
-
-export {
-  textValue,
-  cleanUrl,
-  shouldOpenInNewTab,
-  addProfileContactLinks,
-  getBookCallLink,
-  getLinkIcon,
-  normalizeLinks,
-  normalizeExperiences,
-  normalizeProjects,
-  normalizeBlogs,
-  normalizeStack,
-};
 
 export function ThemedPortfolioTemplate({
   user,

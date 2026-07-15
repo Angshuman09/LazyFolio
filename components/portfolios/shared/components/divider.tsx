@@ -1,9 +1,6 @@
 "use client";
 
-// ─── Shared Divider Component ─────────────────────────────────────────────────
-// A themed horizontal rule between sections.
-
-import type { TemplateThemeConfig } from "../../template-themed";
+import type { TemplateThemeConfig } from "../types";
 
 type DividerProps = {
   config: TemplateThemeConfig;

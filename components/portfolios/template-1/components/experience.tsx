@@ -1,8 +1,8 @@
 import Link from "next/link"
-import { PortfolioExperience } from "../types/template.types"
 import { Divider, SectionHeading } from "./divider-sectionheading"
-import { shouldOpenInNewTab } from "../utils/template.utils"
 import { MoveUpRight } from "lucide-react"
+import { PortfolioExperience } from "../../shared/types"
+import { shouldOpenInNewTab } from "../../shared/utils"
 
 const Experience = ({experiences}:{experiences: PortfolioExperience[]}) => {
   return (

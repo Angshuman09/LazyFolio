@@ -1,11 +1,8 @@
 "use client";
 
-// ─── Shared SectionHeading Component ─────────────────────────────────────────
-// Renders a section heading using the active template's theme config.
-
 import type { ReactNode, ComponentType } from "react";
 import { Sparkles } from "lucide-react";
-import type { TemplateThemeConfig } from "../../template-themed";
+import { TemplateThemeConfig } from "../types";
 
 type IconComponent = ComponentType<{
   size?: number;
@@ -15,7 +12,6 @@ type IconComponent = ComponentType<{
 
 type SectionHeadingProps = {
   children: ReactNode;
-  /** Override the default Sparkles icon */
   icon?: IconComponent;
   config: TemplateThemeConfig;
 };

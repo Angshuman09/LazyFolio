@@ -178,3 +178,8 @@ export type TemplateThemeConfig = {
   iconSize?: number;
   iconStrokeWidth?: number;
 };
+
+export type ThemedPortfolioProps = {
+  user: UserData;
+  profile: ProfileData;
+};

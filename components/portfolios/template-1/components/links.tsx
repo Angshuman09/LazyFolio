@@ -1,10 +1,10 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { NormalizedLink, ProfileData } from "../types/template.types";
 import Link from "next/link";
 import { shouldOpenInNewTab } from "../../shared/utils";
 import { ArrowRight } from "lucide-react";
 import { getLinkIcon } from "../../shared/link-icon";
 import { trackClick } from "@/lib/utils/track-click";
+import { NormalizedLink, ProfileData } from "../../shared/types";
 
 const Links = ({profile, links, bookCallLink}:{profile: ProfileData, links: NormalizedLink[], bookCallLink: string}) => {
   return (

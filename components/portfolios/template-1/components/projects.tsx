@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { Divider, SectionHeading } from './divider-sectionheading'
-import { PortfolioProject } from '../types/template.types';
-import { fallbackStatusStyle, shouldOpenInNewTab, statusStyle } from '../utils/template.utils';
 import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
+import { PortfolioProject } from '../../shared/types';
+import { shouldOpenInNewTab } from '../../shared/utils';
+import { fallbackStatusStyle, statusStyle } from '../utils/template.utils';
 
 const Projects = ({projects}:{projects:PortfolioProject[]}) => {
   const [showAll, setShowAll] = useState(false);
