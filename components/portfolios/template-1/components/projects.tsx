@@ -1,12 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Divider, SectionHeading } from './divider-sectionheading'
 import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import { PortfolioProject } from '../../shared/types';
 import { shouldOpenInNewTab } from '../../shared/utils';
-import { fallbackStatusStyle, statusStyle } from '../utils/template.utils';
+import { Divider, fallbackStatusStyle, SectionHeading, statusStyle } from './utils';
 
 const Projects = ({projects}:{projects:PortfolioProject[]}) => {
   const [showAll, setShowAll] = useState(false);

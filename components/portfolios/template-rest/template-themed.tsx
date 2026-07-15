@@ -10,27 +10,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 
-import type { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
+import type { TemplateThemeConfig, ThemedPortfolioProps } from "../shared/types";
 import {
   textValue,
   cleanUrl,
   shouldOpenInNewTab,
-  addProfileContactLinks,
   getBookCallLink,
-} from "./shared/utils";
+} from "../shared/utils";
 import {
   normalizeLinks,
   normalizeExperiences,
   normalizeProjects,
   normalizeBlogs,
   normalizeStack,
-} from "./shared/normalize";
-import { getLinkIcon } from "./shared/link-icon";
-import { SectionHeading } from "./shared/components/section-heading";
-import { StackTicker } from "./shared/components/stack-ticker";
-import { Divider } from "./shared/components/divider";
+} from "../shared/normalize";
+import { getLinkIcon } from "../shared/link-icon";
+import { SectionHeading } from "../shared/components/section-heading";
+import { StackTicker } from "../shared/components/stack-ticker";
+import { Divider } from "../shared/components/divider";
 
 export function ThemedPortfolioTemplate({
   user,
@@ -45,7 +44,6 @@ export function ThemedPortfolioTemplate({
   const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
   const banner = cleanUrl(profile?.banner);
   const links = normalizeLinks(profile?.links);
-  const contactLinks = addProfileContactLinks(links, profile);
   const experiences = normalizeExperiences(profile?.experiences);
   const projects = normalizeProjects(profile?.projects);
   const blogs = normalizeBlogs(profile?.blogs);

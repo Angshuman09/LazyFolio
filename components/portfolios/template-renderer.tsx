@@ -1,8 +1,8 @@
 "use client";
 
 import { Template1 } from "@/components/portfolios/template-1/template-1";
-import { Template2 } from "@/components/portfolios/template-2/template2";
-import { Template3 } from "./template3";
+import { Template2 } from "@/components/portfolios/template-2/template-2";
+import { Template3 } from "./template-3/template-3";
 import { Template4 } from "./template4";
 import { Template5 } from "./template5";
 import { Template6 } from "./template6";

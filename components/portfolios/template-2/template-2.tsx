@@ -30,13 +30,6 @@ export function Template2({
   const links = normalizeLinks(profile?.links);
   const bookCallLink = getBookCallLink(profile);
   return (
-    <>
-      <style>{`
-        @keyframes ticker {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
         <div className="max-w-[800px] mx-auto px-6 py-16 sm:py-20">
           {quote && (
@@ -71,6 +64,5 @@ export function Template2({
           </div>
         </div>
       </main>
-    </>
   );
 }

@@ -1,6 +1,5 @@
 import { StackItem } from '../../shared/types'
-import { Divider, SectionHeading } from './divider-sectionheading'
-import { StackTicker } from './stack-ticker'
+import { Divider, SectionHeading, StackTicker } from './utils'
 
 const Stack = ({stack}:{stack:StackItem[]}) => {
   return (

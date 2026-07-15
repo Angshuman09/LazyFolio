@@ -1,8 +1,9 @@
-import { Divider, SectionHeading } from './divider-sectionheading';
+
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { PortfolioBlog } from '../../shared/types';
 import { shouldOpenInNewTab } from '../../shared/utils';
+import { Divider, SectionHeading } from './utils';
 
 const Blogs = ({blogs}:{blogs:PortfolioBlog[]}) => {
   return (

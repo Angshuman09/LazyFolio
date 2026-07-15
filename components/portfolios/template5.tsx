@@ -2,7 +2,7 @@
 
 import {
   ThemedPortfolioTemplate,
-} from "./template-themed";
+} from "./template-rest/template-themed";
 
 import { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
 

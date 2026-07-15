@@ -1,4 +1,13 @@
 import { StackItem } from "../../shared/types";
+import { ReactNode } from "react";
+
+export const Divider = () => <div className="w-full h-px bg-zinc-800/80 my-10" />;
+  
+export const SectionHeading = ({ children }: { children: ReactNode }) => (
+  <h2 className="text-sm font-semibold text-white mb-6 tracking-tight">
+    {children}
+  </h2>
+);
 
 export function StackTicker({ stack }: { stack: StackItem[] }) {
     const items = [...stack, ...stack];
@@ -24,3 +33,13 @@ export function StackTicker({ stack }: { stack: StackItem[] }) {
       </div>
     );
   }
+
+
+
+export const statusStyle: Record<string, string> = {
+    Live: "text-emerald-400 bg-emerald-400/8 border-emerald-400/20",
+    WIP: "text-amber-400 bg-amber-400/8 border-amber-400/20",
+    "Open Source": "text-sky-400 bg-sky-400/8 border-sky-400/20",
+  };
+  
+export const fallbackStatusStyle = "text-zinc-400 bg-zinc-400/8 border-zinc-400/20";
