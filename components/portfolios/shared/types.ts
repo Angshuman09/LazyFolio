@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export type DateLike = string | Date | null | undefined;
 
@@ -86,6 +86,7 @@ export type PortfolioExperience = {
 };
 
 export type PortfolioProject = {
+  enddate: ReactNode;
   id: string;
   name?: string;
   description?: string;

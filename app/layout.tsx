@@ -51,7 +51,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={cn(geist.variable, serif.variable, "antialiased")}>
+      <body className={cn(geist.variable, serif.variable, "antialiased selection:bg-(--color-accent) selection:text-(--color-paper)")}>
         <Toaster position="bottom-right" />
         <Providers>
           {children}

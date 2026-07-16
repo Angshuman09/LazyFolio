@@ -115,10 +115,34 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
 
   const handleSubmitUsername = async () => {
     setLoading(true);
-    const username = getValues("username");
+    const username = getValues("username").trim().toLowerCase();
     if (!username) {
       toast.error("Username cannot be empty");
       setLoading(false);
+      return;
+    }
+
+    if(username == "dashboard"){
+      toast("dashboard can't be a username!", {
+        style: {
+          borderRadius: '10px',
+          background: '#fff3cd',
+          color: '#856404',      
+        },
+      });
+      setLoading(false)
+      return;
+    }
+
+    if(username == "templates"){
+      toast("templates can't be a username!", {
+        style: {
+          borderRadius: '10px',
+          background: '#fff3cd',
+          color: '#856404',      
+        },
+      });
+      setLoading(false)
       return;
     }
 

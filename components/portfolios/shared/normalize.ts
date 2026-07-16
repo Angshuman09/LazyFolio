@@ -86,6 +86,8 @@ export function normalizeProjects(
         .map(textValue)
         .filter(Boolean);
 
+      // const enddate = textValue(project.enddate as string);
+
       if (!name && !description && !github && !demo && tags.length === 0) {
         return null;
       }
@@ -102,6 +104,7 @@ export function normalizeProjects(
         github,
         demo,
         status: status || undefined,
+        // enddate
       };
     })
     .filter(Boolean) as PortfolioProject[];
