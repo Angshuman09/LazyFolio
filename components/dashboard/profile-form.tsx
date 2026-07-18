@@ -15,7 +15,6 @@ import {
   Zap,
   Quote,
   Phone,
-  FileText,
   X,
   Check,
   Loader2,
@@ -36,7 +35,7 @@ interface FieldRowProps {
   noBorder?: boolean;
 }
 
-function FieldRow({ icon, label, children, action, error, noBorder }: FieldRowProps) {
+function FieldRow({ label, children, action, error, noBorder }: FieldRowProps) {
   return (
     <div>
       <div
@@ -88,7 +87,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
     getValues,
     setValue,
     control,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<ProfileSchema>({
     defaultValues,
     resolver: zodResolver(profileSchema),
@@ -98,7 +97,6 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
     reset(defaultValues);
   }, [defaultValues, reset]);
 
-  // Cleanup object URLs on unmount
   useEffect(() => {
     return () => {
       if (avatarPreview) URL.revokeObjectURL(avatarPreview);
@@ -209,10 +207,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       setTimeout(() => setImageSaved(false), 2500);
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
 
-      // Clear files AFTER successful save
       setAvatarFile(null);
       setBannerFile(null);
-      // Keep preview URLs so the user sees the newly saved image
       setValue("avatar", undefined);
       setValue("banner", undefined);
     } catch (err: any) {
@@ -226,7 +222,6 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
   const currentAvatar = avatarPreview || profile?.avatar;
 
   const hasPendingImages = !!(avatarFile || bannerFile);
-  // Button is visible while there are pending files OR while the upload is in progress
   const showSaveButton = hasPendingImages || imageLoading;
 
   return (
@@ -237,7 +232,6 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         toast.error("Please fix the highlighted fields before saving.");
       })}
     >
-      {/* Page title */}
       <div className="mb-7">
         <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink)">
           Profile
@@ -247,9 +241,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         </p>
       </div>
 
-      {/* ── Username row ── */}
       <div className="mb-6">
-        <label className="text-[0.65rem] font-semibold text-(--lf-muted) font-mono tracking-widest uppercase mb-1.5 block">
+        <label className="text-[0.65rem] font-semibold text-(--lf-muted) font-sans tracking-widest mb-1.5 block">
           Username
         </label>
         <div className="flex items-stretch h-10">
@@ -265,7 +258,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
           </div>
           <button
             type="button"
-            disabled={loading}
+            disabled={loading || !dirtyFields.username}
             className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
             onClick={handleSubmitUsername}
           >
@@ -292,9 +285,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         </div>
       ) : (
         <>
-          {/* ── Hero card: banner + avatar ── */}
           <div className="rounded-2xl border border-(--lf-border) overflow-hidden mb-5 bg-(--lf-surface) relative">
-            {/* Banner upload */}
             <div className="relative h-36 sm:h-44 bg-(--lf-border) overflow-hidden group/banner">
               {currentBanner ? (
                 <img
@@ -353,9 +344,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
               )}
             </div>
 
-            {/* Avatar + name overlay */}
             <div className="px-5 pb-5 pt-0">
-              {/* Avatar */}
               <div className="relative -mt-10 mb-3 w-fit">
                 <label
                   htmlFor="avatar-upload"
@@ -445,7 +434,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
           </div>
 
           <div className="mb-4">
-            <p className="text-[0.62rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-2 pl-0.5">
+            <p className="text-[0.72rem] font-semibold tracking-widest text-(--lf-muted) font-sans mb-2 pl-0.5">
               Identity
             </p>
             <div className="rounded-2xl border border-(--lf-border) overflow-hidden bg-(--lf-surface)">
@@ -511,7 +500,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
           </div>
 
           <div className="mb-4">
-            <p className="text-[0.62rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-2 pl-0.5">
+            <p className="text-[0.72rem] font-semibold tracking-widest text-(--lf-muted) font-sans mb-2 pl-0.5">
               Presence
             </p>
             <div className="rounded-2xl border border-(--lf-border) overflow-hidden bg-(--lf-surface)">

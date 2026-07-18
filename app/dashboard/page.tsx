@@ -68,26 +68,26 @@ export default function DashboardPage() {
   const isSaveDisabled = isSaving || isLoading || isPending;
   const previewProfile = profile
     ? {
-        ...profile,
-        links: (profile.links || []).filter((link: { isenable?: boolean | null }) => link.isenable ?? true),
-        experiences: (profile.experiences || []).filter(
-          (experience: { isenable?: boolean | null }) => experience.isenable ?? true,
-        ),
-        projects: (profile.projects || []).filter(
-          (project: { isenable?: boolean | null }) => project.isenable ?? true,
-        ),
-        blogs: (profile.blogs || []).filter((blog: { isenable?: boolean | null }) => blog.isenable ?? true),
-        skills: ((profile.skills || []) as string[])
-          .map(parseSkill)
-          .filter((s) => s.isenable && s.value)
-          .map((s) => s.value),
-      }
+      ...profile,
+      links: (profile.links || []).filter((link: { isenable?: boolean | null }) => link.isenable ?? true),
+      experiences: (profile.experiences || []).filter(
+        (experience: { isenable?: boolean | null }) => experience.isenable ?? true,
+      ),
+      projects: (profile.projects || []).filter(
+        (project: { isenable?: boolean | null }) => project.isenable ?? true,
+      ),
+      blogs: (profile.blogs || []).filter((blog: { isenable?: boolean | null }) => blog.isenable ?? true),
+      skills: ((profile.skills || []) as string[])
+        .map(parseSkill)
+        .filter((s) => s.isenable && s.value)
+        .map((s) => s.value),
+    }
     : profile;
 
   useEffect(() => {
     if (!session && !isPending) {
       router.push("/auth");
-  }
+    }
   }, [session, isPending, router]);
 
   useEffect(() => {
@@ -459,7 +459,7 @@ export default function DashboardPage() {
 
         <div className="flex items-center gap-1.5 md:gap-2">
           <button
-          disabled={!profile?.username}
+            disabled={!profile?.username}
             className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
             onClick={() => {
               setActiveTemplate(profile?.themeId || "1");
@@ -492,11 +492,11 @@ export default function DashboardPage() {
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
-          <button 
-          disabled={!profile?.username}
-    
-          onClick={()=> window.open(`/${profile?.username || username}`, "_blank")}
-          className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-[6px] bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
+          <button
+            disabled={!profile?.username}
+
+            onClick={() => window.open(`/${profile?.username || username}`, "_blank")}
+            className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-[6px] bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
           </button>
@@ -558,31 +558,30 @@ export default function DashboardPage() {
 
       <div className="flex flex-1 overflow-hidden min-h-0">
         <aside
-          className={`${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0 fixed md:static z-40 md:z-auto w-52 md:w-50 shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-transform duration-200`}
+          className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } md:translate-x-0 fixed md:static z-40 md:z-auto w-52 md:w-50 shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-transform duration-200`}
         >
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
             {NAV.map((n) => {
               const isDisabled = !profile?.username && n.id !== "profile";
               return (
-              <button
-                key={n.id}
-                disabled={isDisabled}
-                className={`flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${
-                  tab === n.id
+                <button
+                  key={n.id}
+                  disabled={isDisabled}
+                  className={`flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${tab === n.id
                     ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
                     : ""
-                } ${isDisabled ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)" : ""}`}
-                onClick={() => {
-                  if (isDisabled) return;
-                  setTab(n.id);
-                  setSidebarOpen(false);
-                }}
-              >
-                {n.label}
-              </button>
-            )})}
+                    } ${isDisabled ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)" : ""}`}
+                  onClick={() => {
+                    if (isDisabled) return;
+                    setTab(n.id);
+                    setSidebarOpen(false);
+                  }}
+                >
+                  {n.label}
+                </button>
+              )
+            })}
           </div>
 
           <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
@@ -609,11 +608,11 @@ export default function DashboardPage() {
           {isLoading || isPending ? (
             <DashboardSkeleton />
           ) : !profile?.username && tab !== "profile" ? (
-             <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
-               <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
-               <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
-               <button onClick={() => setTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
-             </div>
+            <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
+              <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
+              <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
+              <button onClick={() => setTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
+            </div>
           ) : (
             <>
               {tab === "profile" && (
@@ -690,68 +689,104 @@ export default function DashboardPage() {
           onClick={() => setTemplateOpen(false)}
         >
           <div
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-[95vw] xl:max-w-6xl shadow-2xl overflow-hidden p-4 sm:p-6 animate-in fade-in zoom-in duration-200"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-xl sm:max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-serif-display text-[1.25rem] font-medium text-(--lf-ink) mb-1.5 leading-tight">
-              Choose a template
-            </h2>
-            <p className="text-[0.82rem] text-(--lf-muted) mb-6 leading-relaxed">
-              Pick how your public portfolio page looks. You can change this
-              anytime.
-            </p>
-
-            <div className="grid grid-flow-col auto-cols-[minmax(260px,1fr)] gap-3 overflow-x-auto pb-2">
-              {TEMPLATES.map((t) => (
-                <button
-                  type="button"
-                  key={t.id}
-                  disabled={isSaveDisabled}
-                  className={`flex min-h-72 flex-col items-start gap-3 p-3 rounded-xl border text-left transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id ? "border-(--lf-ink) bg-(--lf-accent-soft)" : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted)"}`}
-                  onClick={() => {
-                    setActiveTemplate(t.id);
-                    setTemplateOpen(false);
-                    applyTemplate(t.id);
-                  }}
-                >
-                  <div className="relative w-full aspect-4/3 overflow-hidden rounded-lg border border-(--lf-border-alpha) bg-(--lf-border-alpha)">
-                    <Image
-                      src={t.image}
-                      alt={`${t.label} template preview`}
-                      fill
-                      sizes="(max-width: 640px) 260px, 320px"
-                      className="object-cover object-top"
-                    />
-                    <div
-                      className={`absolute left-2 top-2 w-8 h-8 rounded-lg flex items-center justify-center shadow-sm ${activeTemplate === t.id ? "bg-(--lf-ink) text-(--lf-bg)" : "bg-(--lf-bg)/90 text-(--lf-muted) border border-(--lf-border-alpha)"}`}
-                    >
-                      {activeTemplate === t.id ? (
-                        <Check size={15} />
-                      ) : (
-                        <span className="text-[0.72rem] font-mono font-semibold">
-                          {t.emoji}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-[0.88rem] font-semibold text-(--lf-ink)">
-                      {t.label}
-                    </div>
-                    <div className="text-[0.74rem] text-(--lf-muted) mt-0.5">
-                      {t.preview}
-                    </div>
-                  </div>
-                </button>
-              ))}
+            {/* Header */}
+            <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 border-b border-(--lf-border-alpha) shrink-0">
+              <h2 className="font-serif-display text-[1.25rem] font-medium text-(--lf-ink) mb-1 leading-tight">
+                Choose a template
+              </h2>
+              <p className="text-[0.82rem] text-(--lf-muted) leading-relaxed">
+                Pick how your public portfolio page looks. You can change this anytime.
+              </p>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 mt-7">
+            {/* Scrollable card grid */}
+            <div className="px-5 sm:px-6 py-5 overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {TEMPLATES.map((t) => (
+                  <button
+                    type="button"
+                    key={t.id}
+                    disabled={isSaveDisabled}
+                    className={`group flex flex-col overflow-hidden rounded-2xl border text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id
+                        ? "border-(--lf-ink) ring-2 ring-(--lf-ink)/12 bg-(--lf-accent-soft)"
+                        : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted) hover:shadow-md"
+                      }`}
+                    onClick={() => setActiveTemplate(t.id)}
+                  >
+                    <div className="relative w-full aspect-4/3 overflow-hidden bg-(--lf-border-alpha)">
+                      <Image
+                        src={t.image}
+                        alt={`${t.label} template preview`}
+                        fill
+                        sizes="(max-width: 640px) 90vw, 420px"
+                        className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+                      <div
+                        className={`absolute left-2.5 top-2.5 w-7 h-7 rounded-full flex items-center justify-center shadow-sm ${activeTemplate === t.id
+                            ? "bg-(--lf-ink) text-(--lf-bg)"
+                            : "bg-(--lf-bg)/85 text-(--lf-muted) border border-(--lf-border-alpha) backdrop-blur-sm"
+                          }`}
+                      >
+                        {activeTemplate === t.id ? (
+                          <Check size={13} />
+                        ) : (
+                          <span className="text-[0.68rem] font-mono font-semibold">
+                            {t.emoji}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-3.5">
+                      <div className="text-[0.9rem] font-semibold text-(--lf-ink)">
+                        {t.label}
+                      </div>
+                      <div className="text-[0.76rem] text-(--lf-muted) mt-0.5 leading-snug">
+                        {t.preview}
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-2.5 px-5 sm:px-6 py-4 border-t border-(--lf-border-alpha) shrink-0">
               <button
-                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
                 onClick={() => setTemplateOpen(false)}
+                disabled={isSaveDisabled}
               >
                 Cancel
+              </button>
+              <button
+                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold border-none cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
+                onClick={() => applyTemplate(activeTemplate)}
+                disabled={isSaveDisabled}
+              >
+                {isSaving ? (
+                  <>
+                    <svg
+                      className="animate-spin"
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    >
+                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                    Applying…
+                  </>
+                ) : (
+                  "Apply template"
+                )}
               </button>
             </div>
           </div>
