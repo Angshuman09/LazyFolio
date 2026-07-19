@@ -3,11 +3,11 @@
 import { Template1 } from "@/components/portfolios/template-1/template-1";
 import { Template2 } from "@/components/portfolios/template-2/template-2";
 import { Template3 } from "./template-3/template-3";
-import { Template4 } from "./template4";
-import { Template5 } from "./template5";
+import { Template4 } from "./template-4";
+import { Template5 } from "./template-5";
 import { Template6 } from "./template-6/template6";
-import { Template7 } from "./template7";
-import { Template8 } from "./template8";
+import { Template7 } from "./template-7";
+import { Template8 } from "./template-8";
 
 type Template1Props = Parameters<typeof Template1>[0];
 type TemplateUser = Template1Props["user"];
