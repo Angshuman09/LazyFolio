@@ -32,7 +32,7 @@ import {
 } from "@/components/dashboard/dashboard-skeleton";
 import toast from "react-hot-toast";
 import { useCreateLinks } from "@/hooks/links";
-import { TEMPLATES, NAV, Tab } from "@/components/resources/dummy-values";
+import { TEMPLATES, NAV, Tab } from "@/components/resources/extras";
 import { LinksSchema } from "@/lib/schemas/links";
 import { useCreateExperiences } from "@/hooks/experiences";
 import { ProfileSchema } from "@/lib/schemas/profile";

@@ -64,12 +64,6 @@ const config: TemplateThemeConfig = {
     "rounded-md border border-[#241513] bg-[#bae6fd] px-2 py-1 text-[10px] font-black uppercase tracking-[0.06em] text-[#241513]",
   projectActionClass:
     "inline-flex h-8 w-8 items-center justify-center rounded-md border-2 border-[#241513] bg-white text-[#241513] transition hover:bg-[#fef08a]",
-  statusClass: {
-    Live: "rounded-md border-2 border-[#241513] bg-[#bbf7d0] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#241513]",
-    WIP: "rounded-md border-2 border-[#241513] bg-[#fef08a] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#241513]",
-    "Open Source":
-      "rounded-md border-2 border-[#241513] bg-[#bae6fd] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#241513]",
-  },
   fallbackStatusClass:
     "rounded-md border-2 border-[#241513] bg-white px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#241513]",
   showMoreClass:

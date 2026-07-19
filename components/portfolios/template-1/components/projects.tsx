@@ -5,7 +5,7 @@ import { ExternalLink, Github } from 'lucide-react';
 import Link from 'next/link';
 import { PortfolioProject } from '../../shared/types';
 import { shouldOpenInNewTab } from '../../shared/utils';
-import { Divider, fallbackStatusStyle, SectionHeading, statusStyle } from './utils';
+import { Divider, SectionHeading } from './utils';
 
 const Projects = ({projects}:{projects:PortfolioProject[]}) => {
   const [showAll, setShowAll] = useState(false);
@@ -35,13 +35,6 @@ const Projects = ({projects}:{projects:PortfolioProject[]}) => {
                   {project.name && (
                     <span className="text-[13px] font-medium text-zinc-200">
                       {project.name}
-                    </span>
-                  )}
-                  {project.status && (
-                    <span
-                      className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusStyle[project.status] ?? fallbackStatusStyle}`}
-                    >
-                      {project.status}
                     </span>
                   )}
                 </div>

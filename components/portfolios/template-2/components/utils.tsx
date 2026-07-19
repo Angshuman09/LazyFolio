@@ -31,12 +31,3 @@ export function StackTicker({ stack }: { stack: { name: string }[] }) {
     </div>
   );
 }
-
-export const statusStyle: Record<string, string> = {
-    Live: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20",
-    WIP: "text-amber-600 bg-amber-500/10 border-amber-500/20",
-    "Open Source": "text-sky-600 bg-sky-500/10 border-sky-500/20",
-  };
-  
-  
-export const fallbackStatusStyle = "text-stone-500 bg-stone-500/10 border-stone-500/20";

@@ -146,6 +146,13 @@ export async function POST(request: NextRequest) {
       themeId: optionalString(themeId),
     };
 
+    // Read the current username before the upsert so we know if it changed
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId: targetUserId },
+      select: { username: true },
+    });
+    const oldUsername = existingProfile?.username ?? null;
+
     const profile = await prisma.profile.upsert({
       where: { userId: targetUserId },
       update: profileData,
@@ -155,6 +162,44 @@ export async function POST(request: NextRequest) {
       },
       select: profileSelect,
     });
+
+    // If the username changed, rewrite internal blog link URLs so old posts
+    // remain accessible under the new username path.
+    const newUsername = profile.username;
+    if (
+      oldUsername &&
+      newUsername &&
+      oldUsername !== newUsername
+    ) {
+      try {
+        // Fetch all blogs for this profile that have a stored blogLink
+        const blogsToUpdate = await prisma.blog.findMany({
+          where: {
+            profileId: profile.id,
+            blogLink: { startsWith: `/${oldUsername}/blogs/` },
+          },
+          select: { id: true, blogLink: true },
+        });
+
+        // Replace the old username prefix with the new one in each blogLink
+        await Promise.all(
+          blogsToUpdate.map((blog) =>
+            prisma.blog.update({
+              where: { id: blog.id },
+              data: {
+                blogLink: blog.blogLink!.replace(
+                  `/${oldUsername}/blogs/`,
+                  `/${newUsername}/blogs/`
+                ),
+              },
+            })
+          )
+        );
+      } catch (error) {
+        // Non-critical — log and continue
+        console.error("Failed to update blog links after username change", error);
+      }
+    }
 
     if (typeof skillsIsenable === "boolean") {
       try {
@@ -172,6 +217,10 @@ export async function POST(request: NextRequest) {
         ? skillsIsenable
         : await getSkillsIsenable(profile.id);
 
+    // Revalidate both old and new usernames so stale caches are purged
+    if (oldUsername && oldUsername !== profile.username) {
+      revalidateProfile(oldUsername);
+    }
     revalidateProfile(profile.username);
 
     return NextResponse.json(

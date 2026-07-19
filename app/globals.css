@@ -40,6 +40,7 @@
 
   /* Lazyfolio page palette */
   --lf-bg: #F5F0E8;
+  --lf-bod: #f5ecde;
   --lf-surface: #f8f6ee;
   --lf-border: #E0D8CC;
   --lf-ink: #201f1f;
@@ -96,6 +97,7 @@
 
   /* Lazyfolio dark palette — premium metal black */
   --lf-bg: #111111; /* zinc-950 */
+  --lf-bod: #262626;
   --lf-surface: #18181b; /* zinc-900 */
   --lf-border: #27272a; /* zinc-800 */
   --lf-ink: #fafafa;

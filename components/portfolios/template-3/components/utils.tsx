@@ -1,12 +1,4 @@
 import Link from "next/link";
-
-export const statusColors: Record<string, string> = {
-    Live:          "text-slate-500 bg-slate-100 border-slate-200",
-    WIP:           "text-slate-500 bg-slate-100 border-slate-200",
-    "Open Source": "text-slate-500 bg-slate-100 border-slate-200",
-  };
-  
-export const fallbackStatusStyle = "text-slate-400 bg-slate-50 border-slate-150";
   
 export const Divider = () => (
     <div className="w-full h-px bg-slate-100 my-12" />

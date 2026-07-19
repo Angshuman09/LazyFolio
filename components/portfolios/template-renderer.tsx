@@ -5,7 +5,7 @@ import { Template2 } from "@/components/portfolios/template-2/template-2";
 import { Template3 } from "./template-3/template-3";
 import { Template4 } from "./template4";
 import { Template5 } from "./template5";
-import { Template6 } from "./template6";
+import { Template6 } from "./template-6/template6";
 import { Template7 } from "./template7";
 import { Template8 } from "./template8";
 

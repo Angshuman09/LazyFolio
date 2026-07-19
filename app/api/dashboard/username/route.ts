@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
@@ -35,23 +36,65 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Read the current username before upsert so we know if it changed
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId },
+      select: { username: true },
+    });
+    const oldUsername = existingProfile?.username ?? null;
+
     const updatedProfile = await prisma.profile.upsert({
-    where: {
+      where: {
         userId: userId          
-    },
-    update: {
+      },
+      update: {
         username: username
-    },
-    create: {
+      },
+      create: {
         userId: userId,         
         username: username
-    },
-    select: {
+      },
+      select: {
         id: true,
         username: true,
         userId: true
+      }
+    });
+
+    const newUsername = updatedProfile.username;
+    if (oldUsername && newUsername && oldUsername !== newUsername) {
+      try {
+        // Fetch all blogs for this profile that have a stored blogLink
+        const blogsToUpdate = await prisma.blog.findMany({
+          where: {
+            profileId: updatedProfile.id,
+            blogLink: { startsWith: `/${oldUsername}/blogs/` },
+          },
+          select: { id: true, blogLink: true },
+        });
+
+        // Replace the old username prefix with the new one in each blogLink
+        await Promise.all(
+          blogsToUpdate.map((blog) =>
+            prisma.blog.update({
+              where: { id: blog.id },
+              data: {
+                blogLink: blog.blogLink!.replace(
+                  `/${oldUsername}/blogs/`,
+                  `/${newUsername}/blogs/`
+                ),
+              },
+            })
+          )
+        );
+      } catch (error) {
+        console.error("Failed to update blog links after username change:", error);
+      }
+
+      revalidateProfile(oldUsername);
     }
-});
+
+    revalidateProfile(newUsername);
 
     return NextResponse.json({ data: updatedProfile }, { status: 200 });
   } catch (error) {

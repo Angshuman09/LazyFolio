@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { getLinkIcon } from '../../shared/link-icon';
 import { ArrowRight } from 'lucide-react';
+import { trackClick } from '@/lib/utils/track-click';
 
 const Links = ({profile, config, bookCallLink, iconStrokeWidth}:{profile: ProfileData, bookCallLink: string, config: TemplateThemeConfig, iconStrokeWidth: number}) => {
   const links = normalizeLinks(profile?.links);
@@ -24,6 +25,7 @@ const Links = ({profile, config, bookCallLink, iconStrokeWidth}:{profile: Profil
                       }
                       rel="noopener noreferrer"
                       title={link.label}
+                      onClick={() => trackClick(profile?.id ?? undefined, link.label)}
                       className={config.quickLinkClass}
                     >
                       {getLinkIcon(link.label, link.href, iconSize, iconStrokeWidth)}

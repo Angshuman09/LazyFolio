@@ -151,7 +151,6 @@ export type TemplateThemeConfig = {
   projectDescriptionClass: string;
   projectTagClass: string;
   projectActionClass: string;
-  statusClass: Record<string, string>;
   fallbackStatusClass: string;
   showMoreClass: string;
   blogListClass: string;

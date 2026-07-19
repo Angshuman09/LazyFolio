@@ -120,20 +120,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       return;
     }
 
-    if(username == "dashboard"){
-      toast("dashboard can't be a username!", {
-        style: {
-          borderRadius: '10px',
-          background: '#fff3cd',
-          color: '#856404',      
-        },
-      });
-      setLoading(false)
-      return;
-    }
-
-    if(username == "templates"){
-      toast("templates can't be a username!", {
+    if(username == "dashboard" || username=="templates"){
+      toast(`${username} can't be a username!`, {
         style: {
           borderRadius: '10px',
           background: '#fff3cd',

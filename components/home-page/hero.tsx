@@ -31,6 +31,27 @@ const Hero = () => {
       router.push("/auth");
       return;
     }
+    let uname = username.trim().toLowerCase();
+
+    if (!uname) {
+      toast.error("Username cannot be empty");
+      setisClaiming(false);
+      return;
+    }
+
+    if(uname == "dashboard" || uname=="templates"){
+      toast(`${uname} can't be a username!`, {
+        style: {
+          borderRadius: '10px',
+          background: '#fff3cd',
+          color: '#856404',      
+        },
+      });
+      setisClaiming(false)
+      return;
+    }
+
+    // console.log(uname)
 
     try {
       const response = await fetch("/api/dashboard/username", {
@@ -38,7 +59,7 @@ const Hero = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, userId: session.user.id }),
+        body: JSON.stringify({ username: uname, userId: session.user.id }),
       });
 
       if (!response.ok) {
@@ -119,7 +140,7 @@ const Hero = () => {
           </span>
         </h2>
 
-        <div className="relative rounded-2xl border-11 border-(--lf-tan)">
+        <div className="relative rounded-2xl border-11 border-(--lf-bod)">
           <Image
             src="/preview.png"
             alt="this image"

@@ -1,20 +1,19 @@
 
+import { normalizeLinks } from '../../shared/normalize';
 import { ProfileData } from '../../shared/types';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import Link from 'next/link';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { getLinkIcon } from '../../shared/link-icon';
 import { ArrowRight } from 'lucide-react';
-import { normalizeLinks } from '../../shared/normalize';
 import { trackClick } from '@/lib/utils/track-click';
 
-const Links = ({ profile, bookCallLink}:{profile: ProfileData, bookCallLink:string }) => {
+const Links = ({profile, bookCallLink}:{profile: ProfileData, bookCallLink: string}) => {
   const links = normalizeLinks(profile?.links);
-  const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
   return (
-    <>
-    {hasQuickActions && (
-            <div className="flex flex-wrap items-center gap-2 mb-2">
+   <>
+             {(links.length > 0 || bookCallLink) && (
+            <div className="flex flex-wrap items-center gap-2 mb-11">
               {links.map((link) => (
                 <Tooltip key={link.id}>
                   <TooltipTrigger asChild>
@@ -22,32 +21,30 @@ const Links = ({ profile, bookCallLink}:{profile: ProfileData, bookCallLink:stri
                       href={link.href}
                       target={shouldOpenInNewTab(link.href) ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      title={link.label}
                       onClick={() => trackClick(profile?.id ?? undefined, link.label)}
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 border border-slate-200 bg-white hover:text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-all duration-150"
+                      className="inline-flex items-center justify-center w-[38px] h-[38px] rounded-[10px] border-[1.5px] border-[#D5E5DA] bg-[#EEF4F0] text-[#3D5247] transition-colors duration-150 no-underline hover:bg-[#D5E5DA] hover:text-[#1A3D2B]"
                     >
-                      {getLinkIcon(link.label, link.href)}
+                      {getLinkIcon(link.label, link.href, 14, 1.8)}
                     </Link>
                   </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{link.label}</p>
-                  </TooltipContent>
+                  <TooltipContent><p>{link.label}</p></TooltipContent>
                 </Tooltip>
               ))}
+
               {bookCallLink && (
                 <Link
                   href={bookCallLink}
                   target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px] text-[11px] font-semibold tracking-wide text-white bg-slate-900 hover:bg-slate-800 transition-colors duration-150 ml-auto"
+                  className="ml-auto inline-flex items-center gap-[6px] h-[38px] px-[18px] rounded-[10px] bg-[#1A3D2B] text-[#FDF6EC] text-xs font-bold transition-colors duration-150 no-underline hover:bg-[#C4622D]"
                 >
                   Book a call
-                  <ArrowRight size={10} className="stroke-[2.5]" />
+                  <ArrowRight size={12} strokeWidth={2.2} />
                 </Link>
               )}
             </div>
           )}
-    </>
+   </>
   )
 }
 

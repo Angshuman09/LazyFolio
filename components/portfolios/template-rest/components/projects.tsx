@@ -29,16 +29,6 @@ const Projects = ({profile, config, iconStrokeWidth}:{profile: ProfileData, conf
                               {project.name}
                             </h3>
                           )}
-                          {project.status && (
-                            <span
-                              className={
-                                config.statusClass[project.status] ??
-                                config.fallbackStatusClass
-                              }
-                            >
-                              {project.status}
-                            </span>
-                          )}
                         </div>
                         {project.description && (
                           <p className={config.projectDescriptionClass}>

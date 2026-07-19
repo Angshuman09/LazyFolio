@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Github, ExternalLink } from 'lucide-react'
-import { Divider, fallbackStatusStyle, SectionHeading, statusStyle } from './utils'
+import { Divider, SectionHeading } from './utils'
 import { normalizeProjects } from '../../shared/normalize'
 import { ProfileData } from '../../shared/types'
 import { shouldOpenInNewTab } from '../../shared/utils'
@@ -42,16 +42,6 @@ const Projects = ({ profile }: { profile: ProfileData }) => {
                         {project.name && (
                           <span className="text-[13px] font-medium text-stone-800">
                             {project.name}
-                          </span>
-                        )}
-
-                        {project.status && (
-                          <span
-                            className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${
-                              statusStyle[project.status] ?? fallbackStatusStyle
-                            }`}
-                          >
-                            {project.status}
                           </span>
                         )}
                       </div>

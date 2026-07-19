@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { normalizeProjects } from '../../shared/normalize';
 import { ProfileData } from '../../shared/types';
-import { Divider, fallbackStatusStyle, SectionHeading, statusColors } from './utils';
+import { Divider, SectionHeading } from './utils';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import Link from 'next/link';
 import { ExternalLink, Github } from 'lucide-react';
@@ -34,13 +34,6 @@ const Projects = ({profile}:{profile: ProfileData}) => {
                           {project.name && (
                             <span className="text-[13.5px] font-semibold text-slate-900">
                               {project.name}
-                            </span>
-                          )}
-                          {project.status && (
-                            <span
-                              className={`text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded border ${statusColors[project.status] ?? fallbackStatusStyle}`}
-                            >
-                              {project.status}
                             </span>
                           )}
                         </div>
