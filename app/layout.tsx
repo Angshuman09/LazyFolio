@@ -7,6 +7,7 @@ import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -63,6 +64,7 @@ export default function RootLayout({
               strategy="afterInteractive"
             />
           )}
+          <SpeedInsights/>
           <Analytics/>
         </Providers>
       </body>

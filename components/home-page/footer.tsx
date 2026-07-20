@@ -9,20 +9,20 @@ const Footer = () => {
       links: [
         { label: "Home", href: "/" },
         { label: "Features", href: "#features" },
-        { label: "Templates", href: "#" },
+        { label: "Templates", href: "/templates" },
       ],
     },
     {
       heading: "The Boring",
       links: [
-        { label: "Privacy Policy", href: "#" },
-        { label: "Terms of Service", href: "#" },
+        { label: "Privacy Policy", href: "/" },
+        { label: "Terms of Service", href: "/" },
       ],
     },
     {
       heading: "The Cool",
       links: [
-        { label: "X / Twitter", href: "https://x.com" },
+        { label: "X / Twitter", href: "https://x.com/angshuhere" },
         { label: "GitHub", href: "https://github.com/Angshuman09/lazyfolio" },
       ],
     },
@@ -33,7 +33,6 @@ const Footer = () => {
       aria-label="Site footer"
       className="w-full relative overflow-hidden bg-(--lf-surface) text-(--lf-ink)"
     >
-      {/* Top shimmer divider */}
       <div className="px-6 md:px-12">
         <div className="section-divider" />
       </div>
@@ -41,7 +40,6 @@ const Footer = () => {
       <div className="px-8 md:px-16 pt-14 pb-0">
         <div className="flex flex-col md:flex-row gap-12 md:gap-0 max-w-7xl mx-auto">
 
-          {/* Brand column */}
           <div className="md:w-72 shrink-0 md:pr-16 flex flex-col gap-3">
             <span className="font-serif-display text-[1.4rem] font-normal tracking-tight text-(--lf-ink)">
               Lazy<span className="text-(--lf-muted)">folio</span>
@@ -56,7 +54,6 @@ const Footer = () => {
             </Link>
           </div>
 
-          {/* Nav columns */}
           <div className="flex flex-1 gap-12 md:gap-16 lg:gap-24">
             {navColumns.map((col) => (
               <div key={col.heading} className="flex-1">
@@ -80,7 +77,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom copyright bar */}
         <div className="max-w-7xl mx-auto mt-10 pb-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-[0.72rem] text-(--lf-sub)">
             © {new Date().getFullYear()} Lazyfolio. Open-source &amp; free.

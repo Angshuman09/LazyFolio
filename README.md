@@ -1,86 +1,35 @@
-<p align="center">
-  <!-- Replace the src below with your actual logo path once added -->
-  <img src="./public/Logo.png" alt="Lazyfolio Logo" width="120" />
-</p>
 
-<h1 align="center">Lazyfolio</h1>
 
-<p align="center">
-  Make the internet know you exist.
-  <br />
-  Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch.
-</p>
+# Lazyfolio
 
-<p align="center">
-  <a href="https://lazy-folio.vercel.app">Live Demo</a> &nbsp;|&nbsp;
-  <a href="https://github.com/Angshuman09/lazyfolio/issues">Report Bug</a> &nbsp;|&nbsp;
-  <a href="https://github.com/Angshuman09/lazyfolio/issues">Request Feature</a>
-</p>
+Make the internet know you exist.   
+Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch.
+
+[Live Demo](https://lazy-folio.vercel.app)  |  [Report Bug](https://github.com/Angshuman09/lazyfolio/issues)  |  [Request Feature](https://github.com/Angshuman09/lazyfolio/issues)
 
 ---
 
-<!-- Replace the src below with your actual dashboard preview image once added -->
-<p align="center">
-  <img src="./public/preview.png" alt="Lazyfolio Dashboard Preview" width="100%" />
-</p>
 
----
+### Lazyfolio Dashboard Preview
+![Lazyfolio Dashboard Preview](./public/preview.png)
+
+### Write & Publish Blogs
+![Write & Publish Blogs](./public/writeblogs.png)
+
+ ---
 
 ## What is Lazyfolio
 
-Lazyfolio is an open-source portfolio and personal page builder heavily inspired by [Linktree](https://linktr.ee) and [Bear Blog](https://bearblog.dev). The idea is simple: you get one clean link that holds everything — your portfolio, your projects, your social links, and your blog posts — without needing to touch a single design tool or write a line of HTML.
+Most portfolio sites take an evening (or a weekend) you didn't want to spend picking a layout, wiring up a CMS, wrestling with deploys. Lazyfolio skips all of that. Pick a template, fill in your story, and you have a live, shareable portfolio with your own link, blog, and analytics in minutes.
 
-You pick a username, choose a template, fill in your details, and your page is live. It is aimed at developers and creators who want to establish an online presence without spending a weekend on it.
+It's fully open source, so you're welcome to self-host it, theme it, or rip out the parts you like for your own project.
 
-**Core capabilities**
+**Features**
 
-One public profile page under `lazyfolio.com/your-username` that you can share anywhere. Beautiful, developer-focused templates that need no customisation beyond your own content. A built-in blogging engine so you can publish articles and writing alongside your work. A built-in analytics dashboard that tracks visitors, link clicks, and engagement over time. A single dashboard where all of this is managed.
-
-
-## Tech Stack
-
-**Framework**
-Next.js 16 with the App Router and React 19
-
-**Language**
-TypeScript throughout the codebase
-
-**Styling**
-Tailwind CSS v4, shadcn/ui component library, Radix UI primitives, Framer Motion for animations, and rough-notation for hand-drawn highlight effects
-
-**Database**
-PostgreSQL via the `pg` driver, with Prisma ORM for schema management and migrations
-
-**Authentication**
-better-auth for session-based auth flows
-
-**Image Storage**
-Cloudinary for uploading and serving profile images and assets
-
-**Forms and Validation**
-React Hook Form with Zod for schema-based validation
-
-**Data Fetching**
-TanStack Query (React Query v5) for server state management on the client
-
-**State Management**
-Zustand for lightweight global client state
-
-**Charts**
-Recharts for the analytics dashboard
-
-**Code Highlighting**
-Shiki for syntax-highlighted code blocks in blog posts
-
-**Webhooks and Notifications**
-Svix for webhook delivery, react-hot-toast for in-app toasts
-
-**Analytics**
-Vercel Analytics
-
-**Deployment**
-Vercel
-
+- One public profile page under `lazyfolio.com/your-username` that you can share anywhere. 
+- Beautiful, developer-focused templates that need no customisation beyond your own content. 
+- A built-in blogging engine so you can publish articles and writing alongside your work.
+- A built-in analytics dashboard that tracks visitors, link clicks, and engagement over time. 
 
 ## Getting Started
 
@@ -106,12 +55,21 @@ npm install
 Create a `.env` file at the root of the project. You will need values for your PostgreSQL connection string, Cloudinary credentials, and better-auth secret.
 
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/lazyfolio
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=http://localhost:3000
+DATABASE_URL="your-postgres-url"
+NODE_ENV = "development"
+BETTER_AUTH_SECRET="your-better-auth-secret"
+BETTER_AUTH_URL= http://localhost:3000
+GOOGLE_CLIENT_ID= your-google-client-id
+GOOGLE_CLIENT_SECRET= your-google-client-secret
+GITHUB_CLIENT_ID= your-github-client-id
+GITHUB_CLIENT_SECRET= your-github-cilent-secret
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME= your-cloudinary-name
+NEXT_PUBLIC_CLOUDINARY_API_KEY= your-cloudinary-api-key
+NEXT_PUBLIC_CLOUDINARY_API_SECRET= your-cloudinary-api-secret
+NEXT_PUBLIC_UMAMI_WEBSITE_ID= your-umami-website-id
+NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
+NODE_ENV= development
+NEXT_PUBLIC_SITE_URL= http://localhost:3000
 ```
 
 **Run database migrations**
@@ -136,17 +94,6 @@ npm start
 ```
 
 
-## Project Structure
-
-```
-lazyfolio/
-  app/              Next.js App Router pages and layouts
-  components/       Reusable UI components
-  lib/              Auth setup, database client, utility functions
-  prisma/           Database schema and migration files
-  public/           Static assets including logo and preview images
-```
-
 
 ## Inspiration
 
@@ -156,11 +103,9 @@ Lazyfolio is directly inspired by two products that got the philosophy right.
 
 [Bear Blog](https://bearblog.dev) demonstrated that a writing platform does not need to be complicated. Clean, fast, and focused on the words. Lazyfolio borrows that same spirit for its built-in blog.
 
-
 ## Contributing
 
 Contributions are welcome. Open an issue to discuss what you want to change before submitting a pull request. Please keep PRs focused on a single concern.
-
 
 ## License
 
@@ -168,4 +113,4 @@ Open-source and free. See `LICENSE` for details.
 
 ---
 
-<p align="center">Built with ♥ by <a href="https://github.com/Angshuman09">Angshuman</a></p>
+Built with ♥ by [Angshuman](https://github.com/Angshuman09)
