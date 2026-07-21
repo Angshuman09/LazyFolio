@@ -1,22 +1,25 @@
+<p align="center">
+  <!-- Replace the src below with your actual logo path once added -->
+  <img src="./public/logo.png" alt="Lazyfolio Logo" width="120" />
+</p>
 
+<h1 align="center">Lazyfolio</h1>
 
-# Lazyfolio
+<p align="center">
+  Make the internet know you exist.
+  <br />
+  Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch.
+</p>
 
-Make the internet know you exist.   
-Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch.
+<p align="center">
+  <a href="https://lazy-folio.vercel.app">Live Demo</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Angshuman09/lazyfolio/issues">Report Bug</a> &nbsp;|&nbsp;
+  <a href="https://github.com/Angshuman09/lazyfolio/issues">Request Feature</a> &nbsp;|&nbsp;
+  <a href="./CODE_OF_CONDUCT.md">Code of Conduct</a> &nbsp;|&nbsp;
+  <a href="./LICENSE">License</a> &nbsp;|&nbsp;
+</p>
 
-[Live Demo](https://lazy-folio.vercel.app)  |  [Report Bug](https://github.com/Angshuman09/lazyfolio/issues)  |  [Request Feature](https://github.com/Angshuman09/lazyfolio/issues)
-
----
-
-
-### Lazyfolio Dashboard Preview
-![Lazyfolio Dashboard Preview](./public/preview.png)
-
-### Write & Publish Blogs
-![Write & Publish Blogs](./public/writeblogs.png)
-
- ---
+--- 
 
 ## What is Lazyfolio
 
@@ -30,6 +33,17 @@ It's fully open source, so you're welcome to self-host it, theme it, or rip out 
 - Beautiful, developer-focused templates that need no customisation beyond your own content. 
 - A built-in blogging engine so you can publish articles and writing alongside your work.
 - A built-in analytics dashboard that tracks visitors, link clicks, and engagement over time. 
+
+---
+
+
+### Lazyfolio Dashboard Preview
+![Lazyfolio Dashboard Preview](./public/preview.png)
+
+### Write & Publish Blogs
+![Write & Publish Blogs](./public/writeblogs.png)
+
+ ---
 
 ## Getting Started
 
