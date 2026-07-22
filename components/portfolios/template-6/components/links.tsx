@@ -36,7 +36,7 @@ const Links = ({profile, bookCallLink}:{profile: ProfileData, bookCallLink: stri
                   href={bookCallLink}
                   target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="ml-auto inline-flex items-center gap-[6px] h-[38px] px-[18px] rounded-[10px] bg-[#1A3D2B] text-[#FDF6EC] text-xs font-bold transition-colors duration-150 no-underline hover:bg-[#C4622D]"
+                  className="ml-auto inline-flex items-center gap-1.5 h-9.5 px-4.5 rounded-[10px] bg-[#1A3D2B] text-[#FDF6EC] text-xs font-bold transition-colors duration-150 no-underline hover:bg-green-950"
                 >
                   Book a call
                   <ArrowRight size={12} strokeWidth={2.2} />

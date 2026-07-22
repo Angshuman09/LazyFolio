@@ -98,7 +98,7 @@ const config: TemplateThemeConfig = {
   footerClass:
     "mt-12 flex flex-col gap-2 border-t border-[#1f4d36] pt-6 sm:flex-row sm:items-center sm:justify-between",
   footerTextClass: "text-[10px] tracking-[0.14em] text-[#5aa77a]",
-  footerBrandClass: "text-[10px] tracking-[0.14em] text-[#86efac]",
+  footerBrandClass: "text-[10px] tracking-[0.14em] text-[#86efac] cursor-pointer",
   iconSize: 14,
   iconStrokeWidth: 1.9
 };

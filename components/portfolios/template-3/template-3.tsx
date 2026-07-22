@@ -29,7 +29,7 @@ export function Template3({
   const bookCallLink = getBookCallLink(profile);
   return (
       <main className="relative min-h-screen bg-white text-slate-700 antialiased selection:bg-slate-100 selection:text-slate-900">
-        <div className="max-w-[680px] mx-auto px-6 py-10 sm:py-15">
+        <div className="max-w-170 mx-auto px-6 py-10 sm:py-15">
           <Hero profile={profile} avatar={avatar} banner={banner} name={name}/>
           <Links profile={profile} bookCallLink={bookCallLink}/>
           <Experience profile={profile}/>

@@ -26,7 +26,7 @@ const BookACall = ({avatar, name, bookCallLink}:{avatar: string, name: string, b
                       className="rounded-[10px] border-2 border-[rgba(196,98,45,0.55)] object-cover shrink-0"
                     />
                   ) : (
-                    <span className="w-[46px] h-[46px] rounded-[10px] flex-shrink-0 border-2 border-[rgba(253,246,236,0.2)] block" />
+                    <span className="w-11.5 h-11.5 rounded-[10px] shrink-0 border-2 border-[rgba(253,246,236,0.2)] block" />
                   )}
                   <span className="flex-1 min-w-0">
                     <span className="block text-sm font-bold text-[#FDF6EC]">
@@ -36,7 +36,7 @@ const BookACall = ({avatar, name, bookCallLink}:{avatar: string, name: string, b
                       Book a slot to discuss a project or collaboration.
                     </span>
                   </span>
-                  <ArrowRight size={16} strokeWidth={2} color="#FAE8DC" className="flex-shrink-0" />
+                  <ArrowRight size={16} strokeWidth={2} color="#FAE8DC" className="shrink-0" />
                 </Link>
               </section>
             </>

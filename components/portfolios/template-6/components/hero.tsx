@@ -10,7 +10,7 @@ const Hero = ({ profile, name, avatar }: { profile: ProfileData, name: string, a
     return (
         <>
             {quote && (
-                <p className="mb-6 py-[13px] pl-5 pr-[18px] border-l-[3px] border-[#C4622D] bg-[#FAE8DC] rounded-r-[10px] text-[13px] leading-[1.75] text-[#7A4020] italic">
+                <p className="mb-6 py-3.25 pl-5 pr-4.5 border-l-[3px] border-green-700 bg-green-50 rounded-r-[10px] text-[13px] leading-[1.75] text-green-900 italic">
                     &ldquo;{quote}&rdquo;
                 </p>
             )}
@@ -18,40 +18,40 @@ const Hero = ({ profile, name, avatar }: { profile: ProfileData, name: string, a
             <section className="mb-5 rounded-[20px] border-[1.5px] border-[#D5E5DA] bg-[#EEF4F0] overflow-hidden shadow-[0_4px_24px_rgba(26,61,43,0.07)]">
 
                 {banner ? (
-                    <div className="relative h-[180px] overflow-hidden">
+                    <div className="relative h-45 overflow-hidden">
                         <Image
                             src={banner}
                             alt={name ? `${name} banner` : "Banner"}
                             fill unoptimized
                             className="object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent from-[45%] to-[rgba(26,61,43,0.28)]" />
+                        <div className="absolute inset-0 bg-linear-to-b from-transparent from-45% to-[rgba(26,61,43,0.28)]" />
                     </div>
                 ) : (
-                    <div className="h-[158px] bg-[#1A3D2B] relative overflow-hidden">
-                        <div className="absolute -top-[50px] -right-[50px] w-[220px] h-[220px] rounded-full bg-[rgba(196,98,45,0.22)]" />
-                        <div className="absolute -bottom-10 left-[50px] w-[140px] h-[140px] rounded-full bg-[rgba(196,98,45,0.13)]" />
-                        <div className="absolute top-[30px] -left-[25px] w-[90px] h-[90px] rounded-full bg-[rgba(238,244,240,0.07)]" />
+                    <div className="h-39.5 bg-[#1A3D2B] relative overflow-hidden">
+                        <div className="absolute -top-12.5 -right-12.5 w-55 h-55 rounded-full bg-[rgba(196,98,45,0.22)]" />
+                        <div className="absolute -bottom-10 left-12.5 w-35 h-35 rounded-full bg-[rgba(196,98,45,0.13)]" />
+                        <div className="absolute top-7.5 -left-6.25 w-22.5 h-22.5 rounded-full bg-[rgba(238,244,240,0.07)]" />
                     </div>
                 )}
 
-                <div className="px-[26px] pb-7 relative z-40">
+                <div className="px-6.5 pb-7 relative z-40">
                     {avatar ? (
-                        <div className="mt-[-38px] mb-[14px]">
+                        <div className="-mt-9.5 mb-3.5">
                             <Image
                                 src={avatar}
                                 alt={name || "Avatar"}
                                 width={82} height={82}
                                 unoptimized
-                                className="rounded-[14px] border-[3px] border-[#C4622D] object-cover block shadow-[0_4px_18px_rgba(196,98,45,0.22)]"
+                                className="rounded-[14px] border-[3px] border-green-900 object-cover block shadow-[0_4px_18px_rgba(196,98,45,0.22)]"
                             />
                         </div>
                     ) : (
-                        <div className="h-[18px]" />
+                        <div className="h-4.5" />
                     )}
 
                     {name && (
-                        <h1 className="text-[40px] max-[580px]:text-[26px] font-extrabold tracking-[-0.025em] leading-[1.05] text-[#1A3D2B] m-0">
+                        <h1 className="text-[40px] max-[580px]:text-[26px] font-extrabold tracking-tight leading-[1.05] text-[#1A3D2B] m-0">
                             {name}
                         </h1>
                     )}
@@ -63,7 +63,7 @@ const Hero = ({ profile, name, avatar }: { profile: ProfileData, name: string, a
                     )}
 
                     {bio && (
-                        <p className="mt-[14px] mb-0 text-sm leading-[1.85] text-[#3D5247] max-w-[520px]">
+                        <p className="mt-3.5 mb-0 text-sm leading-[1.85] text-[#3D5247] max-w-130">
                             {bio}
                         </p>
                     )}

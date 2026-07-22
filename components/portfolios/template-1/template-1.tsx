@@ -10,6 +10,7 @@ import ContactInfo from "./components/contactinfo";
 import { ProfileData, UserData } from "../shared/types";
 import { addProfileContactLinks, cleanUrl, getBookCallLink, textValue } from "../shared/utils";
 import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "../shared/normalize";
+import { useRouter } from "next/navigation";
 
 export function Template1({
   user,
@@ -29,7 +30,7 @@ export function Template1({
   const bookCallLink = getBookCallLink(profile);
   const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
   const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
-
+  const router = useRouter();
   return (
     <>
       <main className="min-h-screen bg-[#0e0e0e] text-zinc-300 antialiased">
@@ -73,7 +74,7 @@ export function Template1({
 
           <div className="mt-14 pt-6 border-t border-zinc-800/60 flex items-center justify-between">
             <p className="text-[11px] text-zinc-800">
-              built with <span className="text-zinc-600">lazyfolio</span>
+              built with <span onClick={()=> router.push('/')} className="text-zinc-600 cursor-pointer">lazyfolio</span>
             </p>
           </div>
         </div>

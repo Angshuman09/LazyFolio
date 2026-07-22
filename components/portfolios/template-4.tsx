@@ -39,8 +39,6 @@ const config: TemplateThemeConfig = {
     "ml-auto inline-flex h-9 items-center gap-2 rounded-lg bg-[#25302b] px-4 font-sans text-[12px] font-semibold text-[#fffaf2] transition hover:bg-[#7f1d1d]",
   dividerClass: "my-12 h-px w-full bg-[#d8cdbf]",
   sectionHeadingClass: "mb-6 flex items-center gap-3",
-  // sectionIconClass:
-  //   "inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#7f1d1d]/10 text-[#7f1d1d]",
   sectionTitleClass:
     "font-sans text-[11px] font-bold uppercase tracking-[0.2em] text-[#52645b]",
   experienceListClass: "space-y-4",
@@ -107,7 +105,7 @@ const config: TemplateThemeConfig = {
   footerTextClass:
     "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#9b8d80]",
   footerBrandClass:
-    "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#52645b]",
+    "font-sans text-[11px] font-semibold tracking-[0.12em] text-[#52645b] cursor-pointer",
   iconSize: 14,
   iconStrokeWidth: 1.7,
 };

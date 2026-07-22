@@ -6,9 +6,9 @@ export const TEMPLATES = [
     emoji: "01",
     preview: "Light, simple, minimal",
     description:
-      "A clean, paper-white canvas that keeps the focus entirely on your work. Perfect for designers and writers who let their content speak.",
+      "A clean, paper-white canvas that keeps the focus entirely on your work.",
     tags: ["Light", "Minimal", "Clean"],
-    image: "/styles/template-2.png",
+    image: "/styles/template-1.png",
   },
   {
     id: "2",
@@ -16,9 +16,9 @@ export const TEMPLATES = [
     emoji: "02",
     preview: "Dark, simple, minimal",
     description:
-      "Sleek charcoal aesthetic with high contrast typography. The developer's go-to — understated, yet impossibly sharp.",
+      "Sleek charcoal aesthetic with high contrast typography.",
     tags: ["Dark", "Minimal", "Sharp"],
-    image: "/styles/template-1.png",
+    image: "/styles/template-2.png",
   },
   {
     id: "3",
@@ -26,7 +26,7 @@ export const TEMPLATES = [
     emoji: "03",
     preview: "Clean white layout with muted borders",
     description:
-      "Generous white space and muted borders create a calm, open feel. Like a well-lit studio — nothing distracts from you.",
+      "Generous white space and muted borders create a calm, open feel.",
     tags: ["White", "Spacious", "Calm"],
     image: "/styles/template-3.png",
   },
@@ -46,7 +46,7 @@ export const TEMPLATES = [
     emoji: "05",
     preview: "Dark code-aesthetic with green accents",
     description:
-      "Pure hacker energy. Monospace type, phosphor-green accents, and a deep dark background — built for those who live in the terminal.",
+      "Pure hacker energy. Monospace type, phosphor-green accents, and a deep dark background.",
     tags: ["Dark", "Mono", "Techy"],
     image: "/styles/template-5.png",
   },
@@ -66,7 +66,7 @@ export const TEMPLATES = [
     emoji: "07",
     preview: "Bold borders, bright blocks, poster energy",
     description:
-      "Thick borders, bold color blocks, and unapologetic type. Your portfolio as a limited-edition zine drop — for those who refuse to blend in.",
+      "Thick borders, bold color blocks, and unapologetic type.",
     tags: ["Bold", "Colorful", "Expressive"],
     image: "/styles/template-7.png",
   },
@@ -76,7 +76,7 @@ export const TEMPLATES = [
     emoji: "08",
     preview: "Dark luxury palette with gold details",
     description:
-      "Dark luxury meets quiet ambition. Deep graphite surfaces with hairline gold accents — the template for those who mean serious business.",
+      "Dark luxury meets quiet ambition. Deep graphite surfaces with hairline gold accents.",
     tags: ["Dark", "Gold", "Luxury"],
     image: "/styles/template-8.png",
   },

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
@@ -81,7 +82,7 @@ const Footer = () => {
           <p className="text-[0.72rem] text-(--lf-sub)">
             © {new Date().getFullYear()} Lazyfolio. Open-source &amp; free.
           </p>
-          <p className="text-[0.72rem] text-(--lf-sub)">
+          <p className="text-[0.72rem] text-(--lf-sub) flex justify-center items-center gap-3">
             Built with ♥ by{" "}
             <Link
               href="https://github.com/Angshuman09"
@@ -89,7 +90,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="hover:text-(--lf-ink) transition-colors underline underline-offset-2 decoration-(--lf-border)"
             >
-              Angshuman
+              <Image src="/angshuman.png" alt="Angshuman" width={30} height={30}/>
             </Link>
           </p>
         </div>

@@ -27,7 +27,7 @@ const Hero = ({profile, banner, avatar, name}:{profile: ProfileData, banner: str
             className={
               banner
                 ? "absolute left-5 -bottom-9 ring-1 ring-white border border-[#bfbfbf] bg-white rounded-xl overflow-hidden shadow-sm"
-                : "mb-6 rounded-xl overflow-hidden w-[68px] h-[68px]"
+                : "mb-6 rounded-xl overflow-hidden w-17 h-17"
             }
           >
             <Image
@@ -45,7 +45,7 @@ const Hero = ({profile, banner, avatar, name}:{profile: ProfileData, banner: str
 
     <div className={banner ? "pt-12" : "pt-0"}>
       {name && (
-        <h1 className="text-[28px] sm:text-[32px] font-bold text-slate-900 tracking-[-0.025em] leading-[1.15] mb-2">
+        <h1 className="text-[28px] sm:text-[32px] font-bold text-slate-900 tracking-tight leading-[1.15] mb-2">
           {name}
         </h1>
       )}

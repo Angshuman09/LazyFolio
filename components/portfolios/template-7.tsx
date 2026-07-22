@@ -103,7 +103,7 @@ const config: TemplateThemeConfig = {
   footerTextClass:
     "text-[10px] font-black tracking-[0.12em] text-[#5c2d25]",
   footerBrandClass:
-    "text-[10px] font-black tracking-[0.12em] text-[#ef4444]",
+    "text-[10px] font-black tracking-[0.12em] text-[#ef4444] cursor-pointer",
   iconSize: 14,
   iconStrokeWidth: 2.2,
 };
