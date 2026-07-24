@@ -30,11 +30,16 @@ const Projects = ({projects}:{projects:PortfolioProject[]}) => {
             )}
 
             <div className="flex-1 min-w-0">
-              {(project.name || project.status) && (
+              {(project.name || project.status || project.date) && (
                 <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                   {project.name && (
                     <span className="text-[13px] font-medium text-zinc-200">
                       {project.name}
+                    </span>
+                  )}
+                  {project.date && (
+                    <span className="text-[11px] text-zinc-500 font-mono">
+                      {project.date}
                     </span>
                   )}
                 </div>

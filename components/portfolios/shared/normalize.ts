@@ -85,8 +85,9 @@ export function normalizeProjects(
       const tags = (project.techstack || project.tags || [])
         .map(textValue)
         .filter(Boolean);
+      const date = formatDate(project.enddate);
 
-      if (!name && !description && !github && !demo && tags.length === 0) {
+      if (!name && !description && !github && !demo && tags.length === 0 && !date) {
         return null;
       }
 
@@ -97,6 +98,8 @@ export function normalizeProjects(
         tags,
         github,
         demo,
+        date: date || undefined,
+        enddate: date || undefined,
       };
     })
     .filter(Boolean) as PortfolioProject[];

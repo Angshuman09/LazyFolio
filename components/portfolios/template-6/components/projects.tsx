@@ -32,6 +32,11 @@ const Projects = ({profile}: {profile:ProfileData}) => {
                                 {project.name}
                               </h3>
                             )}
+                            {project.date && (
+                              <span className="text-[11px] font-mono text-[#3D5247]/70">
+                                {project.date}
+                              </span>
+                            )}
                           </div>
                         </div>
 

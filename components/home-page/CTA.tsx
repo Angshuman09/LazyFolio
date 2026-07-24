@@ -21,7 +21,7 @@ const CTA = () => {
         <button
           onClick={() => router.push("/auth")}
           aria-label="Start building your portfolio for free"
-          className="group inline-flex rounded-[8px] items-center gap-2 bg-(--lf-ink) text-(--lf-bg) border border-(--lf-ink) text-[0.88rem] font-semibold px-6 py-3.5 transition-opacity duration-150 hover:opacity-85 cursor-pointer active:scale-[0.97]"
+          className="group inline-flex rounded-full items-center gap-2 bg-(--lf-ink) text-(--lf-bg) border border-(--lf-ink) text-[0.88rem] font-semibold px-6 py-3.5 transition-opacity duration-150 hover:opacity-85 cursor-pointer active:scale-[0.97]"
         >
           Start for free
           <span

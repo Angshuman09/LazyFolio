@@ -234,7 +234,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
           Username
         </label>
         <div className="flex items-stretch h-10">
-          <div className="flex items-center flex-1 rounded-l-xl border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 gap-1.5 focus-within:border-(--lf-muted) transition-colors">
+          <div className="flex items-center flex-1 rounded-l-full border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 gap-1.5 focus-within:border-(--lf-muted) transition-colors">
             <span className="text-[0.75rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
               lazyfolio.com/
             </span>
@@ -247,7 +247,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
           <button
             type="button"
             disabled={loading || !dirtyFields.username}
-            className="inline-flex items-center gap-1.5 px-4 rounded-r-xl border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+            className="inline-flex items-center gap-1.5 px-4 rounded-r-full border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
             onClick={handleSubmitUsername}
           >
             {loading ? <Loader2 size={13} className="animate-spin" /> : null}
@@ -404,7 +404,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                   type="button"
                   onClick={handleSubmitImages}
                   disabled={!hasPendingImages || imageLoading}
-                  className={`inline-flex items-center gap-1.5 px-4 h-8 rounded-lg border text-[0.75rem] font-semibold transition-all duration-200 font-sans-body shrink-0
+                  className={`inline-flex items-center gap-1.5 px-4 h-9 rounded-full border text-[0.75rem] font-semibold transition-all duration-200 font-sans-body shrink-0
                     border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) cursor-pointer hover:opacity-85
                     disabled:opacity-60 disabled:cursor-not-allowed
                     ${showSaveButton ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}

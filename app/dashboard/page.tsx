@@ -460,7 +460,7 @@ export default function DashboardPage() {
         <div className="flex items-center gap-1.5 md:gap-2">
           <button
             disabled={!profile?.username}
-            className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-3.5 h-8.5 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
+            className="hidden disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex items-center gap-1.75 px-4.5 h-8.5 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) text-[0.78rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body"
             onClick={() => {
               setActiveTemplate(profile?.themeId || "1");
               setTemplateOpen(true);
@@ -468,13 +468,13 @@ export default function DashboardPage() {
           >
             <Layers size={13} />
             Templates
-            <span className="font-mono text-[0.65rem] text-(--lf-muted) opacity-75 px-1.5 py-px rounded bg-(--lf-border-alpha)">
+            <span className="font-mono text-[0.65rem] text-(--lf-muted) opacity-75 px-1.5 py-px rounded-full bg-(--lf-border-alpha)">
               {TEMPLATES.find((t) => t.id === (profile?.themeId || activeTemplate))?.label}
             </span>
           </button>
 
           <button
-            className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
+            className="sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) transition-all duration-150"
             onClick={() => {
               setActiveTemplate(profile?.themeId || "1");
               setTemplateOpen(true);
@@ -485,7 +485,7 @@ export default function DashboardPage() {
           </button>
 
           <button
-            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-[6px] border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={() => setDark((current) => !current)}
             aria-label="Toggle theme"
           >
@@ -496,7 +496,7 @@ export default function DashboardPage() {
             disabled={!profile?.username}
 
             onClick={() => window.open(`/${profile?.username || username}`, "_blank")}
-            className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-[6px] bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
+            className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
           </button>
@@ -505,7 +505,7 @@ export default function DashboardPage() {
             type="submit"
             form="dashboard-form"
             disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
-            className="inline-flex items-center gap-1.5 px-4 md:px-3.5 h-7.5 rounded-[6px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
+            className="inline-flex items-center gap-1.5 px-5 md:px-4.5 h-8.5 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
           >
             {isSaving ? (
               <>
@@ -594,7 +594,7 @@ export default function DashboardPage() {
               lazyfolio/{profile?.username || "your-username"}
             </div>
             <button
-              className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-7.5 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
+              className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"
               onClick={copyLink}
               disabled={!profile?.username}
             >
@@ -692,7 +692,6 @@ export default function DashboardPage() {
             className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-xl sm:max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 border-b border-(--lf-border-alpha) shrink-0">
               <h2 className="font-serif-display text-[1.25rem] font-medium text-(--lf-ink) mb-1 leading-tight">
                 Choose a template
@@ -702,7 +701,6 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* Scrollable card grid */}
             <div className="px-5 sm:px-6 py-5 overflow-y-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {TEMPLATES.map((t) => (
@@ -754,17 +752,16 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Footer */}
             <div className="flex items-center justify-end gap-2.5 px-5 sm:px-6 py-4 border-t border-(--lf-border-alpha) shrink-0">
               <button
-                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.8rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
                 onClick={() => setTemplateOpen(false)}
                 disabled={isSaveDisabled}
               >
                 Cancel
               </button>
               <button
-                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold border-none cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.8rem] font-semibold border-none cursor-pointer hover:opacity-85 transition-opacity duration-150 font-sans whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed"
                 onClick={() => applyTemplate(activeTemplate)}
                 disabled={isSaveDisabled}
               >

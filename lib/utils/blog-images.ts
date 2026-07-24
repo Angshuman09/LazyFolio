@@ -5,26 +5,77 @@ export type BlogImage = {
   markdown: string;
 };
 
-const cloudinaryImagePattern =
-  /!\[([^\]]*)\]\(([^)]+)\)\s*<!--\s*cloudinary-public-id:([^>]+?)\s*-->/g;
+export function getPublicIdFromUrl(url: string): string | null {
+  if (!url || !url.includes("res.cloudinary.com")) return null;
+  const cleanUrl = url.split("?")[0].split("#")[0];
+  const parts = cleanUrl.split("/image/upload/");
+  if (parts.length > 1) {
+    const pathAfterUpload = parts[1];
+    const pathParts = pathAfterUpload.split("/");
+    if (pathParts[0] && pathParts[0].match(/^v\d+$/)) {
+      pathParts.shift();
+    }
+    const joined = pathParts.join("/");
+    const lastDotIndex = joined.lastIndexOf(".");
+    if (lastDotIndex !== -1) {
+      return joined.substring(0, lastDotIndex);
+    }
+    return joined;
+  }
+  return null;
+}
 
 export function createCloudinaryImageMarkdown(
   alt: string,
   url: string,
-  publicId: string,
+  publicId?: string,
 ) {
-  return `\n![${alt}](${url})\n<!-- cloudinary-public-id:${publicId} -->\n`;
+  void publicId;
+  return `\n![${alt}](${url})\n`;
 }
 
-export function extractBlogImages(content: string | null | undefined) {
+export function extractBlogImages(content: string | null | undefined): BlogImage[] {
   if (!content) return [];
 
-  return Array.from(content.matchAll(cloudinaryImagePattern), (match) => ({
-    alt: match[1],
-    url: match[2],
-    publicId: match[3].trim(),
-    markdown: match[0],
-  }));
+  const images: BlogImage[] = [];
+  const oldPattern = /!\[([^\]]*)\]\(([^)]+)\)\s*<!--\s*cloudinary-public-id:([^>]+?)\s*-->/g;
+  const processedIndices = new Set<number>();
+
+  for (const match of content.matchAll(oldPattern)) {
+    const alt = match[1];
+    const url = match[2];
+    const publicId = match[3].trim();
+    const startIndex = match.index;
+    if (startIndex !== undefined) {
+      processedIndices.add(startIndex);
+      images.push({
+        alt,
+        url,
+        publicId,
+        markdown: match[0],
+      });
+    }
+  }
+
+  const generalPattern = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  for (const match of content.matchAll(generalPattern)) {
+    const startIndex = match.index;
+    if (startIndex !== undefined && !processedIndices.has(startIndex)) {
+      const alt = match[1];
+      const url = match[2];
+      const publicId = getPublicIdFromUrl(url);
+      if (publicId) {
+        images.push({
+          alt,
+          url,
+          publicId,
+          markdown: match[0],
+        });
+      }
+    }
+  }
+
+  return images;
 }
 
 export function extractBlogImagePublicIds(content: string | null | undefined) {

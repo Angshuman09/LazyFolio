@@ -105,30 +105,30 @@ const Hero = () => {
         &gt;◡&lt;
       </p>
 
-      <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-stretch justify-center gap-4 sm:gap-3 w-full px-4 sm:px-0 max-w-[420px] mx-auto mb-10 mt-17">
-        <label className="flex items-center flex-1 min-w-0 rounded-[5px] border border-(--lf-border) bg-(--lf-surface) px-6 sm:px-4 min-h-[56px] sm:min-h-[47px] gap-2 sm:gap-1 transition-colors duration-150 focus-within:border-(--lf-tan) cursor-text">
-          <span className="font-mono text-[0.8125rem] text-(--lf-muted) whitespace-nowrap select-none shrink-0">
-            lazyfolio.com/
-          </span>
-          <input
-            type="text"
-            placeholder="yourname"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 placeholder:text-(--lf-dimmed)"
-          />
-        </label>
-        <button
-          disabled={isLoading}
-          onClick={handleSubmitUsername}
-          className="group inline-flex disabled:cursor-not-allowed disabled:opacity-40 items-center justify-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold min-h-[42px] sm:min-h-[42px] px-3 rounded-[6px] hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
-        >
-          {isClaiming ? "Claiming..." : "Claim username"}
-          <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">
-            ↗
-          </span>
-        </button>
-      </div>
+      <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-stretch justify-center gap-3 w-full px-4 sm:px-0 max-w-105 mx-auto mb-10 mt-17">
+  <label className="flex items-center flex-1 min-w-0 h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) px-5 gap-1.5 transition-colors duration-150 focus-within:border-(--lf-tan) cursor-text">
+    <span className="font-mono text-[0.8125rem] text-(--lf-muted) whitespace-nowrap select-none shrink-0">
+      lazyfolio.com/
+    </span>
+    <input
+      type="text"
+      placeholder="yourname"
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+      className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 placeholder:text-(--lf-dimmed)"
+    />
+  </label>
+  <button
+    disabled={isLoading}
+    onClick={handleSubmitUsername}
+    className="group inline-flex disabled:cursor-not-allowed disabled:opacity-40 items-center justify-center gap-2 h-14 bg-(--lf-ink) text-(--lf-bg) text-[0.875rem] font-semibold px-6 rounded-full hover:opacity-85 active:scale-[0.97] transition-all duration-150 cursor-pointer whitespace-nowrap shrink-0"
+  >
+    {isClaiming ? "Claiming..." : "Claim username"}
+    <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[10px] font-bold leading-none shrink-0">
+      ↗
+    </span>
+  </button>
+</div>
 
       <div className="mt-15">
         <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-4 text-center text-(--lf-ink)">

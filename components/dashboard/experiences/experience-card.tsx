@@ -60,20 +60,26 @@ export function ExperienceCard({
     enddate: string;
     isenable: boolean;
   } | null>(() => {
-    if (!field.id) {
+    const profileExperience = profile?.experiences?.find((experience) => experience.id === field.id);
+    const role = profileExperience?.role || field.role || "";
+    const companyName = profileExperience?.companyName || field.companyName || "";
+    const description = profileExperience?.description || field.description || "";
+    const startdate = profileExperience?.startdate ? String(profileExperience.startdate) : (field.startdate || "");
+    const enddate = profileExperience?.enddate ? String(profileExperience.enddate) : (field.enddate || "");
+    const isenable = profileExperience?.isenable ?? field.isenable ?? true;
+
+    if (!field.id && !role && !companyName && !description && !startdate && !enddate) {
       return null;
     }
 
-    const profileExperience = profile?.experiences?.find((experience) => experience.id === field.id);
-
     return {
-      id: field.id,
-      role: profileExperience?.role || field.role || "",
-      companyName: profileExperience?.companyName || field.companyName || "",
-      description: profileExperience?.description || field.description || "",
-      startdate: profileExperience?.startdate || field.startdate || "",
-      enddate: profileExperience?.enddate || field.enddate || "",
-      isenable: profileExperience?.isenable ?? field.isenable ?? true,
+      id: field.id || undefined,
+      role,
+      companyName,
+      description,
+      startdate,
+      enddate,
+      isenable,
     };
   });
 
@@ -83,6 +89,33 @@ export function ExperienceCard({
 
   const values = useWatch({ control, name: `experiences.${index}` });
   const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
+
+  // Helper to normalize any date value to YYYY-MM-DD string
+  const toYMD = (val: string | Date | null | undefined): string => {
+    if (!val) return "";
+    const d = new Date(val as string);
+    if (isNaN(d.getTime())) return String(val);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  // Sync savedSnapshot when profile updates (e.g. after global "Save Changes")
+  useEffect(() => {
+    const profileExperience = profile?.experiences?.find((e) => e.id === field.id);
+    if (!profileExperience || !field.id) return;
+    setSavedSnapshot({
+      id: profileExperience.id || undefined,
+      role: profileExperience.role || "",
+      companyName: profileExperience.companyName || "",
+      description: profileExperience.description || "",
+      startdate: toYMD(profileExperience.startdate as string | Date | null | undefined),
+      enddate: toYMD(profileExperience.enddate as string | Date | null | undefined),
+      isenable: profileExperience.isenable ?? true,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.experiences]);
 
   const normalizedValues = {
     id: values?.id,
@@ -252,6 +285,7 @@ export function ExperienceCard({
     setValue(`experiences.${index}.description`, normalizedValues.description, { shouldDirty: true });
     setValue(`experiences.${index}.startdate`, normalizedValues.startdate, { shouldDirty: true });
     setValue(`experiences.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
+    setSavedSnapshot(normalizedValues);
     setIsEditing(false);
   };
 
@@ -334,7 +368,12 @@ export function ExperienceCard({
           </button>
           <button
             type="button"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              if (!savedSnapshot) {
+                setSavedSnapshot(normalizedValues);
+              }
+              setIsEditing(true);
+            }}
             disabled={deleting || saving}
             className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >

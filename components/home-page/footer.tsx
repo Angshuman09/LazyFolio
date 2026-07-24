@@ -9,7 +9,7 @@ const Footer = () => {
       heading: "The Good",
       links: [
         { label: "Home", href: "/" },
-        { label: "Features", href: "#features" },
+        { label: "Features", href: "/#features" },
         { label: "Templates", href: "/templates" },
       ],
     },

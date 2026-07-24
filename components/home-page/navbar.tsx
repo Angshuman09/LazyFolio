@@ -12,7 +12,7 @@ import { signOut } from "@/lib/auth-client";
 import ProfileMenuOpen from "./profile-menu-open";
 
 const NAV_LEFT = [
-  { label: "Features", href: "#features" },
+  { label: "Features", href: "/#features" },
   { label: "Templates", href: "/templates" },
 ];
 
@@ -75,14 +75,14 @@ const Navbar = () => {
             href="https://github.com/Angshuman09/lazyfolio"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
+            className="flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
           >
             <Github className="h-3.5 w-3.5" />
             <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
           </Link>
 
           <button
-            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
             aria-label="Toggle theme"
           >
@@ -95,7 +95,7 @@ const Navbar = () => {
             <>
               <Button
                 onClick={() => router.push("/dashboard")}
-                className="bg-(--lf-ink) text-(--lf-surface) rounded-[6px] hover:cursor-pointer text-[0.8rem] font-semibold px-5 py-2  hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="bg-(--lf-ink) text-(--lf-surface) rounded-full hover:cursor-pointer text-[0.8rem] font-semibold px-5 py-5  hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Dashboard
               </Button>
@@ -115,7 +115,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push("/auth")}
-              className="bg-(--lf-ink) rounded-[6px] text-(--lf-surface) text-[0.8rem]  border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
+              className="bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem]  border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
             >
               Get started
               <span className="btn-arrow w-4 h-4 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[9px] font-bold leading-none">
@@ -165,7 +165,7 @@ const Navbar = () => {
           href="https://github.com/Angshuman09/lazyfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-[6px] hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
+          className="flex items-center justify-center gap-2 rounded-full hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
         >
           <Github className="h-4 w-4" />
           <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
@@ -178,7 +178,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/dashboard");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-[6px] hover:opacity-80 transition-opacity"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
           >
             Dashboard
           </button>
@@ -188,7 +188,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/auth");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-[10px] hover:opacity-80 transition-opacity"
+            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
           >
             Get started
           </button>

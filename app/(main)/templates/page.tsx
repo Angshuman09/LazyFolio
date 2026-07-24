@@ -2,12 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { PERKS, TEMPLATES } from "@/components/resources/extras";
+import Footer from "@/components/home-page/footer";
 
 export default function TemplatesPage() {
   return (
     <div className="min-h-screen bg-(--lf-bg) text-(--lf-ink) font-sans-body">
       <section className="max-w-4xl mx-auto px-5 sm:px-8 pt-20 pb-16 text-center">
-        <p className="inline-flex items-center gap-2 text-[0.72rem] font-mono tracking-widest text-(--lf-muted) uppercase mb-6 border border-(--lf-border) rounded-full px-4 py-1.5">
+        <p className="inline-flex items-center gap-2 text-[0.72rem] font-mono tracking-widest text-(--lf-muted) mb-6 border border-(--lf-border) rounded-full px-4 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-(--lf-ink) opacity-50 inline-block" />
           8 Templates · Free Forever
         </p>
@@ -23,14 +24,14 @@ export default function TemplatesPage() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/auth"
-            className="inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold px-5 py-2.5 rounded-[8px] hover:opacity-85 transition-opacity duration-150"
+            className="inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold px-5 py-2.5 rounded-full hover:opacity-85 transition-opacity duration-150"
           >
             Get started
             <ArrowRight size={14} />
           </Link>
           <Link
             href="/#features"
-            className="inline-flex items-center gap-2 border border-(--lf-border) text-(--lf-muted) text-[0.85rem] font-medium px-5 py-2.5 rounded-[8px] hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
+            className="inline-flex items-center gap-2 border border-(--lf-border) text-(--lf-muted) text-[0.85rem] font-medium px-5 py-2.5 rounded-full hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
           >
             See features
           </Link>
@@ -127,7 +128,7 @@ export default function TemplatesPage() {
           </p>
           <Link
             href="/auth"
-            className="inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold px-6 py-3.5 rounded-[8px] hover:opacity-85 transition-opacity duration-150"
+            className="inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold px-6 py-3.5 rounded-full hover:opacity-85 transition-opacity duration-150"
           >
             Claim your link
             <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[9px] font-bold leading-none">
@@ -136,6 +137,7 @@ export default function TemplatesPage() {
           </Link>
         </div>
       </section>
+      <Footer/>
     </div>
   );
 }

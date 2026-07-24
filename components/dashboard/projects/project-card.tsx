@@ -61,23 +61,30 @@ export function ProjectCard({
       enddate: string;
       isenable: boolean;
     } | null>(() => {
-      if (!field.id) {
+      const profileProject = profile?.projects?.find((p) => p.id === field.id);
+      const title = profileProject?.title || field.title || "";
+      const description = profileProject?.description || field.description || "";
+      const githubLink = profileProject?.githubLink || field.githubLink || "";
+      const projectLink = profileProject?.projectLink || field.projectLink || "";
+      const techstack = Array.isArray(profileProject?.techstack)
+        ? profileProject.techstack.join(", ")
+        : (field.techstack || "");
+      const enddate = profileProject?.enddate ? String(profileProject.enddate) : (field.enddate || "");
+      const isenable = profileProject?.isenable ?? field.isenable ?? true;
+
+      if (!field.id && !title && !description && !githubLink && !projectLink && !techstack && !enddate) {
         return null;
       }
-  
-      const profileProject = profile?.projects?.find((p) => p.id === field.id);
-  
+
       return {
-        id: field.id,
-        title: profileProject?.title || field.title || "",
-        description: profileProject?.description || field.description || "",
-        githubLink: profileProject?.githubLink || field.githubLink || "",
-        projectLink: profileProject?.projectLink || field.projectLink || "",
-        techstack: Array.isArray(profileProject?.techstack)
-          ? profileProject.techstack.join(", ")
-          : (field.techstack || ""),
-        enddate: profileProject?.enddate ? String(profileProject.enddate) : (field.enddate || ""),
-        isenable: profileProject?.isenable ?? field.isenable ?? true,
+        id: field.id || undefined,
+        title,
+        description,
+        githubLink,
+        projectLink,
+        techstack,
+        enddate,
+        isenable,
       };
     });
   
@@ -87,7 +94,37 @@ export function ProjectCard({
   
     const values = useWatch({ control, name: `projects.${index}` });
     const hasErrors = hasFieldArrayErrors(errors, "projects", index);
-  
+
+    // Helper to normalize any date value to YYYY-MM-DD string
+    const toYMD = (val: string | Date | null | undefined): string => {
+      if (!val) return "";
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return String(val);
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(d.getUTCDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+
+    // Sync savedSnapshot when profile updates (e.g. after global "Save Changes")
+    useEffect(() => {
+      const profileProject = profile?.projects?.find((p) => p.id === field.id);
+      if (!profileProject || !field.id) return;
+      setSavedSnapshot({
+        id: profileProject.id || undefined,
+        title: profileProject.title || "",
+        description: profileProject.description || "",
+        githubLink: profileProject.githubLink || "",
+        projectLink: profileProject.projectLink || "",
+        techstack: Array.isArray(profileProject.techstack)
+          ? profileProject.techstack.join(", ")
+          : "",
+        enddate: toYMD(profileProject.enddate as string | Date | null | undefined),
+        isenable: profileProject.isenable ?? true,
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profile?.projects]);
+
     useEffect(() => {
       if (hasErrors) {
         setIsEditing(true);
@@ -148,6 +185,17 @@ export function ProjectCard({
           profileId: profile.id,
         });
   
+        const normalizeEnddate = (val: string | null | undefined) => {
+          if (!val) return "";
+          // API returns full ISO datetime; normalize to YYYY-MM-DD for comparison
+          const d = new Date(val);
+          if (isNaN(d.getTime())) return String(val);
+          const y = d.getUTCFullYear();
+          const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+          const day = String(d.getUTCDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        };
+
         const savedProject = {
           id: payload?.data?.id || normalizedValues.id,
           title: payload?.data?.title || normalizedValues.title,
@@ -157,7 +205,7 @@ export function ProjectCard({
           techstack: Array.isArray(payload?.data?.techstack)
             ? payload.data.techstack.join(", ")
             : normalizedValues.techstack,
-          enddate: payload?.data?.enddate ? String(payload.data.enddate) : normalizedValues.enddate,
+          enddate: normalizeEnddate(payload?.data?.enddate) || normalizedValues.enddate,
           isenable: payload?.data?.isenable ?? normalizedValues.isenable,
         };
   
@@ -254,6 +302,7 @@ export function ProjectCard({
       setValue(`projects.${index}.projectLink`, normalizedValues.projectLink, { shouldDirty: true });
       setValue(`projects.${index}.techstack`, normalizedValues.techstack, { shouldDirty: true });
       setValue(`projects.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
+      setSavedSnapshot(normalizedValues);
       setIsEditing(false);
     };
 
@@ -328,6 +377,14 @@ export function ProjectCard({
                     Live
                   </span>
                 )}
+                {values?.enddate && (() => {
+                  const d = new Date(values.enddate);
+                  return !isNaN(d.getTime()) ? (
+                    <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
+                      {d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
+                    </span>
+                  ) : null;
+                })()}
                 {techList.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {techList.slice(0, 4).map((t: string, i: number) => (
@@ -360,7 +417,12 @@ export function ProjectCard({
             </button>
             <button
               type="button"
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                if (!savedSnapshot) {
+                  setSavedSnapshot(normalizedValues);
+                }
+                setIsEditing(true);
+              }}
               disabled={deleting || saving}
               className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
             >

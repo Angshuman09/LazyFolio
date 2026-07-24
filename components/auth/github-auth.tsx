@@ -20,7 +20,7 @@ export const GithubAuth = ({disable, setDisable}: {disable: boolean; setDisable:
     <button
       onClick={handleGitHubLogin}
       disabled={isPending || disable}
-      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-(--lf-ink) border-2 border-(--lf-ink) rounded-[7px] shadow-sm hover:opacity-90 transition-all duration-200 font-sans-body font-semibold text-[0.9rem] text-(--lf-bg) hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 group"
+      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-(--lf-ink) border-2 border-(--lf-ink) rounded-full shadow-sm hover:opacity-90 transition-all duration-200 font-sans-body font-semibold text-[0.9rem] text-(--lf-bg) hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 group"
     >
       {isPending ? (
         <svg

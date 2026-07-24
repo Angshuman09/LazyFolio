@@ -33,7 +33,7 @@ export function Template2({
   const router = useRouter();
   return (
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
-        <div className="max-w-200 mx-auto px-6 py-16 sm:py-20">
+        <div className="max-w-160 mx-auto px-6 py-16 sm:py-20">
           {quote && (
             <div className="mb-12 border-l-2 border-stone-300 pl-4">
               <p className="text-xs text-stone-500 italic leading-relaxed">

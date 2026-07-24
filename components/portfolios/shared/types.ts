@@ -86,7 +86,6 @@ export type PortfolioExperience = {
 };
 
 export type PortfolioProject = {
-  enddate: ReactNode;
   id: string;
   name?: string;
   description?: string;
@@ -94,6 +93,8 @@ export type PortfolioProject = {
   github?: string;
   demo?: string;
   status?: string;
+  date?: string;
+  enddate?: string;
 };
 
 export type PortfolioBlog = {

@@ -52,17 +52,20 @@ export function LinkCard({
     url: string;
     isenable: boolean;
   } | null>(() => {
-    if (!field.id) {
+    const profileLink = profile?.links?.find((link) => link.id === field.id);
+    const label = profileLink?.label || field.label || "";
+    const url = profileLink?.url || field.url || "";
+    const isenable = profileLink?.isenable ?? field.isenable ?? true;
+
+    if (!field.id && !label && !url) {
       return null;
     }
 
-    const profileLink = profile?.links?.find((link) => link.id === field.id);
-
     return {
-      id: field.id,
-      label: profileLink?.label || field.label || "",
-      url: profileLink?.url || field.url || "",
-      isenable: profileLink?.isenable ?? field.isenable ?? true,
+      id: field.id || undefined,
+      label,
+      url,
+      isenable,
     };
   });
   const values = useWatch({ control, name: `links.${index}` });
@@ -74,6 +77,18 @@ export function LinkCard({
   const deleteLink = useDeleteLink();
   const updateVisibility = useUpdateVisibility();
 
+
+  useEffect(() => {
+    const profileLink = profile?.links?.find((l) => l.id === field.id);
+    if (!profileLink || !field.id) return;
+    setSavedSnapshot({
+      id: profileLink.id || undefined,
+      label: profileLink.label || "",
+      url: profileLink.url || "",
+      isenable: profileLink.isenable ?? true,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.links]);
 
   useEffect(() => {
     if (hasErrors) {
@@ -124,6 +139,7 @@ export function LinkCard({
     setValue(`links.${index}.url`, normalizedValues.url, {
       shouldDirty: true,
     });
+    setSavedSnapshot(normalizedValues);
     setIsEditing(false);
   };
 
@@ -301,7 +317,12 @@ export function LinkCard({
           </button>
           <button
             type="button"
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              if (!savedSnapshot) {
+                setSavedSnapshot(normalizedValues);
+              }
+              setIsEditing(true);
+            }}
             disabled={deleting || saving}
             className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >

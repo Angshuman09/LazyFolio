@@ -29,6 +29,11 @@ const Projects = ({profile, config, iconStrokeWidth}:{profile: ProfileData, conf
                               {project.name}
                             </h3>
                           )}
+                          {project.date && (
+                            <span className="text-[11px] font-mono text-zinc-500">
+                              {project.date}
+                            </span>
+                          )}
                         </div>
                         {project.description && (
                           <p className={config.projectDescriptionClass}>
