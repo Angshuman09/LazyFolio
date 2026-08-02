@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextResponse, NextRequest } from "next/server";
-import { verifySessionAndProfile } from "@/lib/auth-api";
+import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import crypto from "crypto";
 

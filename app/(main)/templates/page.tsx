@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { PERKS, TEMPLATES } from "@/components/resources/extras";
-import Footer from "@/components/home-page/footer";
 
 export default function TemplatesPage() {
   return (
@@ -137,7 +136,6 @@ export default function TemplatesPage() {
           </Link>
         </div>
       </section>
-      <Footer/>
     </div>
   );
 }

@@ -7,16 +7,16 @@ import {
   useWatch,
 } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus} from 'lucide-react';
+import { Plus, AlertCircle } from 'lucide-react';
 import toast from "react-hot-toast";
 import { linksFromProfile } from "@/lib/utils/links";
-import {writeDashboardDraft} from "@/lib/cache/dashboard-drafts";
+import { writeDashboardDraft, readDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { LinksSchema } from "@/lib/schemas/links";
-import {getInitialLinks} from "@/lib/utils/links";
+import { getInitialLinks } from "@/lib/utils/links";
 import { linksSchema } from "@/lib/schemas/links";
-import {Props} from "@/lib/utils/links";
-import { readDashboardDraft } from "@/lib/cache/dashboard-drafts";
-import {LinkCard} from '@/components/dashboard/links/link-card';
+import { Props } from "@/lib/utils/links";
+import { LinkCard } from "@/components/dashboard/links/link-card";
+import { useSectionSave } from "@/hooks/use-section-save";
 
 export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialLinks(profile), [profile]);
@@ -32,6 +32,19 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     resolver: zodResolver(linksSchema),
     defaultValues: initialValues,
     mode: "onSubmit",
+  });
+
+  const { error: sectionError } = useSectionSave("links", {
+    isDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      if (profile?.id) clearDashboardDraft("links", profile.id);
+      reset(linksFromProfile(profile?.links || []));
+    },
   });
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -52,8 +65,11 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.id, profile?.links, reset]);
 
   useEffect(() => {
-    if (profile?.id && isDirty) {
+    if (!profile?.id) return;
+    if (isDirty) {
       writeDashboardDraft("links", profile.id, { links: watchedLinks || [] });
+    } else {
+      clearDashboardDraft("links", profile.id);
     }
   }, [isDirty, profile?.id, watchedLinks]);
 
@@ -71,6 +87,13 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
       <p className="text-[0.78rem] text-(--lf-muted) mb-7">
         Add any links to feature on your portfolio
       </p>
+
+      {sectionError && (
+        <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{sectionError}</span>
+        </div>
+      )}
 
       <div className="mb-4">
         {fields.length === 0 && (

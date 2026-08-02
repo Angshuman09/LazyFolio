@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
-import { verifySession } from "@/lib/auth-api";
+import { verifySession } from "@/lib/auth/auth-api";
 
 export async function POST(request: NextRequest) {
     const { errorResponse, session } = await verifySession();

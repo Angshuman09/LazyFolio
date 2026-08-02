@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/lib/schemas/profile";
 import { useQueryClient } from "@tanstack/react-query";
 import { Props } from "@/lib/types/profile";
+import { useSectionSave } from "@/hooks/use-section-save";
 import {
   Camera,
   Image as ImageIcon,
@@ -19,6 +20,7 @@ import {
   Check,
   Loader2,
   AtSign,
+  AlertCircle,
 } from "lucide-react";
 
 function FieldError({ message }: { message?: string }) {
@@ -39,7 +41,7 @@ function FieldRow({ label, children, action, error, noBorder }: FieldRowProps) {
   return (
     <div>
       <div
-        className={`flex items-center gap-3.5 px-4 min-h-[62px] hover:bg-(--lf-accent-soft) transition-colors group ${!noBorder ? "border-b border-(--lf-border)" : ""}`}
+        className={`flex items-center gap-3.5 px-4 min-h-15.5 hover:bg-(--lf-accent-soft) transition-colors group ${!noBorder ? "border-b border-(--lf-border)" : ""}`}
       >
        
         <div className="flex-1 min-w-0 py-3">
@@ -93,6 +95,37 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
     resolver: zodResolver(profileSchema),
   });
 
+  const watchedValues = useWatch({ control });
+
+  const isProfileDirty = useMemo(() => {
+    const dirtyKeys = Object.keys(dirtyFields) as (keyof ProfileSchema)[];
+    const nonUsernameDirty = dirtyKeys.some(
+      (key) => key !== "username" && key !== "avatar" && key !== "banner"
+    );
+    if (!nonUsernameDirty) return false;
+
+    const nameDirty = ((watchedValues as any)?.name ?? "") !== (defaultValues.name ?? "");
+    const taglineDirty = ((watchedValues as any)?.tagline ?? "") !== (defaultValues.tagline ?? "");
+    const quoteDirty = ((watchedValues as any)?.quote ?? "") !== (defaultValues.quote ?? "");
+    const emailDirty = ((watchedValues as any)?.email ?? "") !== (defaultValues.email ?? "");
+    const bioDirty = ((watchedValues as any)?.bio ?? "") !== (defaultValues.bio ?? "");
+    const bookCallDirty = ((watchedValues as any)?.bookAcall ?? "") !== (defaultValues.bookAcall ?? "");
+
+    return nameDirty || taglineDirty || quoteDirty || emailDirty || bioDirty || bookCallDirty;
+  }, [dirtyFields, watchedValues, defaultValues]);
+
+  const { error: sectionError } = useSectionSave("profile", {
+    isDirty: isProfileDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      reset(defaultValues);
+    },
+  });
+
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset]);
@@ -120,7 +153,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       return;
     }
 
-    if(username == "dashboard" || username=="templates"){
+    if(username == "dashboard" || username=="templates" || username=="terms" || username=="privacy"){
       toast(`${username} can't be a username!`, {
         style: {
           borderRadius: '10px',
@@ -229,6 +262,13 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         </p>
       </div>
 
+      {sectionError && (
+        <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{sectionError}</span>
+        </div>
+      )}
+
       <div className="mb-6">
         <label className="text-[0.65rem] font-semibold text-(--lf-muted) font-sans tracking-widest mb-1.5 block">
           Username
@@ -282,7 +322,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-(--lf-border) to-(--lf-tan)/40">
+                <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-(--lf-border) to-(--lf-tan)/40">
                   <div className="flex flex-col items-center gap-1.5 text-(--lf-muted) opacity-50">
                     <ImageIcon size={24} />
                     <span className="text-[0.65rem] font-mono">no banner</span>

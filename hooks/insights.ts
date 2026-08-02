@@ -1,4 +1,3 @@
-// hooks/insights.ts
 import { useQuery } from "@tanstack/react-query";
 
 export type RangeKey = "7d" | "30d" | "90d";

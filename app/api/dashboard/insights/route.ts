@@ -1,7 +1,7 @@
 // app/api/dashboard/insights/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { auth } from "@/lib/auth"; // 👈 adjust import if your better-auth instance lives elsewhere
+import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { getInsightData, presetRange } from "@/lib/analytics";
 
@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing profileId" }, { status: 400 });
   }
 
-  // Confirms this profile actually belongs to the session user
   const profile = await prisma.profile.findFirst({
     where: { id: profileId, userId: session.user.id },
     select: { id: true },

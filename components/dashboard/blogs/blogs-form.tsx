@@ -8,18 +8,21 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Plus
+  Plus,
+  AlertCircle
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import {
   readDashboardDraft,
   writeDashboardDraft,
+  clearDashboardDraft,
 } from "@/lib/cache/dashboard-drafts";
 import { Props } from "@/lib/types/blogs";
 import { BlogCard } from "./blog-card";
 import { MarkdownEditor } from "./markdown-editor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
+import { useSectionSave } from "@/hooks/use-section-save";
 
 export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
   const defaultValues = useMemo<BlogsSchema>(() => getInitialBlogs(profile), [profile]);
@@ -37,6 +40,19 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
     resolver: zodResolver(blogsSchema),
     defaultValues,
     mode: "onSubmit",
+  });
+
+  const { error: sectionError } = useSectionSave("blogs", {
+    isDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        if (onSubmit) await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      if (profile?.id) clearDashboardDraft("blogs", profile.id);
+      reset(blogsFromProfile(profile?.blogs || []));
+    },
   });
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -57,8 +73,11 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.id, profile?.blogs, reset]);
 
   useEffect(() => {
-    if (profile?.id && isDirty) {
+    if (!profile?.id) return;
+    if (isDirty) {
       writeDashboardDraft("blogs", profile.id, { blogs: watchedBlogs || [] });
+    } else {
+      clearDashboardDraft("blogs", profile.id);
     }
   }, [isDirty, profile?.id, watchedBlogs]);
 
@@ -77,6 +96,13 @@ export default function BlogsForm({ profile, formRef, onSubmit }: Props) {
         <p className="text-[0.78rem] text-(--lf-muted) mb-7">
           Articles and posts you have written
         </p>
+
+        {sectionError && (
+          <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+            <AlertCircle size={14} className="shrink-0" />
+            <span>{sectionError}</span>
+          </div>
+        )}
 
         <div className="mb-4">
           {fields.length === 0 && (

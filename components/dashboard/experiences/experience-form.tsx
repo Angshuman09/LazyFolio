@@ -3,16 +3,17 @@
 import { useEffect, useMemo, RefObject } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { experienceSchema, ExperienceSchema } from "@/lib/schemas/experience";
-import { readDashboardDraft, writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { ExperienceCard } from "./experience-card";
 import {
   experiencesFromProfile,
   getInitialExperiences,
   ExperienceProfile,
 } from "@/lib/utils/experience";
+import { useSectionSave } from "@/hooks/use-section-save";
 
 type Props = {
   profile?: ExperienceProfile;
@@ -38,6 +39,19 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
+  const { error: sectionError } = useSectionSave("experience", {
+    isDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        if (onSubmit) await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      if (profile?.id) clearDashboardDraft("experience", profile.id);
+      reset(experiencesFromProfile(profile?.experiences || []));
+    },
+  });
+
   const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "experiences",
@@ -53,10 +67,13 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.id, profile?.experiences, reset]);
 
   useEffect(() => {
-    if (profile?.id && isDirty) {
+    if (!profile?.id) return;
+    if (isDirty) {
       writeDashboardDraft("experience", profile.id, {
         experiences: watchedExperiences || [],
       });
+    } else {
+      clearDashboardDraft("experience", profile.id);
     }
   }, [isDirty, profile?.id, watchedExperiences]);
 
@@ -74,6 +91,13 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
       <p className="text-[0.78rem] text-(--lf-muted) mb-7">
         Your professional work history
       </p>
+
+      {sectionError && (
+        <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{sectionError}</span>
+        </div>
+      )}
 
       <div className="mb-4">
         {fields.length === 0 && (

@@ -170,6 +170,7 @@ export function ProjectCard({
       }
   
       setSaving(true);
+      const toastId = toast.loading("Saving project...");
       try {
         const payload = await createProject.mutateAsync({
           project: {
@@ -226,10 +227,10 @@ export function ProjectCard({
         );
         setSavedSnapshot(savedProject);
         setIsEditing(false);
-        toast.success("Project saved successfully!");
+        toast.success("Project saved successfully!", { id: toastId });
       } catch (error) {
         console.error("Error saving project:", error);
-        toast.error("An error occurred while saving the project.");
+        toast.error("An error occurred while saving the project.", { id: toastId });
       } finally {
         setSaving(false);
       }
@@ -249,21 +250,22 @@ export function ProjectCard({
       remove(index);
       updateProjectsDraft(nextProjects);
       setDeleting(true);
+      const toastId = toast.loading("Deleting project...");
       try {
         await deleteProject.mutateAsync(normalizedValues.id);
-        toast.success("Project deleted successfully!");
+        toast.success("Project deleted successfully!", { id: toastId });
       } catch (error) {
         if (deletedProject) {
           insert(index, deletedProject);
           updateProjectsDraft(currentProjects);
         }
         console.error("Error deleting project:", error);
-        toast.error("An error occurred while deleting the project.");
+        toast.error("An error occurred while deleting the project.", { id: toastId });
       } finally {
         setDeleting(false);
       }
     };
-  
+
     const onCancelEditing = () => {
       if (!savedSnapshot) {
         const currentProjects = getValues("projects") || [];
@@ -289,7 +291,7 @@ export function ProjectCard({
       );
       setIsEditing(false);
     };
-  
+
     const onDoneEditing = () => {
       if (!normalizedValues.title) {
         toast.error("Please add a title before completing this project card.");
@@ -439,21 +441,6 @@ export function ProjectCard({
                   : "Show project on profile"
               }
             />
-            {hasUnsavedChanges && (
-              <button
-                type="button"
-                onClick={onSaveProject}
-                disabled={deleting || saving}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
-              >
-                {saving ? (
-                  <Loader2 size={11} className="animate-spin" />
-                ) : (
-                  <Check size={11} strokeWidth={2.5} />
-                )}
-                {saving ? "Saving..." : "Save"}
-              </button>
-            )}
           </div>
         </div>
       );

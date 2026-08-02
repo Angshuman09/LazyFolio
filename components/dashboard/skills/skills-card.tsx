@@ -80,11 +80,6 @@ export function SkillCard({
         isenable: values?.isenable ?? true,
     };
 
-    const hasUnsavedChanges =
-        !savedSnapshot ||
-        normalizedValues.value !== savedSnapshot.value ||
-        normalizedValues.isenable !== savedSnapshot.isenable;
-
     const updateSkillsDraft = (skills: SkillsSchema["skills"]) => {
         if (profile?.id) {
             writeDashboardDraft("skills", profile.id, { skills: skills || [] });
@@ -105,6 +100,7 @@ export function SkillCard({
         }
 
         setSaving(true);
+        const toastId = toast.loading("Saving skill...");
         try {
             const currentSkills = getValues("skills") || [];
             const updatedSkills = currentSkills.map((s, i) =>
@@ -123,10 +119,10 @@ export function SkillCard({
             updateSkillsDraft(updatedSkills);
             setSavedSnapshot(savedSkill);
             setIsEditing(false);
-            toast.success("Skill saved successfully!");
+            toast.success("Skill saved successfully!", { id: toastId });
         } catch (error) {
             console.error("Error saving skill:", error);
-            toast.error("An error occurred while saving the skill.");
+            toast.error("An error occurred while saving the skill.", { id: toastId });
         } finally {
             setSaving(false);
         }
@@ -151,20 +147,21 @@ export function SkillCard({
         remove(index);
         updateSkillsDraft(nextSkills);
         setDeleting(true);
+        const toastId = toast.loading("Deleting skill...");
 
         try {
             await createSkills.mutateAsync({
                 userId: profile.id,
                 skills: nextSkills.filter((s) => s.value),
             });
-            toast.success("Skill deleted successfully!");
+            toast.success("Skill deleted successfully!", { id: toastId });
         } catch (error) {
             if (deletedSkill) {
                 insert(index, deletedSkill);
                 updateSkillsDraft(currentSkills);
             }
             console.error("Error deleting skill:", error);
-            toast.error("An error occurred while deleting the skill.");
+            toast.error("An error occurred while deleting the skill.", { id: toastId });
         } finally {
             setDeleting(false);
         }
@@ -227,7 +224,7 @@ export function SkillCard({
                         type="button"
                         onClick={() => setIsEditing(true)}
                         disabled={deleting || saving}
-                        className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+                        className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
                     >
                         <Pencil size={10} />
                         Edit
@@ -235,28 +232,13 @@ export function SkillCard({
                     <Switch
                         checked={normalizedValues.isenable}
                         onCheckedChange={handleVisibilityToggle}
-                        disabled={deleting || saving}
+                        disabled={deleting || saving || !savedSnapshot}
                         aria-label={
                             normalizedValues.isenable
                                 ? "Hide skill from profile"
                                 : "Show skill on profile"
                         }
                     />
-                    {hasUnsavedChanges && (
-                        <button
-                            type="button"
-                            onClick={() => onSaveSkill()}
-                            disabled={deleting || saving}
-                            className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
-                        >
-                            {saving ? (
-                                <Loader2 size={11} className="animate-spin" />
-                            ) : (
-                                <Check size={11} strokeWidth={2.5} />
-                            )}
-                            {saving ? "Saving..." : "Save"}
-                        </button>
-                    )}
                 </div>
             </div>
         );

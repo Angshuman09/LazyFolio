@@ -41,7 +41,7 @@ It's fully open source, so you're welcome to self-host it, theme it, or rip out 
 ![Lazyfolio Dashboard Preview](./public/preview.png)
 
 ### Write & Publish Blogs
-![Write & Publish Blogs](./public/writeblogs.png)
+![Write & Publish Blogs](./public/blog.png)
 
  ---
 

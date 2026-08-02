@@ -85,13 +85,6 @@ export default function Auth() {
             <GoogleAuth disable={disable} setDisable={setDisable} />
             <GithubAuth disable={disable} setDisable={setDisable} />
           </div>
-
-          <p className="mt-8 text-center text-[0.7rem] text-(--lf-muted) font-light leading-relaxed">
-            By signing in you agree to our{" "}
-            <span className="text-[#C6A87B] cursor-pointer hover:text-[#8C6B3E]">Terms</span>{" "}
-            and{" "}
-            <span className="text-[#C6A87B] cursor-pointer hover:text-[#8C6B3E]">Privacy Policy</span>.
-          </p>
         </div>
       </div>
     </div>

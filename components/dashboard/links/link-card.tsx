@@ -179,6 +179,7 @@ export function LinkCard({
     }
 
     setSaving(true);
+    const toastId = toast.loading("Saving link...");
     const linkType = detectType(normalizedValues.url);
     try {
       const payload = await createLink.mutateAsync({
@@ -213,10 +214,10 @@ export function LinkCard({
       );
       setSavedSnapshot(savedLink);
       setIsEditing(false);
-      toast.success("Link saved successfully!");
+      toast.success("Link saved successfully!", { id: toastId });
     } catch (error) {
       console.error("Error saving link:", error);
-      toast.error("An error occurred while saving the link.");
+      toast.error("An error occurred while saving the link.", { id: toastId });
     } finally {
       setSaving(false);
     }
@@ -236,16 +237,17 @@ export function LinkCard({
     remove(index);
     updateLinksDraft(nextLinks);
     setDeleting(true);
+    const toastId = toast.loading("Deleting link...");
     try {
       await deleteLink.mutateAsync(normalizedValues.id);
-      toast.success("Link deleted successfully!");
+      toast.success("Link deleted successfully!", { id: toastId });
     } catch (error) {
       if (deletedLink) {
         insert(index, deletedLink);
         updateLinksDraft(currentLinks);
       }
       console.error("Error deleting link:", error);
-      toast.error("An error occurred while deleting the link.");
+      toast.error("An error occurred while deleting the link.", { id: toastId });
     } finally {
       setDeleting(false);
     }
@@ -335,21 +337,6 @@ export function LinkCard({
             disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
             aria-label={normalizedValues.isenable ? "Hide link from profile" : "Show link on profile"}
           />
-          {hasUnsavedChanges && (
-            <button
-              type="button"
-              onClick={onSaveLink}
-              disabled={deleting || saving}
-              className="inline-flex items-center gap-1.5 px-3 h-7 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
-            >
-              {saving ? (
-                <Loader2 size={11} className="animate-spin" />
-              ) : (
-                <Check size={11} strokeWidth={2.5} />
-              )}
-              {saving ? "Saving..." : "Save"}
-            </button>
-          )}
         </div>
       </div>
     );

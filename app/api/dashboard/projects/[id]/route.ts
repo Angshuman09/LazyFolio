@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { verifySessionAndProfile } from "@/lib/auth-api";
+import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 
 export async function DELETE(
   request: NextRequest,

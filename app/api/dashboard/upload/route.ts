@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Readable } from 'stream';
 import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/cloudinary';
-import { verifySession } from '@/lib/auth-api';
+import { verifySession } from '@/lib/auth/auth-api';
 
 export async function POST(req: NextRequest){
     const { errorResponse } = await verifySession();

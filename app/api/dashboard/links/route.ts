@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
-import { verifySessionAndProfile } from "@/lib/auth-api";
+import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 
 type LinkInput = {

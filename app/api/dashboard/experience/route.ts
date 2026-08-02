@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { SingleExperience } from "@/lib/schemas/experience";
 import { prisma } from "@/lib/prisma";
-import { verifySessionAndProfile } from "@/lib/auth-api";
+import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 
 export async function POST(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();

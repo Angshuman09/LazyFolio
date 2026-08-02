@@ -144,6 +144,7 @@ export function BlogCard({
       }
   
       setSaving(true);
+      const toastId = toast.loading("Saving blog...");
       try {
         const payload = await createBlog.mutateAsync({
           blog: {
@@ -190,10 +191,10 @@ export function BlogCard({
         );
         setSavedSnapshot(savedBlog);
         setIsEditing(false);
-        toast.success("Blog saved successfully!");
+        toast.success("Blog saved successfully!", { id: toastId });
       } catch (error) {
         console.error("Error saving blog:", error);
-        toast.error("An error occurred while saving the blog.");
+        toast.error("An error occurred while saving the blog.", { id: toastId });
       } finally {
         setSaving(false);
       }
@@ -213,16 +214,17 @@ export function BlogCard({
       remove(index);
       updateBlogsDraft(nextBlogs);
       setDeleting(true);
+      const toastId = toast.loading("Deleting blog...");
       try {
         await deleteBlog.mutateAsync(normalizedValues.id);
-        toast.success("Blog deleted successfully!");
+        toast.success("Blog deleted successfully!", { id: toastId });
       } catch (error) {
         if (deletedBlog) {
           insert(index, deletedBlog);
           updateBlogsDraft(currentBlogs);
         }
         console.error("Error deleting blog:", error);
-        toast.error("An error occurred while deleting the blog.");
+        toast.error("An error occurred while deleting the blog.", { id: toastId });
       } finally {
         setDeleting(false);
       }
@@ -257,7 +259,13 @@ export function BlogCard({
   
     const onDoneEditing = () => {
       if (!normalizedValues.title) {
-        toast.error("Please add a title before completing this blog card.");
+        toast.error("Add a title before completing this post.");
+        return;
+      }
+  
+      const isInternal = normalizedValues.content !== null;
+      if (!isInternal && normalizedValues.blogLink && !isValidUrl(normalizedValues.blogLink)) {
+        toast.error("Please enter a valid URL before completing this post.");
         return;
       }
   
@@ -309,8 +317,6 @@ export function BlogCard({
       }
     };
   
-    const isInternal = values?.content !== null && values?.content !== undefined;
-  
     const setBlogType = (type: "external" | "internal") => {
       if (type === "external") {
         setValue(`blogs.${index}.content`, null, { shouldDirty: true });
@@ -321,39 +327,48 @@ export function BlogCard({
     };
   
     if (!isEditing) {
+      const isInternal = values?.content !== null;
+  
       return (
         <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3.5 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
           <div className="flex items-start gap-3 min-w-0 flex-1">
             <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0 mt-0.5">
-              {isInternal ? (
-                <BookOpen size={12} className="text-(--lf-muted)" />
-              ) : (
-                <ExternalLink size={12} className="text-(--lf-muted)" />
-              )}
+              <BookOpen size={12} className="text-(--lf-muted)" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 text-[0.82rem] font-medium text-(--lf-ink) font-sans">
-                <span>{values?.title || <span className="text-(--lf-muted) italic">Untitled Post</span>}</span>
-                {isInternal && (
-                  <span className={`text-[0.6rem] font-mono px-2 py-0.25 rounded-full leading-none shrink-0 ${
-                    values?.isPublished
-                      ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400"
-                      : "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400"
-                  }`}>
-                    {values?.isPublished ? "Published" : "Draft"}
-                  </span>
-                )}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
+                  {values?.title || <span className="text-(--lf-muted) italic">Untitled Post</span>}
+                </span>
+                <span className={`text-[0.65rem] font-mono px-1.5 py-px rounded-md ${
+                  isInternal 
+                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20" 
+                    : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                }`}>
+                  {isInternal ? "Article" : "External Link"}
+                </span>
               </div>
               {values?.description && (
                 <div className="text-[0.72rem] text-(--lf-muted) mt-0.5 line-clamp-2 leading-relaxed">
                   {values.description}
                 </div>
               )}
-              {values?.blogLink && (
-                <div className="text-[0.68rem] text-(--lf-muted) font-mono mt-1 truncate">
-                  {values.blogLink}
-                </div>
-              )}
+              <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
+                {!isInternal && values?.blogLink && (
+                  <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
+                    <ExternalLink size={10} />
+                    {values.blogLink}
+                  </span>
+                )}
+                {values?.enddate && (() => {
+                  const d = new Date(values.enddate);
+                  return !isNaN(d.getTime()) ? (
+                    <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
+                      {d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
+                    </span>
+                  ) : null;
+                })()}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -368,7 +383,12 @@ export function BlogCard({
             </button>
             <button
               type="button"
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                if (!savedSnapshot) {
+                  setSavedSnapshot(normalizedValues);
+                }
+                setIsEditing(true);
+              }}
               disabled={deleting || saving}
               className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
             >
@@ -385,26 +405,13 @@ export function BlogCard({
                   : "Show blog on profile"
               }
             />
-            {hasUnsavedChanges && (
-              <button
-                type="button"
-                onClick={onSaveBlog}
-                disabled={deleting || saving}
-                className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
-              >
-                {saving ? (
-                  <Loader2 size={11} className="animate-spin" />
-                ) : (
-                  <Check size={11} strokeWidth={2.5} />
-                )}
-                {saving ? "Saving..." : "Save"}
-              </button>
-            )}
           </div>
         </div>
       );
     }
   
+    const isInternal = values?.content !== null && values?.content !== undefined;
+
     return (
       <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
         {/* Blog Type Selector */}

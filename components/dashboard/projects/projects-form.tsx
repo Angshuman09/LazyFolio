@@ -8,12 +8,13 @@ import {
 
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { projectsSchema, ProjectsSchema } from "@/lib/schemas/projects";
-import { readDashboardDraft, writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { ProfileProject, Props } from "@/lib/types/projects";
 import { ProjectCard } from "./project-card";
+import { useSectionSave } from "@/hooks/use-section-save";
 
 function projectsFromProfile(projects: ProfileProject[] = []): ProjectsSchema {
   return {
@@ -37,8 +38,6 @@ function getInitialProjects(profile?: { id?: string; projects?: ProfileProject[]
   );
 }
 
-
-
 export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialProjects(profile), [profile]);
 
@@ -54,6 +53,19 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     resolver: zodResolver(projectsSchema),
     defaultValues: initialValues,
     mode: "onSubmit",
+  });
+
+  const { error: sectionError } = useSectionSave("projects", {
+    isDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        if (onSubmit) await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      if (profile?.id) clearDashboardDraft("projects", profile.id);
+      reset(projectsFromProfile(profile?.projects || []));
+    },
   });
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -74,8 +86,11 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.id, profile?.projects, reset]);
 
   useEffect(() => {
-    if (profile?.id && isDirty) {
+    if (!profile?.id) return;
+    if (isDirty) {
       writeDashboardDraft("projects", profile.id, { projects: watchedProjects || [] });
+    } else {
+      clearDashboardDraft("projects", profile.id);
     }
   }, [isDirty, profile?.id, watchedProjects]);
 
@@ -93,6 +108,13 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
       <p className="text-[0.78rem] text-(--lf-muted) mb-7">
         Showcase what you built
       </p>
+
+      {sectionError && (
+        <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{sectionError}</span>
+        </div>
+      )}
 
       <div className="mb-4">
         {fields.length === 0 && (

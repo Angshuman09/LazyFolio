@@ -11,7 +11,7 @@ import {
   Layers,
   BarChart3,
 } from "lucide-react";
-import { signOut, authClient } from "@/lib/auth-client";
+import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
 
 import { useRouter } from "next/navigation";
@@ -46,6 +46,11 @@ import { useCreateProjects } from "@/hooks/projects";
 import { parseSkill } from "@/lib/utils";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import InsightsPage from "@/components/dashboard/insights/insight";
+import GlobalSaveButton from "@/components/dashboard/global-save-button";
+import UnsavedBanner from "@/components/dashboard/unsaved-banner";
+import { useSaveStore, DashboardSection } from "@/lib/save-store";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
+import { useUnsavedWarning, useTabSwitchGuard } from "@/hooks/use-unsaved-warning";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
@@ -135,6 +140,7 @@ export default function DashboardPage() {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading("Applying template...");
     updateProfile.mutate(
       {
         userId: session.user.id,
@@ -151,7 +157,7 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Template applied successfully!");
+          toast.success("Template applied successfully!", { id: toastId });
           setIsSaving(false);
           setTemplateOpen(false);
         },
@@ -161,6 +167,7 @@ export default function DashboardPage() {
               error,
               "Failed to apply template. Please try again.",
             ),
+            { id: toastId },
           );
           setIsSaving(false);
         },
@@ -175,6 +182,7 @@ export default function DashboardPage() {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading("Saving profile...");
     updateProfile.mutate(
       {
         userId: session.user.id,
@@ -188,7 +196,7 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Profile updated successfully!");
+          toast.success("Profile updated successfully!", { id: toastId });
           setIsSaving(false);
         },
         onError: (error) => {
@@ -197,6 +205,7 @@ export default function DashboardPage() {
               error,
               "Failed to update profile. Please try again.",
             ),
+            { id: toastId },
           );
           setIsSaving(false);
         },
@@ -213,6 +222,7 @@ export default function DashboardPage() {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading("Saving links...");
     const formattedLinks = (data.links || [])
       .map((link) => ({
         id: link.id,
@@ -229,10 +239,11 @@ export default function DashboardPage() {
         links: formattedLinks,
       });
       clearDashboardDraft("links", profile.id);
-      toast.success("Links updated successfully!");
+      toast.success("Links updated successfully!", { id: toastId });
     } catch (error) {
       toast.error(
         getErrorMessage(error, "Failed to update links. Please try again."),
+        { id: toastId },
       );
     } finally {
       setIsSaving(false);
@@ -269,6 +280,7 @@ export default function DashboardPage() {
         ].some((value) => value.length > 0),
       );
 
+    const toastId = toast.loading("Saving experience...");
     createExperience.mutate(
       {
         profileId: profile.id,
@@ -276,7 +288,7 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Experience updated successfully!");
+          toast.success("Experience updated successfully!", { id: toastId });
           setIsSaving(false);
         },
         onError: (error) => {
@@ -285,6 +297,7 @@ export default function DashboardPage() {
               error,
               "Failed to update experience. Please try again.",
             ),
+            { id: toastId },
           );
           setIsSaving(false);
         },
@@ -327,6 +340,7 @@ export default function DashboardPage() {
           project.enddate,
       );
 
+    const toastId = toast.loading("Saving projects...");
     createProjects.mutate(
       {
         profileId: profile.id,
@@ -334,7 +348,7 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Projects updated successfully!");
+          toast.success("Projects updated successfully!", { id: toastId });
           setIsSaving(false);
         },
         onError: (error) => {
@@ -343,6 +357,7 @@ export default function DashboardPage() {
               error,
               "Failed to update projects. Please try again.",
             ),
+            { id: toastId },
           );
           setIsSaving(false);
         },
@@ -368,6 +383,7 @@ export default function DashboardPage() {
       }))
       .filter((skill) => skill.value);
 
+    const toastId = toast.loading("Saving skills...");
     createSkills.mutate(
       {
         userId: profile.id,
@@ -375,7 +391,7 @@ export default function DashboardPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Skills updated successfully!");
+          toast.success("Skills updated successfully!", { id: toastId });
           setIsSaving(false);
         },
         onError: (error) => {
@@ -384,6 +400,7 @@ export default function DashboardPage() {
               error,
               "Failed to update skills. Please try again.",
             ),
+            { id: toastId },
           );
           setIsSaving(false);
         },
@@ -400,6 +417,7 @@ export default function DashboardPage() {
     }
 
     setIsSaving(true);
+    const toastId = toast.loading("Saving blogs...");
     const formattedBlogs = (data.blogs || [])
       .map((blog) => ({
         id: blog.id,
@@ -420,10 +438,11 @@ export default function DashboardPage() {
         blogs: formattedBlogs,
       });
       clearDashboardDraft("blogs", profile.id);
-      toast.success("Blogs updated successfully!");
+      toast.success("Blogs updated successfully!", { id: toastId });
     } catch (error) {
       toast.error(
         getErrorMessage(error, "Failed to update blogs. Please try again."),
+        { id: toastId },
       );
     } finally {
       setIsSaving(false);
@@ -431,6 +450,19 @@ export default function DashboardPage() {
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useUnsavedWarning();
+  useSaveShortcut(tab);
+  const {
+    showConfirmation,
+    confirmDiscard,
+    cancelSwitch,
+    requestTabSwitch,
+    dirtyLabel,
+  } = useTabSwitchGuard(tab as any, (newTab) => setTab(newTab as Tab), profile?.id);
+
+  const dirtyItems = useSaveStore((s) => s.dirtyItems);
+  const errors = useSaveStore((s) => s.errors);
 
   return (
     <div className="h-screen flex flex-col bg-(--lf-bg) text-(--lf-ink) font-sans-body transition-colors duration-200">
@@ -501,36 +533,7 @@ export default function DashboardPage() {
             Preview
           </button>
 
-          <button
-            type="submit"
-            form="dashboard-form"
-            disabled={isSaveDisabled || (!profile?.username && tab !== "profile")}
-            className="inline-flex items-center gap-1.5 px-5 md:px-4.5 h-8.5 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer hover:opacity-82"
-          >
-            {isSaving ? (
-              <>
-                <svg
-                  className="animate-spin"
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                >
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                </svg>
-                <span className="hidden sm:inline">Saving…</span>
-                <span className="sm:hidden">Saving</span>
-              </>
-            ) : (
-              <>
-                <span className="hidden sm:inline">Save changes</span>
-                <span className="sm:hidden">Save</span>
-              </>
-            )}
-          </button>
+          <GlobalSaveButton disabled={!profile?.username && tab !== "profile"} />
 
           {!isPending && (
             <button onClick={() => setProfileMenuOpen(true)}>
@@ -549,6 +552,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
+      <UnsavedBanner />
+
       {sidebarOpen && (
         <div
           className="md:hidden fixed inset-0 z-30 bg-black/30 backdrop-blur-sm"
@@ -564,6 +569,9 @@ export default function DashboardPage() {
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
             {NAV.map((n) => {
               const isDisabled = !profile?.username && n.id !== "profile";
+              const isDirty = n.id !== "insights" && dirtyItems.has(n.id as DashboardSection);
+              const hasError = n.id !== "insights" && errors.has(n.id as DashboardSection);
+
               return (
                 <button
                   key={n.id}
@@ -574,13 +582,21 @@ export default function DashboardPage() {
                     } ${isDisabled ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)" : ""}`}
                   onClick={() => {
                     if (isDisabled) return;
-                    setTab(n.id);
+                    requestTabSwitch(n.id);
                     setSidebarOpen(false);
                   }}
                 >
-                  {n.label}
+                  <span className="flex-1">{n.label}</span>
+                  {isDirty && (
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        hasError ? "bg-red-500" : "bg-amber-500 animate-pulse"
+                      }`}
+                      title={hasError ? "Save error" : "Unsaved changes"}
+                    />
+                  )}
                 </button>
-              )
+              );
             })}
           </div>
 
@@ -784,6 +800,41 @@ export default function DashboardPage() {
                 ) : (
                   "Apply template"
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showConfirmation && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm transition-opacity duration-200 font-sans-body"
+          onClick={cancelSwitch}
+        >
+          <div
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-2xl w-full max-w-sm shadow-2xl p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="font-serif-display text-[1.1rem] font-medium text-(--lf-ink) mb-1.5">
+              Unsaved Changes
+            </h3>
+            <p className="text-[0.8rem] text-(--lf-muted) mb-5 leading-relaxed">
+              You have unsaved changes in <strong className="text-(--lf-ink)">{dirtyLabel}</strong>. Leaving now will discard these edits.
+            </p>
+            <div className="flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={cancelSwitch}
+                className="px-3.5 h-8 rounded-full border border-(--lf-border) text-(--lf-muted) text-[0.78rem] font-medium hover:text-(--lf-ink) transition-colors cursor-pointer bg-transparent"
+              >
+                Stay on page
+              </button>
+              <button
+                type="button"
+                onClick={confirmDiscard}
+                className="px-3.5 h-8 rounded-full bg-red-600 text-white text-[0.78rem] font-semibold hover:bg-red-700 transition-colors cursor-pointer border-none"
+              >
+                Discard changes
               </button>
             </div>
           </div>

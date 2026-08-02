@@ -7,12 +7,13 @@ import {
   useWatch,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { Plus, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { skillsSchema, SkillsSchema } from "@/lib/schemas/skills";
-import { readDashboardDraft, writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { SkillCard } from "./skills-card";
 import { parseSkill } from "@/lib/utils";
+import { useSectionSave } from "@/hooks/use-section-save";
 
 type Props = {
   profile?: {
@@ -43,7 +44,6 @@ function getInitialSkills(profile?: { id?: string; skills?: string[] | null }): 
   );
 }
 
-
 export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialSkills(profile), [profile]);
 
@@ -59,6 +59,19 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     resolver: zodResolver(skillsSchema),
     defaultValues: initialValues,
     mode: "onSubmit",
+  });
+
+  const { error: sectionError } = useSectionSave("skills", {
+    isDirty,
+    onSave: async () => {
+      await handleSubmit(async (data) => {
+        if (onSubmit) await onSubmit(data);
+      })();
+    },
+    onDiscard: () => {
+      if (profile?.id) clearDashboardDraft("skills", profile.id);
+      reset(skillsFromProfile(profile?.skills || []));
+    },
   });
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -79,8 +92,11 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
   }, [profile?.id, profile?.skills, profile?.skillsIsenable, reset]);
 
   useEffect(() => {
-    if (profile?.id && isDirty) {
+    if (!profile?.id) return;
+    if (isDirty) {
       writeDashboardDraft("skills", profile.id, { skills: watchedSkills || [] });
+    } else {
+      clearDashboardDraft("skills", profile.id);
     }
   }, [isDirty, profile?.id, watchedSkills]);
 
@@ -102,6 +118,13 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
           </p>
         </div>
       </div>
+
+      {sectionError && (
+        <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
+          <AlertCircle size={14} className="shrink-0" />
+          <span>{sectionError}</span>
+        </div>
+      )}
 
       <div className="mb-4">
         {fields.length === 0 && (

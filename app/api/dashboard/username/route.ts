@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { verifySession } from "@/lib/auth-api";
+import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 
 export async function POST(req: NextRequest) {
@@ -15,9 +15,16 @@ export async function POST(req: NextRequest) {
 
     if (!username) {
       return NextResponse.json(
-        { error: "username is required" },
+        { error: "username is required"},
         { status: 400 },
       );
+    }
+
+    if(username == "dashboard" || username == "templates" || username=="terms" || username=="privacy"){
+      return NextResponse.json(
+        {error: "username can't be a route"},
+        {status: 401}
+      )
     }
 
     const existingUsername = await prisma.profile.findUnique({
@@ -36,7 +43,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Read the current username before upsert so we know if it changed
     const existingProfile = await prisma.profile.findUnique({
       where: { userId },
       select: { username: true },
@@ -64,7 +70,6 @@ export async function POST(req: NextRequest) {
     const newUsername = updatedProfile.username;
     if (oldUsername && newUsername && oldUsername !== newUsername) {
       try {
-        // Fetch all blogs for this profile that have a stored blogLink
         const blogsToUpdate = await prisma.blog.findMany({
           where: {
             profileId: updatedProfile.id,
@@ -73,7 +78,6 @@ export async function POST(req: NextRequest) {
           select: { id: true, blogLink: true },
         });
 
-        // Replace the old username prefix with the new one in each blogLink
         await Promise.all(
           blogsToUpdate.map((blog) =>
             prisma.blog.update({

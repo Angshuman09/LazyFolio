@@ -14,7 +14,7 @@ import {
 import { Trash2, Pencil, Check, Briefcase, Loader2 } from 'lucide-react'
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
-import { useCreateExperience, useDeleteExperience } from "@/hooks/experience";
+import { useDeleteExperience } from "@/hooks/experience";
 import toast from "react-hot-toast";
 import { ExperienceProfile } from "@/lib/utils/experience";
 import { Switch } from "@/components/ui/switch";
@@ -48,7 +48,6 @@ export function ExperienceCard({
     () => !(field?.role || field?.companyName),
   );
 
-  const createExp = useCreateExperience();
   const deleteExp = useDeleteExperience();
 
   const [savedSnapshot, setSavedSnapshot] = useState<{
@@ -83,14 +82,13 @@ export function ExperienceCard({
     };
   });
 
-  const [saving, setSaving] = useState(false);
+  const [saving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const updateVisibility = useUpdateVisibility();
 
   const values = useWatch({ control, name: `experiences.${index}` });
   const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
 
-  // Helper to normalize any date value to YYYY-MM-DD string
   const toYMD = (val: string | Date | null | undefined): string => {
     if (!val) return "";
     const d = new Date(val as string);
@@ -101,7 +99,6 @@ export function ExperienceCard({
     return `${y}-${m}-${day}`;
   };
 
-  // Sync savedSnapshot when profile updates (e.g. after global "Save Changes")
   useEffect(() => {
     const profileExperience = profile?.experiences?.find((e) => e.id === field.id);
     if (!profileExperience || !field.id) return;
@@ -114,7 +111,6 @@ export function ExperienceCard({
       enddate: toYMD(profileExperience.enddate as string | Date | null | undefined),
       isenable: profileExperience.isenable ?? true,
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.experiences]);
 
   const normalizedValues = {
@@ -126,15 +122,6 @@ export function ExperienceCard({
     enddate: values?.enddate || "",
     isenable: values?.isenable ?? true,
   };
-
-  const hasUnsavedChanges =
-    !savedSnapshot ||
-    normalizedValues.id !== savedSnapshot.id ||
-    normalizedValues.role !== savedSnapshot.role ||
-    normalizedValues.companyName !== savedSnapshot.companyName ||
-    normalizedValues.description !== savedSnapshot.description ||
-    normalizedValues.startdate !== savedSnapshot.startdate ||
-    normalizedValues.enddate !== savedSnapshot.enddate;
 
   const updateExperienceDraft = (experiences: ExperienceSchema['experiences']) => {
     if (profile?.id) {
@@ -152,68 +139,6 @@ export function ExperienceCard({
     return true;
   };
 
-  const handleSave = async () => {
-    if (!profile?.id) {
-      toast.error("profile not loaded");
-      return;
-    }
-
-    if (!validateExperience()) return;
-
-    setSaving(true);
-    try {
-      const payload = await createExp.mutateAsync({
-        experience: {
-          id: normalizedValues.id || undefined,
-          role: normalizedValues.role,
-          companyName: normalizedValues.companyName,
-          description: normalizedValues.description,
-          startdate: normalizedValues.startdate,
-          enddate: normalizedValues.enddate,
-          isenable: normalizedValues.isenable,
-        },
-        profileId: profile?.id,
-      });
-
-      console.log("payload: ", payload);
-
-      const saveExperience = {
-        id: payload?.data?.id || normalizedValues.id,
-        role: payload?.data?.role || normalizedValues.role,
-        companyName: payload?.data?.companyName || normalizedValues.companyName,
-        description: payload?.data?.description || normalizedValues.description,
-        startdate: payload?.data?.startdate || normalizedValues.startdate,
-        enddate: payload?.data?.enddate || normalizedValues.enddate,
-        isenable: payload?.data?.isenable ?? normalizedValues.isenable,
-      };
-
-      console.log("save experience: ", saveExperience);
-
-      setValue(`experiences.${index}.id`, saveExperience.id, { shouldDirty: false });
-      setValue(`experiences.${index}.role`, saveExperience.role, { shouldDirty: false });
-      setValue(`experiences.${index}.companyName`, saveExperience.companyName, { shouldDirty: false });
-      setValue(`experiences.${index}.description`, saveExperience.description, { shouldDirty: false });
-      setValue(`experiences.${index}.startdate`, saveExperience.startdate, { shouldDirty: false });
-      setValue(`experiences.${index}.enddate`, saveExperience.enddate, { shouldDirty: false });
-      setValue(`experiences.${index}.isenable`, saveExperience.isenable, { shouldDirty: false });
-
-      const currentExperiences = getValues("experiences") || [];
-      updateExperienceDraft(
-        currentExperiences.map((experience, experienceIndex) =>
-          experienceIndex === index ? { ...experience, ...saveExperience } : experience,
-        ),
-      );
-      setSavedSnapshot(saveExperience);
-      setIsEditing(false);
-      toast.success("Experience saved successfully!");
-    } catch (error) {
-      console.error("Error saving experience:", error);
-      toast.error("An error occurred while saving the experience.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
   const onDeleteExperience = async () => {
     const currentExperiences = getValues("experiences") || [];
     const deleteExperience = currentExperiences[index];
@@ -228,20 +153,21 @@ export function ExperienceCard({
     remove(index);
     updateExperienceDraft(nextExperiences);
     setDeleting(true);
+    const toastId = toast.loading("Deleting experience...");
     try {
       await deleteExp.mutateAsync(normalizedValues.id);
-      toast.success("Experience deleted successfully!");
+      toast.success("Experience deleted successfully!", { id: toastId });
     } catch (error) {
       if (deleteExperience) {
         insert(index, deleteExperience);
         updateExperienceDraft(currentExperiences);
       }
       console.error("Error deleting experience:", error);
-      toast.error("An error occurred while deleting the experience.");
+      toast.error("An error occurred while deleting the experience.", { id: toastId });
     } finally {
       setDeleting(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (hasErrors) {
@@ -251,7 +177,6 @@ export function ExperienceCard({
 
   const onCancelEditing = () => {
     if (!savedSnapshot) {
-      // New unsaved card — remove it entirely
       const currentExperiences = getValues("experiences") || [];
       updateExperienceDraft(
         currentExperiences.filter((_, i) => i !== index),
@@ -390,21 +315,6 @@ export function ExperienceCard({
                 : "Show experience on profile"
             }
           />
-          {hasUnsavedChanges && (
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={deleting || saving}
-              className="inline-flex items-center gap-1.5 px-3 h-7 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none disabled:cursor-not-allowed disabled:opacity-55"
-            >
-              {saving ? (
-                <Loader2 size={11} className="animate-spin" />
-              ) : (
-                <Check size={11} strokeWidth={2.5} />
-              )}
-              {saving ? "Saving..." : "Save"}
-            </button>
-          )}
         </div>
       </div>
     );

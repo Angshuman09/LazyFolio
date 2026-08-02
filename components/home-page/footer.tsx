@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,8 +14,8 @@ const Footer = () => {
     {
       heading: "The Boring",
       links: [
-        { label: "Privacy Policy", href: "/" },
-        { label: "Terms of Service", href: "/" },
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Service", href: "/terms" },
       ],
     },
     {
