@@ -1,6 +1,6 @@
 <p align="center">
   <!-- Replace the src below with your actual logo path once added -->
-  <img src="./public/Logo.png" alt="Lazyfolio Logo" width="120" />
+  <img src="./public/logowithbackground.png" alt="Lazyfolio Logo" width="120" />
 </p>
 
 <h1 align="center">Lazyfolio</h1>

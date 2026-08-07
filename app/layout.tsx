@@ -26,11 +26,11 @@ export const metadata: Metadata = {
   },
   openGraph:{
     type:"website",
-    url:"https://lazy-folio.vercel.app",
+    url: process.env.NEXT_PUBLIC_SITE_URL as string,
     title: "Lazyfolio - Make the internet know You Exist.",
     description: "Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch >◡<",
     siteName:"Lazyfolio",
-    images:[{url:"/ograph.png"}]
+    images:[{url:"/opengraph.png"}]
   }
 };
 
@@ -52,7 +52,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={cn(geist.variable, serif.variable, "antialiased selection:bg-(--color-accent) selection:text-(--color-paper)")}>
+      <body className={cn(geist.variable, serif.variable, "antialiased selection:bg-yellow-100 selection:text-black")}>
         <Toaster position="bottom-right" />
         <Providers>
           {children}
