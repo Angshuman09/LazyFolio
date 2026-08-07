@@ -10,7 +10,7 @@
 import {useEffect, useState} from 'react';
 import {Trash2, Pencil, Check, Link2, Loader2 } from "lucide-react";
 import { useCreateLink, useDeleteLink } from "@/hooks/link";
-import { hasFieldArrayErrors } from "@/lib/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/utils";
 import { LinksProfile } from "@/lib/utils/links";
 import {isValidUrl} from "@/lib/utils/links";
 import { detectType } from "@/lib/utils/links";

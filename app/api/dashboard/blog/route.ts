@@ -1,49 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-import crypto from "crypto";
+import { BlogInput } from "@/lib/constants/apis";
+import { generateSlug, parseOptionalDate } from "@/lib/utils/blogs";
 
-type BlogInput = {
-  id?: string;
-  title?: string;
-  description?: string;
-  blogLink?: string;
-  enddate?: string;
-  content?: string | null;
-  isPublished?: boolean;
-  isenable?: boolean;
-  slug?: string | null;
-};
-
-function parseOptionalDate(value: string | null | undefined) {
-  if (!value?.trim()) {
-    return null;
-  }
-
-  const parsedDate = new Date(value);
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}
-
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
-    .replace(/^-+/, "") // Trim - from start of text
-    .replace(/-+$/, ""); // Trim - from end of text
-}
-
-function generateSlug(title: string) {
-  const baseSlug = slugify(title || "untitled");
-  const randomHash = crypto.randomBytes(4).toString("hex");
-  return `${baseSlug}-${randomHash}`;
-}
 
 export async function POST(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();

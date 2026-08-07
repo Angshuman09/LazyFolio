@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { skillsSchema, SkillsSchema } from "@/lib/schemas/skills";
 import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { SkillCard } from "./skills-card";
-import { parseSkill } from "@/lib/utils";
+import { parseSkill } from "@/lib/utils/utils";
 import { useSectionSave } from "@/hooks/use-section-save";
 
 type Props = {

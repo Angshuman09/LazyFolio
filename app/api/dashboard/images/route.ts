@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { verifySession } from "@/lib/auth/auth-api";
 
 export async function POST(request: NextRequest) {

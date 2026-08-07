@@ -4,7 +4,7 @@ import { useCreateBlog, useDeleteBlog } from '@/hooks/blog';
 import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import { BlogsSchema } from '@/lib/schemas/blogs';
 import { BlogsProfile } from '@/lib/types/blogs';
-import { hasFieldArrayErrors } from '@/lib/utils';
+import { hasFieldArrayErrors } from '@/lib/utils/utils';
 import { isValidUrl } from '@/lib/utils/links';
 import { BookOpen, Check, ExternalLink, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -84,7 +84,6 @@ export function BlogCard({
     });
   
     const values = useWatch({ control, name: `blogs.${index}` });
-    // console.log("values: ",values);
     const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
@@ -414,7 +413,6 @@ export function BlogCard({
 
     return (
       <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
-        {/* Blog Type Selector */}
         <div className="flex flex-col gap-1.5 mb-4">
           <div className="flex items-center gap-1.5 p-0.5 border border-(--lf-border) rounded-lg bg-(--lf-bg) w-fit">
             <button
@@ -468,7 +466,6 @@ export function BlogCard({
   
           {isInternal ? (
             <>
-              {/* Rich Editor trigger */}
               <div className="flex flex-col gap-1.25 sm:col-span-2">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   Article Content

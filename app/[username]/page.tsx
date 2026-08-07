@@ -1,43 +1,13 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
-import { parseSkill } from "@/lib/utils";
+import { parseSkill } from "@/lib/utils/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { after } from "next/server";
 import { headers } from "next/headers";
-import { trackPageView } from "@/lib/analytics";
+import { trackPageView } from "@/lib/utils/analytics";
+import { publicProfileSelect } from "@/lib/constants/sections";
 
-const publicProfileSelect = {
-  id: true,
-  avatar: true,
-  banner: true,
-  name: true,
-  email: true,
-  quote: true,
-  userId: true,
-  username: true,
-  bio: true,
-  skills: true,
-  themeId: true,
-  resume: true,
-  tagline: true,
-  bookAcall: true,
-  createdAt: true,
-  updatedAt: true,
-  user: true,
-  experiences: { where: { isenable: true } },
-  projects: { where: { isenable: true } },
-  blogs: {
-    where: {
-      isenable: true,
-      OR: [
-        { content: { not: null }, isPublished: true },
-        { content: null },
-      ],
-    },
-  },
-  links: { where: { isenable: true } },
-};
 
 async function getProfileByUsername(username: string) {
   "use cache";

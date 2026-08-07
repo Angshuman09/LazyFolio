@@ -1,6 +1,6 @@
 import type { DashboardSection } from "./save-store";
 import { useSaveStore } from "./save-store";
-import { clearDashboardDraft } from "./cache/dashboard-drafts";
+import { clearDashboardDraft } from "../cache/dashboard-drafts";
 
 const saveRegistry = new Map<DashboardSection, () => Promise<void>>();
 const discardRegistry = new Map<DashboardSection, () => void>();

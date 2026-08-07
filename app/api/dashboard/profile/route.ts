@@ -2,28 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-const profileSelect = {
-  id: true,
-  avatar: true,
-  banner: true,
-  name: true,
-  email: true,
-  quote: true,
-  userId: true,
-  username: true,
-  bio: true,
-  skills: true,
-  themeId: true,
-  resume: true,
-  tagline: true,
-  bookAcall: true,
-  createdAt: true,
-  updatedAt: true,
-  experiences: true,
-  projects: true,
-  blogs: true,
-  links: true,
-};
+import { profileSelect } from "@/lib/constants/apis";
+
 
 function optionalString(value: string | null | undefined) {
   if (typeof value !== "string") {
@@ -107,7 +87,6 @@ export async function POST(request: NextRequest) {
 
   try {
     const {
-      userId,
       name,
       bio,
       email,
@@ -217,7 +196,6 @@ export async function POST(request: NextRequest) {
         ? skillsIsenable
         : await getSkillsIsenable(profile.id);
 
-    // Revalidate both old and new usernames so stale caches are purged
     if (oldUsername && oldUsername !== profile.username) {
       revalidateProfile(oldUsername);
     }

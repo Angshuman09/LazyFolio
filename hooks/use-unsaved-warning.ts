@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
-import { useSaveStore, selectIsAnyDirty, SECTION_LABELS } from "@/lib/save-store";
-import type { DashboardSection } from "@/lib/save-store";
-import { discardSection } from "@/lib/save-registry";
+import { useSaveStore, selectIsAnyDirty, SECTION_LABELS } from "@/lib/utils/save-store";
+import type { DashboardSection } from "@/lib/utils/save-store";
+import { discardSection } from "@/lib/utils/save-registry";
 
 /**
  * Hook that manages unsaved changes warnings.

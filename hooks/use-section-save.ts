@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { DashboardSection, useSaveStore } from "@/lib/save-store";
-import { registerSave, unregisterSave, registerDiscard, unregisterDiscard } from "@/lib/save-registry";
+import { DashboardSection, useSaveStore } from "@/lib/utils/save-store";
+import { registerSave, unregisterSave, registerDiscard, unregisterDiscard } from "@/lib/utils/save-registry";
 
 interface UseSectionSaveOptions {
   /** react-hook-form's isDirty (or any boolean indicating unsaved changes) */

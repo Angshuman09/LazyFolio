@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
-
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
@@ -43,12 +42,11 @@ import { useCreateBlogs } from "@/hooks/blogs";
 import { BlogsSchema } from "@/lib/schemas/blogs";
 import { ProjectsSchema } from "@/lib/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
-import { parseSkill } from "@/lib/utils";
+import { parseSkill } from "@/lib/utils/utils";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import InsightsPage from "@/components/dashboard/insights/insight";
 import GlobalSaveButton from "@/components/dashboard/global-save-button";
-import UnsavedBanner from "@/components/dashboard/unsaved-banner";
-import { useSaveStore, DashboardSection } from "@/lib/save-store";
+import { useSaveStore, DashboardSection } from "@/lib/utils/save-store";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 import { useUnsavedWarning, useTabSwitchGuard } from "@/hooks/use-unsaved-warning";
 
@@ -124,6 +122,8 @@ export default function DashboardPage() {
   const copyLink = () => {
     navigator.clipboard?.writeText(`${process.env.NEXT_PUBLIC_SITE_URL as string}/${profile?.username || username}`).then(() => {
       toast.success("Profile link copied to clipboard!");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
       toast.error("Failed to copy link. Please try manually copying: " + `/${profile?.username || username}`);
     });
@@ -551,8 +551,6 @@ export default function DashboardPage() {
           )}
         </div>
       </header>
-
-      <UnsavedBanner />
 
       {sidebarOpen && (
         <div

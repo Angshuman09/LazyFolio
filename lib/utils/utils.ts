@@ -53,3 +53,8 @@ export function parseSkill(s: string): ParsedSkill {
   };
 }
 
+export type VisibilityPayload = {
+  target?:  "link" | "experience" | "project" | "blog" | "skills";
+  id?: string;
+  isenable?: boolean;
+};

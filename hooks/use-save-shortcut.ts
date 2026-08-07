@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { useSaveStore, selectIsAnyDirty } from "@/lib/save-store";
-import { saveAllSections } from "@/lib/save-registry";
-import type { DashboardSection } from "@/lib/save-store";
+import { useSaveStore, selectIsAnyDirty } from "@/lib/utils/save-store";
+import { saveAllSections } from "@/lib/utils/save-registry";
+import type { DashboardSection } from "@/lib/utils/save-store";
 import type { Tab } from "@/components/resources/extras";
-import { getSaveFn } from "@/lib/save-registry";
+import { getSaveFn } from "@/lib/utils/save-registry";
 
 /**
  * Keyboard shortcut hook for save operations.

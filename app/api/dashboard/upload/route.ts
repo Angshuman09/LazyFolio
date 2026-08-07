@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { Readable } from 'stream';
-import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/cloudinary';
+import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/utils/cloudinary';
 import { verifySession } from '@/lib/auth/auth-api';
 
 export async function POST(req: NextRequest){

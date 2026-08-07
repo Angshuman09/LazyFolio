@@ -1,17 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { LinkType } from "@/db/enums";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
-
-type LinkInput = {
-    id?: string;
-    url: string;
-    label: string;
-    type: LinkType;
-    isenable?: boolean;
-}
-
-type ProfileId = string;
+import { LinkInput } from "@/lib/constants/apis";
+import { LinkType } from "@/db/enums";
 
 
 export async function POST(request: NextRequest) {

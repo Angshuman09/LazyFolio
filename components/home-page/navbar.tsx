@@ -4,7 +4,7 @@ import { Github, Menu, Moon, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useThemeStore } from "@/lib/theme-store";
+import { useThemeStore } from "@/lib/utils/theme-store";
 import { authClient } from "@/lib/auth/auth-client";
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./user-avatar";
@@ -20,11 +20,9 @@ const Navbar = () => {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [menuOpen, setMenuOpen] = useState(false);
-  // const [scrolled, setScrolled] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [stars, setStars] = useState<number | null>(null);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
-  // console.log(toggleTheme)
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
   const dark = theme === "light";
@@ -48,16 +46,14 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav
-      className= "sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md px-6 md:px-12 py-3.5 transition-all duration-300"
-    >
+    <nav className="sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md border-b border-(--lf-border-alpha) px-6 md:px-12 py-3.5 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <ul className="hidden md:flex gap-8 text-[0.8rem] text-(--lf-muted) font-medium tracking-wide">
           {NAV_LEFT.map((item) => (
             <li key={item.label}>
               <Link
                 href={item.href}
-                className="hover:text-(--lf-ink) transition-colors duration-150"
+                className="lf-focus rounded-sm hover:text-(--lf-ink) transition-colors duration-150"
               >
                 {item.label}
               </Link>
@@ -65,7 +61,10 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <span onClick={()=>router.push("/")} className="font-serif-display cursor-pointer text-[1.3rem] font-normal tracking-tight absolute left-1/2 -translate-x-1/2 select-none">
+        <span
+          onClick={() => router.push("/")}
+          className="lf-focus rounded-sm font-serif-display cursor-pointer text-[1.3rem] font-medium tracking-tight absolute left-1/2 -translate-x-1/2 select-none hover:opacity-75 transition-opacity duration-150"
+        >
           Lazyfolio
         </span>
 
@@ -75,14 +74,14 @@ const Navbar = () => {
             href="https://github.com/Angshuman09/lazyfolio"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
+            className="lf-focus hover-lift flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
           >
             <Github className="h-3.5 w-3.5" />
             <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
           </Link>
 
           <button
-            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="lf-focus hover-lift inline-flex items-center justify-center w-9 h-9 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
             aria-label="Toggle theme"
           >
@@ -90,16 +89,19 @@ const Navbar = () => {
           </button>
 
           {isPending ? (
-            <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-[10px]" />
+            <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-full" />
           ) : session?.user ? (
             <>
               <Button
                 onClick={() => router.push("/dashboard")}
-                className="bg-(--lf-ink) text-(--lf-surface) rounded-full hover:cursor-pointer text-[0.8rem] font-semibold px-5 py-5  hover:opacity-80 transition-opacity flex items-center gap-1.5"
+                className="lf-focus bg-(--lf-ink) text-(--lf-surface) rounded-full h-9 px-5 hover:cursor-pointer text-[0.8rem] font-semibold hover:opacity-80 transition-opacity flex items-center gap-1.5"
               >
                 Dashboard
               </Button>
-              <button className="cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
+              <button
+                className="lf-focus rounded-full cursor-pointer"
+                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              >
                 <UserAvatar user={session.user} />
               </button>
 
@@ -115,7 +117,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push("/auth")}
-              className="bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem]  border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
+              className="lf-focus group bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem] border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
             >
               Get started
               <span className="btn-arrow w-4 h-4 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[9px] font-bold leading-none">
@@ -128,14 +130,14 @@ const Navbar = () => {
         {/* Mobile controls */}
         <div className="md:hidden flex items-center gap-2 ml-auto">
           <button
-            className="inline-flex items-center justify-center w-8.5 h-8.5 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
             aria-label="Toggle theme"
           >
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
           <button
-            className="p-1 text-(--lf-muted)"
+            className="lf-focus p-1.5 rounded-lg text-(--lf-muted) hover:text-(--lf-ink) transition-colors duration-150"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
@@ -147,7 +149,7 @@ const Navbar = () => {
 
       <div
         className={[
-          "md:hidden absolute top-full left-0 right-0 bg-(--lf-surface) border-b border-(--lf-border-alpha) flex flex-col gap-3 px-6 overflow-hidden transition-all duration-300",
+          "md:hidden absolute top-full left-0 right-0 bg-(--lf-surface) border-b border-(--lf-border-alpha) shadow-lg flex flex-col gap-3 px-6 overflow-hidden transition-all duration-300 ease-out",
           menuOpen ? "py-5 max-h-72 opacity-100" : "max-h-0 py-0 opacity-0",
         ].join(" ")}
       >
@@ -155,7 +157,7 @@ const Navbar = () => {
           <Link
             key={item.label}
             href={item.href}
-            className="text-[0.85rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+            className="lf-focus text-[0.85rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {item.label}
@@ -165,7 +167,7 @@ const Navbar = () => {
           href="https://github.com/Angshuman09/lazyfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-full hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
+          className="lf-focus flex items-center justify-center gap-2 rounded-full hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
         >
           <Github className="h-4 w-4" />
           <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
@@ -178,7 +180,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/dashboard");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
+            className="lf-focus text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 border-(--lf-ink) px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
           >
             Dashboard
           </button>
@@ -188,7 +190,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/auth");
             }}
-            className="text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
+            className="lf-focus text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 border-(--lf-ink) px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
           >
             Get started
           </button>

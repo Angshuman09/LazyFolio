@@ -3,13 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { LinkType } from "@/db/enums";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-
-type LinkInput = {
-  type?: LinkType;
-  label?: string;
-  url?: string;
-  isenable?: boolean;
-};
+import { LinkInput } from "@/lib/constants/apis";
 
 export async function POST(req: NextRequest){
   const { errorResponse, profile } = await verifySessionAndProfile();

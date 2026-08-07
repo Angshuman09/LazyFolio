@@ -8,8 +8,8 @@ import {
   getGlobalButtonLabel,
   selectIsAnyDirty,
   selectIsAnySaving,
-} from "@/lib/save-store";
-import { saveAllSections } from "@/lib/save-registry";
+} from "@/lib/utils/save-store";
+import { saveAllSections } from "@/lib/utils/save-registry";
 
 export default function GlobalSaveButton({
   disabled,

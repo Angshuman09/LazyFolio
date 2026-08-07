@@ -3,15 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
+import { parseOptionalDate } from "@/lib/utils/blogs";
 
-function parseOptionalDate(value: string | null | undefined) {
-  if (!value?.trim()) {
-    return null;
-  }
-
-  const parsedDate = new Date(value);
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}
 
 export async function POST(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();

@@ -1,4 +1,4 @@
-import { hasFieldArrayErrors } from "@/lib/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/utils";
 import { useState, useEffect } from "react";
 import {
   useWatch, type Control,

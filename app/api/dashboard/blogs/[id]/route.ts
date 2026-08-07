@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";

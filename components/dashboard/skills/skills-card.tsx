@@ -12,7 +12,7 @@ import {
     useWatch
 } from 'react-hook-form'
 
-import { hasFieldArrayErrors } from "@/lib/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/utils";
 import { useCreateSkills } from "@/hooks/skills";
 import { Trash2, Pencil, Check, Loader2 } from 'lucide-react'
 import { SkillsSchema } from '@/lib/schemas/skills';

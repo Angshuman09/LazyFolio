@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { getInsightData, presetRange } from "@/lib/analytics";
+import { getInsightData, presetRange } from "@/lib/utils/analytics";
 
 export async function GET(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });

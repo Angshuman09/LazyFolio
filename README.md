@@ -25,8 +25,6 @@
 
 Most portfolio sites take an evening (or a weekend) you didn't want to spend picking a layout, wiring up a CMS, wrestling with deploys. Lazyfolio skips all of that. Pick a template, fill in your story, and you have a live, shareable portfolio with your own link, blog, and analytics in minutes.
 
-It's fully open source, so you're welcome to self-host it, theme it, or rip out the parts you like for your own project.
-
 **Features**
 
 - One public profile page under `lazyfolio.com/your-username` that you can share anywhere. 

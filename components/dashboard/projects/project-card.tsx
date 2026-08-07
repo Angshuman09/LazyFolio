@@ -11,7 +11,7 @@ import {  type Control,
 } from 'react-hook-form'
 import { Trash2, Pencil, Check, Code2, Github, ExternalLink, Loader2} from 'lucide-react'
 import { useCreateProject, useDeleteProject } from "@/hooks/project";
-import { hasFieldArrayErrors } from "@/lib/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/utils";
 import { useEffect, useState } from 'react';
 import { ProjectsSchema } from '@/lib/schemas/projects';
 import { ProfileProject } from '@/lib/types/projects';

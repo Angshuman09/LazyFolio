@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { parseOptionalDate } from "@/lib/utils/experience";
 
 type ProjectInput = {
   id?: string;
@@ -13,14 +14,6 @@ type ProjectInput = {
   isenable?: boolean;
 };
 
-function parseOptionalDate(value: string | null | undefined) {
-  if (!value?.trim()) {
-    return null;
-  }
-
-  const parsedDate = new Date(value);
-  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}
 
 export async function POST(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();

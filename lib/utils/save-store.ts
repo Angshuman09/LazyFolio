@@ -18,35 +18,27 @@ export const SECTION_LABELS: Record<DashboardSection, string> = {
 };
 
 interface SaveState {
-  /** Which sections have unsaved changes */
   dirtyItems: Set<DashboardSection>;
-  /** Which sections are currently saving */
   savingItems: Set<DashboardSection>;
-  /** Per-section error messages */
   errors: Map<DashboardSection, string>;
-  /** Global save lifecycle status */
+
   globalStatus: "idle" | "saving" | "saved" | "error";
 
-  // ── Dirty tracking ─────────────────────────────────────────
   markDirty: (section: DashboardSection) => void;
   markClean: (section: DashboardSection) => void;
 
-  // ── Save lifecycle ─────────────────────────────────────────
   startSaving: (section: DashboardSection) => void;
   finishSaving: (section: DashboardSection) => void;
   failSaving: (section: DashboardSection, error: string) => void;
   clearError: (section: DashboardSection) => void;
 
-  // ── Global save ────────────────────────────────────────────
   startGlobalSave: () => void;
   finishGlobalSave: () => void;
   failGlobalSave: () => void;
 
-  // ── Helpers (plain getters — derive in component via selectors) ─
   reset: () => void;
 }
 
-/** Timer id for the "saved" → "idle" auto-transition */
 let savedTimerId: ReturnType<typeof setTimeout> | null = null;
 
 export const useSaveStore = create<SaveState>((set, get) => ({
@@ -55,7 +47,6 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   errors: new Map(),
   globalStatus: "idle",
 
-  // ── Dirty ──────────────────────────────────────────────────
   markDirty: (section) =>
     set((s) => {
       if (s.dirtyItems.has(section)) return s;
@@ -69,18 +60,15 @@ export const useSaveStore = create<SaveState>((set, get) => ({
       if (!s.dirtyItems.has(section)) return s;
       const next = new Set(s.dirtyItems);
       next.delete(section);
-      // Also clear any error for this section
       const errs = new Map(s.errors);
       errs.delete(section);
       return { dirtyItems: next, errors: errs };
     }),
 
-  // ── Saving ─────────────────────────────────────────────────
   startSaving: (section) =>
     set((s) => {
       const next = new Set(s.savingItems);
       next.add(section);
-      // Clear previous error
       const errs = new Map(s.errors);
       errs.delete(section);
       return { savingItems: next, errors: errs };
@@ -114,7 +102,6 @@ export const useSaveStore = create<SaveState>((set, get) => ({
       return { errors: errs };
     }),
 
-  // ── Global ─────────────────────────────────────────────────
   startGlobalSave: () => {
     if (savedTimerId) {
       clearTimeout(savedTimerId);
@@ -150,7 +137,6 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   },
 }));
 
-// ── Selector helpers (use outside of React or as selectors) ──
 export const selectDirtyCount = (s: SaveState) => s.dirtyItems.size;
 export const selectIsAnyDirty = (s: SaveState) => s.dirtyItems.size > 0;
 export const selectIsAnySaving = (s: SaveState) => s.savingItems.size > 0;
@@ -162,14 +148,6 @@ export const selectSectionError = (section: DashboardSection) => (s: SaveState) 
   s.errors.get(section);
 export const selectDirtySections = (s: SaveState) => Array.from(s.dirtyItems);
 
-/**
- * Derive the dynamic button label.
- * - No dirty items → "All saved"
- * - 1 dirty item  → "Save {section label}"
- * - N dirty items → "Save all (N)"
- * - Saving        → "Saving…"
- * - Just saved    → "Saved ✓"
- */
 export function getGlobalButtonLabel(state: SaveState): string {
   if (state.globalStatus === "saving" || state.savingItems.size > 0) {
     return "Saving…";

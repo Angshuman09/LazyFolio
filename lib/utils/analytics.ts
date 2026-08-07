@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
 function hashVisitor(ip: string) {
-  const day = new Date().toISOString().slice(0, 10); // rotates daily
+  const day = new Date().toISOString().slice(0, 10);
   return crypto
     .createHash("sha256")
     .update(`${ip}-${day}-${process.env.VISITOR_HASH_SALT}`)
@@ -38,7 +38,7 @@ export async function trackPageView({
       },
     });
   } catch (err) {
-    console.error("Failed to track page view", err); // never break the page render
+    console.error("Failed to track page view", err); 
   }
 }
 

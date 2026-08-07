@@ -1,6 +1,7 @@
 import { BlogsSchema } from "../schemas/blogs";
 import { BlogsProfile, ProfileBlog } from "../types/blogs";
 import { readDashboardDraft } from "../cache/dashboard-drafts";
+import crypto from "crypto";
 
 export function blogsFromProfile(blogs: ProfileBlog[] = []): BlogsSchema {
     return {
@@ -24,3 +25,31 @@ export function getInitialBlogs(profile?: BlogsProfile): BlogsSchema {
       blogsFromProfile(profile?.blogs || [])
     );
   }
+
+export function slugify(text: string) {
+    return text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "") 
+      .replace(/\-\-+/g, "-") 
+      .replace(/^-+/, "") 
+      .replace(/-+$/, ""); 
+  }
+  
+export function generateSlug(title: string) {
+    const baseSlug = slugify(title || "untitled");
+    const randomHash = crypto.randomBytes(4).toString("hex");
+    return `${baseSlug}-${randomHash}`;
+  }
+
+export function parseOptionalDate(value: string | null | undefined) {
+    if (!value?.trim()) {
+      return null;
+    }
+  
+    const parsedDate = new Date(value);
+    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+

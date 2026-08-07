@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { trackLinkClick } from "@/lib/analytics";
+import { trackLinkClick } from "@/lib/utils/analytics";
 
 export async function POST(req: NextRequest) {
   try {
