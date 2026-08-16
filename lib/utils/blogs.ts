@@ -7,13 +7,13 @@ export function blogsFromProfile(blogs: ProfileBlog[] = []): BlogsSchema {
     return {
       blogs: blogs.map((blog) => ({
         id: blog.id || undefined,
+        type: blog.type ?? (blog.content === null ? "EXTERNAL" : "INTERNAL"),
         title: blog.title ?? "",
         description: blog.description ?? "",
         blogLink: blog.blogLink ?? "",
-        enddate: blog.enddate ? String(blog.enddate) : "",
         content: blog.content ?? null,
         isPublished: blog.isPublished ?? false,
-        isenable: blog.isenable ?? true,
+        isEnabled: blog.isEnabled ?? blog.isenable ?? true,
         slug: blog.slug ?? null,
       })),
     };
@@ -52,4 +52,3 @@ export function parseOptionalDate(value: string | null | undefined) {
     const parsedDate = new Date(value);
     return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
 }
-

@@ -5,7 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
-import { generateSlug, parseOptionalDate } from "@/lib/utils/blogs";
+import { generateSlug } from "@/lib/utils/blogs";
+import {
+  validateExternalBlog,
+  validateInternalBlog,
+} from "@/lib/utils/validate-dashboard";
 
 
 export async function POST(request: NextRequest) {
@@ -25,8 +29,21 @@ export async function POST(request: NextRequest) {
     }
 
     const profileId = profile!.id;
+    const blogType =
+      blog.type ??
+      (blog.content !== undefined && blog.content !== null
+        ? "INTERNAL"
+        : "EXTERNAL");
+    const validation =
+      blogType === "INTERNAL"
+        ? validateInternalBlog(blog)
+        : validateExternalBlog(blog);
 
-    let existing: any = null;
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
+    let existing: Awaited<ReturnType<typeof prisma.blog.findFirst>> = null;
     if (blog.id) {
       existing = await prisma.blog.findFirst({
         where: { id: blog.id, profileId },
@@ -41,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     let slug = blog.slug;
     let blogLink = blog.blogLink?.trim() || null;
-    const isInternal = blog.content !== undefined && blog.content !== null;
+    const isInternal = blogType === "INTERNAL";
 
     if (isInternal) {
       if (blog.id) {
@@ -61,13 +78,17 @@ export async function POST(request: NextRequest) {
           id: profileId,
         },
       },
-      title: blog.title?.trim() || null,
+      type: blogType,
+      title: blog.title?.trim() || "Untitled",
       description: blog.description?.trim() || null,
       blogLink: blogLink,
-      enddate: parseOptionalDate(blog.enddate),
-      content: blog.content ?? null,
+      content: isInternal ? (blog.content ?? "") : null,
       isPublished: isInternal ? (blog.isPublished ?? false) : true,
-      ...(typeof blog.isenable === "boolean" ? { isenable: blog.isenable } : {}),
+      ...(typeof blog.isEnabled === "boolean"
+        ? { isEnabled: blog.isEnabled }
+        : typeof blog.isenable === "boolean"
+          ? { isEnabled: blog.isenable }
+          : {}),
       slug: slug || null,
     };
 
@@ -98,6 +119,7 @@ export async function POST(request: NextRequest) {
           where: {
             blogLink: blog.blogLink,
             profileId,
+            type: "EXTERNAL",
           },
         })
       : null;
@@ -109,6 +131,8 @@ export async function POST(request: NextRequest) {
         },
         data: blogData,
       });
+
+      revalidateProfile(profile.username);
 
       return NextResponse.json(
         { data: updatedBlog, message: "Blog updated successfully." },

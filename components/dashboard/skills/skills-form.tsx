@@ -61,8 +61,34 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
+  const watchedSkills = useWatch({ control, name: "skills" });
+
+  const isSkillsDirty = useMemo(() => {
+    const current = watchedSkills || [];
+    const saved = skillsFromProfile(profile?.skills || []).skills || [];
+    const currentNonEmpty = current.filter((s) => (s?.value || "").trim() !== "");
+    const savedNonEmpty = saved.filter((s) => (s?.value || "").trim() !== "");
+
+    if (currentNonEmpty.length !== savedNonEmpty.length) {
+      return currentNonEmpty.length > savedNonEmpty.length;
+    }
+
+    for (let i = 0; i < currentNonEmpty.length; i++) {
+      const cur = currentNonEmpty[i];
+      const sav = savedNonEmpty[i];
+      if (!cur || !sav) continue;
+      if (
+        (cur.value || "").trim() !== (sav.value || "").trim() ||
+        (cur.isenable ?? true) !== (sav.isenable ?? true)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }, [watchedSkills, profile?.skills]);
+
   const { error: sectionError } = useSectionSave("skills", {
-    isDirty,
+    isDirty: isSkillsDirty,
     onSave: async () => {
       await handleSubmit(async (data) => {
         if (onSubmit) await onSubmit(data);
@@ -80,8 +106,6 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     keyName: "skillfield",
   });
 
-  const watchedSkills = useWatch({ control, name: "skills" });
-
   useEffect(() => {
     if (!profile?.id) {
       return;
@@ -93,12 +117,12 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
 
   useEffect(() => {
     if (!profile?.id) return;
-    if (isDirty) {
+    if (isSkillsDirty) {
       writeDashboardDraft("skills", profile.id, { skills: watchedSkills || [] });
     } else {
       clearDashboardDraft("skills", profile.id);
     }
-  }, [isDirty, profile?.id, watchedSkills]);
+  }, [isSkillsDirty, profile?.id, watchedSkills]);
 
   return (
     <form
@@ -146,6 +170,7 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
               insert={insert}
               setValue={setValue}
               getValues={getValues}
+              reset={reset}
               profile={profile}
             />
           ))}

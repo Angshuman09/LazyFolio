@@ -4,6 +4,7 @@ import {ProjectsSchema} from "@/lib/schemas/projects";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { parseOptionalDate } from "@/lib/utils/experience";
+import { isBlankProject, validateProject } from "@/lib/utils/validate-dashboard";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -19,15 +20,23 @@ export async function POST(req: NextRequest) {
     }
 
     const profileId = profile!.id;
+    const nonBlankProjects = projects.filter((project) => !isBlankProject(project));
+
+    for (const project of nonBlankProjects) {
+      const validation = validateProject(project);
+      if (!validation.ok) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+    }
     
     await prisma.project.deleteMany({
         where: { profileId }
     });
 
     const createProjects = await prisma.project.createMany({
-        data: projects.map((project)=>({
+        data: nonBlankProjects.map((project)=>({
             profileId: profileId,
-            title: project.title,
+            title: project.title!.trim(),
             description: project.description,
             enddate: parseOptionalDate(project.enddate),
             githubLink: project.githubLink,

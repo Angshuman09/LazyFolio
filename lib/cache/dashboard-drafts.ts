@@ -1,6 +1,6 @@
 "use client";
 
-export type DashboardDraftSection = "links" | "blogs" | "experience" | "profile" | "skills" | "projects";
+export type DashboardDraftSection = "links" | "blogs" | "articles" | "experience" | "profile" | "skills" | "projects";
 
 export function getDashboardDraftKey(
   section: DashboardDraftSection,

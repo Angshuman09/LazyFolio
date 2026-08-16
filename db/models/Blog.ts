@@ -28,45 +28,45 @@ export type BlogMinAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  enddate: Date | null
+  type: $Enums.BlogType | null
   blogLink: string | null
-  isenable: boolean | null
+  content: string | null
+  slug: string | null
+  isPublished: boolean | null
+  isEnabled: boolean | null
   profileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  content: string | null
-  isPublished: boolean | null
-  slug: string | null
 }
 
 export type BlogMaxAggregateOutputType = {
   id: string | null
   title: string | null
   description: string | null
-  enddate: Date | null
+  type: $Enums.BlogType | null
   blogLink: string | null
-  isenable: boolean | null
+  content: string | null
+  slug: string | null
+  isPublished: boolean | null
+  isEnabled: boolean | null
   profileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
-  content: string | null
-  isPublished: boolean | null
-  slug: string | null
 }
 
 export type BlogCountAggregateOutputType = {
   id: number
   title: number
   description: number
-  enddate: number
+  type: number
   blogLink: number
-  isenable: number
+  content: number
+  slug: number
+  isPublished: number
+  isEnabled: number
   profileId: number
   createdAt: number
   updatedAt: number
-  content: number
-  isPublished: number
-  slug: number
   _all: number
 }
 
@@ -75,45 +75,45 @@ export type BlogMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  enddate?: true
+  type?: true
   blogLink?: true
-  isenable?: true
+  content?: true
+  slug?: true
+  isPublished?: true
+  isEnabled?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
-  content?: true
-  isPublished?: true
-  slug?: true
 }
 
 export type BlogMaxAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  enddate?: true
+  type?: true
   blogLink?: true
-  isenable?: true
+  content?: true
+  slug?: true
+  isPublished?: true
+  isEnabled?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
-  content?: true
-  isPublished?: true
-  slug?: true
 }
 
 export type BlogCountAggregateInputType = {
   id?: true
   title?: true
   description?: true
-  enddate?: true
+  type?: true
   blogLink?: true
-  isenable?: true
+  content?: true
+  slug?: true
+  isPublished?: true
+  isEnabled?: true
   profileId?: true
   createdAt?: true
   updatedAt?: true
-  content?: true
-  isPublished?: true
-  slug?: true
   _all?: true
 }
 
@@ -191,17 +191,17 @@ export type BlogGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type BlogGroupByOutputType = {
   id: string
-  title: string | null
+  title: string
   description: string | null
-  enddate: Date | null
+  type: $Enums.BlogType
   blogLink: string | null
-  isenable: boolean
-  profileId: string | null
+  content: string | null
+  slug: string | null
+  isPublished: boolean
+  isEnabled: boolean
+  profileId: string
   createdAt: Date
   updatedAt: Date
-  content: string | null
-  isPublished: boolean
-  slug: string | null
   _count: BlogCountAggregateOutputType | null
   _min: BlogMinAggregateOutputType | null
   _max: BlogMaxAggregateOutputType | null
@@ -227,33 +227,33 @@ export type BlogWhereInput = {
   OR?: Prisma.BlogWhereInput[]
   NOT?: Prisma.BlogWhereInput | Prisma.BlogWhereInput[]
   id?: Prisma.StringFilter<"Blog"> | string
-  title?: Prisma.StringNullableFilter<"Blog"> | string | null
+  title?: Prisma.StringFilter<"Blog"> | string
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
+  type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isenable?: Prisma.BoolFilter<"Blog"> | boolean
-  profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  content?: Prisma.StringNullableFilter<"Blog"> | string | null
+  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
+  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
+  isEnabled?: Prisma.BoolFilter<"Blog"> | boolean
+  profileId?: Prisma.StringFilter<"Blog"> | string
   createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
-  content?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
-  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
-  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
+  profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }
 
 export type BlogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  enddate?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
-  isenable?: Prisma.SortOrder
-  profileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  content?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
+  isEnabled?: Prisma.SortOrder
+  profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  content?: Prisma.SortOrderInput | Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  slug?: Prisma.SortOrderInput | Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
 }
 
@@ -263,33 +263,33 @@ export type BlogWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BlogWhereInput | Prisma.BlogWhereInput[]
   OR?: Prisma.BlogWhereInput[]
   NOT?: Prisma.BlogWhereInput | Prisma.BlogWhereInput[]
-  title?: Prisma.StringNullableFilter<"Blog"> | string | null
+  title?: Prisma.StringFilter<"Blog"> | string
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
+  type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isenable?: Prisma.BoolFilter<"Blog"> | boolean
-  profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  content?: Prisma.StringNullableFilter<"Blog"> | string | null
+  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
+  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
+  isEnabled?: Prisma.BoolFilter<"Blog"> | boolean
+  profileId?: Prisma.StringFilter<"Blog"> | string
   createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
-  content?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
-  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
-  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
+  profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }, "id" | "profileId_slug">
 
 export type BlogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  enddate?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
-  isenable?: Prisma.SortOrder
-  profileId?: Prisma.SortOrderInput | Prisma.SortOrder
+  content?: Prisma.SortOrderInput | Prisma.SortOrder
+  slug?: Prisma.SortOrderInput | Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
+  isEnabled?: Prisma.SortOrder
+  profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  content?: Prisma.SortOrderInput | Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  slug?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.BlogCountOrderByAggregateInput
   _max?: Prisma.BlogMaxOrderByAggregateInput
   _min?: Prisma.BlogMinOrderByAggregateInput
@@ -300,121 +300,121 @@ export type BlogScalarWhereWithAggregatesInput = {
   OR?: Prisma.BlogScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BlogScalarWhereWithAggregatesInput | Prisma.BlogScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Blog"> | string
-  title?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  title?: Prisma.StringWithAggregatesFilter<"Blog"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
-  enddate?: Prisma.DateTimeNullableWithAggregatesFilter<"Blog"> | Date | string | null
+  type?: Prisma.EnumBlogTypeWithAggregatesFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
-  isenable?: Prisma.BoolWithAggregatesFilter<"Blog"> | boolean
-  profileId?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  content?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  slug?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  isPublished?: Prisma.BoolWithAggregatesFilter<"Blog"> | boolean
+  isEnabled?: Prisma.BoolWithAggregatesFilter<"Blog"> | boolean
+  profileId?: Prisma.StringWithAggregatesFilter<"Blog"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Blog"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Blog"> | Date | string
-  content?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
-  isPublished?: Prisma.BoolWithAggregatesFilter<"Blog"> | boolean
-  slug?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
 }
 
 export type BlogCreateInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
-  profile?: Prisma.ProfileCreateNestedOneWithoutBlogsInput
+  profile: Prisma.ProfileCreateNestedOneWithoutBlogsInput
 }
 
 export type BlogUncheckedCreateInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
-  profileId?: string | null
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
+  profileId: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
 }
 
 export type BlogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  profile?: Prisma.ProfileUpdateOneWithoutBlogsNestedInput
+  profile?: Prisma.ProfileUpdateOneRequiredWithoutBlogsNestedInput
 }
 
 export type BlogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BlogCreateManyInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
-  profileId?: string | null
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
+  profileId: string
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
 }
 
 export type BlogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BlogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BlogListRelationFilter = {
@@ -436,45 +436,45 @@ export type BlogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  enddate?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
-  isenable?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
+  isEnabled?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  content?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
 }
 
 export type BlogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  enddate?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
-  isenable?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
+  isEnabled?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  content?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
 }
 
 export type BlogMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  enddate?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
-  isenable?: Prisma.SortOrder
+  content?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  isPublished?: Prisma.SortOrder
+  isEnabled?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  content?: Prisma.SortOrder
-  isPublished?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
 }
 
 export type BlogCreateNestedManyWithoutProfileInput = {
@@ -519,32 +519,36 @@ export type BlogUncheckedUpdateManyWithoutProfileNestedInput = {
   deleteMany?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
 }
 
+export type EnumBlogTypeFieldUpdateOperationsInput = {
+  set?: $Enums.BlogType
+}
+
 export type BlogCreateWithoutProfileInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
 }
 
 export type BlogUncheckedCreateWithoutProfileInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
 }
 
 export type BlogCreateOrConnectWithoutProfileInput = {
@@ -578,73 +582,73 @@ export type BlogScalarWhereInput = {
   OR?: Prisma.BlogScalarWhereInput[]
   NOT?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
   id?: Prisma.StringFilter<"Blog"> | string
-  title?: Prisma.StringNullableFilter<"Blog"> | string | null
+  title?: Prisma.StringFilter<"Blog"> | string
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
-  enddate?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
+  type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isenable?: Prisma.BoolFilter<"Blog"> | boolean
-  profileId?: Prisma.StringNullableFilter<"Blog"> | string | null
+  content?: Prisma.StringNullableFilter<"Blog"> | string | null
+  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
+  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
+  isEnabled?: Prisma.BoolFilter<"Blog"> | boolean
+  profileId?: Prisma.StringFilter<"Blog"> | string
   createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
-  content?: Prisma.StringNullableFilter<"Blog"> | string | null
-  isPublished?: Prisma.BoolFilter<"Blog"> | boolean
-  slug?: Prisma.StringNullableFilter<"Blog"> | string | null
 }
 
 export type BlogCreateManyProfileInput = {
   id?: string
-  title?: string | null
+  title: string
   description?: string | null
-  enddate?: Date | string | null
+  type?: $Enums.BlogType
   blogLink?: string | null
-  isenable?: boolean
+  content?: string | null
+  slug?: string | null
+  isPublished?: boolean
+  isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  content?: string | null
-  isPublished?: boolean
-  slug?: string | null
 }
 
 export type BlogUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BlogUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type BlogUncheckedUpdateManyWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -653,94 +657,94 @@ export type BlogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   title?: boolean
   description?: boolean
-  enddate?: boolean
+  type?: boolean
   blogLink?: boolean
-  isenable?: boolean
+  content?: boolean
+  slug?: boolean
+  isPublished?: boolean
+  isEnabled?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  content?: boolean
-  isPublished?: boolean
-  slug?: boolean
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
 export type BlogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
-  enddate?: boolean
+  type?: boolean
   blogLink?: boolean
-  isenable?: boolean
+  content?: boolean
+  slug?: boolean
+  isPublished?: boolean
+  isEnabled?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  content?: boolean
-  isPublished?: boolean
-  slug?: boolean
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
 export type BlogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
   description?: boolean
-  enddate?: boolean
+  type?: boolean
   blogLink?: boolean
-  isenable?: boolean
+  content?: boolean
+  slug?: boolean
+  isPublished?: boolean
+  isEnabled?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  content?: boolean
-  isPublished?: boolean
-  slug?: boolean
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
 export type BlogSelectScalar = {
   id?: boolean
   title?: boolean
   description?: boolean
-  enddate?: boolean
+  type?: boolean
   blogLink?: boolean
-  isenable?: boolean
+  content?: boolean
+  slug?: boolean
+  isPublished?: boolean
+  isEnabled?: boolean
   profileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  content?: boolean
-  isPublished?: boolean
-  slug?: boolean
 }
 
-export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "enddate" | "blogLink" | "isenable" | "profileId" | "createdAt" | "updatedAt" | "content" | "isPublished" | "slug", ExtArgs["result"]["blog"]>
+export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "type" | "blogLink" | "content" | "slug" | "isPublished" | "isEnabled" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["blog"]>
 export type BlogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type BlogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type BlogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.Blog$profileArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 
 export type $BlogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Blog"
   objects: {
-    profile: Prisma.$ProfilePayload<ExtArgs> | null
+    profile: Prisma.$ProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    title: string | null
+    title: string
     description: string | null
-    enddate: Date | null
+    type: $Enums.BlogType
     blogLink: string | null
-    isenable: boolean
-    profileId: string | null
+    content: string | null
+    slug: string | null
+    isPublished: boolean
+    isEnabled: boolean
+    profileId: string
     createdAt: Date
     updatedAt: Date
-    content: string | null
-    isPublished: boolean
-    slug: string | null
   }, ExtArgs["result"]["blog"]>
   composites: {}
 }
@@ -1135,7 +1139,7 @@ readonly fields: BlogFieldRefs;
  */
 export interface Prisma__BlogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  profile<T extends Prisma.Blog$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Blog$profileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  profile<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1168,15 +1172,15 @@ export interface BlogFieldRefs {
   readonly id: Prisma.FieldRef<"Blog", 'String'>
   readonly title: Prisma.FieldRef<"Blog", 'String'>
   readonly description: Prisma.FieldRef<"Blog", 'String'>
-  readonly enddate: Prisma.FieldRef<"Blog", 'DateTime'>
+  readonly type: Prisma.FieldRef<"Blog", 'BlogType'>
   readonly blogLink: Prisma.FieldRef<"Blog", 'String'>
-  readonly isenable: Prisma.FieldRef<"Blog", 'Boolean'>
+  readonly content: Prisma.FieldRef<"Blog", 'String'>
+  readonly slug: Prisma.FieldRef<"Blog", 'String'>
+  readonly isPublished: Prisma.FieldRef<"Blog", 'Boolean'>
+  readonly isEnabled: Prisma.FieldRef<"Blog", 'Boolean'>
   readonly profileId: Prisma.FieldRef<"Blog", 'String'>
   readonly createdAt: Prisma.FieldRef<"Blog", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Blog", 'DateTime'>
-  readonly content: Prisma.FieldRef<"Blog", 'String'>
-  readonly isPublished: Prisma.FieldRef<"Blog", 'Boolean'>
-  readonly slug: Prisma.FieldRef<"Blog", 'String'>
 }
     
 
@@ -1575,25 +1579,6 @@ export type BlogDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Blogs to delete.
    */
   limit?: number
-}
-
-/**
- * Blog.profile
- */
-export type Blog$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Profile
-   */
-  select?: Prisma.ProfileSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Profile
-   */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfileInclude<ExtArgs> | null
-  where?: Prisma.ProfileWhereInput
 }
 
 /**

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { parseOptionalDate } from "@/lib/utils/experience";
+import { validateProject } from "@/lib/utils/validate-dashboard";
 
 type ProjectInput = {
   id?: string;
@@ -32,6 +33,11 @@ export async function POST(request: NextRequest) {
     }
 
     const profileId = profile!.id;
+    const validation = validateProject(project);
+
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
 
     const techstackArray = project.techstack
       ? project.techstack
@@ -42,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     const projectData = {
       profileId,
-      title: project.title?.trim() || null,
+      title: project.title!.trim(),
       description: project.description?.trim() || null,
       githubLink: project.githubLink?.trim() || null,
       projectLink: project.projectLink?.trim() || null,

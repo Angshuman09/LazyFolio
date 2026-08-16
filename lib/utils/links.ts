@@ -41,12 +41,12 @@ export function getInitialLinks(profile?: LinksProfile): LinksSchema {
 
 export function isValidUrl(value?: string) {
   if (!value?.trim()) {
-    return true;
+    return false;
   }
 
   try {
-    new URL(value);
-    return true;
+    const url = new URL(value.trim());
+    return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
   }

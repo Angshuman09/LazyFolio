@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { LinkInput } from "@/lib/constants/apis";
 import { LinkType } from "@/db/enums";
+import { validateLink } from "@/lib/utils/validate-dashboard";
 
 
 export async function POST(request: NextRequest) {
@@ -17,10 +18,15 @@ export async function POST(request: NextRequest) {
         }
 
         const profileId = profile!.id;
+        const validation = validateLink(link);
+
+        if (!validation.ok) {
+            return NextResponse.json({ error: validation.error }, { status: 400 });
+        }
 
         const linkData = {
-            url: link.url,
-            label: link.label,
+            url: link.url.trim(),
+            label: link.label.trim(),
             type: link.type ?? LinkType.CUSTOM,
             profileId: profileId,
             ...(typeof link.isenable === "boolean" ? { isenable: link.isenable } : {}),

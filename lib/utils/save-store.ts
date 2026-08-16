@@ -6,7 +6,8 @@ export type DashboardSection =
   | "experience"
   | "projects"
   | "skills"
-  | "blogs";
+  | "blogs"
+  | "articles";
 
 export const SECTION_LABELS: Record<DashboardSection, string> = {
   profile: "Profile",
@@ -15,6 +16,7 @@ export const SECTION_LABELS: Record<DashboardSection, string> = {
   projects: "Projects",
   skills: "Skills",
   blogs: "Blogs",
+  articles: "Write Article",
 };
 
 interface SaveState {

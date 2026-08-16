@@ -8,6 +8,7 @@ import {
   type UseFieldArrayRemove,
   type UseFormGetValues,
   type UseFormRegister,
+  type UseFormReset,
   type UseFormSetValue,
   Controller,
 } from "react-hook-form";
@@ -29,6 +30,7 @@ export function ExperienceCard({
   errors,
   getValues,
   setValue,
+  reset,
   remove,
   profile,
   insert
@@ -43,6 +45,7 @@ export function ExperienceCard({
   insert: UseFieldArrayInsert<ExperienceSchema, "experiences">;
   setValue: UseFormSetValue<ExperienceSchema>;
   getValues: UseFormGetValues<ExperienceSchema>;
+  reset: UseFormReset<ExperienceSchema>;
 }) {
   const [isEditing, setIsEditing] = useState(
     () => !(field?.role || field?.companyName),
@@ -130,12 +133,24 @@ export function ExperienceCard({
   }
 
   const validateExperience = () => {
-    if (!normalizedValues.role && !normalizedValues.companyName && !normalizedValues.description
-      && !normalizedValues.startdate && !normalizedValues.enddate
-    ) {
-      toast.error("Add a role or company name or description before saving this experience.");
+    if (!normalizedValues.role) {
+      toast.error("Add a role before saving this experience.");
       return false;
     }
+
+    if (!normalizedValues.companyName) {
+      toast.error("Add a company name before saving this experience.");
+      return false;
+    }
+
+    if (
+      normalizedValues.description &&
+      normalizedValues.description.trim().length < 10
+    ) {
+      toast.error("Experience descriptions must be at least 10 characters.");
+      return false;
+    }
+
     return true;
   };
 
@@ -147,6 +162,7 @@ export function ExperienceCard({
     if (!normalizedValues.id) {
       remove(index);
       updateExperienceDraft(nextExperiences);
+      reset({ experiences: nextExperiences }, { keepDirty: false });
       return;
     }
 
@@ -156,6 +172,7 @@ export function ExperienceCard({
     const toastId = toast.loading("Deleting experience...");
     try {
       await deleteExp.mutateAsync(normalizedValues.id);
+      reset({ experiences: nextExperiences }, { keepDirty: false });
       toast.success("Experience deleted successfully!", { id: toastId });
     } catch (error) {
       if (deleteExperience) {
@@ -178,10 +195,10 @@ export function ExperienceCard({
   const onCancelEditing = () => {
     if (!savedSnapshot) {
       const currentExperiences = getValues("experiences") || [];
-      updateExperienceDraft(
-        currentExperiences.filter((_, i) => i !== index),
-      );
+      const nextExperiences = currentExperiences.filter((_, i) => i !== index);
+      updateExperienceDraft(nextExperiences);
       remove(index);
+      reset({ experiences: nextExperiences }, { keepDirty: false });
       return;
     }
 

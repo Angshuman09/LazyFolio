@@ -1,27 +1,26 @@
 'use client'
 
-import { useCreateBlog, useDeleteBlog } from '@/hooks/blog';
+import { useDeleteBlog } from '@/hooks/blog';
 import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import { BlogsSchema } from '@/lib/schemas/blogs';
 import { BlogsProfile } from '@/lib/types/blogs';
 import { hasFieldArrayErrors } from '@/lib/utils/utils';
 import { isValidUrl } from '@/lib/utils/links';
 import { BookOpen, Check, ExternalLink, Loader2, Pencil, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {  type FieldArrayWithId,
     type FieldErrors,
     type UseFieldArrayRemove,
     type UseFieldArrayInsert,
     type UseFormGetValues,
+    type UseFormReset,
     Control,
-    Controller,
     UseFormRegister,
     UseFormSetValue,
     useWatch} from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Switch } from "@/components/ui/switch";
 import { useUpdateVisibility } from "@/hooks/visibility";
-import { DatePicker } from "@/components/ui/date-picker";
 
 
 export function BlogCard({
@@ -33,8 +32,11 @@ export function BlogCard({
     remove,
     insert,
     profile,
+    mode = "EXTERNAL",
+    draftSection = "blogs",
     setValue,
     getValues,
+    reset,
     onOpenEditor,
   }: {
     field: FieldArrayWithId<BlogsSchema, "blogs", "fieldId">;
@@ -45,11 +47,14 @@ export function BlogCard({
     remove: UseFieldArrayRemove;
     insert: UseFieldArrayInsert<BlogsSchema, "blogs">;
     profile?: BlogsProfile;
+    mode?: "INTERNAL" | "EXTERNAL";
+    draftSection?: "blogs" | "articles";
     setValue: UseFormSetValue<BlogsSchema>;
     getValues: UseFormGetValues<BlogsSchema>;
+    reset: UseFormReset<BlogsSchema>;
     onOpenEditor: (idx: number) => void;
   }) {
-    const [isEditing, setIsEditing] = useState(
+    const [isEditingState, setIsEditing] = useState(
       () => !(field?.title || field?.blogLink),
     );
   
@@ -58,10 +63,10 @@ export function BlogCard({
       title: string;
       description: string;
       blogLink: string;
-      enddate: string;
+      type: "INTERNAL" | "EXTERNAL";
       content?: string | null;
       isPublished?: boolean;
-      isenable: boolean;
+      isEnabled: boolean;
       slug?: string | null;
     } | null>(() => {
       if (!field.id) {
@@ -75,127 +80,36 @@ export function BlogCard({
         title: profileBlog?.title || field.title || "",
         description: profileBlog?.description || field.description || "",
         blogLink: profileBlog?.blogLink || field.blogLink || "",
-        enddate: profileBlog?.enddate ? String(profileBlog.enddate) : (field.enddate || ""),
+        type: profileBlog?.type ?? field.type ?? mode,
         content: profileBlog?.content ?? field.content ?? null,
         isPublished: profileBlog?.isPublished ?? field.isPublished ?? false,
-        isenable: profileBlog?.isenable ?? field.isenable ?? true,
+        isEnabled: profileBlog?.isEnabled ?? field.isEnabled ?? true,
         slug: profileBlog?.slug ?? field.slug ?? null,
       };
     });
   
     const values = useWatch({ control, name: `blogs.${index}` });
     const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
-    const [saving, setSaving] = useState(false);
+    const isEditing = isEditingState || hasErrors;
     const [deleting, setDeleting] = useState(false);
-    const createBlog = useCreateBlog();
     const deleteBlog = useDeleteBlog();
     const updateVisibility = useUpdateVisibility();
-  
-    useEffect(() => {
-      if (hasErrors) {
-        setIsEditing(true);
-      }
-    }, [hasErrors]);
   
     const normalizedValues = {
       id: values?.id,
       title: values?.title || "",
       description: values?.description || "",
       blogLink: values?.blogLink || "",
-      enddate: values?.enddate || "",
+      type: values?.type ?? mode,
       content: values?.content ?? null,
       isPublished: values?.isPublished ?? false,
-      isenable: values?.isenable ?? true,
+      isEnabled: values?.isEnabled ?? true,
       slug: values?.slug ?? null,
     };
   
-    const hasUnsavedChanges =
-      !savedSnapshot ||
-      normalizedValues.id !== savedSnapshot.id ||
-      normalizedValues.title !== savedSnapshot.title ||
-      normalizedValues.description !== savedSnapshot.description ||
-      normalizedValues.blogLink !== savedSnapshot.blogLink ||
-      normalizedValues.enddate !== savedSnapshot.enddate ||
-      normalizedValues.content !== savedSnapshot.content ||
-      normalizedValues.isPublished !== savedSnapshot.isPublished;
-  
     const updateBlogsDraft = (blogs: BlogsSchema["blogs"]) => {
       if (profile?.id) {
-        writeDashboardDraft("blogs", profile.id, { blogs: blogs || [] });
-      }
-    };
-  
-    const onSaveBlog = async () => {
-      if (!profile?.id) {
-        toast.error("Profile not loaded.");
-        return;
-      }
-  
-      if (!normalizedValues.title) {
-        toast.error("Add a title before saving this post.");
-        return;
-      }
-  
-      const isInternal = normalizedValues.content !== null;
-      if (!isInternal && normalizedValues.blogLink && !isValidUrl(normalizedValues.blogLink)) {
-        toast.error("Please enter a valid URL before saving this post.");
-        return;
-      }
-  
-      setSaving(true);
-      const toastId = toast.loading("Saving blog...");
-      try {
-        const payload = await createBlog.mutateAsync({
-          blog: {
-            id: normalizedValues.id || undefined,
-            title: normalizedValues.title,
-            description: normalizedValues.description,
-            blogLink: isInternal ? undefined : normalizedValues.blogLink, // API will overwrite if internal
-            enddate: normalizedValues.enddate,
-            content: normalizedValues.content,
-            isPublished: normalizedValues.isPublished,
-            isenable: normalizedValues.isenable,
-            slug: normalizedValues.slug,
-          },
-          profileId: profile.id,
-        });
-  
-        const savedBlog = {
-          id: payload?.data?.id || normalizedValues.id,
-          title: payload?.data?.title || normalizedValues.title,
-          description: payload?.data?.description || normalizedValues.description,
-          blogLink: payload?.data?.blogLink || normalizedValues.blogLink,
-          enddate: payload?.data?.enddate ? String(payload.data.enddate) : normalizedValues.enddate,
-          content: payload?.data?.content ?? normalizedValues.content,
-          isPublished: payload?.data?.isPublished ?? normalizedValues.isPublished,
-          isenable: payload?.data?.isenable ?? normalizedValues.isenable,
-          slug: payload?.data?.slug ?? normalizedValues.slug,
-        };
-  
-        setValue(`blogs.${index}.id`, savedBlog.id, { shouldDirty: false });
-        setValue(`blogs.${index}.title`, savedBlog.title, { shouldDirty: false });
-        setValue(`blogs.${index}.description`, savedBlog.description, { shouldDirty: false });
-        setValue(`blogs.${index}.blogLink`, savedBlog.blogLink, { shouldDirty: false });
-        setValue(`blogs.${index}.enddate`, savedBlog.enddate, { shouldDirty: false });
-        setValue(`blogs.${index}.content`, savedBlog.content, { shouldDirty: false });
-        setValue(`blogs.${index}.isPublished`, savedBlog.isPublished, { shouldDirty: false });
-        setValue(`blogs.${index}.isenable`, savedBlog.isenable, { shouldDirty: false });
-        setValue(`blogs.${index}.slug`, savedBlog.slug, { shouldDirty: false });
-  
-        const currentBlogs = getValues("blogs") || [];
-        updateBlogsDraft(
-          currentBlogs.map((b, i) =>
-            i === index ? { ...b, ...savedBlog } : b,
-          ),
-        );
-        setSavedSnapshot(savedBlog);
-        setIsEditing(false);
-        toast.success("Blog saved successfully!", { id: toastId });
-      } catch (error) {
-        console.error("Error saving blog:", error);
-        toast.error("An error occurred while saving the blog.", { id: toastId });
-      } finally {
-        setSaving(false);
+        writeDashboardDraft(draftSection, profile.id, { blogs: blogs || [] });
       }
     };
   
@@ -207,6 +121,7 @@ export function BlogCard({
       if (!normalizedValues.id) {
         remove(index);
         updateBlogsDraft(nextBlogs);
+        reset({ blogs: nextBlogs }, { keepDirty: false });
         return;
       }
   
@@ -216,6 +131,7 @@ export function BlogCard({
       const toastId = toast.loading("Deleting blog...");
       try {
         await deleteBlog.mutateAsync(normalizedValues.id);
+        reset({ blogs: nextBlogs }, { keepDirty: false });
         toast.success("Blog deleted successfully!", { id: toastId });
       } catch (error) {
         if (deletedBlog) {
@@ -232,19 +148,21 @@ export function BlogCard({
     const onCancelEditing = () => {
       if (!savedSnapshot) {
         const currentBlogs = getValues("blogs") || [];
-        updateBlogsDraft(currentBlogs.filter((_, i) => i !== index));
+        const nextBlogs = currentBlogs.filter((_, i) => i !== index);
+        updateBlogsDraft(nextBlogs);
         remove(index);
+        reset({ blogs: nextBlogs }, { keepDirty: false });
         return;
       }
   
       setValue(`blogs.${index}.id`, savedSnapshot.id, { shouldDirty: false });
+      setValue(`blogs.${index}.type`, savedSnapshot.type, { shouldDirty: false });
       setValue(`blogs.${index}.title`, savedSnapshot.title, { shouldDirty: false });
       setValue(`blogs.${index}.description`, savedSnapshot.description, { shouldDirty: false });
       setValue(`blogs.${index}.blogLink`, savedSnapshot.blogLink, { shouldDirty: false });
-      setValue(`blogs.${index}.enddate`, savedSnapshot.enddate, { shouldDirty: false });
       setValue(`blogs.${index}.content`, savedSnapshot.content, { shouldDirty: false });
       setValue(`blogs.${index}.isPublished`, savedSnapshot.isPublished, { shouldDirty: false });
-      setValue(`blogs.${index}.isenable`, savedSnapshot.isenable, { shouldDirty: false });
+      setValue(`blogs.${index}.isEnabled`, savedSnapshot.isEnabled, { shouldDirty: false });
       setValue(`blogs.${index}.slug`, savedSnapshot.slug, { shouldDirty: false });
   
       const currentBlogs = getValues("blogs") || [];
@@ -262,71 +180,67 @@ export function BlogCard({
         return;
       }
   
-      const isInternal = normalizedValues.content !== null;
-      if (!isInternal && normalizedValues.blogLink && !isValidUrl(normalizedValues.blogLink)) {
+      const isInternal = normalizedValues.type === "INTERNAL";
+      if (!isInternal && !normalizedValues.blogLink) {
+        toast.error("Add a URL before completing this blog link.");
+        return;
+      }
+
+      if (!isInternal && !isValidUrl(normalizedValues.blogLink)) {
         toast.error("Please enter a valid URL before completing this post.");
         return;
       }
   
+      setValue(`blogs.${index}.type`, normalizedValues.type, { shouldDirty: true });
       setValue(`blogs.${index}.title`, normalizedValues.title, { shouldDirty: true });
       setValue(`blogs.${index}.description`, normalizedValues.description, { shouldDirty: true });
       setValue(`blogs.${index}.blogLink`, normalizedValues.blogLink, { shouldDirty: true });
-      setValue(`blogs.${index}.enddate`, normalizedValues.enddate, { shouldDirty: true });
       setValue(`blogs.${index}.content`, normalizedValues.content, { shouldDirty: true });
       setValue(`blogs.${index}.isPublished`, normalizedValues.isPublished, { shouldDirty: true });
       setValue(`blogs.${index}.slug`, normalizedValues.slug, { shouldDirty: true });
       setIsEditing(false);
     };
 
-    const handleVisibilityChange = async (isenable: boolean) => {
+    const handleVisibilityChange = async (isEnabled: boolean) => {
       if (!normalizedValues.id) {
         toast.error("Save this blog before changing visibility.");
         return;
       }
 
-      const previousValue = normalizedValues.isenable;
+      const previousValue = normalizedValues.isEnabled;
       const loadingToast = toast.loading(
-        isenable ? "Showing blog on profile..." : "Hiding blog from profile...",
+        isEnabled ? "Showing blog on profile..." : "Hiding blog from profile...",
       );
-      setValue(`blogs.${index}.isenable`, isenable, { shouldDirty: false });
+      setValue(`blogs.${index}.isEnabled`, isEnabled, { shouldDirty: false });
 
       try {
         await updateVisibility.mutateAsync({
           target: "blog",
           id: normalizedValues.id,
-          isenable,
+          isenable: isEnabled,
         });
         const currentBlogs = getValues("blogs") || [];
         updateBlogsDraft(
           currentBlogs.map((blog, blogIndex) =>
-            blogIndex === index ? { ...blog, isenable } : blog,
+            blogIndex === index ? { ...blog, isEnabled } : blog,
           ),
         );
         setSavedSnapshot((snapshot) =>
-          snapshot ? { ...snapshot, isenable } : snapshot,
+          snapshot ? { ...snapshot, isEnabled } : snapshot,
         );
         toast.success(
-          isenable ? "Blog shown on profile." : "Blog hidden from profile.",
+          isEnabled ? "Blog shown on profile." : "Blog hidden from profile.",
           { id: loadingToast },
         );
       } catch (error) {
-        setValue(`blogs.${index}.isenable`, previousValue, { shouldDirty: false });
+        setValue(`blogs.${index}.isEnabled`, previousValue, { shouldDirty: false });
         console.error("Error updating blog visibility:", error);
         toast.error("Could not update blog visibility.", { id: loadingToast });
       }
     };
   
-    const setBlogType = (type: "external" | "internal") => {
-      if (type === "external") {
-        setValue(`blogs.${index}.content`, null, { shouldDirty: true });
-      } else {
-        setValue(`blogs.${index}.content`, "", { shouldDirty: true });
-        setValue(`blogs.${index}.blogLink`, "", { shouldDirty: true });
-      }
-    };
-  
     if (!isEditing) {
-      const isInternal = values?.content !== null;
+      const isInternal = normalizedValues.type === "INTERNAL";
   
       return (
         <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3.5 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
@@ -359,14 +273,6 @@ export function BlogCard({
                     {values.blogLink}
                   </span>
                 )}
-                {values?.enddate && (() => {
-                  const d = new Date(values.enddate);
-                  return !isNaN(d.getTime()) ? (
-                    <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
-                      {d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
-                    </span>
-                  ) : null;
-                })()}
               </div>
             </div>
           </div>
@@ -374,7 +280,7 @@ export function BlogCard({
             <button
               type="button"
               onClick={onDeleteBlog}
-              disabled={deleting || saving}
+              disabled={deleting}
               className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
               aria-label="Remove blog post"
             >
@@ -388,18 +294,18 @@ export function BlogCard({
                 }
                 setIsEditing(true);
               }}
-              disabled={deleting || saving}
+              disabled={deleting}
               className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
             >
               <Pencil size={10} />
               Edit
             </button>
             <Switch
-              checked={normalizedValues.isenable}
+              checked={normalizedValues.isEnabled}
               onCheckedChange={handleVisibilityChange}
-              disabled={deleting || saving || updateVisibility.isPending || !normalizedValues.id}
+              disabled={deleting || updateVisibility.isPending || !normalizedValues.id}
               aria-label={
-                normalizedValues.isenable
+                normalizedValues.isEnabled
                   ? "Hide blog from profile"
                   : "Show blog on profile"
               }
@@ -409,44 +315,10 @@ export function BlogCard({
       );
     }
   
-    const isInternal = values?.content !== null && values?.content !== undefined;
+    const isInternal = normalizedValues.type === "INTERNAL";
 
     return (
       <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
-        <div className="flex flex-col gap-1.5 mb-4">
-          <div className="flex items-center gap-1.5 p-0.5 border border-(--lf-border) rounded-lg bg-(--lf-bg) w-fit">
-            <button
-              type="button"
-              onClick={() => !savedSnapshot && setBlogType("external")}
-              disabled={!!savedSnapshot}
-              className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all ${
-                !isInternal
-                  ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
-                  : "text-(--lf-muted) hover:text-(--lf-ink)"
-              } ${savedSnapshot ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              External Link
-            </button>
-            <button
-              type="button"
-              onClick={() => !savedSnapshot && setBlogType("internal")}
-              disabled={!!savedSnapshot}
-              className={`px-3 py-1 rounded-md text-[0.7rem] font-semibold tracking-wide uppercase transition-all ${
-                isInternal
-                  ? "bg-(--lf-surface) text-(--lf-ink) shadow-sm"
-                  : "text-(--lf-muted) hover:text-(--lf-ink)"
-              } ${savedSnapshot ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              Write Article
-            </button>
-          </div>
-          {savedSnapshot && (
-            <p className="text-[0.65rem] text-(--lf-muted) font-mono pl-0.5">
-              Type cannot be changed after saving. Delete and re-add to switch.
-            </p>
-          )}
-        </div>
-  
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4.5 gap-y-3.5">
           <div className="flex flex-col gap-1.25 sm:col-span-2 mb-1.5">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
@@ -538,28 +410,6 @@ export function BlogCard({
             </>
           )}
   
-          <div className="flex flex-col gap-1.25">
-            <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
-              Date
-            </label>
-            <Controller
-              control={control}
-              name={`blogs.${index}.enddate`}
-              render={({ field }) => (
-                <DatePicker
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Pick blog date"
-                />
-              )}
-            />
-            {errors.blogs?.[index]?.enddate?.message && (
-              <div className="text-[0.72rem] text-[#b91c1c]">
-                {errors.blogs[index]?.enddate?.message as string}
-              </div>
-            )}
-          </div>
-  
           <div className="flex flex-col gap-1.25 sm:col-span-2">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Description
@@ -581,7 +431,7 @@ export function BlogCard({
           <button
             type="button"
             onClick={onCancelEditing}
-            disabled={saving}
+            disabled={deleting}
             className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
           >
             Cancel
@@ -589,7 +439,7 @@ export function BlogCard({
           <button
             type="button"
             onClick={onDoneEditing}
-            disabled={saving}
+            disabled={deleting}
             className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
           >
             <Check size={11} strokeWidth={2.5} />

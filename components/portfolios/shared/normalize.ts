@@ -121,7 +121,7 @@ export function normalizeBlogs(
         title: title || undefined,
         description: description || undefined,
         readTime:
-          textValue(blog.readTime) || formatDate(blog.enddate) || undefined,
+          textValue(blog.readTime) || formatDate(blog.createdAt) || undefined,
         url,
       };
     })

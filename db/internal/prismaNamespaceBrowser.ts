@@ -216,15 +216,15 @@ export const BlogScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  enddate: 'enddate',
+  type: 'type',
   blogLink: 'blogLink',
-  isenable: 'isenable',
+  content: 'content',
+  slug: 'slug',
+  isPublished: 'isPublished',
+  isEnabled: 'isEnabled',
   profileId: 'profileId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  content: 'content',
-  isPublished: 'isPublished',
-  slug: 'slug'
+  updatedAt: 'updatedAt'
 } as const
 
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]

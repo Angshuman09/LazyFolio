@@ -148,21 +148,31 @@ model Project {
 }
 
 
+enum BlogType {
+  INTERNAL
+  EXTERNAL
+}
+
 model Blog {
-  id          String    @id @default(cuid())
-  title       String?
+  id          String   @id @default(cuid())
+  title       String
   description String?
-  enddate     DateTime?
+
+  type        BlogType @default(INTERNAL)
+
   blogLink    String?
-  isenable    Boolean   @default(true)
-  profileId String?
-  profile   Profile? @relation(fields: [profileId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   content     String?
-  isPublished Boolean   @default(false)
   slug        String?
+  isPublished Boolean  @default(false)
+
+  isEnabled   Boolean  @default(true)
+
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@unique([profileId, slug])
 }

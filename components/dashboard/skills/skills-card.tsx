@@ -8,6 +8,7 @@ import {
     type UseFieldArrayInsert,
     type UseFormGetValues,
     type UseFormRegister,
+    type UseFormReset,
     type UseFormSetValue,
     useWatch
 } from 'react-hook-form'
@@ -31,6 +32,7 @@ export function SkillCard({
     insert,
     setValue,
     getValues,
+    reset,
     profile,
 }: {
     field: FieldArrayWithId<SkillsSchema, "skills", "skillfield">;
@@ -42,6 +44,7 @@ export function SkillCard({
     insert: UseFieldArrayInsert<SkillsSchema, "skills">;
     setValue: UseFormSetValue<SkillsSchema>;
     getValues: UseFormGetValues<SkillsSchema>;
+    reset: UseFormReset<SkillsSchema>;
     profile?: { id?: string; skills?: string[] | null };
 }) {
     const [isEditing, setIsEditing] = useState(
@@ -141,6 +144,7 @@ export function SkillCard({
         if (!savedSnapshot) {
             remove(index);
             updateSkillsDraft(nextSkills);
+            reset({ skills: nextSkills }, { keepDirty: false });
             return;
         }
 
@@ -154,6 +158,7 @@ export function SkillCard({
                 userId: profile.id,
                 skills: nextSkills.filter((s) => s.value),
             });
+            reset({ skills: nextSkills }, { keepDirty: false });
             toast.success("Skill deleted successfully!", { id: toastId });
         } catch (error) {
             if (deletedSkill) {
@@ -170,8 +175,10 @@ export function SkillCard({
     const onCancelEditing = () => {
         if (!savedSnapshot) {
             const currentSkills = getValues("skills") || [];
-            updateSkillsDraft(currentSkills.filter((_, i) => i !== index));
+            const nextSkills = currentSkills.filter((_, i) => i !== index);
+            updateSkillsDraft(nextSkills);
             remove(index);
+            reset({ skills: nextSkills }, { keepDirty: false });
             return;
         }
 

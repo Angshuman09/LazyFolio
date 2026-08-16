@@ -53,7 +53,10 @@ export async function PATCH(request: NextRequest) {
     } else {
       const blog = await prisma.blog.findFirst({ where: { id, profileId: profile!.id } });
       if (!blog) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-      const result = await prisma.blog.update({ where: { id }, data });
+      const result = await prisma.blog.update({
+        where: { id },
+        data: { isEnabled: isenable },
+      });
       revalidateProfile(profile!.username);
       return NextResponse.json({ data: result }, { status: 200 });
     }

@@ -39,11 +39,12 @@ export type ProfileProject = {
 
 export type ProfileBlog = {
   id?: string;
+  type?: "INTERNAL" | "EXTERNAL" | null;
   title?: string | null;
   description?: string | null;
   blogLink?: string | null;
   url?: string | null;
-  enddate?: DateLike;
+  createdAt?: DateLike;
   readTime?: string | null;
 };
 

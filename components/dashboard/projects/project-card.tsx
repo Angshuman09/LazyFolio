@@ -5,6 +5,7 @@ import {  type Control,
     type UseFieldArrayInsert,
     type UseFormGetValues,
     type UseFormRegister,
+    type UseFormReset,
     type UseFormSetValue,
     useWatch,
     Controller
@@ -31,6 +32,7 @@ export function ProjectCard({
     insert,
     setValue,
     getValues,
+    reset,
     profile,
   }: {
     field: FieldArrayWithId<ProjectsSchema, "projects", "projectfield">;
@@ -42,6 +44,7 @@ export function ProjectCard({
     insert: UseFieldArrayInsert<ProjectsSchema, "projects">;
     setValue: UseFormSetValue<ProjectsSchema>;
     getValues: UseFormGetValues<ProjectsSchema>;
+    reset: UseFormReset<ProjectsSchema>;
     profile?: { id?: string; projects?: ProfileProject[] };
   }) {
     const [isEditing, setIsEditing] = useState(
@@ -244,6 +247,7 @@ export function ProjectCard({
       if (!normalizedValues.id) {
         remove(index);
         updateProjectsDraft(nextProjects);
+        reset({ projects: nextProjects }, { keepDirty: false });
         return;
       }
   
@@ -253,6 +257,7 @@ export function ProjectCard({
       const toastId = toast.loading("Deleting project...");
       try {
         await deleteProject.mutateAsync(normalizedValues.id);
+        reset({ projects: nextProjects }, { keepDirty: false });
         toast.success("Project deleted successfully!", { id: toastId });
       } catch (error) {
         if (deletedProject) {
@@ -269,8 +274,10 @@ export function ProjectCard({
     const onCancelEditing = () => {
       if (!savedSnapshot) {
         const currentProjects = getValues("projects") || [];
-        updateProjectsDraft(currentProjects.filter((_, i) => i !== index));
+        const nextProjects = currentProjects.filter((_, i) => i !== index);
+        updateProjectsDraft(nextProjects);
         remove(index);
+        reset({ projects: nextProjects }, { keepDirty: false });
         return;
       }
   

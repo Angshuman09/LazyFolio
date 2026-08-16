@@ -39,8 +39,46 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
+  const watchedExperiences = useWatch({ control, name: "experiences" });
+
+  const isExperienceDirty = useMemo(() => {
+    const current = watchedExperiences || [];
+    const saved = profile?.experiences || [];
+    const savedMap = new Map(saved.map((e) => [e.id, e]));
+
+    for (const item of current) {
+      const role = item.role?.trim() || "";
+      const companyName = item.companyName?.trim() || "";
+      const description = item.description?.trim() || "";
+      const startdate = item.startdate || "";
+      const enddate = item.enddate || "";
+      const isenable = item.isenable ?? true;
+
+      if (!item.id) {
+        if (role !== "" || companyName !== "" || description !== "" || startdate !== "" || enddate !== "") {
+          return true;
+        }
+      } else {
+        const original = savedMap.get(item.id);
+        if (original) {
+          if (
+            role !== (original.role?.trim() || "") ||
+            companyName !== (original.companyName?.trim() || "") ||
+            description !== (original.description?.trim() || "") ||
+            startdate !== (original.startdate ? String(original.startdate) : "") ||
+            enddate !== (original.enddate ? String(original.enddate) : "") ||
+            isenable !== (original.isenable ?? true)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }, [watchedExperiences, profile?.experiences]);
+
   const { error: sectionError } = useSectionSave("experience", {
-    isDirty,
+    isDirty: isExperienceDirty,
     onSave: async () => {
       await handleSubmit(async (data) => {
         if (onSubmit) await onSubmit(data);
@@ -58,8 +96,6 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     keyName: "experiencefield",
   });
 
-  const watchedExperiences = useWatch({ control, name: "experiences" });
-
   useEffect(() => {
     if (!profile?.id) return;
     const cached = readDashboardDraft<ExperienceSchema>("experience", profile.id);
@@ -68,14 +104,14 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
 
   useEffect(() => {
     if (!profile?.id) return;
-    if (isDirty) {
+    if (isExperienceDirty) {
       writeDashboardDraft("experience", profile.id, {
         experiences: watchedExperiences || [],
       });
     } else {
       clearDashboardDraft("experience", profile.id);
     }
-  }, [isDirty, profile?.id, watchedExperiences]);
+  }, [isExperienceDirty, profile?.id, watchedExperiences]);
 
   return (
     <form
@@ -117,6 +153,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
             remove={remove}
             getValues={getValues}
             setValue={setValue}
+            reset={reset}
             profile={profile}
             insert={insert}
           />

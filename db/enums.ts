@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const BlogType = {
+  INTERNAL: 'INTERNAL',
+  EXTERNAL: 'EXTERNAL'
+} as const
+
+export type BlogType = (typeof BlogType)[keyof typeof BlogType]
+
+
 export const LinkType = {
   X: 'X',
   INSTAGRAM: 'INSTAGRAM',

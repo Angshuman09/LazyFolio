@@ -762,12 +762,10 @@ export type ProfileCreateNestedOneWithoutBlogsInput = {
   connect?: Prisma.ProfileWhereUniqueInput
 }
 
-export type ProfileUpdateOneWithoutBlogsNestedInput = {
+export type ProfileUpdateOneRequiredWithoutBlogsNestedInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutBlogsInput, Prisma.ProfileUncheckedCreateWithoutBlogsInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutBlogsInput
   upsert?: Prisma.ProfileUpsertWithoutBlogsInput
-  disconnect?: Prisma.ProfileWhereInput | boolean
-  delete?: Prisma.ProfileWhereInput | boolean
   connect?: Prisma.ProfileWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutBlogsInput, Prisma.ProfileUpdateWithoutBlogsInput>, Prisma.ProfileUncheckedUpdateWithoutBlogsInput>
 }

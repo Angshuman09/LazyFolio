@@ -44,6 +44,18 @@ import { ProjectsSchema } from "@/lib/schemas/projects";
 import { useCreateProjects } from "@/hooks/projects";
 import { parseSkill } from "@/lib/utils/utils";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import {
+  isBlankExperience,
+  isBlankExternalBlog,
+  isBlankInternalBlog,
+  isBlankLink,
+  isBlankProject,
+  validateExperience,
+  validateExternalBlog,
+  validateInternalBlog,
+  validateLink,
+  validateProject,
+} from "@/lib/utils/validate-dashboard";
 import InsightsPage from "@/components/dashboard/insights/insight";
 import GlobalSaveButton from "@/components/dashboard/global-save-button";
 import { useSaveStore, DashboardSection } from "@/lib/utils/save-store";
@@ -79,7 +91,7 @@ export default function DashboardPage() {
       projects: (profile.projects || []).filter(
         (project: { isenable?: boolean | null }) => project.isenable ?? true,
       ),
-      blogs: (profile.blogs || []).filter((blog: { isenable?: boolean | null }) => blog.isenable ?? true),
+      blogs: (profile.blogs || []).filter((blog: { isEnabled?: boolean | null; isenable?: boolean | null }) => blog.isEnabled ?? blog.isenable ?? true),
       skills: ((profile.skills || []) as string[])
         .map(parseSkill)
         .filter((s) => s.isenable && s.value)
@@ -231,7 +243,16 @@ export default function DashboardPage() {
         type: detectType(link.url || ""),
         isenable: link.isenable ?? true,
       }))
-      .filter((link) => link.label || link.url);
+      .filter((link) => !isBlankLink(link));
+
+    for (const link of formattedLinks) {
+      const validation = validateLink(link);
+      if (!validation.ok) {
+        toast.error(validation.error, { id: toastId });
+        setIsSaving(false);
+        throw new Error(validation.error);
+      }
+    }
 
     try {
       await updateLinks.mutateAsync({
@@ -261,6 +282,8 @@ export default function DashboardPage() {
       return;
     }
 
+    const toastId = toast.loading("Saving experience...");
+
     const formattedExperience = (data.experiences || [])
       .map((experience) => ({
         role: experience.role?.trim() || "",
@@ -270,17 +293,17 @@ export default function DashboardPage() {
         description: experience.description?.trim() || "",
         isenable: experience.isenable ?? true,
       }))
-      .filter((experience) =>
-        [
-          experience.role,
-          experience.companyName,
-          experience.startdate,
-          experience.enddate,
-          experience.description,
-        ].some((value) => value.length > 0),
-      );
+      .filter((experience) => !isBlankExperience(experience));
 
-    const toastId = toast.loading("Saving experience...");
+    for (const experience of formattedExperience) {
+      const validation = validateExperience(experience);
+      if (!validation.ok) {
+        toast.error(validation.error, { id: toastId });
+        setIsSaving(false);
+        throw new Error(validation.error);
+      }
+    }
+
     createExperience.mutate(
       {
         profileId: profile.id,
@@ -316,6 +339,8 @@ export default function DashboardPage() {
       return;
     }
 
+    const toastId = toast.loading("Saving projects...");
+
     const formattedProjects = (data.projects || [])
       .map((project) => ({
         title: project.title?.trim() || "",
@@ -330,17 +355,17 @@ export default function DashboardPage() {
         enddate: project.enddate?.trim() || "",
         isenable: project.isenable ?? true,
       }))
-      .filter(
-        (project) =>
-          project.title ||
-          project.description ||
-          project.projectLink ||
-          project.githubLink ||
-          project.techstack.length > 0 ||
-          project.enddate,
-      );
+      .filter((project) => !isBlankProject(project));
 
-    const toastId = toast.loading("Saving projects...");
+    for (const project of formattedProjects) {
+      const validation = validateProject(project);
+      if (!validation.ok) {
+        toast.error(validation.error, { id: toastId });
+        setIsSaving(false);
+        throw new Error(validation.error);
+      }
+    }
+
     createProjects.mutate(
       {
         profileId: profile.id,
@@ -410,38 +435,54 @@ export default function DashboardPage() {
 
   const createBlogs = useCreateBlogs();
 
-  const onSubmitBlogs = async (data: BlogsSchema) => {
+  const onSubmitBlogs = async (data: BlogsSchema, type: "INTERNAL" | "EXTERNAL" = "EXTERNAL") => {
     if (!profile?.id) {
       toast.error("Profile not loaded.");
       return;
     }
 
     setIsSaving(true);
-    const toastId = toast.loading("Saving blogs...");
+    const isArticleSection = type === "INTERNAL";
+    const toastId = toast.loading(isArticleSection ? "Saving articles..." : "Saving blogs...");
     const formattedBlogs = (data.blogs || [])
       .map((blog) => ({
         id: blog.id,
+        type,
         title: blog.title?.trim() || "",
         description: blog.description?.trim() || "",
         blogLink: blog.blogLink?.trim() || "",
-        enddate: blog.enddate?.trim() || "",
-        content: blog.content,
+        content: type === "INTERNAL" ? (blog.content ?? "") : null,
         isPublished: blog.isPublished ?? false,
-        isenable: blog.isenable ?? true,
+        isEnabled: blog.isEnabled ?? true,
         slug: blog.slug,
       }))
-      .filter((blog) => blog.title || blog.description || blog.blogLink || blog.content);
+      .filter((blog) =>
+        isArticleSection ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
+      );
+
+    for (const blog of formattedBlogs) {
+      const validation = isArticleSection
+        ? validateInternalBlog(blog)
+        : validateExternalBlog(blog);
+
+      if (!validation.ok) {
+        toast.error(validation.error, { id: toastId });
+        setIsSaving(false);
+        throw new Error(validation.error);
+      }
+    }
 
     try {
       await createBlogs.mutateAsync({
         profileId: profile.id,
+        type,
         blogs: formattedBlogs,
       });
-      clearDashboardDraft("blogs", profile.id);
-      toast.success("Blogs updated successfully!", { id: toastId });
+      clearDashboardDraft(isArticleSection ? "articles" : "blogs", profile.id);
+      toast.success(isArticleSection ? "Articles updated successfully!" : "Blogs updated successfully!", { id: toastId });
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to update blogs. Please try again."),
+        getErrorMessage(error, isArticleSection ? "Failed to update articles. Please try again." : "Failed to update blogs. Please try again."),
         { id: toastId },
       );
     } finally {
@@ -459,7 +500,7 @@ export default function DashboardPage() {
     cancelSwitch,
     requestTabSwitch,
     dirtyLabel,
-  } = useTabSwitchGuard(tab as any, (newTab) => setTab(newTab as Tab), profile?.id);
+  } = useTabSwitchGuard(tab, (newTab) => setTab(newTab as Tab), profile?.id);
 
   const dirtyItems = useSaveStore((s) => s.dirtyItems);
   const errors = useSaveStore((s) => s.errors);
@@ -670,7 +711,16 @@ export default function DashboardPage() {
                 <BlogsForm
                   profile={profile}
                   formRef={formRef}
-                  onSubmit={onSubmitBlogs}
+                  mode="EXTERNAL"
+                  onSubmit={(data) => onSubmitBlogs(data, "EXTERNAL")}
+                />
+              )}
+              {tab === "articles" && (
+                <BlogsForm
+                  profile={profile}
+                  formRef={formRef}
+                  mode="INTERNAL"
+                  onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
                 />
               )}
               {

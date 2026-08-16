@@ -34,8 +34,38 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
+  const watchedLinks = useWatch({ control, name: "links" });
+
+  const isLinksDirty = useMemo(() => {
+    const current = watchedLinks || [];
+    const saved = profile?.links || [];
+    const savedMap = new Map(saved.map((l) => [l.id, l]));
+
+    for (const item of current) {
+      const label = item.label?.trim() || "";
+      const url = item.url?.trim() || "";
+      const isenable = item.isenable ?? true;
+
+      if (!item.id) {
+        if (label !== "" || url !== "") return true;
+      } else {
+        const original = savedMap.get(item.id);
+        if (original) {
+          if (
+            label !== (original.label?.trim() || "") ||
+            url !== (original.url?.trim() || "") ||
+            isenable !== (original.isenable ?? true)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }, [watchedLinks, profile?.links]);
+
   const { error: sectionError } = useSectionSave("links", {
-    isDirty,
+    isDirty: isLinksDirty,
     onSave: async () => {
       await handleSubmit(async (data) => {
         await onSubmit(data);
@@ -53,8 +83,6 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     keyName: "fieldId",
   });
 
-  const watchedLinks = useWatch({ control, name: "links" });
-
   useEffect(() => {
     if (!profile?.id) {
       return;
@@ -66,12 +94,12 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
 
   useEffect(() => {
     if (!profile?.id) return;
-    if (isDirty) {
+    if (isLinksDirty) {
       writeDashboardDraft("links", profile.id, { links: watchedLinks || [] });
     } else {
       clearDashboardDraft("links", profile.id);
     }
-  }, [isDirty, profile?.id, watchedLinks]);
+  }, [isLinksDirty, profile?.id, watchedLinks]);
 
   return (
     <form
@@ -114,6 +142,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
             insert={insert}
             setValue={setValue}
             getValues={getValues}
+            reset={reset}
             profile={profile}
           />
         ))}

@@ -1,4 +1,5 @@
 import { Cookie, Database, Eye, HelpCircle, Server, ShieldCheck, Trash2, Lock, AlertTriangle, Copyright, FileText, Globe, Scale, ShieldAlert, UserCheck } from "lucide-react";
+import type { Prisma } from "@/db/client";
 
 export const SECTIONS = [
     { id: "overview", label: "Overview & Philosophy", icon: ShieldCheck },
@@ -45,12 +46,12 @@ export const SECTIONSTerms = [
     projects: { where: { isenable: true } },
     blogs: {
       where: {
-        isenable: true,
+        isEnabled: true,
         OR: [
-          { content: { not: null }, isPublished: true },
-          { content: null },
+          { type: "INTERNAL", isPublished: true },
+          { type: "EXTERNAL" },
         ],
       },
     },
     links: { where: { isenable: true } },
-  };
+  } satisfies Prisma.ProfileSelect;

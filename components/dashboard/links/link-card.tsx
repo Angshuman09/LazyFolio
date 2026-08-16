@@ -1,10 +1,11 @@
-  import {useWatch, type Control,
+import {useWatch, type Control,
   type FieldArrayWithId,
   type FieldErrors,
   type UseFieldArrayInsert,
   type UseFieldArrayRemove,
   type UseFormGetValues,
   type UseFormRegister,
+  type UseFormReset,
   type UseFormSetValue,
 } from "react-hook-form";
 import {useEffect, useState} from 'react';
@@ -31,6 +32,7 @@ export function LinkCard({
   insert,
   setValue,
   getValues,
+  reset,
 }: {
   field: FieldArrayWithId<LinksSchema, "links", "fieldId">;
   index: number;
@@ -42,6 +44,7 @@ export function LinkCard({
   insert: UseFieldArrayInsert<LinksSchema, "links">;
   setValue: UseFormSetValue<LinksSchema>;
   getValues: UseFormGetValues<LinksSchema>;
+  reset: UseFormReset<LinksSchema>;
 }) {
   const [isEditing, setIsEditing] = useState(
     () => !(field?.label || field?.url),
@@ -115,8 +118,13 @@ export function LinkCard({
   };
 
   const validateLink = () => {
-    if (!normalizedValues.label && !normalizedValues.url) {
-      toast.error("Add a label or URL before saving this link.");
+    if (!normalizedValues.label) {
+      toast.error("Add a label before saving this link.");
+      return false;
+    }
+
+    if (!normalizedValues.url) {
+      toast.error("Add a URL before saving this link.");
       return false;
     }
 
@@ -146,10 +154,10 @@ export function LinkCard({
   const onCancelEditing = () => {
     if (!savedSnapshot) {
       const currentLinks = getValues("links") || [];
-      updateLinksDraft(
-        currentLinks.filter((_, linkIndex) => linkIndex !== index),
-      );
+      const nextLinks = currentLinks.filter((_, linkIndex) => linkIndex !== index);
+      updateLinksDraft(nextLinks);
       remove(index);
+      reset({ links: nextLinks }, { keepDirty: false });
       return;
     }
 
@@ -231,6 +239,8 @@ export function LinkCard({
     if (!normalizedValues.id) {
       remove(index);
       updateLinksDraft(nextLinks);
+      // New unsaved item — reset baseline so form is no longer dirty
+      reset({ links: nextLinks }, { keepDirty: false });
       return;
     }
 
@@ -240,6 +250,8 @@ export function LinkCard({
     const toastId = toast.loading("Deleting link...");
     try {
       await deleteLink.mutateAsync(normalizedValues.id);
+      // Reset baseline so form is no longer dirty after a successful delete
+      reset({ links: nextLinks }, { keepDirty: false });
       toast.success("Link deleted successfully!", { id: toastId });
     } catch (error) {
       if (deletedLink) {

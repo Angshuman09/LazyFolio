@@ -6,15 +6,21 @@ import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
 import { generateSlug } from "@/lib/utils/blogs";
-import { parseOptionalDate } from "@/lib/utils/experience";
+import {
+  isBlankExternalBlog,
+  isBlankInternalBlog,
+  validateExternalBlog,
+  validateInternalBlog,
+} from "@/lib/utils/validate-dashboard";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
   try {
-    const { blogs } = (await req.json()) as {
+    const { blogs, type = "EXTERNAL" } = (await req.json()) as {
       blogs?: BlogInput[];
+      type?: "INTERNAL" | "EXTERNAL";
     };
 
     if (!blogs) {
@@ -25,12 +31,26 @@ export async function POST(req: NextRequest) {
     }
 
     const profileId = profile!.id;
+    const isInternal = type === "INTERNAL";
+    const nonBlankBlogs = blogs.filter((blog) =>
+      isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
+    );
+
+    for (const blog of nonBlankBlogs) {
+      const validation = isInternal
+        ? validateInternalBlog(blog)
+        : validateExternalBlog(blog);
+
+      if (!validation.ok) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+    }
 
     const existingBlogs = await prisma.blog.findMany({
-      where: { profileId },
+      where: { profileId, type },
     });
 
-    const incomingIds = blogs
+    const incomingIds = nonBlankBlogs
       .map((b) => b.id)
       .filter(Boolean) as string[];
 
@@ -42,6 +62,7 @@ export async function POST(req: NextRequest) {
     await prisma.blog.deleteMany({
       where: {
         profileId,
+        type,
         NOT: {
           id: { in: incomingIds },
         },
@@ -50,14 +71,15 @@ export async function POST(req: NextRequest) {
 
     await Promise.all(deletedImageIds.map((id) => deleteFromCloudinary(id)));
 
-    const operations = blogs.map(async (blog) => {
+    const operations = nonBlankBlogs.map(async (blog) => {
       let slug = blog.slug;
       let blogLink = blog.blogLink?.trim() || null;
-      const isInternal = blog.content !== undefined && blog.content !== null;
+      const blogType = blog.type ?? type;
+      const isInternal = blogType === "INTERNAL";
 
-      let existing: any = null;
+      let existing: (typeof existingBlogs)[number] | null = null;
       if (blog.id) {
-        existing = existingBlogs.find((b) => b.id === blog.id);
+        existing = existingBlogs.find((b) => b.id === blog.id) ?? null;
         if (!existing) {
           throw new Error("Unauthorized access to blog record: " + blog.id);
         }
@@ -81,13 +103,13 @@ export async function POST(req: NextRequest) {
             id: profileId,
           },
         },
-        title: blog.title?.trim() || null,
+        type: blogType,
+        title: blog.title?.trim() || "Untitled",
         description: blog.description?.trim() || null,
         blogLink,
-        enddate: parseOptionalDate(blog.enddate),
-        content: blog.content ?? null,
+        content: isInternal ? (blog.content ?? "") : null,
         isPublished: isInternal ? (blog.isPublished ?? false) : true,
-        isenable: blog.isenable ?? true,
+        isEnabled: blog.isEnabled ?? blog.isenable ?? true,
         slug: slug || null,
       };
 

@@ -2,12 +2,13 @@ import { LinkType } from "@/db/enums";
 
 export type BlogInput = {
     id?: string;
+    type?: "INTERNAL" | "EXTERNAL";
     title?: string;
     description?: string;
     blogLink?: string;
-    enddate?: string;
     content?: string | null;
     isPublished?: boolean;
+    isEnabled?: boolean;
     isenable?: boolean;
     slug?: string | null;
   };

@@ -4,6 +4,7 @@ import { LinkType } from "@/db/enums";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { LinkInput } from "@/lib/constants/apis";
+import { isBlankLink, validateLink } from "@/lib/utils/validate-dashboard";
 
 export async function POST(req: NextRequest){
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -18,17 +19,25 @@ export async function POST(req: NextRequest){
     }
 
     const profileId = profile!.id;
+    const nonBlankLinks = links.filter((link) => !isBlankLink(link));
+
+    for (const link of nonBlankLinks) {
+      const validation = validateLink(link);
+      if (!validation.ok) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+    }
 
     await prisma.links.deleteMany({
       where: {profileId}
     })
 
     const createLinks = await prisma.links.createMany({
-      data: links.map((link)=>({
+      data: nonBlankLinks.map((link)=>({
         profileId: profileId,
         type: link.type ?? LinkType.CUSTOM,
-        label: link.label,
-        url: link.url,
+        label: link.label.trim(),
+        url: link.url.trim(),
         isenable: link.isenable ?? true,
       }))
     })

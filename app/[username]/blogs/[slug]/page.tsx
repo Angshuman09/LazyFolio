@@ -24,7 +24,7 @@ async function getBlogPost(profileId: string, slug: string) {
   cacheTag("blog", `blog-${profileId}-${slug}`);
 
   return prisma.blog.findFirst({
-    where: { profileId, slug, isPublished: true, isenable: true },
+    where: { profileId, slug, type: "INTERNAL", isPublished: true, isEnabled: true },
   });
 }
 
@@ -57,7 +57,7 @@ export default async function PublicBlogPage(props: PageProps) {
 
   const previewHtml = await parseMarkdown(blog.content || "");
   
-  const date = blog.enddate ?? blog.createdAt;
+  const date = blog.createdAt;
 
   const formattedDate = new Date(date).toLocaleDateString("en-US", {
     year: "numeric",

@@ -55,8 +55,48 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     mode: "onSubmit",
   });
 
+  const watchedProjects = useWatch({ control, name: "projects" });
+
+  const isProjectsDirty = useMemo(() => {
+    const current = watchedProjects || [];
+    const saved = projectsFromProfile(profile?.projects || []).projects || [];
+    const savedMap = new Map(saved.map((p) => [p.id, p]));
+
+    for (const item of current) {
+      const title = item.title?.trim() || "";
+      const description = item.description?.trim() || "";
+      const githubLink = item.githubLink?.trim() || "";
+      const projectLink = item.projectLink?.trim() || "";
+      const techstack = item.techstack?.trim() || "";
+      const enddate = item.enddate || "";
+      const isenable = item.isenable ?? true;
+
+      if (!item.id) {
+        if (title !== "" || description !== "" || githubLink !== "" || projectLink !== "" || techstack !== "" || enddate !== "") {
+          return true;
+        }
+      } else {
+        const original = savedMap.get(item.id);
+        if (original) {
+          if (
+            title !== (original.title?.trim() || "") ||
+            description !== (original.description?.trim() || "") ||
+            githubLink !== (original.githubLink?.trim() || "") ||
+            projectLink !== (original.projectLink?.trim() || "") ||
+            techstack !== (original.techstack?.trim() || "") ||
+            enddate !== (original.enddate || "") ||
+            isenable !== (original.isenable ?? true)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }, [watchedProjects, profile?.projects]);
+
   const { error: sectionError } = useSectionSave("projects", {
-    isDirty,
+    isDirty: isProjectsDirty,
     onSave: async () => {
       await handleSubmit(async (data) => {
         if (onSubmit) await onSubmit(data);
@@ -74,8 +114,6 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     keyName: "projectfield",
   });
 
-  const watchedProjects = useWatch({ control, name: "projects" });
-
   useEffect(() => {
     if (!profile?.id) {
       return;
@@ -87,12 +125,12 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
 
   useEffect(() => {
     if (!profile?.id) return;
-    if (isDirty) {
+    if (isProjectsDirty) {
       writeDashboardDraft("projects", profile.id, { projects: watchedProjects || [] });
     } else {
       clearDashboardDraft("projects", profile.id);
     }
-  }, [isDirty, profile?.id, watchedProjects]);
+  }, [isProjectsDirty, profile?.id, watchedProjects]);
 
   return (
     <form
@@ -135,6 +173,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
             insert={insert}
             setValue={setValue}
             getValues={getValues}
+            reset={reset}
             profile={profile}
           />
         ))}

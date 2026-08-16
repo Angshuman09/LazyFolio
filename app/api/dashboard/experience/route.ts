@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { SingleExperience } from "@/lib/schemas/experience";
 import { prisma } from "@/lib/prisma";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { validateExperience } from "@/lib/utils/validate-dashboard";
 
 export async function POST(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -12,15 +13,27 @@ export async function POST(request: NextRequest) {
       experience?: SingleExperience;
     };
 
+    if (!experience) {
+      return NextResponse.json(
+        { error: "Missing experience in request body." },
+        { status: 400 },
+      );
+    }
+
+    const validation = validateExperience(experience);
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+
     const profileId = profile!.id;
 
     const data = {
       profileId: profileId,
-      companyName: experience?.companyName || null,
-      role: experience?.role || null,
+      companyName: experience.companyName!.trim(),
+      role: experience.role!.trim(),
       startdate: experience?.startdate ? new Date(experience.startdate) : null,
       enddate: experience?.enddate ? new Date(experience.enddate) : null,
-      description: experience?.description || null,
+      description: experience?.description?.trim() || null,
       ...(typeof experience?.isenable === "boolean" ? { isenable: experience.isenable } : {}),
     };
 

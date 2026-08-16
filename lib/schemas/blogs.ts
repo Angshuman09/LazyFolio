@@ -10,13 +10,13 @@ export const blogsSchema = z.object({
     .array(
       z.object({
         id: z.string().optional(),
+        type: z.enum(["INTERNAL", "EXTERNAL"]).optional(),
         title: stringOrEmpty(160).optional(),
         description: stringOrEmpty(800).optional(),
         blogLink: stringOrEmpty().optional(),
-        enddate: stringOrEmpty(50).optional(),
         content: z.string().optional().nullable(),
         isPublished: z.boolean().optional(),
-        isenable: z.boolean().optional(),
+        isEnabled: z.boolean().optional(),
         slug: z.string().optional().nullable(),
       }),
     )
