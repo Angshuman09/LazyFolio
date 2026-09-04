@@ -108,7 +108,7 @@ const Hero = () => {
       <div className="fade-up fade-up-3 flex flex-col sm:flex-row items-stretch justify-center gap-2.5 sm:gap-3 w-full px-4 sm:px-0 max-w-105 mx-auto mb-10 mt-16">
         <label className="flex items-center w-full sm:flex-1 sm:min-w-0 h-13 sm:h-12 rounded-full border border-(--lf-border) bg-(--lf-surface) px-4 sm:px-5 gap-1 sm:gap-1.5 transition-all duration-200 focus-within:border-(--lf-tan) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] cursor-text">
           <span className="font-mono text-[0.75rem] sm:text-[0.8125rem] text-(--lf-muted) whitespace-nowrap select-none shrink-0">
-            lazyfolio.com/
+            lazyfolio.in/
           </span>
           <input
             type="text"

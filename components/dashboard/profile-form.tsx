@@ -276,7 +276,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         <div className="flex items-stretch h-10">
           <div className="flex items-center flex-1 rounded-l-full border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 gap-1.5 focus-within:border-(--lf-muted) transition-colors">
             <span className="text-[0.75rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
-              lazyfolio.com/
+              lazyfolio.in/
             </span>
             <input
               {...register("username")}
