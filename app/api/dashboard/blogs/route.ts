@@ -6,6 +6,7 @@ import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
 import { generateSlug } from "@/lib/utils/blogs";
+import { getPortfolioBlogPath } from "@/lib/utils/public-url";
 import {
   isBlankExternalBlog,
   isBlankInternalBlog,
@@ -92,9 +93,7 @@ export async function POST(req: NextRequest) {
           slug = slug || generateSlug(blog.title || "untitled");
         }
 
-        if (profile?.username && slug) {
-          blogLink = `/${profile.username}/blogs/${slug}`;
-        }
+        blogLink = getPortfolioBlogPath(slug);
       }
 
       const data = {

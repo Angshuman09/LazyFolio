@@ -95,8 +95,6 @@ model Profile {
   resume         String?
   tagline        String?
   bookAcall      String?
-  linkClicks     LinkClick[]
-  pageViews      PageView[]
   user           User         @relation(fields: [userId], references: [id])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -175,28 +173,6 @@ model Blog {
   updatedAt   DateTime @updatedAt
 
   @@unique([profileId, slug])
-}
-
-model PageView {
-  id          String   @id @default(cuid())
-  profileId   String
-  visitorHash String
-  country     String?
-  device      String?
-  createdAt   DateTime @default(now())
-  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@index([profileId, createdAt])
-}
-
-model LinkClick {
-  id        String   @id @default(cuid())
-  profileId String
-  label     String
-  createdAt DateTime @default(now())
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  @@index([profileId, createdAt])
 }
 
 enum LinkType {

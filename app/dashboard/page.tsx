@@ -61,6 +61,7 @@ import GlobalSaveButton from "@/components/dashboard/global-save-button";
 import { useSaveStore, DashboardSection } from "@/lib/utils/save-store";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 import { useUnsavedWarning, useTabSwitchGuard } from "@/hooks/use-unsaved-warning";
+import { getPortfolioUrl } from "@/lib/utils/public-url";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
@@ -132,12 +133,12 @@ export default function DashboardPage() {
   }, [dark]);
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(`${process.env.NEXT_PUBLIC_SITE_URL as string}/${profile?.username || username}`).then(() => {
+    navigator.clipboard?.writeText(getPortfolioUrl(profile?.username || username)).then(() => {
       toast.success("Profile link copied to clipboard!");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {
-      toast.error("Failed to copy link. Please try manually copying: " + `/${profile?.username || username}`);
+      toast.error("Failed to copy link. Please try manually copying: " + getPortfolioUrl(profile?.username || username));
     });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -568,7 +569,7 @@ export default function DashboardPage() {
           <button
             disabled={!profile?.username}
 
-            onClick={() => window.open(`/${profile?.username || username}`, "_blank")}
+            onClick={() => window.open(getPortfolioUrl(profile?.username || username), "_blank")}
             className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
             <ExternalLink size={12} />
             Preview
@@ -646,7 +647,7 @@ export default function DashboardPage() {
               Your portfolio link
             </div>
             <div className="text-[0.75rem] text-(--lf-ink) font-mono mb-2.5 break-all">
-              lazyfolio/{profile?.username || "your-username"}
+              {profile?.username ? getPortfolioUrl(profile.username) : "your-username.lazyfolio.in"}
             </div>
             <button
               className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"

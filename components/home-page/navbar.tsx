@@ -76,7 +76,7 @@ const Navbar = () => {
             rel="noopener noreferrer"
             className="lf-focus hover-lift flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
           >
-            <Github className="h-3.5 w-3.5" />
+            <Github className="h-3.5 w-3.5" suppressHydrationWarning />
             <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
           </Link>
 
@@ -169,7 +169,7 @@ const Navbar = () => {
           rel="noopener noreferrer"
           className="lf-focus flex items-center justify-center gap-2 rounded-full hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
         >
-          <Github className="h-4 w-4" />
+          <Github className="h-4 w-4" suppressHydrationWarning />
           <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
         </Link>
         {isPending ? (

@@ -107,12 +107,17 @@ export function normalizeProjects(
 
 export function normalizeBlogs(
   blogs?: ProfileBlog[] | null,
+  username?: string | null,
 ): PortfolioBlog[] {
+  const usernamePrefix = username ? `/${username}/blogs/` : "";
   return (blogs || [])
     .map((blog, index) => {
       const title = textValue(blog.title);
       const description = textValue(blog.description);
-      const url = cleanUrl(blog.blogLink || blog.url);
+      let url = cleanUrl(blog.blogLink || blog.url);
+      if (usernamePrefix && url.startsWith(usernamePrefix)) {
+        url = url.replace(usernamePrefix, "/blogs/");
+      }
 
       if (!title && !description && !url) return null;
 

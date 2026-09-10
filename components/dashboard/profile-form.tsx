@@ -20,8 +20,12 @@ import {
   Check,
   Loader2,
   AtSign,
+  ArrowRight,
   AlertCircle,
 } from "lucide-react";
+import { getPortfolioDomainSuffix } from "@/lib/utils/public-url";
+import { isReservedUsername } from "@/lib/utils/username";
+import Image from "next/image";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -58,6 +62,7 @@ function FieldRow({ label, children, action, error, noBorder }: FieldRowProps) {
 }
 
 export default function ProfileForm({ profile, formRef, onSubmit, session }: Props) {
+  const portfolioDomain = getPortfolioDomainSuffix();
   const defaultValues = useMemo<ProfileSchema>(
     () => ({
       userId: session?.user?.id || "",
@@ -153,7 +158,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       return;
     }
 
-    if(username == "dashboard" || username=="templates" || username=="terms" || username=="privacy"){
+    if (isReservedUsername(username)) {
       toast(`${username} can't be a username!`, {
         style: {
           borderRadius: '10px',
@@ -269,33 +274,49 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         </div>
       )}
 
-      <div className="mb-6">
-        <label className="text-[0.65rem] font-semibold text-(--lf-muted) font-sans tracking-widest mb-1.5 block">
-          Username
-        </label>
-        <div className="flex items-stretch h-10">
-          <div className="flex items-center flex-1 rounded-l-full border border-r-0 border-(--lf-border) bg-(--lf-bg) px-3 gap-1.5 focus-within:border-(--lf-muted) transition-colors">
-            <span className="text-[0.75rem] text-(--lf-muted) font-mono whitespace-nowrap select-none">
-              lazyfolio.in/
-            </span>
-            <input
-              {...register("username")}
-              placeholder="username"
-              className="bg-transparent border-none outline-none text-[0.85rem] text-(--lf-ink) font-medium w-full placeholder:text-(--lf-dimmed)"
-            />
-          </div>
-          <button
-            type="button"
-            disabled={loading || !dirtyFields.username}
-            className="inline-flex items-center gap-1.5 px-4 rounded-r-full border border-(--lf-ink) bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] font-semibold cursor-pointer hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
-            onClick={handleSubmitUsername}
-          >
-            {loading ? <Loader2 size={13} className="animate-spin" /> : null}
-            {loading ? "Saving…" : "Change"}
-          </button>
-        </div>
-        <FieldError message={errors.username?.message} />
-      </div>
+<section className="mb-6 rounded-lg border border-(--lf-border) bg-(--lf-surface) p-4 sm:p-5">
+  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+    <label
+      htmlFor="username-input"
+      className="shrink-0 font-serif-display text-[1rem] text-(--lf-ink) whitespace-nowrap"
+    >
+      Claim a place for your work:
+    </label>
+
+    <div className="flex h-12 w-full sm:flex-1 items-center overflow-hidden rounded-lg border border-(--lf-border) bg-(--lf-bg) pr-1.5 transition-colors focus-within:border-(--lf-tan) focus-within:shadow-[0_0_0_3px_var(--lf-accent-soft)]">
+      <span className="hidden sm:inline pl-4 font-mono text-[0.72rem] text-(--lf-dimmed)">https://</span>
+      <input
+        id="username-input"
+        {...register("username")}
+        placeholder="yourname"
+        aria-label="Choose your Lazyfolio address"
+        className="min-w-0 flex-1 bg-transparent px-3 font-mono text-[0.82rem] font-medium text-(--lf-ink) outline-none placeholder:text-(--lf-dimmed)"
+      />
+      <button
+        type="button"
+        disabled={loading || !dirtyFields.username}
+        onClick={handleSubmitUsername}
+        aria-label="Claim this address"
+        title="Claim this address"
+        className="group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-(--lf-ink) text-(--lf-bg) cursor-pointer hover:opacity-85 active:scale-[0.95] disabled:cursor-not-allowed disabled:opacity-40 transition-all duration-150"
+      >
+        {loading ? (
+          <Loader2 size={15} className="animate-spin" />
+        ) : (
+          <ArrowRight
+            size={16}
+            className="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+          />
+        )}
+      </button>
+    </div>
+  </div>
+
+  <p className="mt-3 text-[0.72rem] leading-relaxed text-(--lf-muted)">
+    Use 3-30 letters, numbers, or underscores. This is the link you will share everywhere.
+  </p>
+  <FieldError message={errors.username?.message} />
+</section>
 
       {!profile?.username ? (
         <div className="p-10 border border-(--lf-border) rounded-2xl bg-(--lf-surface) text-center flex flex-col items-center gap-3">

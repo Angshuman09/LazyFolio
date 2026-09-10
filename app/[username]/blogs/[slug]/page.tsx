@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { parseMarkdown } from "@/lib/utils/markdown";
 import { ArrowLeft, Calendar, BookOpen } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
+import { getPortfolioUrl } from "@/lib/utils/public-url";
 
 async function getBlogProfile(username: string) {
   "use cache";
@@ -70,7 +71,7 @@ export default async function PublicBlogPage(props: PageProps) {
 
       <nav className="sticky top-0 z-40 w-full bg-(--lf-bg)/80 backdrop-blur-md border-b border-(--lf-border-alpha) px-6 py-4 flex items-center justify-between">
         <Link
-          href={`/${profile.username}`}
+          href={getPortfolioUrl(profile.username)}
           className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
         >
           <ArrowLeft size={14} />
@@ -78,7 +79,7 @@ export default async function PublicBlogPage(props: PageProps) {
         </Link>
 
         <Link
-          href={`/${profile.username}`}
+          href={getPortfolioUrl(profile.username)}
           className="flex items-center gap-2 hover:opacity-85 transition-opacity"
         >
           {profile.avatar ? (

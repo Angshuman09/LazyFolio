@@ -1,9 +1,7 @@
-// app/api/dashboard/insights/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { getInsightData, presetRange } from "@/lib/utils/analytics";
 
 export async function GET(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -27,7 +25,29 @@ export async function GET(req: NextRequest) {
   }
 
   const rangeKey = (req.nextUrl.searchParams.get("range") || "30d") as "7d" | "30d" | "90d";
-  const data = await getInsightData(profile.id, presetRange(rangeKey));
 
-  return NextResponse.json(data);
+  const insightsServiceUrl = process.env.INSIGHTS_SERVICE_URL;
+
+  if(!insightsServiceUrl){
+    return NextResponse.json({error:"Insights service not configured"},{ status: 500 });
+  }
+
+  try {
+    const response = await fetch(`${insightsServiceUrl}/api/v1/insights?profileId=${profile.id}&range=${rangeKey}`,{
+      headers:{
+        "x-service-secret": process.env.INSIGHTS_SERVICE_SECRET || ""
+      },
+      next: {revalidate: 60}
+    });
+
+    if(!response.ok){
+      return NextResponse.json({error:"Failed to fetch from insight service"},{status: response.status});
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("error in connecting insight service: ", error);
+    return NextResponse.json({error:"internal server error "},{status: 500});
+  }
 }

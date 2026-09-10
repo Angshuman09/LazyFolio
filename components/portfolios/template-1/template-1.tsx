@@ -25,7 +25,7 @@ export function Template1({
   const contactLinks = addProfileContactLinks(links, profile);
   const experiences = normalizeExperiences(profile?.experiences);
   const projects = normalizeProjects(profile?.projects);
-  const blogs = normalizeBlogs(profile?.blogs);
+  const blogs = normalizeBlogs(profile?.blogs, profile?.username);
   const stack = normalizeStack(profile?.skills);
   const bookCallLink = getBookCallLink(profile);
   const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);

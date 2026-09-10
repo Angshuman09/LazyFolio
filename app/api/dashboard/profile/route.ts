@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { profileSelect } from "@/lib/constants/apis";
+import { isReservedUsername } from "@/lib/utils/username";
 
 
 function optionalString(value: string | null | undefined) {
@@ -101,6 +102,13 @@ export async function POST(request: NextRequest) {
     const targetUserId = session!.user.id;
 
     if (username) {
+      if (isReservedUsername(username)) {
+        return NextResponse.json(
+          { error: "Username is reserved" },
+          { status: 400 }
+        );
+      }
+
       const existingUser = await prisma.profile.findUnique({
         where: { username },
         select: { userId: true },

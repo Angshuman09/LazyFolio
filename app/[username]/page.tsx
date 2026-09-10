@@ -5,7 +5,6 @@ import { parseSkill } from "@/lib/utils/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { after } from "next/server";
 import { headers } from "next/headers";
-import { trackPageView } from "@/lib/utils/analytics";
 import { publicProfileSelect } from "@/lib/constants/sections";
 
 
@@ -40,20 +39,32 @@ export default async function UserPortfolioPage(props: PageProps) {
 
   const headersList = await headers();
 
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    headersList.get("x-real-ip");
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || headersList.get("x-real-ip");
 
   const country = headersList.get("x-vercel-ip-country");
   const userAgent = headersList.get("user-agent");
 
   after(async () => {
-    await trackPageView({
-      profileId: profile.id,
-      country,
-      userAgent,
-      ip,
-    });
+    const insightsUrl = process.env.INSIGHTS_SERVICE_URL;
+    if (!insightsUrl) return;
+
+    try {
+      await fetch(`${insightsUrl}/api/v1/track`,{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(ip ? { "x-real-ip": ip } : {}),
+          ...(userAgent ? { "user-agent": userAgent } : {}),
+          ...(country ? { "x-vercel-ip-country": country } : {}),
+        },
+        body: JSON.stringify({
+          profileId: profile.id,
+          eventType: "pageview",
+        }),
+      })
+    } catch (error) {
+      console.error("pageview tracking error:", error);
+    }
   });
 
   const { user, ...profileData } = profile;

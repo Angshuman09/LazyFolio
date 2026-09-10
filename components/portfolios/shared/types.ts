@@ -59,6 +59,7 @@ export type ProfileData = {
   email?: string | null;
   resume?: string | null;
   bookAcall?: string | null;
+  username?: string | null;
   links?: ProfileLink[] | null;
   experiences?: ProfileExperience[] | null;
   projects?: ProfileProject[] | null;

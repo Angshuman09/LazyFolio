@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
+import { isReservedUsername } from "@/lib/utils/username";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
@@ -20,9 +21,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if(username == "dashboard" || username == "templates" || username=="terms" || username=="privacy"){
+    if (isReservedUsername(username)) {
       return NextResponse.json(
-        {error: "username can't be a route"},
+        {error: "username is reserved"},
         {status: 401}
       )
     }

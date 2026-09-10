@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 const Blogs = ({profile, config, iconStrokeWidth}:{profile: ProfileData, config: TemplateThemeConfig, iconStrokeWidth: number}) => {
-  const blogs = normalizeBlogs(profile?.blogs);
+  const blogs = normalizeBlogs(profile?.blogs, profile?.username);
   return (
    <>
              {blogs.length > 0 && (
