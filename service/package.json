@@ -4,9 +4,14 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "tinybird:dev": "tinybird dev",
+    "tinybird:build": "tinybird build",
+    "tinybird:deploy": "tinybird deploy",
+    "tinybird:preview": "tinybird preview"
   },
   "dependencies": {
+    "@tinybirdco/sdk": "^0.0.84",
     "cors": "^2.8.6",
     "hono": "^4.13.5"
   },

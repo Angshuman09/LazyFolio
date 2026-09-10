@@ -787,7 +787,7 @@ export default function DashboardPage() {
                         sizes="(max-width: 640px) 90vw, 420px"
                         className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent" />
                       <div
                         className={`absolute left-2.5 top-2.5 w-7 h-7 rounded-full flex items-center justify-center shadow-sm ${activeTemplate === t.id
                             ? "bg-(--lf-ink) text-(--lf-bg)"

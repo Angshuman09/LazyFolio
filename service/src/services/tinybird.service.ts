@@ -34,48 +34,84 @@ export class TinybirdService {
     const endDate = end.toISOString().replace("T", " ").substring(0, 19);
     const baseUrl = env.TINYBIRD_BASE_URL || "https://api.tinybird.co";
 
-    const summaryUrl = `${baseUrl}/v0/pipes/get_insight_summary.json?profile_id=${profileId}&start_date=${startDate}&end_date=${endDate}`;
-    const seriesUrl = `${baseUrl}/v0/pipes/get_pageview_series.json?profile_id=${profileId}&start_date=${startDate}&end_date=${endDate}`;
-
+    const params = `profile_id=${encodeURIComponent(profileId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
     const headers = { Authorization: `Bearer ${env.TINYBIRD_API_TOKEN}` };
 
-    const [summaryRes, seriesRes] = await Promise.all([
-      fetch(summaryUrl, { headers }),
-      fetch(seriesUrl, { headers }),
+    // Call all 5 Tinybird pipes in parallel
+    const [pvRes, clicksRes, countriesRes, devicesRes, seriesRes] = await Promise.all([
+      fetch(`${baseUrl}/v0/pipes/get_pageviews.json?${params}`, { headers }),
+      fetch(`${baseUrl}/v0/pipes/get_top_clicks.json?${params}`, { headers }),
+      fetch(`${baseUrl}/v0/pipes/get_top_countries.json?${params}`, { headers }),
+      fetch(`${baseUrl}/v0/pipes/get_top_devices.json?${params}`, { headers }),
+      fetch(`${baseUrl}/v0/pipes/get_pageview_series.json?${params}`, { headers }),
     ]);
 
+    // Parse pageviews & unique visitors
     let pageviews = 0;
     let uniqueVisitors = 0;
-    let clicks: { label: string; count: number }[] = [];
-    let countries: { country: string; count: number }[] = [];
-    let devices: { device: string; count: number }[] = [];
-
-    if (summaryRes.ok) {
-      const summaryJson = (await summaryRes.json()) as any;
-      const row = summaryJson.data?.[0];
+    if (pvRes.ok) {
+      const json = (await pvRes.json()) as any;
+      const row = json?.data?.[0];
       if (row) {
-        pageviews = Number(row.pageviews || 0);
-        uniqueVisitors = Number(row.unique_visitors || 0);
-        clicks = (row.clicks || []).map((c: [string, number]) => ({ label: c[0], count: Number(c[1]) }));
-        countries = (row.countries || []).map((c: [string, number]) => ({ country: c[0], count: Number(c[1]) }));
-        devices = (row.devices || []).map((d: [string, number]) => ({ device: d[0], count: Number(d[1]) }));
+        pageviews = Number(row.pageviews ?? 0);
+        uniqueVisitors = Number(row.unique_visitors ?? 0);
       }
+    } else {
+      console.error("get_pageviews error:", pvRes.status, await pvRes.text());
     }
 
+    // Parse clicks
+    let clicks: { label: string; count: number }[] = [];
+    if (clicksRes.ok) {
+      const json = (await clicksRes.json()) as any;
+      clicks = (json?.data ?? []).map((row: any) => ({
+        label: row.label as string,
+        count: Number(row.count ?? 0),
+      }));
+    } else {
+      console.error("get_top_clicks error:", clicksRes.status, await clicksRes.text());
+    }
+
+    // Parse countries
+    let countries: { country: string; count: number }[] = [];
+    if (countriesRes.ok) {
+      const json = (await countriesRes.json()) as any;
+      countries = (json?.data ?? []).map((row: any) => ({
+        country: row.country as string,
+        count: Number(row.count ?? 0),
+      }));
+    } else {
+      console.error("get_top_countries error:", countriesRes.status, await countriesRes.text());
+    }
+
+    // Parse devices
+    let devices: { device: string; count: number }[] = [];
+    if (devicesRes.ok) {
+      const json = (await devicesRes.json()) as any;
+      devices = (json?.data ?? []).map((row: any) => ({
+        device: row.device as string,
+        count: Number(row.count ?? 0),
+      }));
+    } else {
+      console.error("get_top_devices error:", devicesRes.status, await devicesRes.text());
+    }
+
+    // Parse series and fill missing days with 0
     const seriesMap = new Map<string, number>();
     if (seriesRes.ok) {
-      const seriesJson = (await seriesRes.json()) as any;
-      for (const item of seriesJson.data || []) {
-        seriesMap.set(item.date, Number(item.views || 0));
+      const json = (await seriesRes.json()) as any;
+      for (const item of json?.data ?? []) {
+        seriesMap.set(item.date as string, Number(item.views ?? 0));
       }
+    } else {
+      console.error("get_pageview_series error:", seriesRes.status, await seriesRes.text());
     }
 
-    // Fill missing date buckets
     const series: { date: string; views: number }[] = [];
     const cursor = new Date(start);
     while (cursor <= end) {
       const key = cursor.toISOString().slice(0, 10);
-      series.push({ date: key, views: seriesMap.get(key) || 0 });
+      series.push({ date: key, views: seriesMap.get(key) ?? 0 });
       cursor.setDate(cursor.getDate() + 1);
     }
 
