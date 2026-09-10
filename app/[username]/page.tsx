@@ -45,11 +45,13 @@ export default async function UserPortfolioPage(props: PageProps) {
   const userAgent = headersList.get("user-agent");
 
   after(async () => {
-    const insightsUrl = process.env.INSIGHTS_SERVICE_URL;
-    if (!insightsUrl) return;
+    const rawUrl = process.env.INSIGHTS_SERVICE_URL?.replace(/\/+$/, "");
+    if (!rawUrl) return;
+
+    const endpoint = rawUrl.endsWith("/api/v1") ? `${rawUrl}/track` : `${rawUrl}/api/v1/track`;
 
     try {
-      await fetch(`${insightsUrl}/api/v1/track`,{
+      await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

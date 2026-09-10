@@ -26,28 +26,47 @@ export async function GET(req: NextRequest) {
 
   const rangeKey = (req.nextUrl.searchParams.get("range") || "30d") as "7d" | "30d" | "90d";
 
-  const insightsServiceUrl = process.env.INSIGHTS_SERVICE_URL;
+  const insightsServiceUrl = process.env.INSIGHTS_SERVICE_URL?.replace(/\/+$/, "");
 
-  if(!insightsServiceUrl){
-    return NextResponse.json({error:"Insights service not configured"},{ status: 500 });
+  if (!insightsServiceUrl) {
+    return NextResponse.json({ error: "Insights service not configured" }, { status: 500 });
   }
 
+  const endpointBase = insightsServiceUrl.endsWith("/api/v1")
+    ? insightsServiceUrl
+    : `${insightsServiceUrl}/api/v1`;
+
+  const targetUrl = `${endpointBase}/insights?profileId=${profile.id}&range=${rangeKey}`;
+
   try {
-    const response = await fetch(`${insightsServiceUrl}/api/v1/insights?profileId=${profile.id}&range=${rangeKey}`,{
-      headers:{
-        "x-service-secret": process.env.INSIGHTS_SERVICE_SECRET || ""
+    const response = await fetch(targetUrl, {
+      headers: {
+        "x-service-secret": process.env.INSIGHTS_SERVICE_SECRET || "",
       },
-      next: {revalidate: 60}
+      next: { revalidate: 60 },
     });
 
-    if(!response.ok){
-      return NextResponse.json({error:"Failed to fetch from insight service"},{status: response.status});
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Insight service error (${response.status}) at ${targetUrl}:`, errorText);
+      return NextResponse.json(
+        {
+          error: "Failed to fetch from insight service",
+          serviceStatus: response.status,
+          serviceError: errorText,
+          targetUrl,
+        },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("error in connecting insight service: ", error);
-    return NextResponse.json({error:"internal server error "},{status: 500});
+    return NextResponse.json(
+      { error: "internal server error", details: String(error) },
+      { status: 500 }
+    );
   }
 }
