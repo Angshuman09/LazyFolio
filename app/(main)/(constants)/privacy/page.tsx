@@ -1,18 +1,5 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { 
-  ShieldCheck, 
-  Database, 
-  Eye, 
-  Cookie, 
-  Lock, 
-  Server, 
-  Trash2, 
-  HelpCircle,
-  ArrowUpRight,
-  FileText
-} from 'lucide-react';
-import { SECTIONS } from '@/lib/constants/sections';
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Lazyfolio",
@@ -20,297 +7,161 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-
   return (
-    <div className="min-h-screen py-12 md:py-20 px-6 md:px-12 max-w-7xl mx-auto">
-      <div className="relative mb-16 rounded-3xl border border-(--lf-border) bg-(--lf-surface) p-8 md:p-14 overflow-hidden shadow-sm">
-        <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.75rem] font-semibold tracking-wider text-(--lf-muted) uppercase mb-6">
-            Legal & Transparency
-          </div>
-          
-          <h1 className="font-serif-display text-4xl md:text-6xl font-normal text-(--lf-ink) tracking-tight mb-6 leading-tight">
+    <div className="min-h-screen py-16 sm:py-24 px-6 sm:px-8">
+      <div className="max-w-3xl mx-auto">
+        {/* Navigation Tabs */}
+        <div className="flex items-center gap-1.5 p-1 bg-(--lf-surface) border border-(--lf-border) rounded-full w-fit mb-10">
+          <Link
+            href="/terms"
+            className="px-4 py-1.5 rounded-full text-xs font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+          >
+            Terms of Service
+          </Link>
+          <Link
+            href="/privacy"
+            className="px-4 py-1.5 rounded-full text-xs font-medium bg-(--lf-ink) text-(--lf-bg) transition-colors"
+          >
+            Privacy Policy
+          </Link>
+        </div>
+
+        {/* Header */}
+        <header className="border-b border-(--lf-border) pb-8 mb-12">
+          <h1 className="font-serif-display text-4xl sm:text-5xl font-normal text-(--lf-ink) tracking-tight mb-3">
             Privacy Policy
           </h1>
-          
-          <p className="text-base md:text-lg text-(--lf-muted) font-sans-body leading-relaxed mb-6">
-            At Lazyfolio, we believe building your portfolio shouldn't cost your privacy. We collect only what is strictly necessary to host your public profile and run privacy-conscious analytics.
+          <p className="text-xs font-mono tracking-wider text-(--lf-sub) mb-6">
+            Last updated: March 2025
           </p>
-        </div>
-      </div>
+          <p className="text-base sm:text-lg text-(--lf-muted) leading-relaxed">
+            At Lazyfolio, we believe building your portfolio shouldn't come at the cost of your privacy. We collect only what is necessary to run the platform and provide privacy-conscious analytics.
+          </p>
+        </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <aside className="lg:col-span-4 hidden lg:block">
-          <div className="sticky top-28 space-y-2 p-6 rounded-2xl border border-(--lf-border) bg-(--lf-surface)">
-            <p className="text-xs font-semibold uppercase tracking-widest text-(--lf-sub) mb-4 px-2">
-              On This Page
+        {/* Document Content */}
+        <main className="space-y-12 text-[0.95rem] text-(--lf-muted) leading-relaxed">
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              1. Overview &amp; Philosophy
+            </h2>
+            <p>
+              Lazyfolio operates the platform at <code className="bg-(--lf-surface) border border-(--lf-border) px-1.5 py-0.5 rounded font-mono text-xs text-(--lf-ink)">lazyfolio.in</code>, enabling developers and creators to publish portfolios, link trees, and technical blogs.
             </p>
-            <nav className="flex flex-col space-y-1">
-              {SECTIONS.map((sec) => {
-                const Icon = sec.icon;
-                return (
-                  <a
-                    key={sec.id}
-                    href={`#${sec.id}`}
-                    className="flex items-center gap-3 px-3 py-2.5 text-xs font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-bg) rounded-xl transition-all group"
-                  >
-                    <Icon className="w-4 h-4 text-(--lf-sub) group-hover:text-(--lf-ink) transition-colors" />
-                    <span>{sec.label}</span>
-                  </a>
-                );
-              })}
-            </nav>
+            <p>
+              Our philosophy is straightforward: your portfolio belongs to you. We do not sell your personal information to third parties, broker your data to advertisers, or track you across the web. The source code is open and verifiable on GitHub.
+            </p>
+          </section>
 
-            <div className="pt-6 mt-6 border-t border-(--lf-border) px-2">
-              <p className="text-xs text-(--lf-sub) mb-3">Looking for terms of service?</p>
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              2. Information We Collect
+            </h2>
+            <p>We collect information in three ways:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong className="text-(--lf-ink)">Account Details:</strong> When you sign up via OAuth (such as GitHub or Google), we receive your name, email address, third-party account ID, and avatar image. We do not receive or store your passwords.
+              </li>
+              <li>
+                <strong className="text-(--lf-ink)">Profile Content:</strong> Content you voluntarily add to your portfolio, including your chosen username, bio, links, work history, projects, and articles.
+              </li>
+              <li>
+                <strong className="text-(--lf-ink)">Aggregated Analytics:</strong> We use privacy-friendly analytics (via Umami) to calculate page views, geographic country data, and link clicks. This operates without tracking cookies and without logging individual IP addresses.
+              </li>
+            </ul>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              3. How We Use Information
+            </h2>
+            <p>We use the data we collect solely to:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Host and render your public portfolio and published posts.</li>
+              <li>Authenticate your identity and manage your dashboard session.</li>
+              <li>Provide you with visitor statistics and metrics on your dashboard.</li>
+              <li>Maintain platform integrity, prevent abuse, and fix technical issues.</li>
+            </ul>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              4. Third-Party Infrastructure
+            </h2>
+            <p>
+              To maintain reliability and performance, we rely on trusted infrastructure providers:
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong className="text-(--lf-ink)">Authentication:</strong> Better Auth with GitHub and Google OAuth for secure sign-in.</li>
+              <li><strong className="text-(--lf-ink)">Media Storage:</strong> Cloudinary for hosting avatar and project images.</li>
+              <li><strong className="text-(--lf-ink)">Database:</strong> Managed PostgreSQL for profile and content storage.</li>
+              <li><strong className="text-(--lf-ink)">Analytics:</strong> Umami Analytics for cookieless, GDPR-compliant site metrics.</li>
+            </ul>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              5. Cookies &amp; Local Storage
+            </h2>
+            <p>We keep cookie usage to a minimum:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong className="text-(--lf-ink)">Essential Session Cookies:</strong> Required to keep you authenticated while using your dashboard.
+              </li>
+              <li>
+                <strong className="text-(--lf-ink)">Preferences (Local Storage):</strong> Retains client-side preferences such as your dark/light theme setting.
+              </li>
+              <li>
+                <strong className="text-(--lf-ink)">No Marketing Trackers:</strong> We do not use third-party advertising or retargeting cookies.
+              </li>
+            </ul>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              6. Security &amp; Data Retention
+            </h2>
+            <p>
+              We implement standard security controls, including HTTPS encryption in transit and secure database storage.
+            </p>
+            <p>
+              Your data is retained as long as your account remains active. When you delete content or your account, it is immediately removed from public display and purged from our active database.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              7. Your Rights &amp; Deletion
+            </h2>
+            <p>
+              You maintain complete ownership of your data. You can edit, update, or remove any portfolio content directly from your dashboard at any time. If you wish to delete your account entirely, you can do so from your settings or by contacting our maintainers.
+            </p>
+          </section>
+
+          <section className="border-t border-(--lf-border) pt-8 space-y-3">
+            <h2 className="font-serif-display text-2xl font-normal text-(--lf-ink)">
+              8. Contact Us
+            </h2>
+            <p>
+              If you have any questions or feedback regarding this Privacy Policy, please open an issue on our{' '}
               <Link
-                href="/terms"
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-(--lf-ink) hover:underline underline-offset-4"
+                href="https://github.com/Angshuman09/lazyfolio/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-(--lf-ink) underline underline-offset-4 decoration-(--lf-border) hover:decoration-(--lf-ink) transition-colors"
               >
-                Read Terms of Service <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-        </aside>
-
-        <main className="lg:col-span-8 space-y-12">
-          <section id="overview" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                1. Overview &amp; Philosophy
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>
-                Lazyfolio (<strong className="text-(--lf-ink)">"we", "us", or "our"</strong>) operates the platform accessible at <code className="bg-(--lf-bg) px-2 py-0.5 rounded text-(--lf-ink) font-mono text-xs">lazyfolio.in</code> and related services. Lazyfolio allows creators, engineers, and designers to quickly publish developer portfolios, personal link pages, and blogs.
-              </p>
-              <p>
-                Our core philosophy is simple: <strong className="text-(--lf-ink)">your portfolio belongs to you</strong>. We do not monetize your personal information, sell data to third-party ad brokers, or track you across the web. The code for Lazyfolio is open-source and transparently available for community audit on GitHub.
-              </p>
-            </div>
-          </section>
-
-          <section id="data-collection" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Database className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                2. Information We Collect
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-6 text-sm text-(--lf-muted) leading-relaxed">
-              <div>
-                <h3 className="font-semibold text-(--lf-ink) text-base mb-2">A. Account &amp; Authentication Data</h3>
-                <p>
-                  When you sign up using OAuth providers (such as GitHub or Google), we receive basic authentication details: your name, primary email address, account ID, and profile picture avatar. We do not receive or store your third-party account passwords.
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-(--lf-border)">
-                <h3 className="font-semibold text-(--lf-ink) text-base mb-2">B. Profile &amp; Portfolio Content</h3>
-                <p>
-                  Information you voluntarily provide when creating your Lazyfolio profile, including:
-                </p>
-                <ul className="list-disc list-inside mt-2 space-y-1.5 pl-2 text-(--lf-muted)">
-                  <li>Claimed username (e.g., <code className="bg-(--lf-bg) px-1.5 py-0.5 rounded font-mono text-xs text-(--lf-ink)">lazyfolio.in/yourname</code>)</li>
-                  <li>Bio, job titles, location, and social links (GitHub, X/Twitter, LinkedIn, personal website)</li>
-                  <li>Work experience, projects, skills, and code snippets</li>
-                  <li>Blog articles, drafts, and published posts</li>
-                  <li>Custom images and assets uploaded to your portfolio</li>
-                </ul>
-              </div>
-
-              <div className="pt-4 border-t border-(--lf-border)">
-                <h3 className="font-semibold text-(--lf-ink) text-base mb-2">C. Privacy-Preserving Public Analytics</h3>
-                <p>
-                  To provide you with visitor insights on your public portfolio, we use privacy-focused analytics (via Umami). We collect aggregated statistics such as page views, country-level geography, browser device types, and clicked external links. This data is collected without storing personal IP addresses or creating persistent user tracking profiles.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section id="data-usage" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Eye className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                3. How We Use Your Data
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>We use the collected information exclusively to:</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border) space-y-1">
-                  <span className="font-semibold text-(--lf-ink) block">Host &amp; Deliver Profiles</span>
-                  <span className="text-xs">Render your portfolio, blog posts, and public links across web browsers globally.</span>
-                </div>
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border) space-y-1">
-                  <span className="font-semibold text-(--lf-ink) block">Authentication &amp; Security</span>
-                  <span className="text-xs">Verify your legal identity and session when managing your account dashboard.</span>
-                </div>
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border) space-y-1">
-                  <span className="font-semibold text-(--lf-ink) block">Dashboard Analytics</span>
-                  <span className="text-xs">Show you total visitor counts, popular blog posts, and link click trends.</span>
-                </div>
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border) space-y-1">
-                  <span className="font-semibold text-(--lf-ink) block">Platform Maintenance</span>
-                  <span className="text-xs">Prevent platform abuse, spam, broken routes, and security vulnerabilities.</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="third-parties" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Server className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                4. Third-Party Infrastructure &amp; Services
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>
-                To provide high availability and fast response times, Lazyfolio relies on trusted third-party service providers. Data processed by these providers is governed by their respective privacy commitments:
-              </p>
-              
-              <div className="space-y-3 pt-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-(--lf-bg) border border-(--lf-border) gap-2">
-                  <div>
-                    <strong className="text-(--lf-ink)">Better Auth / OAuth Providers</strong>
-                    <p className="text-xs text-(--lf-sub)">GitHub and Google for secure identity verification.</p>
-                  </div>
-                  <span className="text-xs font-mono text-(--lf-muted) bg-(--lf-surface) px-2.5 py-1 rounded-md border border-(--lf-border) w-fit">Authentication</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-(--lf-bg) border border-(--lf-border) gap-2">
-                  <div>
-                    <strong className="text-(--lf-ink)">Cloudinary</strong>
-                    <p className="text-xs text-(--lf-sub)">Secure media storage for user avatar images and uploaded project banners.</p>
-                  </div>
-                  <span className="text-xs font-mono text-(--lf-muted) bg-(--lf-surface) px-2.5 py-1 rounded-md border border-(--lf-border) w-fit">Media CDN</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-(--lf-bg) border border-(--lf-border) gap-2">
-                  <div>
-                    <strong className="text-(--lf-ink)">PostgreSQL Database Provider</strong>
-                    <p className="text-xs text-(--lf-sub)">Encrypted storage for structured user profile data and blog posts.</p>
-                  </div>
-                  <span className="text-xs font-mono text-(--lf-muted) bg-(--lf-surface) px-2.5 py-1 rounded-md border border-(--lf-border) w-fit">Database</span>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl bg-(--lf-bg) border border-(--lf-border) gap-2">
-                  <div>
-                    <strong className="text-(--lf-ink)">Umami Analytics</strong>
-                    <p className="text-xs text-(--lf-sub)">Cookieless, GDPR-compliant site analytics for visitor metrics.</p>
-                  </div>
-                  <span className="text-xs font-mono text-(--lf-muted) bg-(--lf-surface) px-2.5 py-1 rounded-md border border-(--lf-border) w-fit">Analytics</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="cookies" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Cookie className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                5. Cookies &amp; Local Storage
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>
-                We keep cookie usage to an absolute minimum.
-              </p>
-              <ul className="list-disc list-inside space-y-2 pl-2">
-                <li><strong className="text-(--lf-ink)">Strictly Necessary Session Cookies:</strong> Used exclusively to maintain your logged-in session state when you navigate the dashboard.</li>
-                <li><strong className="text-(--lf-ink)">Preferences (Local Storage):</strong> Stores client-side UI choices such as your light/dark theme preference.</li>
-                <li><strong className="text-(--lf-ink)">No Marketing/Ad Trackers:</strong> We do not place third-party advertising cookies or cross-site tracking scripts on your device.</li>
-              </ul>
-            </div>
-          </section>
-
-          <section id="data-security" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Lock className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                6. Security &amp; Data Retention
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>
-                We implement modern industry-standard security controls including HTTPS transport layer encryption, secure database queries, and tokenized session authorization.
-              </p>
-              <p>
-                We retain your account data and portfolio content for as long as your account remains active. If you delete content or your account, it is immediately unlinked from public access and removed from our active database.
-              </p>
-            </div>
-          </section>
-
-          <section id="user-rights" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <Trash2 className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                7. Your Rights &amp; Account Deletion
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>You maintain full authority over your data:</p>
-              <div className="space-y-3">
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border)">
-                  <strong className="text-(--lf-ink) block mb-1">Access &amp; Edit</strong>
-                  <span>You can update your username, bio, projects, links, and blog posts at any time directly through your dashboard.</span>
-                </div>
-                <div className="p-4 rounded-xl bg-(--lf-bg) border border-(--lf-border)">
-                  <strong className="text-(--lf-ink) block mb-1">Account &amp; Content Erasure</strong>
-                  <span>If you wish to permanently delete your Lazyfolio profile and all associated data, you can initiate account deletion within your profile settings or reach out directly to our repository maintainer.</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section id="contact" className="scroll-mt-28 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink)">
-                <HelpCircle className="w-5 h-5" />
-              </div>
-              <h2 className="font-serif-display text-2xl md:text-3xl font-normal text-(--lf-ink)">
-                8. Contact Us &amp; Open Source
-              </h2>
-            </div>
-            <div className="p-6 md:p-8 rounded-2xl border border-(--lf-border) bg-(--lf-surface) space-y-4 text-sm text-(--lf-muted) leading-relaxed">
-              <p>
-                As an open-source project, we welcome community feedback, questions, and auditing. If you have privacy questions or wish to report an issue:
-              </p>
-              <div className="flex flex-wrap gap-4 pt-2">
-                <Link
-                  href="https://github.com/Angshuman09/lazyfolio/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-(--lf-ink) text-(--lf-bg) text-xs font-semibold hover:opacity-90 transition-opacity"
-                >
-                  <FileText className="w-4 h-4" /> Open GitHub Issue
-                </Link>
-                <Link
-                  href="https://x.com/angshuhere"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-(--lf-border) bg-(--lf-bg) text-(--lf-ink) text-xs font-semibold hover:bg-(--lf-border) transition-colors"
-                >
-                  Contact Maintainer (@angshuhere)
-                </Link>
-              </div>
-            </div>
+                GitHub Issues
+              </Link>{' '}
+              page or reach out on{' '}
+              <Link
+                href="https://x.com/angshuhere"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-(--lf-ink) underline underline-offset-4 decoration-(--lf-border) hover:decoration-(--lf-ink) transition-colors"
+              >
+                X (@angshuhere)
+              </Link>.
+            </p>
           </section>
         </main>
       </div>

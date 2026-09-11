@@ -37,11 +37,10 @@ export default function Auth() {
 
           <div className="flex flex-col gap-2">
             <p
-              className="font-serif-display text-[1.9rem] font-normal leading-tight text-[#F5EFE4] max-w-[300px]"
+              className="font-serif-display text-[1.9rem] font-normal leading-tight text-[#F5EFE4] text-nowrap max-w-75"
               style={{ textShadow: "0 1px 12px rgba(0,0,0,0.3)" }}
             >
-              Your work,{" "}
-              <em className="italic text-[#E8C98A]">beautifully</em> shared.
+              Your work,{" "}<em className="italic text-[#E8C98A]">beautifully</em> shared.
             </p>
             <p className="text-[0.8rem] font-light text-[#F5EFE4]/65 tracking-wide">
               No deployment. No setup. Just a link.
@@ -63,9 +62,6 @@ export default function Auth() {
 
         <div className="w-full max-w-[340px]">
           <div className="mb-10">
-            <p className="text-[0.68rem] font-medium tracking-[0.14em] text-[#C6A87B] mb-3">
-              Welcome back
-            </p>
             <h2 className="font-serif-display text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15] mb-2">
               Hello,{" "}
               <span className="text-[#8C6B3E]">Senpai.</span>

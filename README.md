@@ -54,13 +54,7 @@ Most portfolio sites take an evening (or a weekend) you didn't want to spend pic
 
 ## Preview
 
-### Dashboard
-
 ![Lazyfolio Dashboard Preview](./public/preview.png)
-
-### Write & Publish Blogs
-
-![Write & Publish Blogs](./public/blog.png)
 
 ---
 
