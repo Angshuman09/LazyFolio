@@ -18,6 +18,12 @@ import Image from "next/image";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import ProfileForm from "@/components/dashboard/profile-form";
 import LinksForm from "@/components/dashboard/links/links-form";
 import { detectType } from "@/lib/utils/links";
@@ -578,9 +584,22 @@ export default function DashboardPage() {
           <GlobalSaveButton disabled={!profile?.username && tab !== "profile"} />
 
           {!isPending && (
-            <button onClick={() => setProfileMenuOpen(true)}>
-              <UserAvatar user={session?.user} />
-            </button>
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setProfileMenuOpen((prev) => !prev)}
+                    className="rounded-full cursor-pointer transition-transform active:scale-95 focus:outline-none"
+                    aria-label="Account menu"
+                  >
+                    <UserAvatar user={session?.user} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="end" className="text-[0.72rem] font-medium">
+                  {session?.user?.name || "Account"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
 
           {profileMenuOpen && (
@@ -589,6 +608,7 @@ export default function DashboardPage() {
               setProfileMenuOpen={setProfileMenuOpen}
               signOut={signOut}
               router={router}
+              username={profile?.username || username}
             />
           )}
         </div>

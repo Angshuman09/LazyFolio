@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./user-avatar";
 import { signOut } from "@/lib/auth/auth-client";
 import ProfileMenuOpen from "./profile-menu-open";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const NAV_LEFT = [
   { label: "Features", href: "/#features" },
@@ -98,12 +104,22 @@ const Navbar = () => {
               >
                 Dashboard
               </Button>
-              <button
-                className="lf-focus rounded-full cursor-pointer"
-                onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-              >
-                <UserAvatar user={session.user} />
-              </button>
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="lf-focus rounded-full cursor-pointer transition-transform active:scale-95"
+                      onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                      aria-label="Account menu"
+                    >
+                      <UserAvatar user={session.user} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="end" className="text-[0.72rem] font-medium">
+                    {session.user.name || "Account"}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               {profileMenuOpen && (
                 <ProfileMenuOpen

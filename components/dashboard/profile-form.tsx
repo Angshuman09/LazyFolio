@@ -84,6 +84,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
+  const [removeBanner, setRemoveBanner] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [imageSaved, setImageSaved] = useState(false);
 
@@ -187,11 +189,11 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
   };
 
   const handleSubmitImages = async () => {
-    if (!avatarFile && !bannerFile) return;
+    if (!avatarFile && !bannerFile && !removeAvatar && !removeBanner) return;
     setImageLoading(true);
     try {
-      let avatarUrl: string | undefined;
-      let avatarPublicId: string | undefined;
+      let avatarUrl: string | null | undefined = removeAvatar ? null : undefined;
+      let avatarPublicId: string | null | undefined = removeAvatar ? null : undefined;
       if (avatarFile) {
         const formData = new FormData();
         formData.append("file", avatarFile);
@@ -202,8 +204,8 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         avatarPublicId = data.publicId;
       }
 
-      let bannerUrl: string | undefined;
-      let bannerPublicId: string | undefined;
+      let bannerUrl: string | null | undefined = removeBanner ? null : undefined;
+      let bannerPublicId: string | null | undefined = removeBanner ? null : undefined;
       if (bannerFile) {
         const formData = new FormData();
         formData.append("file", bannerFile);
@@ -228,13 +230,15 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to save images");
 
-      toast.success("Images saved successfully");
+      toast.success("Photos updated successfully");
       setImageSaved(true);
       setTimeout(() => setImageSaved(false), 2500);
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
 
       setAvatarFile(null);
       setBannerFile(null);
+      setRemoveAvatar(false);
+      setRemoveBanner(false);
       setValue("avatar", undefined);
       setValue("banner", undefined);
     } catch (err: any) {
@@ -244,10 +248,10 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
     }
   };
 
-  const currentBanner = bannerPreview || profile?.banner;
-  const currentAvatar = avatarPreview || profile?.avatar;
+  const currentBanner = removeBanner ? null : (bannerPreview || profile?.banner);
+  const currentAvatar = removeAvatar ? null : (avatarPreview || profile?.avatar);
 
-  const hasPendingImages = !!(avatarFile || bannerFile);
+  const hasPendingImages = !!(avatarFile || bannerFile || removeAvatar || removeBanner);
   const showSaveButton = hasPendingImages || imageLoading;
 
   return (
@@ -274,49 +278,44 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
         </div>
       )}
 
-<section className="mb-6 rounded-lg border border-(--lf-border) bg-(--lf-surface) p-4 sm:p-5">
-  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-    <label
-      htmlFor="username-input"
-      className="shrink-0 font-serif-display text-[1rem] text-(--lf-ink) whitespace-nowrap"
-    >
-      Claim a place for your work:
-    </label>
-
-    <div className="flex h-12 w-full sm:flex-1 items-center overflow-hidden rounded-lg border border-(--lf-border) bg-(--lf-bg) pr-1.5 transition-colors focus-within:border-(--lf-tan) focus-within:shadow-[0_0_0_3px_var(--lf-accent-soft)]">
-      <span className="hidden sm:inline pl-4 font-mono text-[0.72rem] text-(--lf-dimmed)">https://</span>
-      <input
-        id="username-input"
-        {...register("username")}
-        placeholder="yourname"
-        aria-label="Choose your Lazyfolio address"
-        className="min-w-0 flex-1 bg-transparent px-3 font-mono text-[0.82rem] font-medium text-(--lf-ink) outline-none placeholder:text-(--lf-dimmed)"
-      />
-      <button
-        type="button"
-        disabled={loading || !dirtyFields.username}
-        onClick={handleSubmitUsername}
-        aria-label="Claim this address"
-        title="Claim this address"
-        className="group inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-(--lf-ink) text-(--lf-bg) cursor-pointer hover:opacity-85 active:scale-[0.95] disabled:cursor-not-allowed disabled:opacity-40 transition-all duration-150"
-      >
-        {loading ? (
-          <Loader2 size={15} className="animate-spin" />
-        ) : (
-          <ArrowRight
-            size={16}
-            className="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+      <section className="mb-6 rounded-xl border border-(--lf-border) bg-(--lf-surface) p-3 sm:p-3.5 transition-colors">
+        <div className="flex h-10 w-full items-center overflow-hidden rounded-lg border border-(--lf-border) bg-(--lf-bg) pl-3 pr-1.5 transition-all focus-within:border-(--lf-ink) focus-within:ring-1 focus-within:ring-(--lf-ink)/20">
+          <span className="font-mono text-[0.75rem] text-(--lf-dimmed) select-none shrink-0 font-medium">
+            https://{portfolioDomain || "lazyfolio.in"}/
+          </span>
+          <input
+            id="username-input"
+            {...register("username")}
+            placeholder="yourname"
+            aria-label="Portfolio username"
+            className="min-w-0 flex-1 bg-transparent px-1.5 font-mono text-[0.8rem] font-medium text-(--lf-ink) outline-none placeholder:text-(--lf-dimmed)"
           />
-        )}
-      </button>
-    </div>
-  </div>
+          <button
+            type="button"
+            disabled={loading || !dirtyFields.username}
+            onClick={handleSubmitUsername}
+            aria-label="Save handle"
+            className="group inline-flex h-7.5 px-3 shrink-0 items-center justify-center gap-1 rounded-md bg-(--lf-ink) text-(--lf-surface) text-[0.72rem] font-medium cursor-pointer hover:opacity-90 active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 transition-all font-sans"
+          >
+            {loading ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <>
+                <span>Save</span>
+                <ArrowRight
+                  size={13}
+                  className="transition-transform duration-150 group-hover:translate-x-0.5"
+                />
+              </>
+            )}
+          </button>
+        </div>
 
-  <p className="mt-3 text-[0.72rem] leading-relaxed text-(--lf-muted)">
-    Use 3-30 letters, numbers, or underscores. This is the link you will share everywhere.
-  </p>
-  <FieldError message={errors.username?.message} />
-</section>
+        <p className="mt-2 text-[0.68rem] text-(--lf-muted)">
+          Use 3-30 letters, numbers, or underscores.
+        </p>
+        <FieldError message={errors.username?.message} />
+      </section>
 
       {!profile?.username ? (
         <div className="p-10 border border-(--lf-border) rounded-2xl bg-(--lf-surface) text-center flex flex-col items-center gap-3">
@@ -342,6 +341,19 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                   alt="Banner"
                   className="w-full h-full object-cover"
                 />
+              ) : removeBanner ? (
+                <div className="w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-(--lf-border) to-(--lf-tan)/20 text-center px-4">
+                  <span className="text-[0.75rem] font-medium text-amber-600 dark:text-amber-400 mb-1">
+                    Banner will be removed upon saving
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setRemoveBanner(false)}
+                    className="text-[0.7rem] text-(--lf-muted) hover:text-(--lf-ink) underline cursor-pointer"
+                  >
+                    Undo removal
+                  </button>
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-(--lf-border) to-(--lf-tan)/40">
                   <div className="flex flex-col items-center gap-1.5 text-(--lf-muted) opacity-50">
@@ -351,15 +363,36 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                 </div>
               )}
 
-              <label
-                htmlFor="banner-upload"
-                className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/banner:bg-black/30 cursor-pointer transition-all duration-200"
-              >
-                <div className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-black/70 text-white text-[0.72rem] font-medium opacity-0 group-hover/banner:opacity-100 transition-opacity duration-200 backdrop-blur-sm">
+              {/* Hover Overlay Controls - ONLY visible on hover */}
+              <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/0 group-hover/banner:bg-black/30 transition-all duration-200 pointer-events-none group-hover/banner:pointer-events-auto">
+                <label
+                  htmlFor="banner-upload"
+                  className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-black/75 hover:bg-black/90 text-white text-[0.72rem] font-medium opacity-0 group-hover/banner:opacity-100 transition-all duration-200 backdrop-blur-sm cursor-pointer shadow-sm"
+                >
                   <ImageIcon size={12} />
-                  Change banner
-                </div>
-              </label>
+                  <span>{currentBanner ? "Change banner" : "Upload banner"}</span>
+                </label>
+
+                {currentBanner && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setBannerFile(null);
+                      if (bannerPreview) URL.revokeObjectURL(bannerPreview);
+                      setBannerPreview(null);
+                      setRemoveBanner(true);
+                      setValue("banner", undefined);
+                    }}
+                    className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-black/75 hover:bg-red-600 text-white text-[0.72rem] font-medium opacity-0 group-hover/banner:opacity-100 transition-all duration-200 backdrop-blur-sm cursor-pointer shadow-sm"
+                  >
+                    <X size={12} />
+                    <span>Remove</span>
+                  </button>
+                )}
+              </div>
+
               <input
                 id="banner-upload"
                 type="file"
@@ -370,31 +403,17 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                   register("banner").onChange(e);
                   const file = e.target.files?.[0] ?? null;
                   setBannerFile(file);
+                  setRemoveBanner(false);
                   if (file) {
                     if (bannerPreview) URL.revokeObjectURL(bannerPreview);
                     setBannerPreview(URL.createObjectURL(file));
                   }
                 }}
               />
-
-              {bannerFile && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBannerFile(null);
-                    if (bannerPreview) URL.revokeObjectURL(bannerPreview);
-                    setBannerPreview(null);
-                    setValue("banner", undefined);
-                  }}
-                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black/90 transition-colors z-10"
-                >
-                  <X size={11} />
-                </button>
-              )}
             </div>
 
             <div className="px-5 pb-5 pt-0">
-              <div className="relative -mt-10 mb-3 w-fit">
+              <div className="group/avatar-box relative -mt-10 mb-3 w-fit">
                 <label
                   htmlFor="avatar-upload"
                   className="block w-20 h-20 rounded-full border-3 border-(--lf-surface) bg-(--lf-border) cursor-pointer overflow-hidden relative group/avatar shadow-sm"
@@ -417,6 +436,28 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                     />
                   </div>
                 </label>
+
+                {/* Avatar Remove Cross Button - ONLY visible on hover */}
+                {currentAvatar && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setAvatarFile(null);
+                      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+                      setAvatarPreview(null);
+                      setRemoveAvatar(true);
+                      setValue("avatar", undefined);
+                    }}
+                    className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-(--lf-surface) border border-(--lf-border) text-(--lf-muted) hover:text-red-600 dark:hover:text-red-400 hover:border-red-500/40 flex items-center justify-center opacity-0 group-hover/avatar-box:opacity-100 transition-opacity duration-150 z-20 shadow-sm cursor-pointer"
+                    title="Remove profile photo"
+                    aria-label="Remove profile photo"
+                  >
+                    <X size={12} />
+                  </button>
+                )}
+
                 <input
                   id="avatar-upload"
                   type="file"
@@ -427,25 +468,25 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
                     register("avatar").onChange(e);
                     const file = e.target.files?.[0] ?? null;
                     setAvatarFile(file);
+                    setRemoveAvatar(false);
                     if (file) {
                       if (avatarPreview) URL.revokeObjectURL(avatarPreview);
                       setAvatarPreview(URL.createObjectURL(file));
                     }
                   }}
                 />
-                {avatarFile && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAvatarFile(null);
-                      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
-                      setAvatarPreview(null);
-                      setValue("avatar", undefined);
-                    }}
-                    className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-black/70 text-white flex items-center justify-center z-10"
-                  >
-                    <X size={9} />
-                  </button>
+
+                {removeAvatar && (
+                  <div className="mt-1 flex items-center gap-1 text-[0.68rem] text-amber-600 dark:text-amber-400 font-mono">
+                    <span>Photo removed</span>
+                    <button
+                      type="button"
+                      onClick={() => setRemoveAvatar(false)}
+                      className="text-(--lf-muted) hover:text-(--lf-ink) underline cursor-pointer ml-1 font-sans"
+                    >
+                      Undo
+                    </button>
+                  </div>
                 )}
               </div>
 
