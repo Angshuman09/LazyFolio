@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { trackLinkClick } from "@/lib/utils/analytics";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,9 +9,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Bad request" }, { status: 400 });
     }
 
-    await trackLinkClick(profileId, label);
+    const rawUrl = process.env.INSIGHTS_SERVICE_URL?.replace(/\/+$/, "");
+    if (!rawUrl) {
+      return NextResponse.json({ ok: true });
+    }
+
+    const endpoint = rawUrl.endsWith("/api/v1")
+    ? `${rawUrl}/track`
+    : `${rawUrl}/api/v1/track`;
+
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        profileId,
+        eventType: "click",
+        label,
+      }),
+    });
+
     return NextResponse.json({ ok: true });
-  } catch {
+  } catch(err) {
+    console.error("failed to forward link click:", err);
     return NextResponse.json({ ok: false }, { status: 200 });
   }
 }

@@ -1,4 +1,4 @@
-import { Env } from "../types/env";
+import { Env } from "../types";
 import { TinybirdEvent, RangeKey, InsightData } from "../models/event.model";
 
 export class TinybirdService {
@@ -37,7 +37,6 @@ export class TinybirdService {
     const params = `profile_id=${encodeURIComponent(profileId)}&start_date=${encodeURIComponent(startDate)}&end_date=${encodeURIComponent(endDate)}`;
     const headers = { Authorization: `Bearer ${env.TINYBIRD_API_TOKEN}` };
 
-    // Call all 5 Tinybird pipes in parallel
     const [pvRes, clicksRes, countriesRes, devicesRes, seriesRes] = await Promise.all([
       fetch(`${baseUrl}/v0/pipes/get_pageviews.json?${params}`, { headers }),
       fetch(`${baseUrl}/v0/pipes/get_top_clicks.json?${params}`, { headers }),
