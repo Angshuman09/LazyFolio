@@ -116,8 +116,6 @@ NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-umami-website-id
 NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
 ```
 
-> ⚠️ Only variables prefixed with `NEXT_PUBLIC_` are safe to expose to the browser. Never prefix secrets (API secrets, auth secrets) with `NEXT_PUBLIC_`.
-
 **4. Run database migrations**
 
 ```bash

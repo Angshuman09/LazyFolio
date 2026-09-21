@@ -20,7 +20,7 @@ import {
 } from "@/lib/cache/dashboard-drafts";
 import { Props } from "@/lib/types/blogs";
 import { BlogCard } from "./blog-card";
-import { MarkdownEditor } from "./markdown-editor";
+import { TiptapEditor } from "./tiptap/TiptapEditor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
 import { useSectionSave } from "@/hooks/use-section-save";
 
@@ -211,7 +211,7 @@ export default function BlogsForm({ profile, formRef, onSubmit, mode = "EXTERNAL
       </form>
 
       {activeEditorIdx !== null && (
-        <MarkdownEditor
+        <TiptapEditor
           index={activeEditorIdx}
           control={control}
           register={register}

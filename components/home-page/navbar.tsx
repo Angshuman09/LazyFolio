@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Star, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -28,10 +28,11 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [stars, setStars] = useState<number | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
-  const dark = theme === "light";
+  const isDark = theme === "dark";
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -39,6 +40,13 @@ const Navbar = () => {
       document.documentElement.classList.contains("dark") ? "dark" : "light",
     );
   }, [setTheme]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     fetch("https://api.github.com/repos/Angshuman09/lazyfolio")
@@ -52,47 +60,58 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-50 bg-(--lf-black)/90 backdrop-blur-md border-b border-(--lf-border-alpha) px-6 md:px-12 py-3.5 transition-all duration-300">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <ul className="hidden md:flex gap-8 text-[0.8rem] text-(--lf-muted) font-medium tracking-wide">
+    <nav
+      className={
+        "sticky top-0 z-50 bg-(--lf-bg)/80 backdrop-blur-xl px-6 md:px-12 transition-all duration-300"}
+    >
+      <div className="max-w-7xl mx-auto grid grid-cols-[1fr_auto_1fr] items-center py-3.5">
+        {/* Left — primary nav (desktop only) */}
+        <ul className="hidden md:flex items-center gap-1 text-[0.8rem] text-(--lf-muted) font-medium tracking-wide">
           {NAV_LEFT.map((item) => (
             <li key={item.label}>
               <Link
                 href={item.href}
-                className="lf-focus rounded-sm hover:text-(--lf-ink) transition-colors duration-150"
+                className="lf-focus rounded-full px-3 py-1.5 hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-colors duration-150"
               >
                 {item.label}
               </Link>
             </li>
           ))}
         </ul>
+        {/* Mobile spacer keeps the logo centered in the grid */}
+        <span className="md:hidden" />
 
+        {/* Center — wordmark (true center via grid, no absolute) */}
         <span
           onClick={() => router.push("/")}
-          className="lf-focus rounded-sm font-serif-display cursor-pointer text-[1.3rem] font-medium tracking-tight absolute left-1/2 -translate-x-1/2 select-none hover:opacity-75 transition-opacity duration-150"
+          className="lf-focus rounded-sm font-serif-display cursor-pointer text-[1.3rem] font-medium tracking-tight select-none hover:opacity-75 transition-opacity duration-150"
         >
           Lazyfolio
         </span>
 
-        {/* Right actions */}
-        <div className="hidden md:flex items-center gap-4">
+        {/* Right — actions */}
+        <div className="hidden md:flex items-center justify-end gap-3">
           <Link
             href="https://github.com/Angshuman09/lazyfolio"
             target="_blank"
             rel="noopener noreferrer"
-            className="lf-focus hover-lift flex items-center gap-1.5 rounded-full border border-(--lf-border) bg-(--lf-surface) px-3 py-2 text-[0.78rem] font-medium text-(--lf-ink) hover:bg-(--lf-border) transition-colors duration-150"
+            className="lf-focus group flex items-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) pl-3.5 pr-4 py-2 text-[0.78rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
           >
-            <Github className="h-3.5 w-3.5" suppressHydrationWarning />
-            <span>{stars !== null ? stars.toLocaleString() : "0"}</span>
+            <Star className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-20 dark:group-hover:fill-yellow-200 dark:group-hover:text-yellow-200 group-hover:fill-yellow-500 group-hover:text-yellow-500" />
+            <span className="tabular-nums">
+              {stars !== null ? stars.toLocaleString() : "—"}
+            </span>
           </Link>
 
           <button
-            className="lf-focus hover-lift inline-flex items-center justify-center w-9 h-9 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {dark ? <Sun size={14} /> : <Moon size={14} />}
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
+
+          <span className="h-4 w-px bg-(--lf-border)" aria-hidden="true" />
 
           {isPending ? (
             <div className="h-9 w-24 bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-full" />
@@ -133,24 +152,27 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push("/auth")}
-              className="lf-focus group bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem] border-2 border-(--lf-ink) font-semibold px-4 py-2 hover:opacity-80 transition-opacity flex items-center gap-1.5"
+              className="lf-focus group bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem] font-semibold pl-4 pr-1.5 py-1.5 hover:opacity-85 transition-opacity flex items-center gap-2"
             >
               Get started
-              <span className="btn-arrow w-4 h-4 bg-(--lf-surface) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[9px] font-bold leading-none">
-                ↗
-              </span>
+              <span
+            aria-hidden="true"
+            className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none"
+          >
+            ↗
+          </span>
             </button>
           )}
         </div>
 
         {/* Mobile controls */}
-        <div className="md:hidden flex items-center gap-2 ml-auto">
+        <div className="md:hidden flex items-center justify-end gap-2">
           <button
             className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {dark ? <Sun size={14} /> : <Moon size={14} />}
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
           <button
             className="lf-focus p-1.5 rounded-lg text-(--lf-muted) hover:text-(--lf-ink) transition-colors duration-150"
@@ -163,17 +185,18 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile menu */}
       <div
         className={[
-          "md:hidden absolute top-full left-0 right-0 bg-(--lf-surface) border-b border-(--lf-border-alpha) shadow-lg flex flex-col gap-3 px-6 overflow-hidden transition-all duration-300 ease-out",
-          menuOpen ? "py-5 max-h-72 opacity-100" : "max-h-0 py-0 opacity-0",
+          "md:hidden absolute top-full left-0 right-0 bg-(--lf-bg)/95 backdrop-blur-xl border-b border-(--lf-border) shadow-[0_20px_40px_-20px_rgba(0,0,0,0.25)] flex flex-col gap-1 px-6 overflow-hidden transition-all duration-300 ease-out",
+          menuOpen ? "py-4 max-h-80 opacity-100" : "max-h-0 py-0 opacity-0 pointer-events-none",
         ].join(" ")}
       >
         {NAV_LEFT.map((item) => (
           <Link
             key={item.label}
             href={item.href}
-            className="lf-focus text-[0.85rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+            className="lf-focus rounded-lg px-3 py-2.5 text-[0.85rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {item.label}
@@ -183,20 +206,22 @@ const Navbar = () => {
           href="https://github.com/Angshuman09/lazyfolio"
           target="_blank"
           rel="noopener noreferrer"
-          className="lf-focus flex items-center justify-center gap-2 rounded-full hover:border-(--lf-ink) border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
+          className="lf-focus mt-1 flex items-center justify-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) px-4 py-2.5 text-[0.8rem] font-medium text-(--lf-ink)"
         >
-          <Github className="h-4 w-4" suppressHydrationWarning />
-          <span>{stars !== null ? stars.toLocaleString() : "0"} stars</span>
+          <Star className="h-4 w-4" />
+          <span className="tabular-nums">
+            {stars !== null ? `${stars.toLocaleString()} stars` : "Star on GitHub"}
+          </span>
         </Link>
         {isPending ? (
-          <div className="h-11 w-full bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-xl" />
+          <div className="mt-1 h-11 w-full bg-stone-200 dark:bg-zinc-800 animate-pulse rounded-full" />
         ) : session?.user ? (
           <button
             onClick={() => {
               setMenuOpen(false);
               router.push("/dashboard");
             }}
-            className="lf-focus text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 border-(--lf-ink) px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
+            className="lf-focus mt-1 text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) px-3 py-3 rounded-full hover:opacity-85 transition-opacity"
           >
             Dashboard
           </button>
@@ -206,7 +231,7 @@ const Navbar = () => {
               setMenuOpen(false);
               router.push("/auth");
             }}
-            className="lf-focus text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) border-2 border-(--lf-ink) px-3 py-3 rounded-full hover:opacity-80 transition-opacity"
+            className="lf-focus mt-1 text-sm font-semibold bg-(--lf-ink) text-(--lf-surface) px-3 py-3 rounded-full hover:opacity-85 transition-opacity"
           >
             Get started
           </button>

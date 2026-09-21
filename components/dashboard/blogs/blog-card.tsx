@@ -6,6 +6,7 @@ import { BlogsSchema } from '@/lib/schemas/blogs';
 import { BlogsProfile } from '@/lib/types/blogs';
 import { hasFieldArrayErrors } from '@/lib/utils/utils';
 import { isValidUrl } from '@/lib/utils/links';
+import { getWordCount } from '@/lib/utils/tiptap-content';
 import { BookOpen, Check, ExternalLink, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import {  type FieldArrayWithId,
@@ -351,11 +352,11 @@ export function BlogCard({
                   {values?.content ? "Edit Content" : "Write Content"}
                   {values?.content ? (
                     <span className="text-xs text-(--lf-muted) font-normal">
-                      ({values.content.split(/\s+/).filter(Boolean).length} words)
+                      ({getWordCount(values.content)} words)
                     </span>
                   ) : (
                     <span className="text-xs text-(--lf-muted) font-normal italic">
-                      (Use Markdown & upload media)
+                      (Rich text editor)
                     </span>
                   )}
                 </button>

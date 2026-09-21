@@ -1,6 +1,6 @@
+import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
 const Footer = () => {
   const navColumns = [
     {
@@ -49,7 +49,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1.5 text-[0.75rem] text-(--lf-muted) hover:text-(--lf-ink) transition-colors duration-150 underline underline-offset-4 decoration-(--lf-border) w-fit"
             >
-              ★ Star on GitHub
+              <Star className="w-3 h-3" /> on GitHub
             </Link>
           </div>
 
@@ -78,17 +78,17 @@ const Footer = () => {
 
         <div className="max-w-7xl mx-auto mt-10 pb-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-[0.72rem] text-(--lf-sub)">
-            © {new Date().getFullYear()} Lazyfolio. Open-source &amp; free.
+            © {new Date().getFullYear()} Lazyfolio. All rights reserved.
           </p>
           <p className="text-[0.72rem] text-(--lf-sub) flex justify-center items-center gap-3">
             Built with ♥ by{" "}
             <Link
-              href="https://github.com/Angshuman09"
+              href="https://angshu.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-(--lf-ink) transition-colors underline underline-offset-2 decoration-(--lf-border)"
             >
-              <Image src="/angshuman.png" alt="Angshuman" width={30} height={30}/>
+              <Image src="/angshuman.png" alt="Angshuman" width={30} height={30} />
             </Link>
           </p>
         </div>

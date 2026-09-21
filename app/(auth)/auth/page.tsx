@@ -17,7 +17,7 @@ export default function Auth() {
 
       <div className="relative hidden md:flex w-[52%] min-h-screen shrink-0 overflow-hidden">
         <Image
-          src="/peace.jpeg"
+          src="/nature.png"
           alt="wheat field"
           fill
           className="object-cover object-bottom"
@@ -60,7 +60,7 @@ export default function Auth() {
           Back to home
         </Button>
 
-        <div className="w-full max-w-[340px]">
+        <div className="w-full max-w-85">
           <div className="mb-10">
             <h2 className="font-serif-display text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15] mb-2">
               Hello,{" "}

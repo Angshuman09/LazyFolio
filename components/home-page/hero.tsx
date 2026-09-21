@@ -79,7 +79,7 @@ const Hero = () => {
 
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
-      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-10 text-(--lf-ink)">
+      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)">
         <span className="block">Make the internet</span>
 
         <span className="block mt-2">
@@ -102,7 +102,7 @@ const Hero = () => {
         &gt;◡&lt;
       </p>
 
-      <div className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-16 px-4 sm:px-0">
+      <div className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0">
         <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-tan) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
           <span className="hidden sm:inline pl-5 text-[0.75rem] font-mono text-(--lf-dimmed)">
             https://
@@ -135,13 +135,10 @@ const Hero = () => {
         <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it's too late!</p>
       </div>
 
-      <div className="mt-15">
+      <div className="mt-12">
         <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-5 text-center text-(--lf-ink)">
           <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">
-            Everything you need.
-          </span>
-          <span className="italic tracking-wide text-[#d0bea3] font-semibold font-serif-display">
-            Nothing extra.
+          Everything you need to get things done
           </span>
         </h2>
 

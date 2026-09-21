@@ -4,6 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { parseMarkdown } from "@/lib/utils/markdown";
+import { generateHTML } from "@tiptap/html";
+import { htmlExtensions } from "@/components/dashboard/blogs/tiptap/extensions";
+import { isTiptapJson, getWordCount } from "@/lib/utils/tiptap-content";
 import { ArrowLeft, Calendar, BookOpen } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import { getPortfolioUrl } from "@/lib/utils/public-url";
@@ -56,7 +59,18 @@ export default async function PublicBlogPage(props: PageProps) {
     notFound();
   }
 
-  const previewHtml = await parseMarkdown(blog.content || "");
+  let previewHtml = "";
+  if (blog.content) {
+    if (isTiptapJson(blog.content)) {
+      try {
+        previewHtml = generateHTML(JSON.parse(blog.content), htmlExtensions);
+      } catch {
+        previewHtml = "";
+      }
+    } else {
+      previewHtml = await parseMarkdown(blog.content);
+    }
+  }
   
   const date = blog.createdAt;
 
@@ -109,7 +123,7 @@ export default async function PublicBlogPage(props: PageProps) {
             </span>
             <span className="flex items-center gap-1">
               <BookOpen size={12} />
-              {blog.content ? `${blog.content.split(/\s+/).filter(Boolean).length} words` : "0 words"}
+              {blog.content ? `${getWordCount(blog.content)} words` : "0 words"}
             </span>
           </div>
 

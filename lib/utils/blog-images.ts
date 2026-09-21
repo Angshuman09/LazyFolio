@@ -1,3 +1,8 @@
+import {
+  isTiptapJson,
+  extractPublicIdsFromTiptapJson,
+} from "@/lib/utils/tiptap-content";
+
 export type BlogImage = {
   alt: string;
   url: string;
@@ -79,6 +84,12 @@ export function extractBlogImages(content: string | null | undefined): BlogImage
 }
 
 export function extractBlogImagePublicIds(content: string | null | undefined) {
+  if (!content) return [];
+  // New Tiptap JSON format — walk image nodes
+  if (isTiptapJson(content)) {
+    return extractPublicIdsFromTiptapJson(content);
+  }
+  // Legacy markdown format — existing regex-based extraction
   return Array.from(
     new Set(extractBlogImages(content).map((image) => image.publicId)),
   );
