@@ -8,7 +8,7 @@ const CTA = () => {
   return (
     <section
       aria-label="Call to action"
-      className="max-w-5xl mx-auto px-5 md:px-6 py-20"
+      className="max-w-5xl mx-auto px-5 md:px-6 py-15"
     >
       <div className="bg-(--lf-surface) border border-(--lf-border) text-(--lf-ink) rounded-2xl px-6 sm:px-12 py-16 text-center shadow-[0_30px_70px_-30px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_70px_-30px_rgba(0,0,0,0.7)]">
         <h2 className="font-serif-display text-[clamp(2rem,5vw,3rem)] font-normal leading-tight mb-4">

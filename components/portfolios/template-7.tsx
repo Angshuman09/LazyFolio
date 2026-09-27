@@ -12,7 +12,7 @@ const config: TemplateThemeConfig = {
   pageStyle: {
     fontFamily: "'DM Sans', var(--font-sans), system-ui, sans-serif",
   },
-  containerClass: "mx-auto max-w-[780px] px-5 py-10 sm:px-8 sm:py-14",
+  containerClass: "mx-auto max-w-[680px] px-5 py-10 sm:px-8 sm:py-14",
   quoteClass:
     "mb-8 rotate-[-0.4deg] rounded-lg border-2 border-[#241513] bg-[#fef08a] px-4 py-3 text-[13px] font-bold leading-6 text-[#241513] shadow-[4px_4px_0_#241513]",
   heroClass:
@@ -27,7 +27,7 @@ const config: TemplateThemeConfig = {
   avatarSoloClass:
     "mb-5 h-[82px] w-[82px] rotate-[1deg] rounded-lg border-2 border-[#241513] bg-white object-cover shadow-[4px_4px_0_#241513]",
   nameClass:
-    "max-w-3xl text-[38px] font-black leading-[0.96] text-[#241513] sm:text-[62px]",
+    "max-w-3xl text-[38px] font-black leading-[0.96] text-[#241513] sm:text-[32px]",
   taglineClass:
     "mt-4 inline-flex rounded-md border-2 border-[#241513] bg-[#bae6fd] px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#241513]",
   bioClass:

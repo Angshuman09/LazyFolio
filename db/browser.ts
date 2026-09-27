@@ -63,12 +63,7 @@ export type Project = Prisma.ProjectModel
  */
 export type Blog = Prisma.BlogModel
 /**
- * Model PageView
+ * Model Subscription
  * 
  */
-export type PageView = Prisma.PageViewModel
-/**
- * Model LinkClick
- * 
- */
-export type LinkClick = Prisma.LinkClickModel
+export type Subscription = Prisma.SubscriptionModel

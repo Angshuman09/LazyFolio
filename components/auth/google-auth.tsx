@@ -4,7 +4,15 @@ import { createAuthClient } from "better-auth/client";
 import { useState } from "react";
 const authClient = createAuthClient();
 
-export const GoogleAuth = ({disable, setDisable}: {disable: boolean; setDisable: (disable: boolean) => void}) => {
+export const GoogleAuth = ({
+  disable,
+  setDisable,
+  className,
+}: {
+  disable: boolean;
+  setDisable: (disable: boolean) => void;
+  className?: string;
+}) => {
   const [isPending, setIsPending] = useState(false);
   const handleGoogleLogin = async () => {
     setIsPending(true);
@@ -19,11 +27,14 @@ export const GoogleAuth = ({disable, setDisable}: {disable: boolean; setDisable:
     <button
       onClick={handleGoogleLogin}
       disabled={isPending || disable}
-      className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-(--lf-bg) border-2 border-(--lf-border) rounded-full shadow-sm hover:bg-(--lf-surface) hover:border-(--lf-muted) transition-all duration-200 font-sans-body font-semibold text-[0.9rem] text-(--lf-ink) hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100"
+      className={
+        className ||
+        "w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl bg-[#1c1c1e] text-white hover:bg-black dark:bg-[#fafafa] dark:text-[#18181b] dark:hover:bg-white transition-all duration-200 font-sans text-sm font-medium shadow-xs hover:shadow-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+      }
     >
       {isPending ? (
         <svg
-          className="w-5 h-5 animate-spin text-(--lf-muted)"
+          className="w-4 h-4 animate-spin text-current"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -43,7 +54,7 @@ export const GoogleAuth = ({disable, setDisable}: {disable: boolean; setDisable:
           />
         </svg>
       ) : (
-        <svg className="w-5 h-5" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
           <path
             fill="#4285F4"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

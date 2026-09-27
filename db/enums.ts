@@ -26,3 +26,15 @@ export const LinkType = {
 } as const
 
 export type LinkType = (typeof LinkType)[keyof typeof LinkType]
+
+
+export const SubscriptionStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  CANCELLED: 'CANCELLED',
+  PAST_DUE: 'PAST_DUE',
+  EXPIRED: 'EXPIRED',
+  PENDING: 'PENDING'
+} as const
+
+export type SubscriptionStatus = (typeof SubscriptionStatus)[keyof typeof SubscriptionStatus]

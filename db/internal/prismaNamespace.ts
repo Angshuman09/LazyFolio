@@ -393,8 +393,7 @@ export const ModelName = {
   Experience: 'Experience',
   Project: 'Project',
   Blog: 'Blog',
-  PageView: 'PageView',
-  LinkClick: 'LinkClick'
+  Subscription: 'Subscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -410,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "profile" | "links" | "experience" | "project" | "blog" | "pageView" | "linkClick"
+    modelProps: "user" | "session" | "account" | "verification" | "profile" | "links" | "experience" | "project" | "blog" | "subscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1080,151 +1079,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    PageView: {
-      payload: Prisma.$PageViewPayload<ExtArgs>
-      fields: Prisma.PageViewFieldRefs
+    Subscription: {
+      payload: Prisma.$SubscriptionPayload<ExtArgs>
+      fields: Prisma.SubscriptionFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.PageViewFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload> | null
+          args: Prisma.SubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.PageViewFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         findFirst: {
-          args: Prisma.PageViewFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload> | null
+          args: Prisma.SubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.PageViewFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         findMany: {
-          args: Prisma.PageViewFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>[]
+          args: Prisma.SubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
         }
         create: {
-          args: Prisma.PageViewCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         createMany: {
-          args: Prisma.PageViewCreateManyArgs<ExtArgs>
+          args: Prisma.SubscriptionCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.PageViewCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>[]
+          args: Prisma.SubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
         }
         delete: {
-          args: Prisma.PageViewDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         update: {
-          args: Prisma.PageViewUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         deleteMany: {
-          args: Prisma.PageViewDeleteManyArgs<ExtArgs>
+          args: Prisma.SubscriptionDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.PageViewUpdateManyArgs<ExtArgs>
+          args: Prisma.SubscriptionUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.PageViewUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>[]
+          args: Prisma.SubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>[]
         }
         upsert: {
-          args: Prisma.PageViewUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PageViewPayload>
+          args: Prisma.SubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SubscriptionPayload>
         }
         aggregate: {
-          args: Prisma.PageViewAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePageView>
+          args: Prisma.SubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSubscription>
         }
         groupBy: {
-          args: Prisma.PageViewGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PageViewGroupByOutputType>[]
+          args: Prisma.SubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionGroupByOutputType>[]
         }
         count: {
-          args: Prisma.PageViewCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PageViewCountAggregateOutputType> | number
-        }
-      }
-    }
-    LinkClick: {
-      payload: Prisma.$LinkClickPayload<ExtArgs>
-      fields: Prisma.LinkClickFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.LinkClickFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.LinkClickFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        findFirst: {
-          args: Prisma.LinkClickFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.LinkClickFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        findMany: {
-          args: Prisma.LinkClickFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
-        }
-        create: {
-          args: Prisma.LinkClickCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        createMany: {
-          args: Prisma.LinkClickCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.LinkClickCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
-        }
-        delete: {
-          args: Prisma.LinkClickDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        update: {
-          args: Prisma.LinkClickUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        deleteMany: {
-          args: Prisma.LinkClickDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.LinkClickUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.LinkClickUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>[]
-        }
-        upsert: {
-          args: Prisma.LinkClickUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$LinkClickPayload>
-        }
-        aggregate: {
-          args: Prisma.LinkClickAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateLinkClick>
-        }
-        groupBy: {
-          args: Prisma.LinkClickGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.LinkClickGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.LinkClickCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.LinkClickCountAggregateOutputType> | number
+          args: Prisma.SubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SubscriptionCountAggregateOutputType> | number
         }
       }
     }
@@ -1417,26 +1342,21 @@ export const BlogScalarFieldEnum = {
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
 
 
-export const PageViewScalarFieldEnum = {
+export const SubscriptionScalarFieldEnum = {
   id: 'id',
-  profileId: 'profileId',
-  visitorHash: 'visitorHash',
-  country: 'country',
-  device: 'device',
-  createdAt: 'createdAt'
+  userId: 'userId',
+  dodoSubscriptionId: 'dodoSubscriptionId',
+  dodoCustomerId: 'dodoCustomerId',
+  status: 'status',
+  productId: 'productId',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type PageViewScalarFieldEnum = (typeof PageViewScalarFieldEnum)[keyof typeof PageViewScalarFieldEnum]
-
-
-export const LinkClickScalarFieldEnum = {
-  id: 'id',
-  profileId: 'profileId',
-  label: 'label',
-  createdAt: 'createdAt'
-} as const
-
-export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1543,6 +1463,20 @@ export type EnumBlogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'BlogType[]'
  */
 export type ListEnumBlogTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlogType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SubscriptionStatus'
+ */
+export type EnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SubscriptionStatus[]'
+ */
+export type ListEnumSubscriptionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SubscriptionStatus[]'>
     
 
 
@@ -1678,8 +1612,7 @@ export type GlobalOmitConfig = {
   experience?: Prisma.ExperienceOmit
   project?: Prisma.ProjectOmit
   blog?: Prisma.BlogOmit
-  pageView?: Prisma.PageViewOmit
-  linkClick?: Prisma.LinkClickOmit
+  subscription?: Prisma.SubscriptionOmit
 }
 
 /* Types for Logging */

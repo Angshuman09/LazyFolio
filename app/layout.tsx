@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: "Lazyfolio - Make the internet know You Exist.",
     description: "Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch >◡<",
     siteName:"Lazyfolio",
-    images:[{url:"/opengraph.png"}]
+    images:[{url:"/graph.png"}]
   }
 };
 

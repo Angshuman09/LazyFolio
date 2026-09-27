@@ -55,3 +55,26 @@ export const SECTIONSTerms = [
     },
     links: { where: { isenable: true } },
   } satisfies Prisma.ProfileSelect;
+
+export const features = [
+    {
+      title: "Full-Featured Tiptap Editor",
+      desc: "Rich typography, image uploads, inline code formatting, and full draft autosaving.",
+    },
+    {
+      title: "Custom Portfolio URLs",
+      desc: "Articles live directly on your personal portfolio under your custom domain or username.",
+    },
+    {
+      title: "Automatic SEO & Social Graph",
+      desc: "Pre-rendered OpenGraph previews and search-engine optimized metadata on every post.",
+    },
+    {
+      title: "Template Synced",
+      desc: "Your articles dynamically mirror your portfolio's selected theme style and dark mode.",
+    },
+    {
+      title: "Reader Engagement Insights",
+      desc: "Track views, click-throughs, and reader retention directly from your dashboard.",
+    },
+];

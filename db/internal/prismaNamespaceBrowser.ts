@@ -60,8 +60,7 @@ export const ModelName = {
   Experience: 'Experience',
   Project: 'Project',
   Blog: 'Blog',
-  PageView: 'PageView',
-  LinkClick: 'LinkClick'
+  Subscription: 'Subscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -230,26 +229,21 @@ export const BlogScalarFieldEnum = {
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
 
 
-export const PageViewScalarFieldEnum = {
+export const SubscriptionScalarFieldEnum = {
   id: 'id',
-  profileId: 'profileId',
-  visitorHash: 'visitorHash',
-  country: 'country',
-  device: 'device',
-  createdAt: 'createdAt'
+  userId: 'userId',
+  dodoSubscriptionId: 'dodoSubscriptionId',
+  dodoCustomerId: 'dodoCustomerId',
+  status: 'status',
+  productId: 'productId',
+  currentPeriodStart: 'currentPeriodStart',
+  currentPeriodEnd: 'currentPeriodEnd',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type PageViewScalarFieldEnum = (typeof PageViewScalarFieldEnum)[keyof typeof PageViewScalarFieldEnum]
-
-
-export const LinkClickScalarFieldEnum = {
-  id: 'id',
-  profileId: 'profileId',
-  label: 'label',
-  createdAt: 'createdAt'
-} as const
-
-export type LinkClickScalarFieldEnum = (typeof LinkClickScalarFieldEnum)[keyof typeof LinkClickScalarFieldEnum]
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {

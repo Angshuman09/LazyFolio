@@ -14,7 +14,7 @@ import {
 
 
 export async function POST(request: NextRequest) {
-  const { errorResponse, profile } = await verifySessionAndProfile();
+  const { errorResponse, profile, session } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
   try {
@@ -35,6 +35,27 @@ export async function POST(request: NextRequest) {
       (blog.content !== undefined && blog.content !== null
         ? "INTERNAL"
         : "EXTERNAL");
+
+    if (blogType === "INTERNAL") {
+      const subscription = await prisma.subscription.findUnique({
+        where: { userId: session!.user.id },
+      });
+      const isActive =
+        subscription?.status === "ACTIVE" &&
+        (!subscription.currentPeriodEnd ||
+          new Date(subscription.currentPeriodEnd) > new Date());
+
+      if (!isActive) {
+        return NextResponse.json(
+          {
+            error:
+              "An active $10 subscription is required to write and publish articles.",
+          },
+          { status: 403 },
+        );
+      }
+    }
+
     const validation =
       blogType === "INTERNAL"
         ? validateInternalBlog(blog)

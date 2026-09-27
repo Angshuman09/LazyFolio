@@ -14,7 +14,7 @@ const config: TemplateThemeConfig = {
       "linear-gradient(180deg, #11100e 0%, #191714 50%, #0f0e0c 100%)",
     fontFamily: "var(--font-sans), 'DM Sans', system-ui, sans-serif",
   },
-  containerClass: "mx-auto max-w-[780px] px-5 py-12 sm:px-8 sm:py-18",
+  containerClass: "mx-auto max-w-[680px] px-5 py-12 sm:px-8 sm:py-18",
   quoteClass:
     "mb-10 max-w-xl border-l border-[#c9a227]/55 pl-4 font-serif-display text-[17px] italic leading-7 text-[#c8bda7]",
   heroClass: "mb-8",
@@ -28,7 +28,7 @@ const config: TemplateThemeConfig = {
   avatarSoloClass:
     "w-20 h-20 rounded-lg object-cover border-1 border-[#3b352c] bg-[#171512]",
   nameClass:
-    "font-serif-display text-[44px] font-normal leading-[0.98] text-[#fff7df] pt-5 sm:text-[58px]",
+    "font-serif-display text-[24px] font-normal leading-[0.98] text-[#fff7df] pt-5 sm:text-[38px]",
   taglineClass:
     "mt-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#c9a227]",
   bioClass:

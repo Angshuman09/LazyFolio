@@ -18,6 +18,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   profile       Profile?
+  subscription  Subscription?
 
   @@unique([email])
   @@map("user")
@@ -182,3 +183,32 @@ enum LinkType {
   LINKEDIN
   CUSTOM
 }
+
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  PAST_DUE
+  EXPIRED
+  PENDING
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dodoSubscriptionId String?            @unique
+  dodoCustomerId     String?
+  status             SubscriptionStatus @default(INACTIVE)
+  productId          String?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([dodoSubscriptionId])
+  @@map("subscription")
+}
+

@@ -4,85 +4,118 @@ import { GoogleAuth } from "@/components/auth/google-auth";
 import { GithubAuth } from "@/components/auth/github-auth";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import Image from 'next/image';
-import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, Moon, Sun } from "lucide-react";
+import { useThemeStore } from "@/lib/utils/theme-store";
 
 export default function Auth() {
   const router = useRouter();
   const [disable, setDisable] = useState(false);
+  const theme = useThemeStore((s) => s.theme);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const setTheme = useThemeStore((s) => s.setTheme);
+  const isDark = theme === "dark";
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    setTheme(
+      document.documentElement.classList.contains("dark") ? "dark" : "light"
+    );
+  }, [setTheme]);
 
   return (
-    <div className="flex min-h-screen w-full bg-(--lf-bg) text-(--lf-ink)">
-
-      <div className="relative hidden md:flex w-[52%] min-h-screen shrink-0 overflow-hidden">
-        <Image
-          src="/nature.png"
-          alt="wheat field"
-          fill
-          className="object-cover object-bottom"
-          priority
-          quality={60}
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/5 to-black/55" />
-
-        <div className="relative z-10 flex flex-col justify-between p-10 h-full w-full">
-          <h1
-            onClick={() => router.push("/")}
-            className="font-serif-display text-[1.75rem] tracking-tight text-[#F5EFE4] cursor-pointer select-none"
-            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.25)" }}
-          >
-            Lazy<span className="font-bold text-[#E8C98A]">folio</span>
-          </h1>
-
-          <div className="flex flex-col gap-2">
-            <p
-              className="font-serif-display text-[1.9rem] font-normal leading-tight text-[#F5EFE4] text-nowrap max-w-75"
-              style={{ textShadow: "0 1px 12px rgba(0,0,0,0.3)" }}
-            >
-              Your work,{" "}<em className="italic text-[#E8C98A]">beautifully</em> shared.
-            </p>
-            <p className="text-[0.8rem] font-light text-[#F5EFE4]/65 tracking-wide">
-              No deployment. No setup. Just a link.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col flex-1 items-center justify-center px-8 py-16 relative bg-(--lf-bg)">
-
-        <Button
-          variant="ghost"
-          onClick={() => router.push("/")}
-          className="absolute top-6 right-6 text-(--lf-muted) hover:text-(--lf-ink) text-xs font-normal px-3"
+    <div className="min-h-screen w-full bg-(--lf-bg) text-(--lf-ink) flex flex-col justify-between p-5 sm:p-8 transition-colors duration-300">
+      {/* Top Header */}
+      <header className="w-full max-w-6xl mx-auto flex items-center justify-between">
+        <Link
+          href="/"
+          className="font-serif-display text-xl sm:text-2xl font-medium tracking-tight text-(--lf-ink) hover:opacity-75 transition-opacity"
         >
-          <ArrowLeft className="h-3 w-3 mr-1.5" />
-          Back to home
-        </Button>
+          Lazyfolio
+        </Link>
 
-        <div className="w-full max-w-85">
-          <div className="mb-10">
-            <h2 className="font-serif-display text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15] mb-2">
-              Hello,{" "}
-              <span className="text-[#8C6B3E]">Senpai.</span>
-            </h2>
-            <p className="text-[0.84rem] text-(--lf-muted) font-light leading-relaxed">
-              Sign in to manage your portfolio and settings.
+        <div className="flex items-center gap-2">
+          <button
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all"
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {isDark ? <Sun size={13} /> : <Moon size={13} />}
+          </button>
+
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/")}
+            className="text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) text-xs font-normal px-3 py-1.5 rounded-full cursor-pointer transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 mr-1.5" />
+            Back to home
+          </Button>
+        </div>
+      </header>
+
+      {/* Main Centered Auth Card */}
+      <main className="flex-1 flex items-center justify-center py-10 px-2 sm:px-4">
+        <div className="w-full max-w-[420px] bg-(--lf-bod) dark:bg-[#18181b] border border-(--lf-border) rounded-3xl p-7 sm:p-10 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.25)] transition-all">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <Link
+              href="/"
+              className="group inline-flex items-center justify-center cursor-pointer"
+              title="Lazyfolio Home"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-[#1c1c1e] dark:bg-[#27272a] flex items-center justify-center border border-black/5 dark:border-white/10 shadow-xs group-hover:scale-105 transition-transform duration-200">
+                <Image
+                  src="/logo-crop.png"
+                  alt="Lazyfolio Logo"
+                  width={34}
+                  height={34}
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </Link>
+          </div>
+
+          {/* Heading */}
+          <div className="text-center mb-8">
+            <h1 className="font-serif-display text-[2rem] sm:text-[2.25rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15]">
+              Make the internet <br />
+              know <span className="italic text-[#8C6B3E] dark:text-[#E8C98A]">you exist.</span>
+            </h1>
+            <p className="mt-2.5 text-xs sm:text-[0.82rem] text-(--lf-muted) font-light leading-relaxed">
+              Sign in to build and manage your portfolio.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-(--lf-border)" />
-            <span className="text-[0.7rem] text-(--lf-muted) tracking-wide font-light">continue with</span>
-            <div className="flex-1 h-px bg-(--lf-border)" />
-          </div>
-
-          <div className="flex flex-col gap-3">
+          {/* Auth Actions */}
+          <div className="flex flex-col gap-2.5">
             <GoogleAuth disable={disable} setDisable={setDisable} />
             <GithubAuth disable={disable} setDisable={setDisable} />
           </div>
+
+          {/* Terms & Privacy */}
+          <p className="mt-6 text-[0.72rem] text-center text-(--lf-muted) leading-relaxed">
+            By clicking &quot;Continue with Google&quot;, you acknowledge that you have read and agreed to Lazyfolio&apos;s{" "}
+            <Link
+              href="/terms"
+              className="text-(--lf-ink) underline underline-offset-2 hover:opacity-80 transition-opacity"
+            >
+              Terms &amp; Conditions
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              className="text-(--lf-ink) underline underline-offset-2 hover:opacity-80 transition-opacity"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

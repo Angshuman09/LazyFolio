@@ -19,7 +19,7 @@ const Features = () => {
   return (
     <section
       id="features"
-      className="max-w-7xl mx-auto px-5 md:px-6 pb-24 scroll-mt-24 mt-25"
+      className="max-w-7xl mx-auto px-5 md:px-6 pb-24 scroll-mt-24 mt-10"
     >
       <h1 className="font-serif-display text-2xl sm:text-3xl font-normal leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-12">
         <span className="block w-fit italic text-[#c6a87b] tracking-wide">

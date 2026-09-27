@@ -10,9 +10,13 @@ import {
   ChevronRight,
   Layers,
   BarChart3,
+  Loader2,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
+import { useGetSubscription } from "@/hooks/subscription";
+import { ArticlePaywall } from "@/components/dashboard/articles/article-paywall";
+import { SubscriptionBadge } from "@/components/dashboard/articles/subscription-badge";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
@@ -86,6 +90,11 @@ export default function DashboardPage() {
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
+  const {
+    data: subData,
+    isLoading: isSubLoading,
+    refetch: refetchSub,
+  } = useGetSubscription(!!session?.user?.id);
   const router = useRouter();
   const isSaveDisabled = isSaving || isLoading || isPending;
   const previewProfile = profile
@@ -105,6 +114,22 @@ export default function DashboardPage() {
         .map((s) => s.value),
     }
     : profile;
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlTab = params.get("tab") as Tab | null;
+      if (urlTab && NAV.some((n) => n.id === urlTab)) {
+        setTab(urlTab);
+      }
+      if (params.get("checkout") === "success") {
+        toast.success("Payment completed! Updating your subscription...", { id: "checkout-success" });
+        refetchSub();
+        const newUrl = window.location.pathname + (urlTab ? `?tab=${urlTab}` : "");
+        window.history.replaceState({}, "", newUrl);
+      }
+    }
+  }, [refetchSub]);
 
   useEffect(() => {
     if (!session && !isPending) {
@@ -647,6 +672,17 @@ export default function DashboardPage() {
                   }}
                 >
                   <span className="flex-1">{n.label}</span>
+                  {n.id === "articles" && (
+                    subData?.isActive ? (
+                      <span className="text-[0.62rem] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-medium">
+                        PRO
+                      </span>
+                    ) : (
+                      <span className="text-[0.62rem] font-mono px-1.5 py-0.5 rounded bg-(--lf-border-alpha) text-(--lf-muted) font-medium">
+                        $10
+                      </span>
+                    )
+                  )}
                   {isDirty && (
                     <span
                       className={`w-1.5 h-1.5 rounded-full shrink-0 ${
@@ -737,12 +773,24 @@ export default function DashboardPage() {
                 />
               )}
               {tab === "articles" && (
-                <BlogsForm
-                  profile={profile}
-                  formRef={formRef}
-                  mode="INTERNAL"
-                  onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
-                />
+                isSubLoading ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-(--lf-muted)">
+                    <Loader2 size={24} className="animate-spin mb-3 text-(--lf-ink)" />
+                    <p className="text-[0.82rem]">Checking subscription status...</p>
+                  </div>
+                ) : !subData?.isActive ? (
+                  <ArticlePaywall />
+                ) : (
+                  <>
+                    <SubscriptionBadge subscription={subData.subscription} />
+                    <BlogsForm
+                      profile={profile}
+                      formRef={formRef}
+                      mode="INTERNAL"
+                      onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
+                    />
+                  </>
+                )
               )}
               {
                 tab == "insights" && (

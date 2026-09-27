@@ -144,7 +144,7 @@ const Hero = () => {
 
         <div className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]">
           <Image
-            src="/preview.png"
+            src="/apppreview.png"
             alt="Lazyfolio dashboard preview"
             width={1000}
             height={1000}

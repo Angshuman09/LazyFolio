@@ -15,7 +15,7 @@ import {
 } from "@/lib/utils/validate-dashboard";
 
 export async function POST(req: NextRequest) {
-  const { errorResponse, profile } = await verifySessionAndProfile();
+  const { errorResponse, profile, session } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
   try {
@@ -33,6 +33,27 @@ export async function POST(req: NextRequest) {
 
     const profileId = profile!.id;
     const isInternal = type === "INTERNAL";
+
+    if (isInternal) {
+      const subscription = await prisma.subscription.findUnique({
+        where: { userId: session!.user.id },
+      });
+      const isActive =
+        subscription?.status === "ACTIVE" &&
+        (!subscription.currentPeriodEnd ||
+          new Date(subscription.currentPeriodEnd) > new Date());
+
+      if (!isActive) {
+        return NextResponse.json(
+          {
+            error:
+              "An active $10 subscription is required to write and publish articles.",
+          },
+          { status: 403 },
+        );
+      }
+    }
+
     const nonBlankBlogs = blogs.filter((blog) =>
       isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
     );

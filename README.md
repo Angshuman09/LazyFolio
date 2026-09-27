@@ -54,7 +54,7 @@ Most portfolio sites take an evening (or a weekend) you didn't want to spend pic
 
 ## Preview
 
-![Lazyfolio Dashboard Preview](./public/preview.png)
+![Lazyfolio Dashboard Preview](./public/apppreview.png)
 
 ---
 
@@ -110,10 +110,6 @@ GITHUB_CLIENT_SECRET=your-github-client-secret
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloudinary-name
 NEXT_PUBLIC_CLOUDINARY_API_KEY=your-cloudinary-api-key
 CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-
-# Analytics (Umami)
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-umami-website-id
-NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
 ```
 
 **4. Run database migrations**
