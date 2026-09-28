@@ -21,7 +21,7 @@ export function ThemedPortfolioTemplate({
 }: ThemedPortfolioProps & { config: TemplateThemeConfig }) {
   const name = textValue(profile?.name) || textValue(user?.name);
   const quote = textValue(profile?.quote);
-  const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
+  const avatar = cleanUrl(profile?.avatar);
   const bookCallLink = getBookCallLink(profile);
   const iconStrokeWidth = config.iconStrokeWidth ?? 1.8;
 

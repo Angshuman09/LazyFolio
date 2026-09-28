@@ -26,7 +26,7 @@ export function Template2({
 }) {
   const name = textValue(profile?.name) || textValue(user?.name);
   const quote = textValue(profile?.quote);
-  const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
+  const avatar = cleanUrl(profile?.avatar);
   const banner = cleanUrl(profile?.banner);
   const links = normalizeLinks(profile?.links);
   const bookCallLink = getBookCallLink(profile);

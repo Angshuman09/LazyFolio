@@ -6,9 +6,11 @@ import { Divider } from '../../shared/components/divider';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Blogs = ({profile, config, iconStrokeWidth}:{profile: ProfileData, config: TemplateThemeConfig, iconStrokeWidth: number}) => {
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
+  const visibleBlogs = blogs.slice(0, 3);
   return (
    <>
              {blogs.length > 0 && (
@@ -19,7 +21,7 @@ const Blogs = ({profile, config, iconStrokeWidth}:{profile: ProfileData, config:
                   Thoughts and writings
                 </SectionHeading>
                 <div className={config.blogListClass}>
-                  {blogs.map((blog) => {
+                  {visibleBlogs.map((blog) => {
                     const content = (
                       <>
                         <div className="min-w-0 flex-1">
@@ -68,6 +70,16 @@ const Blogs = ({profile, config, iconStrokeWidth}:{profile: ProfileData, config:
                     );
                   })}
                 </div>
+
+                {blogs.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "blogs")}
+                    className={config.showMoreClass}
+                  >
+                    <span>View all {blogs.length} articles</span>
+                    <ArrowRight size={11} strokeWidth={iconStrokeWidth + 0.4} />
+                  </Link>
+                )}
               </section>
             </>
           )}

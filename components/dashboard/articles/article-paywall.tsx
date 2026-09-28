@@ -9,7 +9,7 @@ export function ArticlePaywall() {
     <div className="max-w-xl mx-auto py-4 sm:py-8 px-2">
       <div className="rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden p-6 sm:p-10 transition-all duration-200">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.72rem] font-mono text-(--lf-muted) mb-5">
-          <Heart size={12} />
+          <Heart className="text-pink-500" size={12} />
           <span>Support Me</span>
         </div>
 

@@ -1,15 +1,13 @@
-'use client'
-
-import { useState } from 'react'
 import { normalizeProjects } from '../../shared/normalize';
 import { ProfileData } from '../../shared/types';
 import { ActionBtn, Divider, SectionLabel } from './utils';
 import { ArrowRight, ExternalLink, Github } from 'lucide-react';
+import Link from 'next/link';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Projects = ({profile}: {profile:ProfileData}) => {
-  const [showAll, setShowAll] = useState(false);
   const projects     = normalizeProjects(profile?.projects);
-  const visible      = showAll ? projects : projects.slice(0, 4);
+  const visible      = projects.slice(0, 3);
 
   return (
    <>
@@ -78,14 +76,14 @@ const Projects = ({profile}: {profile:ProfileData}) => {
                   ))}
                 </div>
 
-                {projects.length > 4 && (
-                  <button
-                    onClick={() => setShowAll((v) => !v)}
-                    className="mt-[14px] inline-flex items-center gap-[5px] text-xs font-bold text-[#C4622D] bg-transparent border-none cursor-pointer p-0 transition-colors duration-150 hover:text-[#1A3D2B]"
+                {projects.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "projects")}
+                    className="mt-[14px] inline-flex items-center gap-[5px] text-xs font-bold text-[#C4622D] hover:text-[#1A3D2B] transition-colors duration-150"
                   >
-                    {showAll ? "Show less" : `View all ${projects.length}`}
+                    <span>View all {projects.length} projects</span>
                     <ArrowRight size={11} strokeWidth={2.2} />
-                  </button>
+                  </Link>
                 )}
               </section>
             </>

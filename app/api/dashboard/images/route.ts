@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { verifySession } from "@/lib/auth/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
 
 export async function POST(request: NextRequest) {
     const { errorResponse, session } = await verifySession();
@@ -59,9 +60,14 @@ export async function POST(request: NextRequest) {
                 avatar: true,
                 avatarPublicId: true,
                 banner: true,
-                bannerPublicId: true
+                bannerPublicId: true,
+                username: true
             }
         });
+
+        if (updatedProfile.username) {
+            revalidateProfile(updatedProfile.username);
+        }
 
         return NextResponse.json({ currentprofile: updatedProfile }, { status: 200 });
     }

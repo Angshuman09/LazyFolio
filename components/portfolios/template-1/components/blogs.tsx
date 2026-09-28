@@ -4,15 +4,24 @@ import Link from 'next/link';
 import { PortfolioBlog } from '../../shared/types';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { Divider, SectionHeading } from './utils';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
-const Blogs = ({blogs}:{blogs:PortfolioBlog[]}) => {
+const Blogs = ({
+  blogs,
+  username,
+}: {
+  blogs: PortfolioBlog[];
+  username?: string | null;
+}) => {
+  const visibleBlogs = blogs.slice(0, 3);
+
   return (
     <>
     <Divider />
     <section>
       <SectionHeading>Thoughts</SectionHeading>
       <div className="space-y-0.5">
-        {blogs.map((blog) => {
+        {visibleBlogs.map((blog) => {
           const content = (
             <>
               <div className="min-w-0 pr-4">
@@ -67,6 +76,16 @@ const Blogs = ({blogs}:{blogs:PortfolioBlog[]}) => {
           );
         })}
       </div>
+
+      {blogs.length > 3 && (
+        <Link
+          href={getPortfolioSectionUrl(username, "blogs")}
+          className="inline-flex items-center gap-1.5 mt-3 ml-3 text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors font-mono cursor-pointer"
+        >
+          <span>See all blogs ({blogs.length})</span>
+          <ArrowRight size={11} />
+        </Link>
+      )}
     </section>
   </>
   )

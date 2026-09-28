@@ -4,10 +4,12 @@ import { ProfileData } from '../../shared/types';
 import { Divider, SectionHeading } from './utils';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import Link from 'next/link';
-import { MoveUpRight } from 'lucide-react';
+import { MoveUpRight, ArrowRight } from 'lucide-react';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Experience = ({profile}:{profile:ProfileData}) => {
   const experiences = normalizeExperiences(profile?.experiences);
+  const visibleExperiences = experiences.slice(0, 3);
   return (
     <>
               {experiences.length > 0 && (
@@ -16,7 +18,7 @@ const Experience = ({profile}:{profile:ProfileData}) => {
               <section>
                 <SectionHeading>Experience</SectionHeading>
                 <div className="space-y-9">
-                  {experiences.map((exp) => (
+                  {visibleExperiences.map((exp) => (
                     <div key={exp.id}>
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 mb-3">
                         <div>
@@ -67,6 +69,16 @@ const Experience = ({profile}:{profile:ProfileData}) => {
                     </div>
                   ))}
                 </div>
+
+                {experiences.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "experience")}
+                    className="mt-6 text-[11px] font-medium text-slate-400 hover:text-slate-700 transition-colors cursor-pointer inline-flex items-center gap-1 tracking-wide"
+                  >
+                    <span>View all {experiences.length} experience</span>
+                    <ArrowRight size={11} />
+                  </Link>
+                )}
               </section>
             </>
           )}

@@ -1,15 +1,18 @@
-'use client'
-
-import { useState } from 'react'
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { PortfolioProject } from '../../shared/types';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { Divider, SectionHeading } from './utils';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
-const Projects = ({projects}:{projects:PortfolioProject[]}) => {
-  const [showAll, setShowAll] = useState(false);
-  const visibleProjects = showAll ? projects : projects.slice(0, 4);
+const Projects = ({
+  projects,
+  username,
+}: {
+  projects: PortfolioProject[];
+  username?: string | null;
+}) => {
+  const visibleProjects = projects.slice(0, 3);
   return (
     <>
     <Divider />
@@ -109,13 +112,14 @@ const Projects = ({projects}:{projects:PortfolioProject[]}) => {
         ))}
       </div>
 
-      {projects.length > 4 && (
-        <button
-          onClick={() => setShowAll((value) => !value)}
-          className="mt-3 ml-3 text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors cursor-pointer"
+      {projects.length > 3 && (
+        <Link
+          href={getPortfolioSectionUrl(username, "projects")}
+          className="inline-flex items-center gap-1.5 mt-3 ml-3 text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors font-mono cursor-pointer"
         >
-          {showAll ? "Show less" : "View All →"}
-        </button>
+          <span>See all projects ({projects.length})</span>
+          <ArrowRight size={11} />
+        </Link>
       )}
     </section>
   </>

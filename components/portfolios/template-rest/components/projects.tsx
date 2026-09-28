@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { normalizeProjects } from "../../shared/normalize";
 import { ProfileData, TemplateThemeConfig } from "../../shared/types";
 import { Divider } from "../../shared/components/divider";
@@ -6,11 +5,11 @@ import { SectionHeading } from "../../shared/components/section-heading";
 import Link from "next/link";
 import { shouldOpenInNewTab } from "../../shared/utils";
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
+import { getPortfolioSectionUrl } from "@/lib/utils/public-url";
 
 const Projects = ({profile, config, iconStrokeWidth}:{profile: ProfileData, config: TemplateThemeConfig, iconStrokeWidth: number}) => {
-  const [showAll, setShowAll] = useState(false);
   const projects = normalizeProjects(profile?.projects);
-  const visibleProjects = showAll ? projects : projects.slice(0, 4);
+  const visibleProjects = projects.slice(0, 3);
 
   return (
     <>
@@ -97,14 +96,14 @@ const Projects = ({profile, config, iconStrokeWidth}:{profile: ProfileData, conf
                   ))}
                 </div>
 
-                {projects.length > 4 && (
-                  <button
-                    onClick={() => setShowAll((value) => !value)}
+                {projects.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "projects")}
                     className={config.showMoreClass}
                   >
-                    {showAll ? "Show less" : `View all ${projects.length}`}
+                    <span>View all {projects.length} projects</span>
                     <ArrowRight size={11} strokeWidth={iconStrokeWidth + 0.4} />
-                  </button>
+                  </Link>
                 )}
               </section>
             </>

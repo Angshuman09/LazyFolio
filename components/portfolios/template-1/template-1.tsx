@@ -28,7 +28,7 @@ export function Template1({
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
   const stack = normalizeStack(profile?.skills);
   const bookCallLink = getBookCallLink(profile);
-  const avatar = cleanUrl(profile?.avatar) || cleanUrl(user?.image);
+  const avatar = cleanUrl(profile?.avatar);
   const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
   const router = useRouter();
   return (
@@ -49,15 +49,15 @@ export function Template1({
           <Links profile={profile} links={links} bookCallLink={bookCallLink}/>
           )}
           {experiences.length > 0 && (
-            <Experience experiences={experiences}/>
+            <Experience experiences={experiences} username={profile?.username} />
           )}
 
           {projects.length > 0 && (
-            <Projects projects={projects}/>
+            <Projects projects={projects} username={profile?.username} />
           )}
 
           {blogs.length > 0 && (
-            <Blogs blogs={blogs}/>
+            <Blogs blogs={blogs} username={profile?.username} />
           )}
 
           {stack.length > 0 && (

@@ -1,17 +1,25 @@
 import Link from "next/link"
-import { MoveUpRight } from "lucide-react"
+import { MoveUpRight, ArrowRight } from "lucide-react"
 import { PortfolioExperience } from "../../shared/types"
 import { shouldOpenInNewTab } from "../../shared/utils"
 import { Divider, SectionHeading } from "./utils"
+import { getPortfolioSectionUrl } from "@/lib/utils/public-url"
 
-const Experience = ({experiences}:{experiences: PortfolioExperience[]}) => {
+const Experience = ({
+  experiences,
+  username,
+}: {
+  experiences: PortfolioExperience[];
+  username?: string | null;
+}) => {
+  const visibleExperiences = experiences.slice(0, 3);
   return (
     <>
     <Divider />
     <section>
       <SectionHeading>Professional Experience</SectionHeading>
       <div className="space-y-8">
-        {experiences.map((exp) => (
+        {visibleExperiences.map((exp) => (
           <div key={exp.id}>
             <div className="flex items-start justify-between gap-2 mb-3">
               <div>
@@ -68,6 +76,16 @@ const Experience = ({experiences}:{experiences: PortfolioExperience[]}) => {
           </div>
         ))}
       </div>
+
+      {experiences.length > 3 && (
+        <Link
+          href={getPortfolioSectionUrl(username, "experience")}
+          className="inline-flex items-center gap-1.5 mt-6 text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors font-mono cursor-pointer"
+        >
+          <span>See all experience ({experiences.length})</span>
+          <ArrowRight size={11} />
+        </Link>
+      )}
     </section>
   </>
   )

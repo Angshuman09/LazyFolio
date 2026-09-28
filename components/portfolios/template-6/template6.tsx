@@ -17,7 +17,7 @@ export function Template6(props: ThemedPortfolioProps) {
   const { user, profile } = props;
 
   const name         = textValue(profile?.name)   || textValue(user?.name);
-  const avatar       = cleanUrl(profile?.avatar)  || cleanUrl(user?.image);
+  const avatar       = cleanUrl(profile?.avatar);
   const bookCallLink = getBookCallLink(profile);
   const router = useRouter();
 

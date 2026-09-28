@@ -50,3 +50,12 @@ export function getPortfolioBlogPath(slug?: string | null) {
   const normalizedSlug = (slug || "").trim().replace(/^\/+/, "");
   return normalizedSlug ? `/blogs/${normalizedSlug}` : null;
 }
+
+export function getPortfolioSectionUrl(
+  _username?: string | null,
+  section: "blogs" | "projects" | "experience" = "blogs",
+) {
+  const cleanSection = section.replace(/^\/+/, "");
+  return `/${cleanSection}`;
+}
+

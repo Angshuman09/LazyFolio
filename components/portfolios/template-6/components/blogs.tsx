@@ -5,9 +5,11 @@ import { ProfileData } from '../../shared/types';
 import { ArrowRight } from 'lucide-react';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import Link from 'next/link';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 function Blogs({profile}:{profile: ProfileData}) {
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
+  const visibleBlogs = blogs.slice(0, 3);
   return (
     <>
               {blogs.length > 0 && (
@@ -16,7 +18,7 @@ function Blogs({profile}:{profile: ProfileData}) {
               <section>
                 <SectionLabel>Thoughts &amp; writings</SectionLabel>
                 <div className="grid gap-2">
-                  {blogs.map((blog) => {
+                  {visibleBlogs.map((blog) => {
                     const rowClass =
                       "flex items-center justify-between gap-3 rounded-xl border-[1.5px] border-[#D5E5DA] bg-[#EEF4F0] px-4 py-[14px] no-underline text-inherit transition-colors duration-150 hover:bg-[#E3EDE7]";
 
@@ -60,6 +62,16 @@ function Blogs({profile}:{profile: ProfileData}) {
                     );
                   })}
                 </div>
+
+                {blogs.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "blogs")}
+                    className="mt-[14px] inline-flex items-center gap-[5px] text-xs font-bold text-[#C4622D] hover:text-[#1A3D2B] transition-colors duration-150"
+                  >
+                    <span>View all {blogs.length} articles</span>
+                    <ArrowRight size={11} strokeWidth={2.2} />
+                  </Link>
+                )}
               </section>
             </>
           )}

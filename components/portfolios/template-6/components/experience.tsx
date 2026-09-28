@@ -2,9 +2,13 @@
 import { normalizeExperiences } from '../../shared/normalize';
 import { ProfileData } from '../../shared/types';
 import { Divider, SectionLabel } from './utils';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Experience = ({profile}:{profile: ProfileData}) => {
   const experiences  = normalizeExperiences(profile?.experiences);
+  const visibleExperiences = experiences.slice(0, 3);
   return (
     <>
               {experiences.length > 0 && (
@@ -13,7 +17,7 @@ const Experience = ({profile}:{profile: ProfileData}) => {
               <section>
                 <SectionLabel>Experience</SectionLabel>
                 <div className="grid gap-[10px]">
-                  {experiences.map((exp) => (
+                  {visibleExperiences.map((exp) => (
                     <div
                       key={exp.id}
                       className="rounded-[14px] border-[1.5px] border-[#D5E5DA] bg-[#EEF4F0] px-[22px] py-5 transition-shadow duration-150 hover:shadow-[0_6px_20px_rgba(26,61,43,0.10)]"
@@ -51,6 +55,16 @@ const Experience = ({profile}:{profile: ProfileData}) => {
                     </div>
                   ))}
                 </div>
+
+                {experiences.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "experience")}
+                    className="mt-[14px] inline-flex items-center gap-[5px] text-xs font-bold text-[#C4622D] hover:text-[#1A3D2B] transition-colors duration-150"
+                  >
+                    <span>View all {experiences.length} experience</span>
+                    <ArrowRight size={11} strokeWidth={2.2} />
+                  </Link>
+                )}
               </section>
             </>
           )}

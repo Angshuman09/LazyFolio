@@ -4,9 +4,11 @@ import { ProfileData } from '../../shared/types';
 import { Divider, SectionHeading } from './utils';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { ArrowRight } from 'lucide-react';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Blogs = ({profile}:{profile: ProfileData}) => {
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
+  const visibleBlogs = blogs.slice(0, 3);
   return (
     <>
          {blogs.length > 0 && (
@@ -15,7 +17,7 @@ const Blogs = ({profile}:{profile: ProfileData}) => {
               <section>
                 <SectionHeading>Thoughts</SectionHeading>
                 <div className="space-y-0.5">
-                  {blogs.map((blog) => {
+                  {visibleBlogs.map((blog) => {
                     const content = (
                       <>
                         <div className="min-w-0 pr-4">
@@ -68,6 +70,16 @@ const Blogs = ({profile}:{profile: ProfileData}) => {
                     );
                   })}
                 </div>
+
+                {blogs.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "blogs")}
+                    className="inline-flex items-center gap-1.5 mt-3 ml-3 text-[11px] text-stone-500 hover:text-stone-700 transition-colors font-mono cursor-pointer"
+                  >
+                    <span>See all blogs ({blogs.length})</span>
+                    <ArrowRight size={11} />
+                  </Link>
+                )}
               </section>
             </>
           )}

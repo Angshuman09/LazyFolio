@@ -4,9 +4,11 @@ import { ProfileData } from '../../shared/types';
 import { Divider, SectionHeading } from './utils';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import Link from 'next/link';
+import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
 
 const Blogs = ({profile}:{profile:ProfileData}) => {
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
+  const visibleBlogs = blogs.slice(0, 3);
   return (
     <>
         {blogs.length > 0 && (
@@ -15,7 +17,7 @@ const Blogs = ({profile}:{profile:ProfileData}) => {
               <section>
                 <SectionHeading>Writing</SectionHeading>
                 <div className="space-y-px">
-                  {blogs.map((blog) => {
+                  {visibleBlogs.map((blog) => {
                     const inner = (
                       <>
                         <div className="min-w-0 flex-1">
@@ -66,6 +68,16 @@ const Blogs = ({profile}:{profile:ProfileData}) => {
                     );
                   })}
                 </div>
+
+                {blogs.length > 3 && (
+                  <Link
+                    href={getPortfolioSectionUrl(profile?.username, "blogs")}
+                    className="mt-4 text-[11px] font-medium text-slate-400 hover:text-slate-700 transition-colors cursor-pointer inline-flex items-center gap-1 tracking-wide"
+                  >
+                    <span>View all {blogs.length} articles</span>
+                    <ArrowRight size={11} />
+                  </Link>
+                )}
               </section>
             </>
           )}
