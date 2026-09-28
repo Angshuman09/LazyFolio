@@ -30,7 +30,7 @@ export const GithubAuth = ({
       disabled={isPending || disable}
       className={
         className ||
-        "w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl bg-transparent border border-(--lf-border) text-(--lf-ink) hover:bg-(--lf-bg) dark:hover:bg-(--lf-surface) transition-all duration-200 font-sans text-sm font-medium shadow-xs hover:shadow-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+        "w-full flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl bg-(--lf-bg) border border-(--lf-border) text-(--lf-ink) hover:bg-(--lf-bg) dark:hover:bg-(--lf-surface) transition-all duration-200 font-sans text-sm font-medium shadow-xs hover:shadow-sm active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
       }
     >
       {isPending ? (

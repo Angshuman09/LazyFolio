@@ -1,29 +1,28 @@
 "use client";
 
 import { useCreateCheckoutSession } from "@/hooks/subscription";
-import { Check, Sparkles, Lock, ArrowRight, Loader2, ShieldCheck } from "lucide-react";
-import {features} from "@/lib/constants/sections"
+import { ArrowRight, Loader2, Heart } from "lucide-react";
 
 export function ArticlePaywall() {
   const checkoutMutation = useCreateCheckoutSession();
   return (
-    <div className="max-w-2xl mx-auto py-4 sm:py-8 px-2">
+    <div className="max-w-xl mx-auto py-4 sm:py-8 px-2">
       <div className="rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden p-6 sm:p-10 transition-all duration-200">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.75rem] font-mono text-(--lf-muted) mb-5">
-          <Sparkles size={13} className="text-amber-500" />
-          <span>Writer Subscription</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.72rem] font-mono text-(--lf-muted) mb-5">
+          <Heart size={12} />
+          <span>Support Me</span>
         </div>
 
         <h1 className="font-serif-display text-2xl sm:text-3xl text-(--lf-ink) tracking-tight mb-3">
           Unlock Article Publishing on Lazyfolio
         </h1>
         <p className="text-[0.88rem] sm:text-[0.95rem] text-(--lf-muted) leading-relaxed mb-8">
-          Share your engineering thoughts, tutorials, and case studies directly from your personal brand.
-          Subscribe to start writing and publishing without limits.
+          Share your engineering thoughts, tutorials, and case studies directly from your personal
+          brand. Subscribe to start writing and publishing without limits.
         </p>
 
         {/* Pricing card */}
-        <div className="rounded-xl border border-(--lf-border) bg-(--lf-bg) p-5 sm:p-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="rounded-xl border border-(--lf-border) bg-(--lf-bg) p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-baseline gap-1.5">
               <span className="font-serif-display text-4xl sm:text-5xl font-medium text-(--lf-ink)">
@@ -44,7 +43,7 @@ export function ArticlePaywall() {
             {checkoutMutation.isPending ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                <span>Redirecting to Dodo...</span>
+                <span>Redirecting...</span>
               </>
             ) : (
               <>
@@ -55,35 +54,15 @@ export function ArticlePaywall() {
           </button>
         </div>
 
-        {/* Features breakdown */}
-        <div className="space-y-3.5 mb-8">
-          <div className="text-[0.75rem] font-mono uppercase tracking-wider text-(--lf-muted) mb-3">
-            What's included in Writer plan
-          </div>
-          {features.map((feat, idx) => (
-            <div key={idx} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-(--lf-ink)/8 text-(--lf-ink) flex items-center justify-center shrink-0 mt-0.5">
-                <Check size={12} strokeWidth={2.5} />
-              </div>
-              <div>
-                <span className="text-[0.84rem] font-medium text-(--lf-ink)">{feat.title}</span>
-                <span className="text-[0.82rem] text-(--lf-muted) ml-1.5">— {feat.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="text-center text-[0.78rem] text-(--lf-muted) italic">
+          Your support means a lot :)
+        </p>
 
-        {/* Security / trust banner */}
-        <div className="pt-6 border-t border-(--lf-border-alpha) flex items-center justify-between flex-wrap gap-2 text-[0.72rem] text-(--lf-muted)">
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
-            <span>Secure checkout powered by <strong>Dodo Payments</strong></span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Lock size={12} />
-            <span>256-bit SSL encrypted</span>
-          </div>
-        </div>
+        {checkoutMutation.isError && (
+          <p className="mt-3 text-center text-[0.78rem] text-red-500 font-sans-body">
+            Something went wrong starting checkout. Please try again.
+          </p>
+        )}
       </div>
     </div>
   );

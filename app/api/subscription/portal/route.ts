@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { prisma } from "@/lib/prisma";
-import { dodoClient } from "@/lib/dodopayments";
+import { getDodoClient } from "@/lib/dodopayments";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
       req.nextUrl.origin ||
       "http://localhost:3000";
 
-    const portalSession = await dodoClient.customers.customerPortal.create(
+    const client = getDodoClient();
+    const portalSession = await client.customers.customerPortal.create(
       subscription.dodoCustomerId,
       {
         return_url: `${origin}/dashboard?tab=articles`,

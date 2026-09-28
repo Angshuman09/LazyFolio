@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dodoClient, DODO_WEBHOOK_KEY } from "@/lib/dodopayments";
+import { getDodoConfig, getDodoClient } from "@/lib/dodopayments";
 import { prisma } from "@/lib/prisma";
 import { SubscriptionStatus } from "@/db/enums";
 
@@ -12,17 +12,20 @@ export async function POST(req: NextRequest) {
       headersList[key.toLowerCase()] = val;
     });
 
+    const { webhookKey } = getDodoConfig();
+    const client = getDodoClient();
+
     let event: any;
     try {
-      if (DODO_WEBHOOK_KEY) {
-        event = dodoClient.webhooks.unwrap(rawBody, {
+      if (webhookKey) {
+        event = client.webhooks.unwrap(rawBody, {
           headers: headersList,
-          key: DODO_WEBHOOK_KEY,
+          key: webhookKey,
         });
       } else {
         // Fallback for development if secret not yet provided
         console.warn("DODO_PAYMENTS_WEBHOOK_KEY is not set. Unsafe unwrap used.");
-        event = dodoClient.webhooks.unsafeUnwrap(rawBody);
+        event = client.webhooks.unsafeUnwrap(rawBody);
       }
     } catch (err: any) {
       console.error("Dodo webhook verification failed:", err?.message || err);

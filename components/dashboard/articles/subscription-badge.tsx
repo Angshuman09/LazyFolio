@@ -21,9 +21,6 @@ export function SubscriptionBadge({ subscription }: Props) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:px-4 rounded-xl border border-(--lf-border) bg-(--lf-surface) mb-6">
       <div className="flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-          <Sparkles size={14} />
-        </div>
         <div>
           <div className="text-[0.82rem] font-semibold text-(--lf-ink) flex items-center gap-2">
             <span>Writer Subscription Active</span>
