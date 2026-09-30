@@ -4,21 +4,34 @@ import { PortfolioExperience } from "../../shared/types"
 import { shouldOpenInNewTab } from "../../shared/utils"
 import { Divider, SectionHeading } from "./utils"
 import { getPortfolioSectionUrl } from "@/lib/utils/public-url"
+import { usePortfolioSection } from "../../shared/context/portfolio-section-context"
 
 const Experience = ({
   experiences,
   username,
+  showAll = false,
+  basePath = "",
 }: {
   experiences: PortfolioExperience[];
   username?: string | null;
+  showAll?: boolean;
+  basePath?: string;
 }) => {
-  const visibleExperiences = experiences.slice(0, 3);
+  const sectionCtx = usePortfolioSection();
+  const visibleExperiences = showAll ? experiences : experiences.slice(0, 3);
+  const experienceHref = `${basePath}/experience`;
+
+  if (!showAll && experiences.length === 0) return null;
+
   return (
     <>
     <Divider />
     <section>
       <SectionHeading>Professional Experience</SectionHeading>
-      <div className="space-y-8">
+      {experiences.length === 0 ? (
+        <p className="text-xs text-zinc-500 italic py-6">No work experience listed yet.</p>
+      ) : (
+        <div className="space-y-8">
         {visibleExperiences.map((exp) => (
           <div key={exp.id}>
             <div className="flex items-start justify-between gap-2 mb-3">
@@ -75,11 +88,18 @@ const Experience = ({
             )}
           </div>
         ))}
-      </div>
+        </div>
+      )}
 
-      {experiences.length > 3 && (
+      {!showAll && experiences.length > 3 && (
         <Link
-          href={getPortfolioSectionUrl(username, "experience")}
+          href={experienceHref}
+          onClick={(e) => {
+            if (sectionCtx?.onSectionChange) {
+              e.preventDefault();
+              sectionCtx.onSectionChange("experience");
+            }
+          }}
           className="inline-flex items-center gap-1.5 mt-6 text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors font-mono cursor-pointer"
         >
           <span>See all experience ({experiences.length})</span>

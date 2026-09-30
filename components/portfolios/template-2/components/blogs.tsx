@@ -4,19 +4,33 @@ import { ProfileData } from '../../shared/types';
 import { Divider, SectionHeading } from './utils';
 import { shouldOpenInNewTab } from '../../shared/utils';
 import { ArrowRight } from 'lucide-react';
-import { getPortfolioSectionUrl } from '@/lib/utils/public-url';
+import { usePortfolioSection } from '../../shared/context/portfolio-section-context';
 
-const Blogs = ({profile}:{profile: ProfileData}) => {
+const Blogs = ({
+  profile,
+  showAll = false,
+  basePath = "",
+}: {
+  profile: ProfileData;
+  showAll?: boolean;
+  basePath?: string;
+}) => {
+  const sectionCtx = usePortfolioSection();
   const blogs = normalizeBlogs(profile?.blogs, profile?.username);
-  const visibleBlogs = blogs.slice(0, 3);
+  const visibleBlogs = showAll ? blogs : blogs.slice(0, 3);
+  const blogsHref = `${basePath}/blogs`;
+
+  if (!showAll && blogs.length === 0) return null;
+
   return (
     <>
-         {blogs.length > 0 && (
-            <>
-              <Divider />
-              <section>
-                <SectionHeading>Thoughts</SectionHeading>
-                <div className="space-y-0.5">
+      <Divider />
+      <section>
+        <SectionHeading>Thoughts</SectionHeading>
+        {blogs.length === 0 ? (
+          <p className="text-xs text-stone-400 italic py-6">No articles published yet.</p>
+        ) : (
+          <div className="space-y-0.5">
                   {visibleBlogs.map((blog) => {
                     const content = (
                       <>
@@ -70,10 +84,17 @@ const Blogs = ({profile}:{profile: ProfileData}) => {
                     );
                   })}
                 </div>
+              )}
 
-                {blogs.length > 3 && (
+                {!showAll && blogs.length > 3 && (
                   <Link
-                    href={getPortfolioSectionUrl(profile?.username, "blogs")}
+                    href={blogsHref}
+                    onClick={(e) => {
+                      if (sectionCtx?.onSectionChange) {
+                        e.preventDefault();
+                        sectionCtx.onSectionChange("blogs");
+                      }
+                    }}
                     className="inline-flex items-center gap-1.5 mt-3 ml-3 text-[11px] text-stone-500 hover:text-stone-700 transition-colors font-mono cursor-pointer"
                   >
                     <span>See all blogs ({blogs.length})</span>
@@ -81,8 +102,6 @@ const Blogs = ({profile}:{profile: ProfileData}) => {
                   </Link>
                 )}
               </section>
-            </>
-          )}
     </>
   )
 }

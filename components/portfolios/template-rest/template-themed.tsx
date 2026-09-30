@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 
-import type { TemplateThemeConfig, ThemedPortfolioProps } from "../shared/types";
+import type { PortfolioTemplateProps, TemplateThemeConfig } from "../shared/types";
 import {
   textValue,
   cleanUrl,
@@ -13,12 +13,15 @@ import Projects from "./components/projects";
 import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
+import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
 
 export function ThemedPortfolioTemplate({
   user,
   profile,
   config,
-}: ThemedPortfolioProps & { config: TemplateThemeConfig }) {
+  section = "home",
+  basePath = "",
+}: PortfolioTemplateProps & { config: TemplateThemeConfig }) {
   const name = textValue(profile?.name) || textValue(user?.name);
   const quote = textValue(profile?.quote);
   const avatar = cleanUrl(profile?.avatar);
@@ -72,24 +75,48 @@ export function ThemedPortfolioTemplate({
         style={{ ...config.pageStyle, containerType: "inline-size" }}
       >
         <div className={config.containerClass}>
-          {quote && <p className={config.quoteClass}>{quote}</p>}
-          <Hero profile={profile} avatar={avatar} config={config} name={name}/>
-          <Links profile={profile} config={config} bookCallLink={bookCallLink} iconStrokeWidth={iconStrokeWidth}/>
-          <Experience profile={profile} config={config}/>
-          <Projects profile={profile} config={config} iconStrokeWidth={iconStrokeWidth}/>
-          <Blogs profile={profile} config={config} iconStrokeWidth={iconStrokeWidth}/>
-          <Stack profile={profile} config={config}/>
-          <BookACall bookCallLink={bookCallLink} config={config} avatar={avatar} name={name} iconStrokeWidth={iconStrokeWidth} />
-          <footer
-            className={`lf-themed-footer flex justify-center items-center ${config.footerClass}`}
-          >
-            <p
-              onClick={() => router.push("/")}
-              className={config.footerBrandClass}
-            >
-              Built with lazyfolio
-            </p>
-          </footer>
+          <PortfolioNavbar
+            currentSection={section}
+            basePath={basePath}
+            className="mb-10 sm:mb-12 flex items-center justify-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
+            activeItemClassName={config.navActiveClass ?? "font-semibold"}
+            inactiveItemClassName={config.navInactiveClass ?? "opacity-50 hover:opacity-100"}
+          />
+
+          {section === "home" && (
+            <>
+              {quote && <p className={config.quoteClass}>{quote}</p>}
+              <Hero profile={profile} avatar={avatar} config={config} name={name}/>
+              <Links profile={profile} config={config} bookCallLink={bookCallLink} iconStrokeWidth={iconStrokeWidth}/>
+              <Experience profile={profile} config={config} showAll={false} basePath={basePath} />
+              <Projects profile={profile} config={config} iconStrokeWidth={iconStrokeWidth} showAll={false} basePath={basePath} />
+              <Blogs profile={profile} config={config} iconStrokeWidth={iconStrokeWidth} showAll={false} basePath={basePath} />
+              <Stack profile={profile} config={config}/>
+              <BookACall bookCallLink={bookCallLink} config={config} avatar={avatar} name={name} iconStrokeWidth={iconStrokeWidth} />
+              <footer
+                className={`lf-themed-footer flex justify-center items-center ${config.footerClass}`}
+              >
+                <p
+                  onClick={() => router.push("/")}
+                  className={config.footerBrandClass}
+                >
+                  Built with lazyfolio
+                </p>
+              </footer>
+            </>
+          )}
+
+          {section === "experience" && (
+            <Experience profile={profile} config={config} showAll basePath={basePath} />
+          )}
+
+          {section === "projects" && (
+            <Projects profile={profile} config={config} iconStrokeWidth={iconStrokeWidth} showAll basePath={basePath} />
+          )}
+
+          {section === "blogs" && (
+            <Blogs profile={profile} config={config} iconStrokeWidth={iconStrokeWidth} showAll basePath={basePath} />
+          )}
         </div>
       </main>
     </>

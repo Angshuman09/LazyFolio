@@ -180,9 +180,18 @@ export type TemplateThemeConfig = {
   footerBrandClass: string;
   iconSize?: number;
   iconStrokeWidth?: number;
+  navActiveClass?: string;
+  navInactiveClass?: string;
 };
 
-export type ThemedPortfolioProps = {
+export type PortfolioSection = "home" | "experience" | "blogs" | "projects";
+
+export type PortfolioTemplateProps = {
   user: UserData;
   profile: ProfileData;
+  section?: PortfolioSection;
+  basePath?: string;
+  onSectionChange?: (section: PortfolioSection) => void;
 };
+
+export type ThemedPortfolioProps = PortfolioTemplateProps;

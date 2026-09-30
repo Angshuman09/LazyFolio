@@ -1,4 +1,4 @@
-import type { ProfileData, UserData } from "../shared/types";
+import type { PortfolioTemplateProps } from "../shared/types";
 import {
   textValue,
   cleanUrl,
@@ -15,15 +15,15 @@ import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookACall";
 import ContactLinks from "./components/contact-links";
+import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
 import { useRouter } from "next/navigation";
 
 export function Template2({
   user,
   profile,
-}: {
-  user: UserData;
-  profile: ProfileData;
-}) {
+  section = "home",
+  basePath = "",
+}: PortfolioTemplateProps) {
   const name = textValue(profile?.name) || textValue(user?.name);
   const quote = textValue(profile?.quote);
   const avatar = cleanUrl(profile?.avatar);
@@ -31,32 +31,58 @@ export function Template2({
   const links = normalizeLinks(profile?.links);
   const bookCallLink = getBookCallLink(profile);
   const router = useRouter();
+
   return (
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
-        <div className="max-w-160 mx-auto px-6 py-16 sm:py-20">
-          {quote && (
-            <div className="mb-12 border-l-2 border-stone-300 pl-4">
-              <p className="text-xs text-stone-500 italic leading-relaxed">
-                {quote}
-              </p>
-            </div>
+        <div className="max-w-160 mx-auto px-6 py-12 sm:py-16">
+          <PortfolioNavbar
+            currentSection={section}
+            basePath={basePath}
+            className="mb-10 sm:mb-12 flex items-center justify-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
+            itemClassName="transition-all duration-150 lowercase cursor-pointer"
+            activeItemClassName="font-semibold text-stone-900 border-b border-stone-800 pb-0.5"
+            inactiveItemClassName="text-stone-400 hover:text-stone-700"
+          />
+
+          {section === "experience" && (
+            <Experience profile={profile} showAll={true} basePath={basePath} />
           )}
 
-          <Hero avatar={avatar} banner={banner} profile={profile} name={name} />
+          {section === "projects" && (
+            <Projects profile={profile} showAll={true} basePath={basePath} />
+          )}
 
-          <Links links={links} profile={profile} bookCallLink={bookCallLink} />
+          {section === "blogs" && (
+            <Blogs profile={profile} showAll={true} basePath={basePath} />
+          )}
 
-          <Experience profile={profile} />
+          {section === "home" && (
+            <>
+              {quote && (
+                <div className="mb-12 border-l-2 border-stone-300 pl-4">
+                  <p className="text-xs text-stone-500 italic leading-relaxed">
+                    {quote}
+                  </p>
+                </div>
+              )}
 
-          <Projects profile={profile} />
+              <Hero avatar={avatar} banner={banner} profile={profile} name={name} />
 
-          <Blogs profile={profile} />
+              <Links links={links} profile={profile} bookCallLink={bookCallLink} />
 
-          <Stack profile={profile} />
+              <Experience profile={profile} basePath={basePath} />
 
-          <BookACall bookCallLink={bookCallLink} avatar={avatar} name={name} />
+              <Projects profile={profile} basePath={basePath} />
 
-          <ContactLinks profile={profile} links={links} />
+              <Blogs profile={profile} basePath={basePath} />
+
+              <Stack profile={profile} />
+
+              <BookACall bookCallLink={bookCallLink} avatar={avatar} name={name} />
+
+              <ContactLinks profile={profile} links={links} />
+            </>
+          )}
 
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
             <p className="text-[11px] text-stone-300">

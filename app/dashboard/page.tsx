@@ -20,6 +20,7 @@ import { SubscriptionBadge } from "@/components/dashboard/articles/subscription-
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
+import { PortfolioSection } from "@/components/portfolios/shared/types";
 import { UserAvatar } from "@/components/home-page/user-avatar";
 import ProfileMenuOpen from "@/components/home-page/profile-menu-open";
 import {
@@ -87,6 +88,14 @@ export default function DashboardPage() {
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [previewSection, setPreviewSection] = useState<PortfolioSection>("home");
+
+  useEffect(() => {
+    if (tab === "experience") setPreviewSection("experience");
+    else if (tab === "projects") setPreviewSection("projects");
+    else if (tab === "blogs" || (tab as string) === "articles") setPreviewSection("blogs");
+    else if (tab === "profile" || tab === "links" || tab === "skills") setPreviewSection("home");
+  }, [tab]);
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
@@ -810,6 +819,9 @@ export default function DashboardPage() {
                 slug={{ username: previewProfile?.username || username }}
                 user={session?.user}
                 profile={previewProfile}
+                section={previewSection}
+                onSectionChange={setPreviewSection}
+                isInteractive={true}
               />
             )}
           </div>

@@ -4,22 +4,33 @@ import { Divider, SectionHeading } from './utils'
 import { normalizeProjects } from '../../shared/normalize'
 import { ProfileData } from '../../shared/types'
 import { shouldOpenInNewTab } from '../../shared/utils'
-import { getPortfolioSectionUrl } from '@/lib/utils/public-url'
+import { usePortfolioSection } from '../../shared/context/portfolio-section-context'
 
-const Projects = ({ profile }: { profile: ProfileData }) => {
+const Projects = ({
+  profile,
+  showAll = false,
+  basePath = "",
+}: {
+  profile: ProfileData;
+  showAll?: boolean;
+  basePath?: string;
+}) => {
+  const sectionCtx = usePortfolioSection();
   const projects = normalizeProjects(profile?.projects)
-  const visibleProjects = projects.slice(0, 3)
+  const visibleProjects = showAll ? projects : projects.slice(0, 3)
+  const projectsHref = `${basePath}/projects`;
+
+  if (!showAll && projects.length === 0) return null;
 
   return (
     <>
-      {projects.length > 0 && (
-        <>
-          <Divider />
-
-          <section>
-            <SectionHeading>Projects</SectionHeading>
-
-            <div className="space-y-0.5">
+      <Divider />
+      <section>
+        <SectionHeading>Projects</SectionHeading>
+        {projects.length === 0 ? (
+          <p className="text-xs text-stone-400 italic py-6">No projects added yet.</p>
+        ) : (
+          <div className="space-y-0.5">
               {visibleProjects.map((project) => (
                 <div
                   key={project.id}
@@ -115,10 +126,17 @@ const Projects = ({ profile }: { profile: ProfileData }) => {
                 </div>
               ))}
             </div>
+          )}
 
-            {projects.length > 3 && (
+            {!showAll && projects.length > 3 && (
               <Link
-                href={getPortfolioSectionUrl(profile?.username, "projects")}
+                href={projectsHref}
+                onClick={(e) => {
+                  if (sectionCtx?.onSectionChange) {
+                    e.preventDefault();
+                    sectionCtx.onSectionChange("projects");
+                  }
+                }}
                 className="inline-flex items-center gap-1.5 mt-3 ml-3 text-[11px] text-stone-500 hover:text-stone-700 transition-colors font-mono cursor-pointer"
               >
                 <span>See all projects ({projects.length})</span>
@@ -126,8 +144,6 @@ const Projects = ({ profile }: { profile: ProfileData }) => {
               </Link>
             )}
           </section>
-        </>
-      )}
     </>
   )
 }

@@ -3,20 +3,33 @@ import { ProfileData } from '../../shared/types'
 import { Divider, SectionHeading } from './utils'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-import { getPortfolioSectionUrl } from '@/lib/utils/public-url'
+import { usePortfolioSection } from '../../shared/context/portfolio-section-context'
 
-const Experience = ({ profile }: { profile: ProfileData }) => {
+const Experience = ({
+  profile,
+  showAll = false,
+  basePath = "",
+}: {
+  profile: ProfileData;
+  showAll?: boolean;
+  basePath?: string;
+}) => {
+    const sectionCtx = usePortfolioSection();
     const experiences = normalizeExperiences(profile?.experiences);
-    const visibleExperiences = experiences.slice(0, 3);
+    const visibleExperiences = showAll ? experiences : experiences.slice(0, 3);
+    const experienceHref = `${basePath}/experience`;
+
+    if (!showAll && experiences.length === 0) return null;
+
     return (
         <>
-            {
-                experiences.length > 0 && (
-                    <>
-                        <Divider />
-                        <section>
-                            <SectionHeading>Experience</SectionHeading>
-                            <div className="space-y-8">
+            <Divider />
+            <section>
+                <SectionHeading>Experience</SectionHeading>
+                {experiences.length === 0 ? (
+                    <p className="text-xs text-stone-400 italic py-6">No work experience listed yet.</p>
+                ) : (
+                    <div className="space-y-8">
                                 {visibleExperiences.map((exp) => (
                                     <div key={exp.id}>
                                         <div className="flex items-start justify-between gap-2 mb-3">
@@ -54,20 +67,24 @@ const Experience = ({ profile }: { profile: ProfileData }) => {
                                     </div>
                                 ))}
                             </div>
+                        )}
 
-                            {experiences.length > 3 && (
-                              <Link
-                                href={getPortfolioSectionUrl(profile?.username, "experience")}
-                                className="inline-flex items-center gap-1.5 mt-6 text-[11px] text-stone-500 hover:text-stone-700 transition-colors font-mono cursor-pointer"
-                              >
-                                <span>See all experience ({experiences.length})</span>
-                                <ArrowRight size={11} />
-                              </Link>
-                            )}
-                        </section>
-                    </>
-                )
-            }
+                        {!showAll && experiences.length > 3 && (
+                          <Link
+                            href={experienceHref}
+                            onClick={(e) => {
+                              if (sectionCtx?.onSectionChange) {
+                                e.preventDefault();
+                                sectionCtx.onSectionChange("experience");
+                              }
+                            }}
+                            className="inline-flex items-center gap-1.5 mt-6 text-[11px] text-stone-500 hover:text-stone-700 transition-colors font-mono cursor-pointer"
+                          >
+                            <span>See all experience ({experiences.length})</span>
+                            <ArrowRight size={11} />
+                          </Link>
+                        )}
+                    </section>
         </>
     )
 }
