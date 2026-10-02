@@ -32,7 +32,7 @@ const Features = () => {
         {FEATURES.map((f, i) => (
           <article
             key={f.title}
-            className="group w-full aspect-square rounded-2xl border border-(--lf-border) bg-(--lf-surface) p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/40 hover:border-(--lf-tan)"
+            className="group w-full aspect-square rounded-2xl border border-(--lf-border) bg-(--lf-surface) p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-black/5 dark:hover:shadow-black/40"
           >
             {/* Illustration — takes ~70% of card height */}
             <div className="w-full flex-1 min-h-0 basis-[70%] rounded-xl overflow-hidden border border-(--lf-border)">

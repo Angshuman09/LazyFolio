@@ -58,7 +58,7 @@ export default function Auth() {
 
       {/* Main Centered Auth Card */}
       <main className="flex-1 flex items-center justify-center py-10 px-2 sm:px-4">
-        <div className="w-full max-w-[420px] bg-(--lf-bod) dark:bg-[#18181b] border border-(--lf-border) rounded-3xl p-7 sm:p-10 shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.25)] transition-all">
+        <div className="w-full max-w-[420px]">
           {/* Logo */}
           <div className="flex justify-center mb-6">
             <Link
@@ -91,7 +91,7 @@ export default function Auth() {
           </div>
 
           {/* Auth Actions */}
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-4.5">
             <GoogleAuth disable={disable} setDisable={setDisable} />
             <GithubAuth disable={disable} setDisable={setDisable} />
           </div>

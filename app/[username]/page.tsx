@@ -6,6 +6,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { after } from "next/server";
 import { headers } from "next/headers";
 import { publicProfileSelect } from "@/lib/constants/sections";
+import { Metadata } from "next";
 
 
 async function getProfileByUsername(username: string) {
@@ -22,6 +23,44 @@ async function getProfileByUsername(username: string) {
 interface PageProps {
   params: Promise<{ username: string }> | { username: string };
 }
+
+export async function generateMetadata(
+  props: PageProps
+): Promise<Metadata> {
+  const params = await props.params;
+  const username = params.username;
+
+  const profile = await getProfileByUsername(username);
+
+  if (!profile) {
+    return {
+      title: "Profile Not Found | Lazyfolio",
+    };
+  }
+
+  const name = profile.user?.name || username;
+  const description = profile.bio || `${name}'s portfolio on Lazyfolio`;
+
+  return {
+    title: `${name}`,
+    description,
+    icons:{icon: profile.avatar || ""},
+    openGraph: {
+      title: `${name}`,
+      description,
+      images: [
+        {
+          url: profile.banner || "",
+          width: 1200,
+          height: 630,
+        },
+      ],
+      url: `https://lazyfolio.in/${username}`,
+      type: "profile",
+    },
+  };
+}
+
 
 export default async function UserPortfolioPage(props: PageProps) {
   const params = await props.params;
