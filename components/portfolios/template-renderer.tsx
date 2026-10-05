@@ -9,6 +9,9 @@ import { Template5 } from "./template-5";
 import { Template6 } from "./template-6/template6";
 import { Template7 } from "./template-7";
 import { Template8 } from "./template-8";
+import { Template9 } from "./template-9/template-9";
+import { Template10 } from "./template-10/template-10";
+import { Template11 } from "./template-11/template-11";
 
 import { PortfolioSection } from "./shared/types";
 import { PortfolioSectionProvider } from "./shared/context/portfolio-section-context";
@@ -79,6 +82,12 @@ export function TemplateRenderer({
         return <Template7 {...templateProps} />;
       case "8":
         return <Template8 {...templateProps} />;
+      case "9":
+        return <Template9 {...templateProps} />;
+      case "10":
+        return <Template10 {...templateProps} />;
+      case "11":
+        return <Template11 {...templateProps} />;
       default:
         return <Template1 {...templateProps} />;
     }

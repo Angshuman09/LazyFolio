@@ -670,10 +670,18 @@ export default function DashboardPage() {
                 <button
                   key={n.id}
                   disabled={isDisabled}
-                  className={`flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-(--lf-muted) cursor-pointer bg-transparent w-full text-left hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) transition-all duration-150 font-sans-body tracking-tight ${tab === n.id
-                    ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
-                    : ""
-                    } ${isDisabled ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)" : ""}`}
+                  className={`relative flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium cursor-pointer w-full text-left transition-all duration-150 font-sans-body tracking-tight
+                    ${
+                      tab === n.id
+                        ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
+                        : "text-(--lf-muted) bg-transparent hover:text-(--lf-ink) hover:bg-(--lf-accent-soft)"
+                    }
+                    ${
+                      isDisabled
+                        ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)"
+                        : ""
+                    }
+                  `}
                   onClick={() => {
                     if (isDisabled) return;
                     requestTabSwitch(n.id);
@@ -681,17 +689,6 @@ export default function DashboardPage() {
                   }}
                 >
                   <span className="flex-1">{n.label}</span>
-                  {n.id === "articles" && (
-                    subData?.isActive ? (
-                      <span className="text-[0.62rem] font-mono px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-medium">
-                        PRO
-                      </span>
-                    ) : (
-                      <span className="text-[0.62rem] font-mono px-1.5 py-0.5 rounded bg-(--lf-border-alpha) text-(--lf-muted) font-medium">
-                        $10
-                      </span>
-                    )
-                  )}
                   {isDirty && (
                     <span
                       className={`w-1.5 h-1.5 rounded-full shrink-0 ${

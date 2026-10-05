@@ -9,7 +9,7 @@ export default function TemplatesPage() {
       <section className="max-w-4xl mx-auto px-5 sm:px-8 pt-20 pb-16 text-center">
         <p className="inline-flex items-center gap-2 text-[0.72rem] font-mono tracking-widest text-(--lf-muted) mb-6 border border-(--lf-border) rounded-full px-4 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-(--lf-ink) opacity-50 inline-block" />
-          8 Templates · Free Forever
+          11 Templates · Free Forever
         </p>
         <h1 className="font-serif-display text-[2.6rem] sm:text-[3.5rem] font-normal leading-[1.1] tracking-tight text-(--lf-ink) mb-5">
           Find your{" "}

@@ -48,6 +48,17 @@ export type ProfileBlog = {
   readTime?: string | null;
 };
 
+export type ProfileEducation = {
+  id?: string;
+  institution?: string | null;
+  degree?: string | null;
+  field?: string | null;
+  startdate?: DateLike;
+  enddate?: DateLike;
+  year?: string | null;
+  description?: string | null;
+};
+
 export type ProfileData = {
   id?: string | null;
   name?: string | null;
@@ -55,8 +66,10 @@ export type ProfileData = {
   banner?: string | null;
   quote?: string | null;
   tagline?: string | null;
+  headline?: string | null;
   bio?: string | null;
   email?: string | null;
+  location?: string | null;
   resume?: string | null;
   bookAcall?: string | null;
   username?: string | null;
@@ -65,6 +78,7 @@ export type ProfileData = {
   projects?: ProfileProject[] | null;
   skills?: string[] | null;
   blogs?: ProfileBlog[] | null;
+  education?: ProfileEducation[] | null;
 };
 
 export type UserData = {
@@ -85,6 +99,15 @@ export type PortfolioExperience = {
   role?: string;
   period?: string;
   bullets: string[];
+};
+
+export type PortfolioEducation = {
+  id: string;
+  institution?: string;
+  degree?: string;
+  field?: string;
+  period?: string;
+  description?: string;
 };
 
 export type PortfolioProject = {

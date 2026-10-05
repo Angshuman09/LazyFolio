@@ -2,9 +2,11 @@
 import type {
   NormalizedLink,
   PortfolioBlog,
+  PortfolioEducation,
   PortfolioExperience,
   PortfolioProject,
   ProfileBlog,
+  ProfileEducation,
   ProfileExperience,
   ProfileLink,
   ProfileProject,
@@ -139,3 +141,61 @@ export function normalizeStack(skills?: string[] | null): StackItem[] {
     .filter(Boolean)
     .map((skill) => ({ name: skill }));
 }
+
+export function normalizeEducation(
+  education?: ProfileEducation[] | null,
+  experiences?: ProfileExperience[] | null,
+): PortfolioEducation[] {
+  if (education && education.length > 0) {
+    return education
+      .map((edu, index) => {
+        const institution = textValue(edu.institution);
+        const degree = textValue(edu.degree || edu.field);
+        if (!institution && !degree) return null;
+        return {
+          id: edu.id || `edu-${index}`,
+          institution: institution || undefined,
+          degree: degree || undefined,
+          field: textValue(edu.field) || undefined,
+          period: edu.year || formatDateRange(edu.startdate, edu.enddate),
+          description: textValue(edu.description) || undefined,
+        };
+      })
+      .filter(Boolean) as PortfolioEducation[];
+  }
+
+  // Fallback: detect education from experiences if user entered degrees as experiences
+  const eduKeywords = [
+    "university",
+    "college",
+    "school",
+    "institute",
+    "academy",
+    "polytechnic",
+    "bootcamp",
+    "brainstation",
+  ];
+  return (experiences || [])
+    .filter((exp) => {
+      const company = (exp.companyName || exp.company || "").toLowerCase();
+      const role = (exp.role || "").toLowerCase();
+      return (
+        eduKeywords.some((k) => company.includes(k)) ||
+        role.includes("degree") ||
+        role.includes("student") ||
+        role.includes("bachelor") ||
+        role.includes("master") ||
+        role.includes("phd") ||
+        role.includes("b.sc") ||
+        role.includes("cert.")
+      );
+    })
+    .map((exp, index) => ({
+      id: exp.id || `edu-fallback-${index}`,
+      institution: textValue(exp.companyName || exp.company) || undefined,
+      degree: textValue(exp.role) || undefined,
+      period: formatDateRange(exp.startdate, exp.enddate),
+      description: textValue(exp.description) || undefined,
+    }));
+}
+

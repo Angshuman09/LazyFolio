@@ -80,6 +80,36 @@ export const TEMPLATES = [
     tags: ["Dark", "Gold", "Luxury"],
     image: "/styles/template-8.png",
   },
+  {
+    id: "9",
+    label: "Editorial",
+    emoji: "09",
+    preview: "Minimal serif, generous whitespace",
+    description:
+      "Pure editorial restraint. Large serif name, text-only project rows, newspaper article list. Typography-first, zero decoration.",
+    tags: ["Minimal", "Serif", "Editorial"],
+    image: "/styles/template-9.png",
+  },
+  {
+    id: "10",
+    label: "Developer",
+    emoji: "10",
+    preview: "Card-based, bold, clean white",
+    description:
+      "Centered developer portfolio. Project cards with hover lift, social link pills, and a clean white/gray hierarchy.",
+    tags: ["Cards", "Bold", "Developer"],
+    image: "/styles/template-10.png",
+  },
+  {
+    id: "11",
+    label: "Résumé",
+    emoji: "11",
+    preview: "Two-column editorial, print-ready",
+    description:
+      "Left sidebar for contact & links. Right column for experience, projects, writing. Suitable for printing as a résumé.",
+    tags: ["Resume", "Two-column", "Professional"],
+    image: "/styles/template-11.png",
+  },
 ];
 
 export const MOCK_SKILLS = [
