@@ -44,13 +44,12 @@ const Projects = ({
                         className="text-[15.5px] font-medium transition-colors inline-flex items-center gap-1.5"
                         style={{ color: "#1C1814" }}
                       >
-                        <span className="group-hover:text-[#184E42] transition-colors">
+                        <span className="group-hover:text-amber-800 transition-colors">
                           {project.name}
                         </span>
                         <ArrowUpRight
                           size={12}
-                          className="opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-200"
-                          style={{ color: "#184E42" }}
+                          className="opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-200 text-amber-800"
                         />
                       </Link>
                     ) : (

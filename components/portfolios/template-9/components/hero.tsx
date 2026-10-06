@@ -33,15 +33,16 @@ const Hero = ({
 
       {/* HUGE serif name — the signature element */}
       <h1
-        style={{
-          fontFamily: "var(--font-serif-display, Georgia, serif)",
-          fontSize: "clamp(44px, 8vw, 64px)",
-          lineHeight: 1.05,
-          fontWeight: 400,
-          letterSpacing: "-0.02em",
-          color: "#1C1814",
-          marginBottom: "12px",
-        }}
+        className="
+        font-serif-display
+        text-[34px]
+        md:text-[34px]
+        leading-[1.05]
+        font-normal
+        tracking-[-0.02em]
+        text-[#1C1814]
+        mb-3
+      "
       >
         {name}
       </h1>

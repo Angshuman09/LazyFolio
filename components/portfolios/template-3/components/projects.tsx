@@ -37,11 +37,6 @@ const Projects = ({
                 key={project.id}
                 className="group flex items-start gap-4 p-4 bg-white hover:bg-slate-50 transition-colors duration-150"
               >
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[11px] font-bold text-slate-400 select-none uppercase">
-                    {project.name?.[0] ?? "·"}
-                  </span>
-                </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5 flex-wrap">

@@ -43,7 +43,7 @@ export function Template9({
       className="min-h-screen antialiased"
       style={{ background: "#F4F0E9", color: "#1C1814", fontFamily: "system-ui, -apple-system, sans-serif" }}
     >
-      <div className="max-w-[580px] mx-auto px-7 py-14 sm:py-20">
+      <div className="max-w-145 mx-auto px-7 py-14 sm:py-20">
 
         {/* Nav — small, top, right-aligned */}
         <PortfolioNavbar

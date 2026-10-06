@@ -17,7 +17,8 @@ const Links = ({
   if (links.length === 0 && !bookCallLink) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-1 gap-y-2 mb-2 mt-1">
+    <div className="flex flex-wrap items-center gap-x-1 gap-y-2 mb-2 mt-1 justify-between">
+      <div className="flex gap-1">
       {links.map((link, idx) => (
         <span key={link.id} className="flex items-center gap-1">
           {idx > 0 && (
@@ -33,7 +34,7 @@ const Links = ({
             className="inline-flex items-center gap-1 text-[12.5px] transition-colors group"
             style={{ color: "#6B7280" }}
           >
-            <span className="opacity-60 group-hover:opacity-100 transition-opacity">
+            <span className="opacity-60 group-hover:opacity-100 transition-opacity group-hover:text-fuchsia-500">
               {getLinkIcon(link.label, link.href, 12, 1.7)}
             </span>
             <span className="group-hover:text-fuchsia-500 transition-colors">
@@ -42,6 +43,7 @@ const Links = ({
           </Link>
         </span>
       ))}
+      </div>
 
       {bookCallLink && (
         <>
@@ -54,7 +56,7 @@ const Links = ({
             href={bookCallLink}
             target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
             rel="noopener noreferrer"
-            className="text-[12.5px] font-medium transition-colors text-gray-500 hover:text-fuchsia-700"
+            className="text-[12.5px] font-medium transition-colors text-fuchsia-400 hover:text-fuchsia-700"
           >
             book a call
           </Link>

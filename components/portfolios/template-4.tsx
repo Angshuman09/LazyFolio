@@ -21,7 +21,7 @@ const config: TemplateThemeConfig = {
   heroClass: "mb-9 flex flex-col gap-6",
   heroMediaClass: "relative w-full",
   bannerClass:
-    "relative h-36 w-full overflow-hidden rounded-xl border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-68",
+    "relative h-36 w-full overflow-hidden rounded-xl border border-[#d8cdbf] bg-[#fffaf2] shadow-sm sm:h-48",
   bannerOverlayClass: "absolute inset-0 bg-[#1f2933]/10",
   avatarWithBannerClass:
     "absolute -bottom-7 left-5 h-[104px] w-[104px] rounded-full border border-[#d8cdbf] bg-[#fffaf2] object-cover shadow-md ring-1 ring-[#f7f2e8]",

@@ -80,9 +80,11 @@ const Hero = () => {
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
       <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)">
-        <span className="block">Make the internet</span>
+        <span className="block whitespace-nowrap">
+          Make the internet
+        </span>
 
-        <span className="block mt-2">
+        <span className="block mt-2 whitespace-nowrap">
           know{" "}
           <Highlighter action="underline" color="#B08D57">
             <span className="text-[#c6a87b]">You Exist.</span>
@@ -125,11 +127,11 @@ const Hero = () => {
           >
             {isClaiming ? "Claiming..." : "claim username"}
             <span
-            aria-hidden="true"
-            className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none"
-          >
-            ↗
-          </span>
+              aria-hidden="true"
+              className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none"
+            >
+              ↗
+            </span>
           </button>
         </div>
         <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it's too late!</p>
@@ -138,7 +140,7 @@ const Hero = () => {
       <div className="mt-12">
         <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-5 text-center text-(--lf-ink)">
           <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">
-          Everything you need to get things done
+            Everything you need to get things done
           </span>
         </h2>
 

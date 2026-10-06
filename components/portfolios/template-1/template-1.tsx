@@ -39,7 +39,7 @@ export function Template1({
           <PortfolioNavbar
             currentSection={section}
             basePath={basePath}
-            className="mb-10 sm:mb-12 flex items-center justify-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
+            className="mb-10 sm:mb-12 flex items-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
             activeItemClassName="font-semibold text-zinc-100 border-b border-zinc-500 pb-0.5"
             inactiveItemClassName="text-zinc-600 hover:text-zinc-300"
           />

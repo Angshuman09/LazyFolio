@@ -78,7 +78,7 @@ export function ThemedPortfolioTemplate({
           <PortfolioNavbar
             currentSection={section}
             basePath={basePath}
-            className="mb-10 sm:mb-12 flex items-center justify-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
+            className="mb-10 sm:mb-12 flex items-center gap-7 sm:gap-9 text-xs sm:text-[13px]"
             activeItemClassName={config.navActiveClass ?? "font-semibold"}
             inactiveItemClassName={config.navInactiveClass ?? "opacity-50 hover:opacity-100"}
           />

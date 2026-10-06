@@ -34,11 +34,6 @@ const Blogs = ({
         ) : (
           <div
             className="divide-y"
-            style={{
-              borderColor: "#D8D0C5",
-              borderTop: "1px solid #D8D0C5",
-              borderBottom: "1px solid #D8D0C5",
-            }}
           >
             {visible.map((blog) => {
               const inner = (

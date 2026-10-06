@@ -39,7 +39,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Lazyfolio page palette */
-  --lf-bg: #F5F0E8;
+  --lf-bg: #f8f4ee;
   --lf-bod: #ecdfcd;
   --lf-surface: #f8f6ee;
   --lf-border: #E0D8CC;
@@ -165,10 +165,17 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   }
 
   .home-hero-title {
-    width: min(100%, 8.5ch);
-    font-size: clamp(3.35rem, 16vw, 4.5rem);
+    width: max-content;
+    max-width: 100%;
+    font-size: clamp(2.5rem, 12vw, 4.5rem);
     line-height: 0.92;
   }
+  
+  /* @media (max-width: 640px) {
+    .home-hero-title {
+      font-size: 1.85rem;
+    }
+  } */
 }
 
  @keyframes fadeUp {

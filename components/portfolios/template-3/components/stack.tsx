@@ -13,7 +13,7 @@ const Stack = ({profile}:{profile: ProfileData}) => {
           <section>
             <SectionHeading>Stack</SectionHeading>
             {stack.length <= 8 ? (
-              <div className="relative overflow-hidden py-2 bg-white rounded-xl border border-slate-100 flex justify-start flex-wrap gap-2 px-3">
+              <div className="relative overflow-hidden py-2 bg-white flex justify-start flex-wrap gap-2 px-3">
                 {stack.map((tech, i) => (
                   <div
                     key={`${tech.name}-${i}`}
