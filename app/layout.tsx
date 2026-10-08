@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 //@ts-ignore
 import "./globals.css";
 import { cn } from "@/lib/utils/utils";
-import { Instrument_Serif, Geist } from "next/font/google";
+import { Instrument_Serif, Geist, Bricolage_Grotesque } from "next/font/google";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
@@ -16,6 +16,11 @@ const serif = Instrument_Serif({
   variable: "--font-serif-display",
   weight: "400",
   style: ["normal", "italic"],
+});
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-sans-body",
 });
 
 export const metadata: Metadata = {
@@ -42,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(serif.variable, "font-sans", geist.variable)}
+      className={cn(serif.variable, bricolage.variable, geist.variable, "font-sans")}
       suppressHydrationWarning
     >
       <head>
@@ -52,7 +57,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={cn(geist.variable, serif.variable, "antialiased selection:bg-yellow-300")}>
+      <body className={cn(geist.variable, serif.variable, bricolage.variable, "antialiased selection:bg-[#FDE047]")}>
         <Toaster position="bottom-right" />
         <Providers>
           {children}

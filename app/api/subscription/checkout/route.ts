@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
-import { getDodoConfig, getDodoClient } from "@/lib/dodopayments";
+import {
+  ArticlePlan,
+  getArticleProductId,
+  getDodoConfig,
+  getDodoClient,
+} from "@/lib/dodopayments";
+
+const articlePlans = new Set<ArticlePlan>(["monthly", "yearly", "lifetime"]);
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
   if (errorResponse || !session) return errorResponse;
 
-  const { apiKey, productId, environment } = getDodoConfig();
+  const { apiKey, environment } = getDodoConfig();
+  const body = await req.json().catch(() => ({}));
+  const requestedPlan = articlePlans.has(body?.plan) ? body.plan : "monthly";
+  const productId = getArticleProductId(requestedPlan);
 
   if (!apiKey) {
     return NextResponse.json(
@@ -19,10 +29,17 @@ export async function POST(req: NextRequest) {
   }
 
   if (!productId) {
+    const envName =
+      requestedPlan === "monthly"
+        ? "DODO_PAYMENTS_ARTICLE_MONTHLY_PRODUCT_ID"
+        : requestedPlan === "yearly"
+          ? "DODO_PAYMENTS_ARTICLE_YEARLY_PRODUCT_ID"
+          : "DODO_PAYMENTS_ARTICLE_LIFETIME_PRODUCT_ID";
+
     return NextResponse.json(
       {
         error:
-          "DODO_PAYMENTS_ARTICLE_PRODUCT_ID is not configured in environment variables.",
+          `${envName} is not configured in environment variables.`,
       },
       { status: 500 }
     );
@@ -50,6 +67,7 @@ export async function POST(req: NextRequest) {
       },
       metadata: {
         userId: session.user.id,
+        plan: requestedPlan,
       },
       return_url: returnUrl,
     });
@@ -65,18 +83,21 @@ export async function POST(req: NextRequest) {
       checkoutUrl: sessionResponse.checkout_url,
       sessionId: sessionResponse.session_id,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const dodoError = error as { status?: number; message?: string };
+
     console.error("Dodo checkout session creation failed:", {
       environment,
       hasApiKey: !!apiKey,
       apiKeyPrefix: apiKey ? apiKey.substring(0, 6) + "..." : "none",
       productId,
-      errorStatus: error?.status,
-      errorMessage: error?.message || error,
+      requestedPlan,
+      errorStatus: dodoError.status,
+      errorMessage: dodoError.message || error,
     });
 
-    let friendlyMessage = error?.message || "Failed to initiate checkout session.";
-    if (error?.status === 401) {
+    let friendlyMessage = dodoError.message || "Failed to initiate checkout session.";
+    if (dodoError.status === 401) {
       friendlyMessage = `Dodo Payments 401 Unauthorized: Your API key was rejected in '${environment}'. If your key is from the Dodo Test Dashboard, make sure DODO_PAYMENTS_ENVIRONMENT=test_mode is set in Vercel, or verify your key has not expired.`;
     }
 

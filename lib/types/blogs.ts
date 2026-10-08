@@ -20,6 +20,14 @@ export type Props = {
     formRef: RefObject<HTMLFormElement | null>;
     onSubmit?: (data: BlogsSchema) => void | Promise<void>;
     mode?: "EXTERNAL" | "INTERNAL";
+    maxItems?: number;
+    limitMessage?: string;
+    isSubscribed?: boolean;
+    articleUsage?: {
+      count: number;
+      freeLimit: number;
+      remaining: number;
+    };
   };
 
 export type BlogsProfile = {

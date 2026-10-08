@@ -8,7 +8,7 @@ export const Divider = () => (
 export const SectionHeading = ({ children }: { children: ReactNode }) => (
   <h2
     className="text-[10px] tracking-[0.25em] mb-4"
-    style={{ color: "#A0907E", fontFamily: "system-ui, -apple-system, sans-serif" }}
+    style={{ color: "#A0907E", fontFamily: "var(--font-sans-body), 'Bricolage Grotesque', system-ui, -apple-system, sans-serif" }}
   >
     {children}
   </h2>

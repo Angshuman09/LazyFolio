@@ -34,7 +34,7 @@ const Hero = ({
       {/* HUGE serif name — the signature element */}
       <h1
         className="
-        font-serif-display
+        font-sans-body
         text-[34px]
         md:text-[34px]
         leading-[1.05]
@@ -49,7 +49,7 @@ const Hero = ({
 
       {tagline && (
         <p
-          className="text-[11px] tracking-[0.2em] uppercase mb-6"
+          className="text-[11px] tracking-[0.2em] mb-6"
           style={{ color: "#A0907E" }}
         >
           {tagline}

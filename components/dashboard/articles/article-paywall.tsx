@@ -1,65 +1,233 @@
 "use client";
 
 import { useCreateCheckoutSession } from "@/hooks/subscription";
-import { ArrowRight, Loader2, Heart } from "lucide-react";
+import { ArrowRight, Check, Loader2, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
 
-export function ArticlePaywall() {
+export type ArticlePlan = "monthly" | "yearly" | "lifetime";
+
+interface PlanConfig {
+  id: ArticlePlan;
+  name: string;
+  tagline: string;
+  price: string;
+  cadence: string;
+  subtext?: string;
+  badge?: string;
+  features: string[];
+  cta: string;
+  popular?: boolean;
+}
+
+const plans: PlanConfig[] = [
+  {
+    id: "monthly",
+    name: "Monthly",
+    tagline: "Pay as you go",
+    price: "$5",
+    cadence: "/ month",
+    subtext: "Flexible billing, cancel anytime",
+    features: [
+      "Unlimited published articles",
+      "Rich markdown & image uploads",
+      "Custom article slugs & SEO",
+      "Cancel anytime in 1 click",
+    ],
+    cta: "Choose Monthly",
+  },
+  {
+    id: "yearly",
+    name: "Yearly",
+    tagline: "Our most popular choice",
+    price: "$39",
+    cadence: "/ year",
+    subtext: "Save 35% compared to monthly (~$3.25/mo)",
+    badge: "Most Popular",
+    features: [
+      "Unlimited published articles",
+      "Rich markdown & image uploads",
+      "Custom article slugs & SEO",
+      "Priority customer support",
+      "Annual discount savings",
+    ],
+    cta: "Choose Yearly",
+    popular: true,
+  },
+  {
+    id: "lifetime",
+    name: "Lifetime",
+    tagline: "Pay once, keep forever",
+    price: "$169",
+    cadence: "one-time",
+    subtext: "Zero recurring fees, yours forever",
+    badge: "Best Long-Term",
+    features: [
+      "Unlimited published articles forever",
+      "Rich markdown & image uploads",
+      "All future article features included",
+      "Lifetime priority support",
+      "No renewals or recurring charges",
+    ],
+    cta: "Choose Lifetime",
+  },
+];
+
+interface ArticlePaywallProps {
+  articleCount?: number;
+  freeLimit?: number;
+  inline?: boolean;
+  onClose?: () => void;
+}
+
+export function ArticlePaywall({
+  articleCount = 2,
+  freeLimit = 2,
+  inline = false,
+  onClose,
+}: ArticlePaywallProps) {
   const checkoutMutation = useCreateCheckoutSession();
+  const pendingPlan = checkoutMutation.variables;
+
   return (
-    <div className="max-w-xl mx-auto py-4 sm:py-8 px-2">
-      <div className="rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden p-6 sm:p-10 transition-all duration-200">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.72rem] font-mono text-(--lf-muted) mb-5">
-          <Heart className="text-pink-500" size={12} />
-          <span>Support Me</span>
-        </div>
+    <div className={`w-full transition-all duration-200 ${inline ? "py-2" : "max-w-4xl mx-auto py-4 sm:py-6"}`}>
+      <div
+        className={`relative rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden ${
+          inline ? "p-5 sm:p-7" : "p-6 sm:p-9"
+        }`}
+      >
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 w-7 h-7 rounded-lg border border-(--lf-border) bg-(--lf-bg) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Close pricing"
+          >
+            <X size={13} />
+          </button>
+        )}
 
-        <h1 className="font-serif-display text-2xl sm:text-3xl text-(--lf-ink) tracking-tight mb-3">
-          Unlock Article Publishing on Lazyfolio
-        </h1>
-        <p className="text-[0.88rem] sm:text-[0.95rem] text-(--lf-muted) leading-relaxed mb-8">
-          Share your engineering thoughts, tutorials, and case studies directly from your personal
-          brand. Subscribe to start writing and publishing without limits.
-        </p>
-
-        {/* Pricing card */}
-        <div className="rounded-xl border border-(--lf-border) bg-(--lf-bg) p-5 sm:p-6 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-serif-display text-4xl sm:text-5xl font-medium text-(--lf-ink)">
-                $10
-              </span>
-              <span className="text-[0.88rem] text-(--lf-muted) font-sans-body">/ month</span>
-            </div>
-            <p className="text-[0.78rem] text-(--lf-muted) mt-1">
-              Cancel or pause anytime. No long-term lock-in.
-            </p>
+        {/* Top Header */}
+        <div className="text-center max-w-xl mx-auto mb-7 sm:mb-8">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.7rem] font-mono text-(--lf-ink) mb-3.5 shadow-2xs">
+            <Sparkles size={11} className="text-amber-500 fill-amber-500" />
+            <span className="font-medium">Unlimited Article Access</span>
           </div>
 
-          <button
-            onClick={() => checkoutMutation.mutate()}
-            disabled={checkoutMutation.isPending}
-            className="inline-flex items-center justify-center gap-2 px-6 h-11 rounded-xl bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold cursor-pointer hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm font-sans-body whitespace-nowrap"
-          >
-            {checkoutMutation.isPending ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                <span>Redirecting...</span>
-              </>
-            ) : (
-              <>
-                <span>Subscribe for $10/mo</span>
-                <ArrowRight size={15} />
-              </>
-            )}
-          </button>
+          <h2 className="font-serif-display text-2xl sm:text-3xl text-(--lf-ink) tracking-tight mb-2.5 font-normal">
+            Publish without limits
+          </h2>
+          <p className="text-[0.82rem] sm:text-[0.86rem] text-(--lf-muted) leading-relaxed">
+            Free accounts include {freeLimit} articles. Upgrade to any plan to write unlimited articles, host rich media, and publish freely on your portfolio.
+          </p>
         </div>
 
-        <p className="text-center text-[0.78rem] text-(--lf-muted) italic">
-          Your support means a lot :)
-        </p>
+        {/* 3 Plans Grid */}
+        <div className="grid gap-3.5 lg:grid-cols-3 mb-6">
+          {plans.map((plan) => {
+            const isPending = checkoutMutation.isPending && pendingPlan === plan.id;
+
+            return (
+              <div
+                key={plan.id}
+                className={`relative rounded-xl p-5 flex flex-col justify-between transition-all duration-200 ${
+                  plan.popular
+                    ? "border-2 border-(--lf-ink) bg-(--lf-bg) shadow-md"
+                    : "border border-(--lf-border) bg-(--lf-bg) hover:border-(--lf-muted)"
+                }`}
+              >
+                {/* Popular Pill Badge */}
+                {plan.badge && (
+                  <div
+                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[0.62rem] font-mono font-semibold uppercase tracking-wider shadow-xs whitespace-nowrap ${
+                      plan.popular
+                        ? "bg-(--lf-ink) text-(--lf-bg)"
+                        : "bg-(--lf-surface) border border-(--lf-border) text-(--lf-muted)"
+                    }`}
+                  >
+                    {plan.badge}
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex items-center justify-between gap-2 mt-1 mb-1">
+                    <span className="text-[0.72rem] font-mono uppercase tracking-widest text-(--lf-muted) font-semibold">
+                      {plan.name}
+                    </span>
+                    {plan.popular && (
+                      <Zap size={12} className="text-amber-500 fill-amber-500" />
+                    )}
+                  </div>
+
+                  <p className="text-[0.72rem] text-(--lf-muted) mb-3">
+                    {plan.tagline}
+                  </p>
+
+                  <div className="flex items-baseline gap-1.5 pb-3 border-b border-(--lf-border-alpha)">
+                    <span className="font-serif-display text-3xl sm:text-4xl font-normal text-(--lf-ink) tracking-tight">
+                      {plan.price}
+                    </span>
+                    <span className="text-[0.78rem] text-(--lf-muted) font-mono">
+                      {plan.cadence}
+                    </span>
+                  </div>
+
+                  {plan.subtext && (
+                    <div className="text-[0.7rem] text-(--lf-muted) mt-2 font-medium">
+                      {plan.subtext}
+                    </div>
+                  )}
+
+                  {/* Feature Bullets */}
+                  <ul className="mt-4 space-y-2 mb-5">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-[0.74rem] text-(--lf-ink) leading-snug">
+                        <Check size={13} className="shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => checkoutMutation.mutate(plan.id)}
+                  disabled={checkoutMutation.isPending}
+                  className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${
+                    plan.popular
+                      ? "bg-(--lf-ink) text-(--lf-bg) hover:opacity-90 shadow-2xs"
+                      : "border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
+                  }`}
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" />
+                      <span>Redirecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{plan.cta}</span>
+                      <ArrowRight size={13} />
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer reassurance */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-[0.74rem] text-(--lf-muted) pt-1 border-t border-(--lf-border-alpha)">
+          <div className="inline-flex items-center gap-1.5">
+            <ShieldCheck size={13} className="text-emerald-600 dark:text-emerald-400" />
+            <span>Secured via Dodo Payments</span>
+          </div>
+          <span className="hidden sm:inline opacity-30">•</span>
+          <span>Instant activation after checkout</span>
+          <span className="hidden sm:inline opacity-30">•</span>
+          <span>Cancel anytime with 1 click</span>
+        </div>
 
         {checkoutMutation.isError && (
-          <p className="mt-3 text-center text-[0.78rem] text-red-500 font-sans-body">
+          <p className="mt-3.5 text-center text-[0.75rem] text-red-500 font-sans-body">
             Something went wrong starting checkout. Please try again.
           </p>
         )}

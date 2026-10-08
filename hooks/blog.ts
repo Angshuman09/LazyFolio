@@ -18,6 +18,7 @@ export function useDeleteBlog() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      await queryClient.invalidateQueries({ queryKey: ["subscription"] });
     },
   });
 }
@@ -44,6 +45,7 @@ export function useCreateBlog() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      await queryClient.invalidateQueries({ queryKey: ["subscription"] });
     },
   });
 }

@@ -16,7 +16,7 @@ const ContactLinks = ({profile, links}:{profile: ProfileData, links: NormalizedL
               <Divider />
               <section>
                 <SectionHeading>Let&apos;s connect</SectionHeading>
-                <div className="space-y-0.5">
+                <div className="flex">
                   {contactLinks.map((link) => (
                     <Link
                       key={link.id}

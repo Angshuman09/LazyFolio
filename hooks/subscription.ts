@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 export interface SubscriptionInfo {
@@ -16,6 +16,13 @@ export interface SubscriptionInfo {
 export interface SubscriptionResponse {
   subscription: SubscriptionInfo | null;
   isActive: boolean;
+  plan?: "monthly" | "yearly" | "lifetime" | null;
+  planLabel?: string | null;
+  articleUsage?: {
+    count: number;
+    freeLimit: number;
+    remaining: number;
+  };
 }
 
 export function useGetSubscription(enabled: boolean = true) {
@@ -35,9 +42,11 @@ export function useGetSubscription(enabled: boolean = true) {
 
 export function useCreateCheckoutSession() {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (plan: "monthly" | "yearly" | "lifetime" = "monthly") => {
       const res = await fetch("/api/subscription/checkout", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -50,8 +59,9 @@ export function useCreateCheckoutSession() {
         window.location.href = data.checkoutUrl;
       }
     },
-    onError: (err: any) => {
-      toast.error(err.message || "Failed to initiate payment. Please try again.");
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Failed to initiate payment. Please try again.";
+      toast.error(message);
     },
   });
 }
@@ -73,8 +83,9 @@ export function useOpenCustomerPortal() {
         window.open(data.portalUrl, "_blank");
       }
     },
-    onError: (err: any) => {
-      toast.error(err.message || "Could not open subscription portal.");
+    onError: (err: unknown) => {
+      const message = err instanceof Error ? err.message : "Could not open subscription portal.";
+      toast.error(message);
     },
   });
 }

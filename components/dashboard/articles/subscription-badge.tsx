@@ -1,13 +1,14 @@
 "use client";
 
 import { useOpenCustomerPortal, SubscriptionInfo } from "@/hooks/subscription";
-import { Sparkles, ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink, Loader2 } from "lucide-react";
 
 interface Props {
   subscription?: SubscriptionInfo | null;
+  planLabel?: string | null;
 }
 
-export function SubscriptionBadge({ subscription }: Props) {
+export function SubscriptionBadge({ subscription, planLabel }: Props) {
   const portalMutation = useOpenCustomerPortal();
 
   const formattedRenewal = subscription?.currentPeriodEnd
@@ -25,7 +26,7 @@ export function SubscriptionBadge({ subscription }: Props) {
           <div className="text-[0.82rem] font-semibold text-(--lf-ink) flex items-center gap-2">
             <span>Writer Subscription Active</span>
             <span className="text-[0.65rem] font-mono px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-medium uppercase">
-              $10/mo
+              {planLabel || "Paid"}
             </span>
           </div>
           {formattedRenewal && (

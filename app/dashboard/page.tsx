@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import {
   Sun,
   Moon,
@@ -11,6 +11,10 @@ import {
   Layers,
   BarChart3,
   Loader2,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelRightClose,
+  PanelRightOpen,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
@@ -78,6 +82,13 @@ function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
 }
 
+function getPreviewSectionForTab(tab: Tab): PortfolioSection {
+  if (tab === "experience") return "experience";
+  if (tab === "projects") return "projects";
+  if (tab === "blogs" || tab === "articles") return "blogs";
+  return "home";
+}
+
 export default function DashboardPage() {
   const [tab, setTab] = useState<Tab>("profile");
   const formRef = useRef<HTMLFormElement>(null);
@@ -85,17 +96,36 @@ export default function DashboardPage() {
   const [templateOpen, setTemplateOpen] = useState(false);
   const [activeTemplate, setActiveTemplate] = useState("1");
   const [copied, setCopied] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isPreviewCollapsed, setIsPreviewCollapsed] = useState(false);
   const username = "angshuman09";
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewSection, setPreviewSection] = useState<PortfolioSection>("home");
+  const changeTab = useCallback((nextTab: Tab) => {
+    setTab(nextTab);
+    setPreviewSection(getPreviewSectionForTab(nextTab));
+  }, []);
 
-  useEffect(() => {
-    if (tab === "experience") setPreviewSection("experience");
-    else if (tab === "projects") setPreviewSection("projects");
-    else if (tab === "blogs" || (tab as string) === "articles") setPreviewSection("blogs");
-    else if (tab === "profile" || tab === "links" || tab === "skills") setPreviewSection("home");
-  }, [tab]);
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("lf-sidebar-collapsed", String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
+
+  const togglePreview = useCallback(() => {
+    setIsPreviewCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("lf-preview-collapsed", String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const { data: session, isPending } = authClient.useSession();
   const { data: profile, isLoading } = useGetUserProfile(session?.user?.id);
@@ -104,6 +134,15 @@ export default function DashboardPage() {
     isLoading: isSubLoading,
     refetch: refetchSub,
   } = useGetSubscription(!!session?.user?.id);
+  const articleUsage = subData?.articleUsage;
+  const freeArticleLimit = articleUsage?.freeLimit ?? 2;
+  const savedArticleCount =
+    articleUsage?.count ??
+    (profile?.blogs || []).filter((blog: { type?: string | null; content?: string | null }) => {
+      const type = blog.type ?? (blog.content === null ? "EXTERNAL" : "INTERNAL");
+      return type === "INTERNAL";
+    }).length;
+  const canUseFreeArticles = !subData?.isActive && savedArticleCount < freeArticleLimit;
   const router = useRouter();
   const isSaveDisabled = isSaving || isLoading || isPending;
   const previewProfile = profile
@@ -129,7 +168,7 @@ export default function DashboardPage() {
       const params = new URLSearchParams(window.location.search);
       const urlTab = params.get("tab") as Tab | null;
       if (urlTab && NAV.some((n) => n.id === urlTab)) {
-        setTab(urlTab);
+        queueMicrotask(() => changeTab(urlTab));
       }
       if (params.get("checkout") === "success") {
         toast.success("Payment completed! Updating your subscription...", { id: "checkout-success" });
@@ -138,7 +177,7 @@ export default function DashboardPage() {
         window.history.replaceState({}, "", newUrl);
       }
     }
-  }, [refetchSub]);
+  }, [changeTab, refetchSub]);
 
   useEffect(() => {
     if (!session && !isPending) {
@@ -158,6 +197,26 @@ export default function DashboardPage() {
 
     return () => window.cancelAnimationFrame(frameId);
   }, []);
+
+  useEffect(() => {
+    try {
+      const savedSidebar = localStorage.getItem("lf-sidebar-collapsed");
+      if (savedSidebar === "true") setIsSidebarCollapsed(true);
+      const savedPreview = localStorage.getItem("lf-preview-collapsed");
+      if (savedPreview === "true") setIsPreviewCollapsed(true);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleSidebar]);
 
   useEffect(() => {
     if (dark === null) return;
@@ -519,6 +578,9 @@ export default function DashboardPage() {
         type,
         blogs: formattedBlogs,
       });
+      if (isArticleSection) {
+        refetchSub();
+      }
       clearDashboardDraft(isArticleSection ? "articles" : "blogs", profile.id);
       toast.success(isArticleSection ? "Articles updated successfully!" : "Blogs updated successfully!", { id: toastId });
     } catch (error) {
@@ -541,7 +603,7 @@ export default function DashboardPage() {
     cancelSwitch,
     requestTabSwitch,
     dirtyLabel,
-  } = useTabSwitchGuard(tab, (newTab) => setTab(newTab as Tab), profile?.id);
+  } = useTabSwitchGuard(tab, (newTab) => changeTab(newTab as Tab), profile?.id);
 
   const dirtyItems = useSaveStore((s) => s.dirtyItems);
   const errors = useSaveStore((s) => s.errors);
@@ -557,6 +619,25 @@ export default function DashboardPage() {
           >
             <BarChart3 size={14} />
           </button>
+
+          {/* Desktop Sidebar Toggle */}
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  className="hidden md:inline-flex items-center justify-center w-8 h-8 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+                  onClick={toggleSidebar}
+                  aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                >
+                  {isSidebarCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" align="start" className="text-[0.72rem] font-medium">
+                {isSidebarCollapsed ? "Expand sidebar (⌘B)" : "Collapse sidebar (⌘B)"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <span
             onClick={() => router.push("/")}
             className="font-serif-display text-[1.15rem] font-normal tracking-tight text-(--lf-ink) select-none cursor-pointer"
@@ -606,13 +687,39 @@ export default function DashboardPage() {
             {dark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
 
+          {/* Toggle Live Preview Panel (Desktop) */}
+          {tab !== "insights" && (
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={togglePreview}
+                    className={`hidden lg:inline-flex items-center gap-1.5 px-3 h-8.5 rounded-full border transition-all duration-150 text-[0.75rem] font-medium cursor-pointer ${
+                      isPreviewCollapsed
+                        ? "border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted)"
+                        : "border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
+                    }`}
+                    aria-label={isPreviewCollapsed ? "Expand live preview" : "Minimize live preview"}
+                  >
+                    {isPreviewCollapsed ? <PanelRightOpen size={13} /> : <PanelRightClose size={13} />}
+                    <span>{isPreviewCollapsed ? "Show Preview" : "Hide Preview"}</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-[0.72rem] font-medium">
+                  {isPreviewCollapsed ? "Expand preview panel" : "Minimize preview panel"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
           <button
             disabled={!profile?.username}
-
             onClick={() => window.open(getPortfolioUrl(profile?.username || username), "_blank")}
-            className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap">
+            className="hidden disabled:cursor-not-allowed disabled:opacity-55 sm:inline-flex items-center gap-1.5 px-3 h-8.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap"
+            title="Open portfolio in new tab"
+          >
             <ExternalLink size={12} />
-            Preview
+            <span className="hidden xl:inline">Live site</span>
           </button>
 
           <GlobalSaveButton disabled={!profile?.username && tab !== "profile"} />
@@ -657,9 +764,32 @@ export default function DashboardPage() {
 
       <div className="flex flex-1 overflow-hidden min-h-0">
         <aside
-          className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"
-            } md:translate-x-0 fixed md:static z-40 md:z-auto w-52 md:w-50 shrink-0 border-r border-(--lf-border-alpha) p-[16px_10px_20px] flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-transform duration-200`}
+          className={`
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            ${
+              isSidebarCollapsed
+                ? "md:w-0 md:p-0 md:border-r-0 md:opacity-0 md:pointer-events-none md:overflow-hidden"
+                : "md:translate-x-0 md:w-50 md:p-[16px_10px_20px] md:opacity-100 md:pointer-events-auto"
+            }
+            fixed md:static z-40 md:z-auto shrink-0 border-r border-(--lf-border-alpha) flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-all duration-200
+          `}
         >
+          {/* Sidebar Top Controls */}
+          <div className="hidden md:flex items-center justify-between px-2 pb-2 mb-1 border-b border-(--lf-border-alpha)">
+            <span className="text-[0.66rem] font-mono uppercase tracking-wider text-(--lf-muted)">
+              Navigation
+            </span>
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="text-(--lf-muted) hover:text-(--lf-ink) p-1 rounded-md hover:bg-(--lf-surface) transition-colors cursor-pointer"
+              title="Minimize sidebar (⌘B)"
+              aria-label="Minimize sidebar"
+            >
+              <PanelLeftClose size={13} />
+            </button>
+          </div>
+
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
             {NAV.map((n) => {
               const isDisabled = !profile?.username && n.id !== "profile";
@@ -722,14 +852,20 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        <main className={`flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full ${tab === "insights" ? "max-w-full" : "max-w-full md:max-w-215"}`}>
+        <main
+          className={`flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full transition-all duration-200 ${
+            tab === "insights" || isPreviewCollapsed
+              ? "max-w-4xl mx-auto w-full"
+              : "max-w-full md:max-w-215"
+          }`}
+        >
           {isLoading || isPending ? (
             <DashboardSkeleton />
           ) : !profile?.username && tab !== "profile" ? (
             <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
               <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
               <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
-              <button onClick={() => setTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
+              <button onClick={() => changeTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
             </div>
           ) : (
             <>
@@ -784,16 +920,26 @@ export default function DashboardPage() {
                     <Loader2 size={24} className="animate-spin mb-3 text-(--lf-ink)" />
                     <p className="text-[0.82rem]">Checking subscription status...</p>
                   </div>
-                ) : !subData?.isActive ? (
-                  <ArticlePaywall />
                 ) : (
                   <>
-                    <SubscriptionBadge subscription={subData.subscription} />
+                    {subData?.isActive ? (
+                      <SubscriptionBadge
+                        subscription={subData.subscription}
+                        planLabel={subData.planLabel}
+                      />
+                    ) : null}
                     <BlogsForm
                       profile={profile}
                       formRef={formRef}
                       mode="INTERNAL"
                       onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
+                      maxItems={subData?.isActive ? undefined : freeArticleLimit}
+                      isSubscribed={subData?.isActive}
+                      articleUsage={{
+                        count: savedArticleCount,
+                        freeLimit: freeArticleLimit,
+                        remaining: Math.max(freeArticleLimit - savedArticleCount, 0),
+                      }}
                     />
                   </>
                 )
@@ -807,7 +953,33 @@ export default function DashboardPage() {
           )}
         </main>
 
-        <div className={`${tab === "insights" ? "hidden" : "hidden lg:flex"} flex-1 border-l border-(--lf-border-alpha) overflow-hidden h-full`}>
+        <div
+          className={`
+            ${tab === "insights" || isPreviewCollapsed ? "hidden" : "hidden lg:flex"}
+            flex-1 relative border-l border-(--lf-border-alpha) overflow-hidden h-full transition-all duration-200
+          `}
+        >
+          {/* Collapse Preview Button inside preview panel */}
+          <div className="absolute top-3 right-3 z-30">
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={togglePreview}
+                    className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-(--lf-border) bg-(--lf-bg)/80 backdrop-blur-md text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) shadow-2xs transition-all cursor-pointer"
+                    aria-label="Minimize preview"
+                  >
+                    <PanelRightClose size={13} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="text-[0.72rem] font-medium">
+                  Minimize preview
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+
           <div className="w-full h-full overflow-y-auto overflow-x-hidden">
             {isLoading || isPending ? (
               <TemplateRendererSkeleton />
@@ -823,6 +995,19 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
+
+        {/* Floating reopen button if preview is collapsed */}
+        {isPreviewCollapsed && tab !== "insights" && (
+          <button
+            type="button"
+            onClick={togglePreview}
+            className="hidden lg:flex fixed bottom-6 right-6 z-30 items-center gap-1.5 px-3.5 py-2 rounded-full border border-(--lf-border) bg-(--lf-bg)/90 backdrop-blur-md text-(--lf-ink) shadow-md text-[0.76rem] font-semibold hover:border-(--lf-muted) hover:bg-(--lf-surface) transition-all cursor-pointer"
+            aria-label="Show preview"
+          >
+            <PanelRightOpen size={13} />
+            <span>Show Preview</span>
+          </button>
+        )}
       </div>
 
       {templateOpen && (

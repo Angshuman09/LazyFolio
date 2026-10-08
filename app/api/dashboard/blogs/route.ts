@@ -14,6 +14,8 @@ import {
   validateInternalBlog,
 } from "@/lib/utils/validate-dashboard";
 
+const FREE_ARTICLE_LIMIT = 2;
+
 export async function POST(req: NextRequest) {
   const { errorResponse, profile, session } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
@@ -33,6 +35,9 @@ export async function POST(req: NextRequest) {
 
     const profileId = profile!.id;
     const isInternal = type === "INTERNAL";
+    const nonBlankBlogs = blogs.filter((blog) =>
+      isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
+    );
 
     if (isInternal) {
       const subscription = await prisma.subscription.findUnique({
@@ -43,20 +48,16 @@ export async function POST(req: NextRequest) {
         (!subscription.currentPeriodEnd ||
           new Date(subscription.currentPeriodEnd) > new Date());
 
-      if (!isActive) {
+      if (!isActive && nonBlankBlogs.length > FREE_ARTICLE_LIMIT) {
         return NextResponse.json(
           {
             error:
-              "An active $10 subscription is required to write and publish articles.",
+              `Free article access includes up to ${FREE_ARTICLE_LIMIT} articles. Choose the $5/month, $39/year, or $169 lifetime plan to write more.`,
           },
           { status: 403 },
         );
       }
     }
-
-    const nonBlankBlogs = blogs.filter((blog) =>
-      isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
-    );
 
     for (const blog of nonBlankBlogs) {
       const validation = isInternal

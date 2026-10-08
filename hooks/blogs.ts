@@ -20,6 +20,7 @@ export function useCreateBlogs(){
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["profile"] });
+            await queryClient.invalidateQueries({ queryKey: ["subscription"] });
         }
     });
 

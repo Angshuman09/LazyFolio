@@ -7,8 +7,8 @@ export default function TemplatesPage() {
   return (
     <div className="min-h-screen bg-(--lf-bg) text-(--lf-ink) font-sans-body">
       <section className="max-w-4xl mx-auto px-5 sm:px-8 pt-20 pb-16 text-center">
-        <p className="inline-flex items-center gap-2 text-[0.72rem] font-mono tracking-widest text-(--lf-muted) mb-6 border border-(--lf-border) rounded-full px-4 py-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-(--lf-ink) opacity-50 inline-block" />
+        <p className="inline-flex items-center gap-2 text-[0.72rem] font-mono tracking-widest text-(--lf-muted) mb-6 px-4 py-1.5">
+          {/* <span className="w-1.5 h-1.5 rounded-full bg-(--lf-ink) opacity-50 inline-block" /> */}
           11 Templates · Free Forever
         </p>
         <h1 className="font-serif-display text-[2.6rem] sm:text-[3.5rem] font-normal leading-[1.1] tracking-tight text-(--lf-ink) mb-5">
@@ -115,7 +115,7 @@ export default function TemplatesPage() {
 
       <section className="max-w-5xl mx-auto px-5 sm:px-8 pb-20">
         <div className="rounded-2xl border border-(--lf-border) bg-(--lf-surface) px-8 py-12 text-center">
-          <p className="font-mono text-[0.68rem] tracking-widest text-(--lf-muted) uppercase mb-3">
+          <p className="font-mono text-[0.68rem] tracking-widest text-(--lf-muted) mb-3">
             Ready to go live?
           </p>
           <h2 className="font-serif-display text-[1.9rem] sm:text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-snug mb-3">

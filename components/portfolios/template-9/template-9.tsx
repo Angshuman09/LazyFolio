@@ -40,8 +40,12 @@ export function Template9({
   return (
     /* Warm parchment — ink-on-paper editorial feel */
     <main
-      className="min-h-screen antialiased"
-      style={{ background: "#F4F0E9", color: "#1C1814", fontFamily: "system-ui, -apple-system, sans-serif" }}
+      className="min-h-screen antialiased font-sans-body"
+      style={{
+        background: "#F4F0E9",
+        color: "#1C1814",
+        fontFamily: "var(--font-sans-body), 'Bricolage Grotesque', system-ui, -apple-system, sans-serif",
+      }}
     >
       <div className="max-w-145 mx-auto px-7 py-14 sm:py-20">
 
@@ -77,12 +81,11 @@ export function Template9({
             )}
 
             <div className="mt-16 pt-5" style={{ borderTop: "1px solid #D8D0C5" }}>
-              <p className="text-[10px] tracking-widest uppercase" style={{ color: "#B5A898" }}>
+              <p className="text-[10px] tracking-widest" style={{ color: "#B5A898" }}>
                 built with{" "}
                 <span
                   onClick={() => router.push("/")}
                   className="cursor-pointer hover:text-[#1C1814] transition-colors"
-                  style={{ color: "#8C7B6A" }}
                 >
                   lazyfolio
                 </span>

@@ -13,7 +13,7 @@ const ContactInfo = ({contactLinks, profile}: {contactLinks:NormalizedLink[], pr
     <Divider />
     <section>
       <SectionHeading>Let&apos;s connect</SectionHeading>
-      <div className="space-y-0.5">
+      <div className="flex">
         {contactLinks.map((link) => (
           <Link
             key={link.id}
