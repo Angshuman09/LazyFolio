@@ -9,6 +9,8 @@ const Footer = () => {
         { label: "Home", href: "/" },
         { label: "Features", href: "/#features" },
         { label: "Templates", href: "/templates" },
+        { label: "Pricing", href: "/pricing" },
+        { label: "FAQ", href: "/#faq" },
       ],
     },
     {

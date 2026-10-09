@@ -5,6 +5,7 @@ const RESERVED_PATHS = new Set([
   "api",
   "auth",
   "dashboard",
+  "pricing",
   "privacy",
   "stats",
   "templates",

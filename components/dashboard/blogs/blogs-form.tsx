@@ -12,6 +12,7 @@ import {
   AlertCircle,
   Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import {
@@ -24,7 +25,6 @@ import { BlogCard } from "./blog-card";
 import { TiptapEditor } from "./tiptap/TiptapEditor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
 import { useSectionSave } from "@/hooks/use-section-save";
-import { ArticlePaywall } from "../articles/article-paywall";
 
 export default function BlogsForm({
   profile,
@@ -32,7 +32,6 @@ export default function BlogsForm({
   onSubmit,
   mode = "EXTERNAL",
   maxItems,
-  limitMessage,
   isSubscribed,
   articleUsage,
 }: Props) {
@@ -111,8 +110,6 @@ export default function BlogsForm({
   const remaining = Math.max(freeLimit - currentCount, 0);
   const isLimitReached = !isSubscribed && (fields.length >= freeLimit || currentCount >= freeLimit);
 
-  const [showPricing, setShowPricing] = useState(false);
-
   useEffect(() => {
     if (!profile?.id) {
       return;
@@ -182,14 +179,13 @@ export default function BlogsForm({
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setShowPricing((prev) => !prev)}
+              <Link
+                href="/pricing"
                 className="inline-flex items-center justify-center gap-1.5 px-3.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold hover:opacity-90 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto font-sans-body shadow-2xs"
               >
                 <Sparkles size={12} className="text-amber-400 fill-amber-400" />
-                <span>{showPricing ? "Hide Plans" : "Upgrade to Unlimited"}</span>
-              </button>
+                <span>View pricing</span>
+              </Link>
             </div>
 
             {/* Credit visual indicator */}
@@ -216,17 +212,6 @@ export default function BlogsForm({
               })}
             </div>
 
-            {/* Expandable Pricing Plans */}
-            {showPricing && (
-              <div className="mt-4 pt-4 border-t border-(--lf-border-alpha)">
-                <ArticlePaywall
-                  inline
-                  articleCount={currentCount}
-                  freeLimit={freeLimit}
-                  onClose={() => setShowPricing(false)}
-                />
-              </div>
-            )}
           </div>
         )}
 
@@ -273,14 +258,13 @@ export default function BlogsForm({
                   Upgrade for unlimited articles, or delete an existing article above to free up space.
                 </p>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowPricing(true)}
+              <Link
+                href="/pricing"
                 className="inline-flex items-center gap-1.5 px-3.5 h-8.5 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
               >
                 <Sparkles size={12} className="text-amber-400 fill-amber-400" />
-                <span>Upgrade to add more</span>
-              </button>
+                <span>See pricing</span>
+              </Link>
             </div>
           ) : (
             <button

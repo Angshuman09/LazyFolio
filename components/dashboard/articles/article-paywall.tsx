@@ -1,7 +1,9 @@
 "use client";
 
 import { useCreateCheckoutSession } from "@/hooks/subscription";
+import { authClient } from "@/lib/auth/auth-client";
 import { ArrowRight, Check, Loader2, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type ArticlePlan = "monthly" | "yearly" | "lifetime";
 
@@ -79,13 +81,21 @@ interface ArticlePaywallProps {
 }
 
 export function ArticlePaywall({
-  articleCount = 2,
   freeLimit = 2,
   inline = false,
   onClose,
 }: ArticlePaywallProps) {
+  const router = useRouter();
+  const { data: session, isPending: isSessionPending } = authClient.useSession();
   const checkoutMutation = useCreateCheckoutSession();
   const pendingPlan = checkoutMutation.variables;
+  const startCheckout = (plan: ArticlePlan) => {
+    if (!isSessionPending && !session?.user) {
+      router.push("/auth");
+      return;
+    }
+    checkoutMutation.mutate(plan);
+  };
 
   return (
     <div className={`w-full transition-all duration-200 ${inline ? "py-2" : "max-w-4xl mx-auto py-4 sm:py-6"}`}>
@@ -189,18 +199,18 @@ export function ArticlePaywall({
 
                 <button
                   type="button"
-                  onClick={() => checkoutMutation.mutate(plan.id)}
-                  disabled={checkoutMutation.isPending}
+                  onClick={() => startCheckout(plan.id)}
+                  disabled={checkoutMutation.isPending || isSessionPending}
                   className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${
                     plan.popular
                       ? "bg-(--lf-ink) text-(--lf-bg) hover:opacity-90 shadow-2xs"
                       : "border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
                   }`}
                 >
-                  {isPending ? (
+                  {isPending || isSessionPending ? (
                     <>
                       <Loader2 size={13} className="animate-spin" />
-                      <span>Redirecting...</span>
+                      <span>{isSessionPending ? "Checking..." : "Redirecting..."}</span>
                     </>
                   ) : (
                     <>

@@ -19,7 +19,6 @@ import {
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
 import { useGetSubscription } from "@/hooks/subscription";
-import { ArticlePaywall } from "@/components/dashboard/articles/article-paywall";
 import { SubscriptionBadge } from "@/components/dashboard/articles/subscription-badge";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -774,21 +773,6 @@ export default function DashboardPage() {
             fixed md:static z-40 md:z-auto shrink-0 border-r border-(--lf-border-alpha) flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-all duration-200
           `}
         >
-          {/* Sidebar Top Controls */}
-          <div className="hidden md:flex items-center justify-between px-2 pb-2 mb-1 border-b border-(--lf-border-alpha)">
-            <span className="text-[0.66rem] font-mono uppercase tracking-wider text-(--lf-muted)">
-              Navigation
-            </span>
-            <button
-              type="button"
-              onClick={toggleSidebar}
-              className="text-(--lf-muted) hover:text-(--lf-ink) p-1 rounded-md hover:bg-(--lf-surface) transition-colors cursor-pointer"
-              title="Minimize sidebar (⌘B)"
-              aria-label="Minimize sidebar"
-            >
-              <PanelLeftClose size={13} />
-            </button>
-          </div>
 
           <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
             {NAV.map((n) => {

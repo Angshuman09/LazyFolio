@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Moon, Star, Sun, X } from "lucide-react";
+import { Github, Menu, Moon, Star, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -20,6 +20,8 @@ import {
 const NAV_LEFT = [
   { label: "Features", href: "/#features" },
   { label: "Templates", href: "/templates" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 const Navbar = () => {
@@ -28,7 +30,6 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [stars, setStars] = useState<number | null>(null);
-  const [scrolled, setScrolled] = useState(false);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
@@ -40,13 +41,6 @@ const Navbar = () => {
       document.documentElement.classList.contains("dark") ? "dark" : "light",
     );
   }, [setTheme]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     fetch("https://api.github.com/repos/Angshuman09/lazyfolio")
@@ -97,7 +91,7 @@ const Navbar = () => {
             rel="noopener noreferrer"
             className="lf-focus group flex items-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) pl-3.5 pr-4 py-2 text-[0.78rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
           >
-            <Star className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-20 dark:group-hover:fill-yellow-200 dark:group-hover:text-yellow-200 group-hover:fill-yellow-500 group-hover:text-yellow-500" />
+            <Github className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-20 dark:group-hover:fill-yellow-200 dark:group-hover:text-yellow-200 group-hover:fill-yellow-500 group-hover:text-yellow-500" />
             <span className="tabular-nums">
               {stars !== null ? stars.toLocaleString() : "—"}
             </span>
