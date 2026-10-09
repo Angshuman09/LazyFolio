@@ -114,20 +114,6 @@ export function ArticlePaywall({
           </button>
         )}
 
-        {/* Top Header */}
-        <div className="text-center max-w-xl mx-auto mb-7 sm:mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.7rem] font-mono text-(--lf-ink) mb-3.5 shadow-2xs">
-            <span className="font-medium">Unlimited Article Access</span>
-          </div>
-
-          <h2 className="font-serif-display text-2xl sm:text-3xl text-(--lf-ink) tracking-tight mb-2.5 font-normal">
-            Publish without limits
-          </h2>
-          <p className="text-[0.82rem] sm:text-[0.86rem] text-(--lf-muted) leading-relaxed">
-            Free accounts include {freeLimit} articles. Upgrade to any plan to write unlimited articles, host rich media, and publish freely on your portfolio.
-          </p>
-        </div>
-
         {/* 3 Plans Grid */}
         <div className="grid gap-3.5 lg:grid-cols-3 mb-6">
           {plans.map((plan) => {
@@ -158,9 +144,6 @@ export function ArticlePaywall({
                     <span className="text-[0.72rem] font-mono uppercase tracking-widest text-(--lf-muted) font-semibold">
                       {plan.name}
                     </span>
-                    {plan.popular && (
-                      <Zap size={12} className="text-amber-500 fill-amber-500" />
-                    )}
                   </div>
 
                   <p className="text-[0.72rem] text-(--lf-muted) mb-3">

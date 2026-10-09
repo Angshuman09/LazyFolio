@@ -19,13 +19,6 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-(--lf-bg) text-(--lf-ink) font-sans-body">
       <section className="max-w-5xl mx-auto px-5 sm:px-8 pt-18 pb-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-[0.78rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) transition-colors mb-10"
-        >
-          <ArrowLeft size={14} />
-          Back home
-        </Link>
 
         <div className="text-center max-w-2xl mx-auto">
           <p className="font-mono text-[0.72rem] tracking-widest uppercase text-(--lf-muted) mb-4">

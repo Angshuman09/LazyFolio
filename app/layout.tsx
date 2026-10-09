@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   title: "Lazyfolio",
   description: "Make the internet know You Exist",
   icons: {
-    icon: "/logo-crop.png",
+    icon: "/lflogo.png",
   },
   openGraph:{
     type:"website",

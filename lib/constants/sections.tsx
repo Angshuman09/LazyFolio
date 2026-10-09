@@ -78,3 +78,31 @@ export const features = [
       desc: "Track views, click-throughs, and reader retention directly from your dashboard.",
     },
 ];
+
+export const faqs = [
+  {
+    question: "What is Lazyfolio?",
+    answer:
+      "Lazyfolio is a portfolio builder for developers, designers, writers, and indie makers who want a polished personal site without spending hours tweaking layout.",
+  },
+  {
+    question: "Can I publish articles on my portfolio?",
+    answer:
+      "Yes. You can write internal markdown articles, add images, create custom slugs, and publish them directly to your Lazyfolio portfolio.",
+  },
+  {
+    question: "How many articles are free?",
+    answer:
+      "Free accounts include 2 published articles. A paid writing plan unlocks unlimited portfolio articles.",
+  },
+  {
+    question: "Do I need to code my portfolio?",
+    answer:
+      "No. You can choose a template, add your profile, projects, links, experience, and articles from the dashboard.",
+  },
+  {
+    question: "Can I change templates later?",
+    answer:
+      "Yes. Your content stays separate from the template, so you can switch styles as your portfolio evolves.",
+  },
+];

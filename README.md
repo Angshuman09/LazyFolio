@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/logowithbackground.png" alt="Lazyfolio Logo" width="120" />
+  <img src="./public/lflogo.png" alt="Lazyfolio Logo" width="120" />
 </p>
 
 <h1 align="center">Lazyfolio</h1>

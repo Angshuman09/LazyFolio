@@ -13,7 +13,7 @@ const CTA = () => {
       <div className="bg-(--lf-surface) border border-(--lf-border) text-(--lf-ink) rounded-2xl px-6 sm:px-12 py-16 text-center shadow-[0_30px_70px_-30px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_70px_-30px_rgba(0,0,0,0.7)]">
         <h2 className="font-serif-display text-[clamp(2rem,5vw,3rem)] font-normal leading-tight mb-4">
           Ready to Share What You{" "}
-          <span className="text-[#c6a87b] italic">Create</span>?
+          <span className="text-(--lf-accent-text) italic">Create</span>?
         </h2>
         <p className="text-[0.92rem] text-(--lf-muted) leading-relaxed mb-8 max-w-md mx-auto">
           Create a beautiful portfolio, share your favorite links, and publish blogs, all from a single page.

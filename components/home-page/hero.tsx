@@ -86,8 +86,8 @@ const Hero = () => {
 
         <span className="block mt-2 whitespace-nowrap">
           know{" "}
-          <Highlighter action="underline" color="#B08D57">
-            <span className="text-[#c6a87b]">You Exist.</span>
+          <Highlighter action="underline" color="var(--lf-accent)">
+            <span className="text-(--lf-accent-text)">You Exist.</span>
           </Highlighter>
         </span>
       </h1>
@@ -105,7 +105,7 @@ const Hero = () => {
       </p>
 
       <div className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0">
-        <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-tan) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
+        <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-accent) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
           <span className="hidden sm:inline pl-5 text-[0.75rem] font-mono text-(--lf-dimmed)">
             https://
           </span>
@@ -134,15 +134,15 @@ const Hero = () => {
             </span>
           </button>
         </div>
-        <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it's too late!</p>
+        <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it&apos;s too late!</p>
       </div>
 
       <div className="mt-12">
-        <h2 className="text-xl sm:text-3xl font-normal leading-tight flex flex-col tracking-tight mb-5 text-center text-(--lf-ink)">
-          <span className="block font-semibold tracking-wide text-[#8b7d72] font-serif-display">
-            Everything you need to get things done
-          </span>
-        </h2>
+        <h1 className="font-serif-display text-2xl sm:text-3xl font-normal leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-10">
+        <span className="block w-fit tracking-wide">
+        Everything you need to get things <span className="text-(--lf-accent-text) italic">done</span>
+        </span>
+      </h1>
 
         <div className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]">
           <Image

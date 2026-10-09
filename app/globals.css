@@ -40,19 +40,22 @@
   --sidebar-ring: oklch(0.708 0 0);
 
   /* Lazyfolio page palette */
-  --lf-bg: #f8f4ee;
+  --lf-bg: #F7F4EE;
   --lf-bod: #ecdfcd;
-  --lf-surface: #f8f6ee;
-  --lf-border: #E0D8CC;
-  --lf-ink: #201f1f;
-  --lf-muted: #7a7068;
-  --lf-dimmed: #8a8078;
-  --lf-sub: #9a9088;
+  --lf-surface: #FFFCF6;
+  --lf-border: #E5DACB;
+  --lf-ink: #1C1B19;
+  --lf-muted: #6B645B;
+  --lf-dimmed: #82786E;
+  --lf-sub: #8F8479;
   --lf-tan: #C0BAA8;
   --lf-tan-text: #4a4640;
+  --lf-accent: #B5542E;
+  --lf-accent-hover: #9F4726;
+  --lf-accent-text: var(--lf-accent);
   --lf-nav-shadow: rgba(0, 0, 0, 0.08);
   --lf-border-alpha: rgba(0, 0, 0, 0.07);
-  --lf-accent-soft: rgba(0, 0, 0, 0.06);
+  --lf-accent-soft: rgba(181, 84, 46, 0.13);
   --lf-glow: #f59e0b;
   /* Light mode grid — very subtle warm gray at low opacity */
   --lf-grid-color: rgba(90, 80, 70, 0.08);
@@ -107,9 +110,12 @@
   --lf-sub: #52525b;
   --lf-tan: #18181b;
   --lf-tan-text: #d4d4d8;
+  --lf-accent: #E08A62;
+  --lf-accent-hover: #F0A17C;
+  --lf-accent-text: #F0A17C;
   --lf-nav-shadow: rgba(0, 0, 0, 0.5);
   --lf-border-alpha: rgba(255, 255, 255, 0.06);
-  --lf-accent-soft: rgba(139, 92, 246, 0.08);
+  --lf-accent-soft: rgba(224, 138, 98, 0.14);
   --lf-glow: #f59e0b;
 
   /* Accent palette for cards & UI pops */

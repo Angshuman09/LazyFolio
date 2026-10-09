@@ -1,30 +1,8 @@
-const faqs = [
-  {
-    question: "What is Lazyfolio?",
-    answer:
-      "Lazyfolio is a portfolio builder for developers, designers, writers, and indie makers who want a polished personal site without spending hours tweaking layout.",
-  },
-  {
-    question: "Can I publish articles on my portfolio?",
-    answer:
-      "Yes. You can write internal markdown articles, add images, create custom slugs, and publish them directly to your Lazyfolio portfolio.",
-  },
-  {
-    question: "How many articles are free?",
-    answer:
-      "Free accounts include 2 published articles. A paid writing plan unlocks unlimited portfolio articles.",
-  },
-  {
-    question: "Do I need to code my portfolio?",
-    answer:
-      "No. You can choose a template, add your profile, projects, links, experience, and articles from the dashboard.",
-  },
-  {
-    question: "Can I change templates later?",
-    answer:
-      "Yes. Your content stays separate from the template, so you can switch styles as your portfolio evolves.",
-  },
-];
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { faqs } from "@/lib/constants/sections";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -39,48 +17,119 @@ const faqJsonLd = {
   })),
 };
 
+const bounce = { type: "spring", stiffness: 380, damping: 18 } as const;
+
+const listVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: bounce },
+};
+
 export default function FAQ() {
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set([0]));
+
+  const toggle = (index: number) => {
+    setOpenItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
   return (
-    <section
-      id="faq"
-      className="max-w-4xl mx-auto px-5 md:px-6 py-20 scroll-mt-24"
-    >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+    <MotionConfig reducedMotion="user">
+      <section
+        id="faq"
+        className="max-w-4xl mx-auto px-5 md:px-6 py-20 scroll-mt-24"
+      >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
 
-      <div className="text-center mb-10">
-        <p className="font-mono text-[0.7rem] tracking-widest uppercase text-(--lf-muted) mb-3">
-          FAQ
-        </p>
-        <h2 className="font-serif-display text-3xl sm:text-4xl font-normal leading-tight text-(--lf-ink)">
-          A few things people ask.
-        </h2>
-      </div>
-
-      <div className="border-y border-(--lf-border)">
-        {faqs.map((faq, index) => (
-          <details
-            key={faq.question}
-            className="group py-5 border-(--lf-border) open:pb-6 [&:not(:last-child)]:border-b"
-            open={index === 0}
+        <div className="text-center mb-10">
+          <motion.h2
+            initial={{ opacity: 0, scale: 0.9, y: 16 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={bounce}
+            className="font-serif-display text-3xl sm:text-4xl font-normal leading-tight text-(--lf-ink)"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-[0.96rem] font-semibold text-(--lf-ink)">
-              <span>{faq.question}</span>
-              <span
-                aria-hidden="true"
-                className="shrink-0 text-(--lf-muted) transition-transform duration-200 group-open:rotate-45"
+            A few things{" "}
+            <span className="text-(--lf-accent-text)">people</span> ask.
+          </motion.h2>
+        </div>
+
+        <motion.div
+          variants={listVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          className="border-y border-(--lf-border)"
+        >
+          {faqs.map((faq, index) => {
+            const isOpen = openItems.has(index);
+            const id = `faq-${index}`;
+
+            return (
+              <motion.div
+                key={faq.question}
+                variants={itemVariants}
+                className="py-5 border-(--lf-border) not-last:border-b"
               >
-                +
-              </span>
-            </summary>
-            <p className="mt-3 max-w-2xl text-[0.86rem] leading-relaxed text-(--lf-muted)">
-              {faq.answer}
-            </p>
-          </details>
-        ))}
-      </div>
-    </section>
+                <motion.button
+                  type="button"
+                  id={`${id}-trigger`}
+                  aria-expanded={isOpen}
+                  aria-controls={`${id}-panel`}
+                  onClick={() => toggle(index)}
+                  whileTap={{ scale: 0.98 }}
+                  transition={bounce}
+                  className="flex w-full cursor-pointer items-center justify-between gap-4 text-left text-[0.96rem] font-semibold text-(--lf-ink)"
+                >
+                  <span>{faq.question}</span>
+                  <motion.span
+                    aria-hidden="true"
+                    animate={{ rotate: isOpen ? 45 : 0 }}
+                    transition={bounce}
+                    className="shrink-0 text-(--lf-muted)"
+                  >
+                    +
+                  </motion.span>
+                </motion.button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="panel"
+                      id={`${id}-panel`}
+                      role="region"
+                      aria-labelledby={`${id}-trigger`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{
+                        height: { type: "spring", stiffness: 300, damping: 24 },
+                        opacity: { duration: 0.2 },
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <p className="mt-3 pb-1 max-w-2xl text-[0.86rem] leading-relaxed text-(--lf-muted)">
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </section>
+    </MotionConfig>
   );
 }

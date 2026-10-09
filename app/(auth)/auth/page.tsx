@@ -66,9 +66,9 @@ export default function Auth() {
               className="group inline-flex items-center justify-center cursor-pointer"
               title="Lazyfolio Home"
             >
-              <div className="w-14 h-14 rounded-2xl bg-[#1c1c1e] dark:bg-[#27272a] flex items-center justify-center border border-black/5 dark:border-white/10 shadow-xs group-hover:scale-105 transition-transform duration-200">
+              <div className="w-14 h-14 rounded-2xl bg-[#1c1c1e] flex items-center justify-center border border-black/5 dark:border-white/10 shadow-xs group-hover:scale-105 transition-transform duration-200">
                 <Image
-                  src="/logo-crop.png"
+                  src="/lflogo.png"
                   alt="Lazyfolio Logo"
                   width={34}
                   height={34}
@@ -83,7 +83,7 @@ export default function Auth() {
           <div className="text-center mb-8">
             <h1 className="font-serif-display text-[2rem] sm:text-[2.25rem] font-normal tracking-tight text-(--lf-ink) leading-[1.15]">
               Make the internet <br />
-              know <span className="italic text-[#8C6B3E] dark:text-[#E8C98A]">you exist.</span>
+              know <span className="italic text-(--lf-accent-text)">you exist.</span>
             </h1>
             <p className="mt-2.5 text-xs sm:text-[0.82rem] text-(--lf-muted) font-light leading-relaxed">
               Sign in to build and manage your portfolio.

@@ -2,6 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import { PERKS, TEMPLATES } from "@/components/resources/extras";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Templates | Lazyfolio",
+  description:
+    "Every template is crafted to present your work beautifully. Pick one, fill in your story, and go live in minutes.",
+};
 
 export default function TemplatesPage() {
   return (
