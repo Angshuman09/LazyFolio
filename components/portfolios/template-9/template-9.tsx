@@ -19,7 +19,7 @@ import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
 import ContactInfo from "./components/contactinfo";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 export function Template9({
   user,
@@ -35,7 +35,6 @@ export function Template9({
   const stack = normalizeStack(profile?.skills);
   const bookCallLink = getBookCallLink(profile);
   const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
-  const router = useRouter();
 
   return (
     /* Warm parchment — ink-on-paper editorial feel */
@@ -83,12 +82,12 @@ export function Template9({
             <div className="mt-16 pt-5" style={{ borderTop: "1px solid #D8D0C5" }}>
               <p className="text-[10px] tracking-widest" style={{ color: "#B5A898" }}>
                 built with{" "}
-                <span
-                  onClick={() => router.push("/")}
+                <a
+                  href={getMainSiteUrl()}
                   className="cursor-pointer hover:text-[#1C1814] transition-colors"
                 >
                   lazyfolio
-                </span>
+                </a>
               </p>
             </div>
           </>

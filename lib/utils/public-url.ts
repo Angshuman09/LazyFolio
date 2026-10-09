@@ -59,3 +59,40 @@ export function getPortfolioSectionUrl(
   return `/${cleanSection}`;
 }
 
+export function getMainSiteUrl(): string {
+  if (typeof window !== "undefined") {
+    const hostname = window.location.hostname.toLowerCase();
+    const port = window.location.port ? `:${window.location.port}` : "";
+    const protocol = window.location.protocol;
+
+    if (hostname.endsWith(".localhost")) {
+      return `${protocol}//localhost${port}`;
+    }
+
+    const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+    if (envSiteUrl) {
+      try {
+        const parsed = new URL(envSiteUrl);
+        const parsedHost = parsed.hostname.replace(/^www\./, "").toLowerCase();
+        if (hostname.endsWith(`.${parsedHost}`)) {
+          return `${parsed.protocol}//${parsed.host}`;
+        }
+      } catch {}
+    }
+
+    if (hostname.endsWith(".lazyfolio.in")) {
+      return `${protocol}//lazyfolio.in${port}`;
+    }
+
+    const parts = hostname.split(".");
+    if (parts.length > 2) {
+      const rootDomain = parts.slice(1).join(".");
+      return `${protocol}//${rootDomain}${port}`;
+    }
+
+    return `${protocol}//${hostname}${port}`;
+  }
+
+  return (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN).trim().replace(/\/+$/, "");
+}
+

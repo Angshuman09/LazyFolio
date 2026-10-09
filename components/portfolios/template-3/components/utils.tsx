@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
   
 export const Divider = () => (
     <div className="w-full h-px bg-slate-100 my-12" />
@@ -34,19 +33,18 @@ export function StackTicker({ stack }: { stack: { name: string }[] }) {
   }
   
 export function Footer() {
-  const router = useRouter();
     return (
       <footer className="pb-5">
         <div className="flex items-center justify-center gap-2 select-none">
           <span className="text-[10px] font-medium text-slate-300 tracking-wide">
             Built with
           </span>
-          <span
-            onClick={()=> router.push('/')}
-            className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-slate-400 hover:text-slate-700 transition-colors duration-200"
+          <a
+            href={getMainSiteUrl()}
+            className="inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-slate-400 hover:text-slate-700 transition-colors duration-200 cursor-pointer"
           >
             Lazyfolio
-          </span>
+          </a>
         </div>
       </footer>
     );

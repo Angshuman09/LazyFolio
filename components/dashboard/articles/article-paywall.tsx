@@ -2,7 +2,7 @@
 
 import { useCreateCheckoutSession } from "@/hooks/subscription";
 import { authClient } from "@/lib/auth/auth-client";
-import { ArrowRight, Check, Loader2, ShieldCheck, Sparkles, X, Zap } from "lucide-react";
+import { ArrowRight, Check, Loader2, ShieldCheck, X, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export type ArticlePlan = "monthly" | "yearly" | "lifetime";
@@ -100,9 +100,8 @@ export function ArticlePaywall({
   return (
     <div className={`w-full transition-all duration-200 ${inline ? "py-2" : "max-w-4xl mx-auto py-4 sm:py-6"}`}>
       <div
-        className={`relative rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden ${
-          inline ? "p-5 sm:p-7" : "p-6 sm:p-9"
-        }`}
+        className={`relative rounded-2xl border border-(--lf-border) bg-(--lf-surface) shadow-sm overflow-hidden ${inline ? "p-5 sm:p-7" : "p-6 sm:p-9"
+          }`}
       >
         {onClose && (
           <button
@@ -118,7 +117,6 @@ export function ArticlePaywall({
         {/* Top Header */}
         <div className="text-center max-w-xl mx-auto mb-7 sm:mb-8">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-(--lf-border) bg-(--lf-bg) text-[0.7rem] font-mono text-(--lf-ink) mb-3.5 shadow-2xs">
-            <Sparkles size={11} className="text-amber-500 fill-amber-500" />
             <span className="font-medium">Unlimited Article Access</span>
           </div>
 
@@ -138,20 +136,18 @@ export function ArticlePaywall({
             return (
               <div
                 key={plan.id}
-                className={`relative rounded-xl p-5 flex flex-col justify-between transition-all duration-200 ${
-                  plan.popular
+                className={`relative rounded-xl p-5 flex flex-col justify-between transition-all duration-200 ${plan.popular
                     ? "border-2 border-(--lf-ink) bg-(--lf-bg) shadow-md"
                     : "border border-(--lf-border) bg-(--lf-bg) hover:border-(--lf-muted)"
-                }`}
+                  }`}
               >
                 {/* Popular Pill Badge */}
                 {plan.badge && (
                   <div
-                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[0.62rem] font-mono font-semibold uppercase tracking-wider shadow-xs whitespace-nowrap ${
-                      plan.popular
+                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[0.62rem] font-mono font-semibold uppercase tracking-wider shadow-xs whitespace-nowrap ${plan.popular
                         ? "bg-(--lf-ink) text-(--lf-bg)"
                         : "bg-(--lf-surface) border border-(--lf-border) text-(--lf-muted)"
-                    }`}
+                      }`}
                   >
                     {plan.badge}
                   </div>
@@ -201,11 +197,10 @@ export function ArticlePaywall({
                   type="button"
                   onClick={() => startCheckout(plan.id)}
                   disabled={checkoutMutation.isPending || isSessionPending}
-                  className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${
-                    plan.popular
+                  className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${plan.popular
                       ? "bg-(--lf-ink) text-(--lf-bg) hover:opacity-90 shadow-2xs"
                       : "border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
-                  }`}
+                    }`}
                 >
                   {isPending || isSessionPending ? (
                     <>
@@ -223,24 +218,6 @@ export function ArticlePaywall({
             );
           })}
         </div>
-
-        {/* Footer reassurance */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-[0.74rem] text-(--lf-muted) pt-1 border-t border-(--lf-border-alpha)">
-          <div className="inline-flex items-center gap-1.5">
-            <ShieldCheck size={13} className="text-emerald-600 dark:text-emerald-400" />
-            <span>Secured via Dodo Payments</span>
-          </div>
-          <span className="hidden sm:inline opacity-30">•</span>
-          <span>Instant activation after checkout</span>
-          <span className="hidden sm:inline opacity-30">•</span>
-          <span>Cancel anytime with 1 click</span>
-        </div>
-
-        {checkoutMutation.isError && (
-          <p className="mt-3.5 text-center text-[0.75rem] text-red-500 font-sans-body">
-            Something went wrong starting checkout. Please try again.
-          </p>
-        )}
       </div>
     </div>
   );

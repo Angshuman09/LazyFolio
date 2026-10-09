@@ -12,17 +12,54 @@ const RESERVED_PATHS = new Set([
   "terms",
 ]);
 
-const RESERVED_SUBDOMAINS = new Set(["www", "api", "app", "admin", "stats"]);
+const RESERVED_PAGE_PATHS = new Set([
+  "auth",
+  "dashboard",
+  "pricing",
+  "privacy",
+  "stats",
+  "templates",
+  "terms",
+]);
+
+const RESERVED_SUBDOMAINS = new Set([
+  "www",
+  "api",
+  "app",
+  "admin",
+  "stats",
+  "pricing",
+  "auth",
+  "dashboard",
+  "privacy",
+  "terms",
+  "templates",
+]);
 const USERNAME_PATTERN = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 const PRODUCTION_ROOT_HOSTNAME = "lazyfolio.in";
 
-function getRootHostname() {
-  try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lazyfolio.in";
-    return new URL(siteUrl).hostname.replace(/^www\./, "").toLowerCase();
-  } catch {
-    return "lazyfolio.in";
+function getRootHostname(hostname: string) {
+  if (hostname.endsWith(".localhost") || hostname === "localhost") {
+    return "localhost";
   }
+  if (hostname.endsWith(`.${PRODUCTION_ROOT_HOSTNAME}`) || hostname === PRODUCTION_ROOT_HOSTNAME) {
+    return PRODUCTION_ROOT_HOSTNAME;
+  }
+  try {
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "").trim();
+    if (siteUrl) {
+      return new URL(siteUrl).hostname.replace(/^www\./, "").toLowerCase();
+    }
+  } catch {}
+  return PRODUCTION_ROOT_HOSTNAME;
+}
+
+function getRootOrigin(request: NextRequest, rootHostname: string) {
+  const host = request.headers.get("host") || request.headers.get("x-forwarded-host") || "";
+  const port = host.split(":")[1] ? `:${host.split(":")[1]}` : "";
+  const isHttps = request.url.startsWith("https") || request.headers.get("x-forwarded-proto") === "https";
+  const protocol = rootHostname === "localhost" ? "http:" : isHttps ? "https:" : "http:";
+  return `${protocol}//${rootHostname}${rootHostname === "localhost" ? port : ""}`;
 }
 
 function getRequestHostname(request: NextRequest) {
@@ -63,8 +100,10 @@ function buildSubdomainUrl(request: NextRequest, username: string, pathname: str
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = getRequestHostname(request);
-  const rootHostname = getRootHostname();
+  const rootHostname = getRootHostname(hostname);
+  const rootOrigin = getRootOrigin(request, rootHostname);
   const subdomain = getSubdomain(hostname, rootHostname);
+  const firstSegment = getFirstPathSegment(pathname);
 
   const isDashboardRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/api/dashboard");
 
@@ -81,8 +120,32 @@ export async function proxy(request: NextRequest) {
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      return NextResponse.redirect(new URL("/auth", request.url));
+      return NextResponse.redirect(new URL("/auth", rootOrigin));
     }
+  }
+
+  // If the subdomain itself is a reserved page path (e.g. pricing.localhost:3000 -> localhost:3000/pricing)
+  if (subdomain && RESERVED_PAGE_PATHS.has(subdomain)) {
+    let targetPath = `/${subdomain}`;
+    const cleanSegments = pathname.split("/").filter(Boolean);
+    const nonSubdomainSegments = cleanSegments.filter((seg) => seg !== subdomain);
+    if (nonSubdomainSegments.length > 0) {
+      targetPath = `/${subdomain}/${nonSubdomainSegments.join("/")}`;
+    }
+    const redirectUrl = new URL(targetPath, rootOrigin);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If the subdomain is 'www', redirect to root
+  if (subdomain === "www") {
+    const redirectUrl = new URL(pathname, rootOrigin);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If on a portfolio subdomain and requesting a reserved app page (e.g. angshu.localhost:3000/pricing -> localhost:3000/pricing)
+  if (subdomain && RESERVED_PAGE_PATHS.has(firstSegment)) {
+    const redirectUrl = new URL(pathname, rootOrigin);
+    return NextResponse.redirect(redirectUrl);
   }
 
   if (subdomain && !RESERVED_SUBDOMAINS.has(subdomain) && !isReservedPath(pathname)) {
@@ -94,7 +157,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(rewriteUrl);
   }
 
-  const firstSegment = getFirstPathSegment(pathname);
   const isProductionRoot = hostname === PRODUCTION_ROOT_HOSTNAME || hostname === `www.${PRODUCTION_ROOT_HOSTNAME}`;
   const isEnvRoot = hostname === rootHostname || hostname === `www.${rootHostname}`;
   const isRootDomain = isEnvRoot || isProductionRoot;

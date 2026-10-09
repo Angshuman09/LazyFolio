@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 import type { PortfolioTemplateProps, TemplateThemeConfig } from "../shared/types";
 import {
@@ -27,8 +27,6 @@ export function ThemedPortfolioTemplate({
   const avatar = cleanUrl(profile?.avatar);
   const bookCallLink = getBookCallLink(profile);
   const iconStrokeWidth = config.iconStrokeWidth ?? 1.8;
-
-  const router = useRouter();
 
   return (
     <>
@@ -96,12 +94,12 @@ export function ThemedPortfolioTemplate({
               <footer
                 className={`lf-themed-footer flex justify-center items-center ${config.footerClass}`}
               >
-                <p
-                  onClick={() => router.push("/")}
+                <a
+                  href={getMainSiteUrl()}
                   className={config.footerBrandClass}
                 >
                   Built with lazyfolio
-                </p>
+                </a>
               </footer>
             </>
           )}

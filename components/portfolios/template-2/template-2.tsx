@@ -16,7 +16,7 @@ import Stack from "./components/stack";
 import BookACall from "./components/bookACall";
 import ContactLinks from "./components/contact-links";
 import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 export function Template2({
   user,
@@ -30,7 +30,6 @@ export function Template2({
   const banner = cleanUrl(profile?.banner);
   const links = normalizeLinks(profile?.links);
   const bookCallLink = getBookCallLink(profile);
-  const router = useRouter();
 
   return (
       <main className="min-h-screen bg-[#fbfbfb] text-stone-700 antialiased">
@@ -87,7 +86,7 @@ export function Template2({
           <div className="mt-14 pt-6 border-t border-stone-200 flex items-center justify-between">
             <p className="text-[11px] text-stone-300">
               built with{" "}
-              <span className="text-stone-500 font-medium cursor-pointer" onClick={()=> router.push('/')}>lazyfolio</span>
+              <a href={getMainSiteUrl()} className="text-stone-500 font-medium hover:text-stone-700 cursor-pointer transition-colors">lazyfolio</a>
             </p>
           </div>
         </div>

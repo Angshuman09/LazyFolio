@@ -10,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Plus,
   AlertCircle,
-  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -106,9 +105,7 @@ export default function BlogsForm({
   });
 
   const freeLimit = articleUsage?.freeLimit ?? maxItems ?? 2;
-  const currentCount = articleUsage?.count ?? fields.length;
-  const remaining = Math.max(freeLimit - currentCount, 0);
-  const isLimitReached = !isSubscribed && (fields.length >= freeLimit || currentCount >= freeLimit);
+  const isLimitReached = !isSubscribed && fields.length >= freeLimit;
 
   useEffect(() => {
     if (!profile?.id) {
@@ -142,7 +139,9 @@ export default function BlogsForm({
         </h1>
         <p className="text-[0.78rem] text-(--lf-muted) mb-6">
           {isArticleMode
-            ? "Write internal markdown articles for your portfolio blog."
+            ? !isSubscribed
+              ? `Write internal markdown articles for your portfolio blog (${fields.length}/${freeLimit} free used).`
+              : "Write internal markdown articles for your portfolio blog."
             : "Add external blog posts and writing links to your portfolio."}
         </p>
 
@@ -150,68 +149,6 @@ export default function BlogsForm({
           <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
             <AlertCircle size={14} className="shrink-0" />
             <span>{sectionError}</span>
-          </div>
-        )}
-
-        {/* Article Credits & Upgrade Banner for Free Users */}
-        {isArticleMode && !isSubscribed && (
-          <div className="mb-6 rounded-2xl border border-(--lf-border) bg-(--lf-surface) p-4 sm:p-5 transition-all">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[0.82rem] font-semibold text-(--lf-ink)">
-                    Article Credits
-                  </span>
-                  <span
-                    className={`text-[0.66rem] font-mono px-2 py-0.5 rounded-full font-medium ${
-                      isLimitReached
-                        ? "bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/20"
-                        : "bg-(--lf-bg) border border-(--lf-border) text-(--lf-muted)"
-                    }`}
-                  >
-                    {currentCount} of {freeLimit} free used
-                  </span>
-                </div>
-                <p className="text-[0.76rem] text-(--lf-muted) leading-relaxed">
-                  {isLimitReached
-                    ? "Free limit reached. Upgrade for unlimited publishing, or delete an existing article below to free up space."
-                    : `${remaining} free article slot${remaining === 1 ? "" : "s"} remaining. Upgrade anytime for unlimited articles.`}
-                </p>
-              </div>
-
-              <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center gap-1.5 px-3.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold hover:opacity-90 transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto font-sans-body shadow-2xs"
-              >
-                <Sparkles size={12} className="text-amber-400 fill-amber-400" />
-                <span>View pricing</span>
-              </Link>
-            </div>
-
-            {/* Credit visual indicator */}
-            <div className="mt-3.5 pt-3 border-t border-(--lf-border-alpha) flex items-center gap-2 flex-wrap">
-              {Array.from({ length: freeLimit }).map((_, idx) => {
-                const isUsed = idx < currentCount;
-                return (
-                  <div
-                    key={idx}
-                    className={`flex items-center gap-1.5 text-[0.68rem] px-2.5 py-1 rounded-lg border font-mono ${
-                      isUsed
-                        ? "border-(--lf-border) bg-(--lf-bg) text-(--lf-ink)"
-                        : "border-dashed border-(--lf-border) text-(--lf-muted) bg-transparent"
-                    }`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        isUsed ? "bg-emerald-500" : "bg-neutral-300 dark:bg-neutral-600"
-                      }`}
-                    />
-                    <span>Article {idx + 1}: {isUsed ? "Saved" : "Available"}</span>
-                  </div>
-                );
-              })}
-            </div>
-
           </div>
         )}
 
@@ -252,18 +189,17 @@ export default function BlogsForm({
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
                 <p className="text-[0.78rem] font-medium text-(--lf-ink)">
-                  Free article limit reached ({freeLimit} of {freeLimit})
+                  Free article limit reached ({fields.length} of {freeLimit})
                 </p>
                 <p className="text-[0.72rem] text-(--lf-muted) mt-0.5">
-                  Upgrade for unlimited articles, or delete an existing article above to free up space.
+                  Upgrade for unlimited articles, or delete an existing article to free up space.
                 </p>
               </div>
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-1.5 px-3.5 h-8.5 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
+                className="inline-flex items-center justify-center px-4 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
               >
-                <Sparkles size={12} className="text-amber-400 fill-amber-400" />
-                <span>See pricing</span>
+                View pricing
               </Link>
             </div>
           ) : (

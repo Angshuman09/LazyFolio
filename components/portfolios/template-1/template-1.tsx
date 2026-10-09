@@ -11,7 +11,7 @@ import { PortfolioTemplateProps } from "../shared/types";
 import { addProfileContactLinks, cleanUrl, getBookCallLink, textValue } from "../shared/utils";
 import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "../shared/normalize";
 import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 export function Template1({
   user,
@@ -30,7 +30,6 @@ export function Template1({
   const bookCallLink = getBookCallLink(profile);
   const avatar = cleanUrl(profile?.avatar);
   const hasQuickActions = links.length > 0 || Boolean(bookCallLink);
-  const router = useRouter();
 
   return (
     <>
@@ -78,7 +77,7 @@ export function Template1({
 
               <div className="mt-14 pt-6 border-t border-zinc-800/60 flex items-center justify-between">
                 <p className="text-[11px] text-zinc-800">
-                  built with <span onClick={()=> router.push('/')} className="text-zinc-600 cursor-pointer">lazyfolio</span>
+                  built with <a href={getMainSiteUrl()} className="text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors">lazyfolio</a>
                 </p>
               </div>
             </>

@@ -46,10 +46,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const host = req.headers.get("host") || "";
+    const hostname = host.split(":")[0]?.toLowerCase() || "";
+    const port = host.split(":")[1] ? `:${host.split(":")[1]}` : "";
+    const isLocal = hostname.endsWith(".localhost") || hostname === "localhost";
     const origin =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      req.nextUrl.origin ||
-      "http://localhost:3000";
+      process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+      (isLocal ? `http://localhost${port}` : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"));
 
     const returnUrl = `${origin}/dashboard?tab=articles&checkout=success`;
     const client = getDodoClient();

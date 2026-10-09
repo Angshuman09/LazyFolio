@@ -19,7 +19,7 @@ import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
 import ContactLinks from "./components/contact-links";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 export function Template10({
   user,
@@ -35,7 +35,6 @@ export function Template10({
   const projects = normalizeProjects(profile?.projects);
   const stack = normalizeStack(profile?.skills);
   const bookCallLink = getBookCallLink(profile);
-  const router = useRouter();
 
   return (
     /* Warm off-white — indigo accent system */
@@ -75,13 +74,13 @@ export function Template10({
             <div className="mt-14 pt-5" style={{ borderTop: "1px solid #F0ECE8" }}>
               <p className="text-[11px]" style={{ color: "#C4B8AC" }}>
                 built with{" "}
-                <span
-                  onClick={() => router.push("/")}
+                <a
+                  href={getMainSiteUrl()}
                   className="cursor-pointer hover:text-[#1D4ED8] transition-colors"
                   style={{ color: "#9CA3AF" }}
                 >
                   lazyfolio
-                </span>
+                </a>
               </p>
             </div>
           </>

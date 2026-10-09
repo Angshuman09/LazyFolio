@@ -15,7 +15,7 @@ import Experience from "./components/experience";
 import Projects from "./components/projects";
 import Blogs from "./components/blogs";
 import Stack from "./components/stack";
-import { useRouter } from "next/navigation";
+import { getMainSiteUrl } from "@/lib/utils/public-url";
 
 export function Template11({
   user,
@@ -28,7 +28,6 @@ export function Template11({
   const links = normalizeLinks(profile?.links);
   const stack = normalizeStack(profile?.skills);
   const bookCallLink = getBookCallLink(profile);
-  const router = useRouter();
 
   return (
     /* Light blue-gray page — white document card inside */
@@ -91,13 +90,13 @@ export function Template11({
               >
                 <p className="text-[10.5px] font-mono" style={{ color: "#CBD5E1" }}>
                   built with{" "}
-                  <span
-                    onClick={() => router.push("/")}
+                  <a
+                    href={getMainSiteUrl()}
                     className="cursor-pointer hover:text-[#475569] transition-colors"
                     style={{ color: "#94A3B8" }}
                   >
                     lazyfolio
-                  </span>
+                  </a>
                   <span className="ml-3">·</span>
                   <button
                     onClick={() => window.print()}
