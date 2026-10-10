@@ -1,6 +1,6 @@
-import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import FooterWordmark from "./footer-wordmark";
 const Footer = () => {
   const navColumns = [
     {
@@ -42,17 +42,10 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row gap-12 md:gap-0 max-w-7xl mx-auto">
 
           <div className="md:w-72 shrink-0 md:pr-16 flex flex-col gap-3">
+            <Image src={"/lflogo.png"} width={30} height={30} alt="logo png"/>
             <span className="font-serif-display text-[1.4rem] font-normal tracking-tight text-(--lf-ink)">
               Lazy<span className="text-(--lf-muted)">folio</span>
             </span>
-            <Link
-              href="https://github.com/Angshuman09/lazyfolio"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1.5 text-[0.75rem] text-(--lf-muted) hover:text-(--lf-ink) transition-colors duration-150 underline underline-offset-4 decoration-(--lf-border) w-fit"
-            >
-              <Star className="w-3 h-3" /> on GitHub
-            </Link>
           </div>
 
           <div className="flex flex-1 gap-12 md:gap-16 lg:gap-24">
@@ -96,21 +89,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div
-        aria-hidden="true"
-        className="mt-2 select-none pointer-events-none leading-none text-(--lf-border)"
-        style={{
-          fontSize: "clamp(80px, 18vw, 220px)",
-          fontWeight: 800,
-          lineHeight: 0.85,
-          paddingLeft: "0.03em",
-          fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-          overflow: "hidden",
-          maxHeight: "0.70em",
-        }}
-      >
-        Lazyfolio
-      </div>
+      <FooterWordmark />
 
       <div style={{ height: "2rem" }} />
     </footer>
