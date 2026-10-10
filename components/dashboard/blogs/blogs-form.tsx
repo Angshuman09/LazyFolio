@@ -181,7 +181,7 @@ export default function BlogsForm({
         </div>
 
         <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) border-dashed">
-          <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-3.5">
+          <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) font-mono mb-3.5">
             {isArticleMode ? "New Article" : "New Blog Link"}
           </div>
 
@@ -197,7 +197,7 @@ export default function BlogsForm({
               </div>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center px-4 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
+                className="inline-flex items-center justify-center px-4 h-8 rounded-full bg-(--lf-accent-text) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
               >
                 View pricing
               </Link>

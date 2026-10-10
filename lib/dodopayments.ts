@@ -1,6 +1,5 @@
 import DodoPayments from "dodopayments";
-
-export type ArticlePlan = "monthly" | "yearly" | "lifetime";
+import { ArticlePlan } from "./types/payment";
 
 const ARTICLE_PLAN_LABELS: Record<ArticlePlan, string> = {
   monthly: "$5/month",
@@ -17,7 +16,6 @@ export function getDodoConfig() {
 
   const rawEnv = cleanEnv(process.env.DODO_PAYMENTS_ENVIRONMENT).toLowerCase();
 
-  // Default to 'test_mode' unless explicitly specified as 'live_mode' or 'live'
   const environment: "test_mode" | "live_mode" =
     rawEnv === "live_mode" || rawEnv === "live" ? "live_mode" : "test_mode";
 

@@ -9,10 +9,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Moon, Sun } from "lucide-react";
 import { useThemeStore } from "@/lib/utils/theme-store";
+import { authClient } from "@/lib/auth/auth-client";
 
 export default function Auth() {
   const router = useRouter();
   const [disable, setDisable] = useState(false);
+  const { data: session, isPending } = authClient.useSession();
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
   const setTheme = useThemeStore((s) => s.setTheme);
@@ -24,6 +26,13 @@ export default function Auth() {
       document.documentElement.classList.contains("dark") ? "dark" : "light"
     );
   }, [setTheme]);
+
+  // Already signed in? Skip the auth screen and go straight to the dashboard.
+  useEffect(() => {
+    if (session && !isPending) {
+      router.replace("/dashboard");
+    }
+  }, [session, isPending, router]);
 
   return (
     <div className="min-h-screen w-full bg-(--lf-bg) text-(--lf-ink) flex flex-col justify-between p-5 sm:p-8 transition-colors duration-300">

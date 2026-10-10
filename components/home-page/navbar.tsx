@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Menu, Moon, Star, Sun, X } from "lucide-react";
+import { Menu, Moon, Star, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { UserAvatar } from "./user-avatar";
 import { signOut } from "@/lib/auth/auth-client";
 import ProfileMenuOpen from "./profile-menu-open";
+import { GithubIcon } from "@animateicons/react/lucide";
+import { useIconHover } from "@animateicons/react";
+
 import {
   Tooltip,
   TooltipContent,
@@ -34,6 +37,9 @@ const Navbar = () => {
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
   const isDark = theme === "dark";
+  // Drives the icon from the whole link, instead of the icon's own hover.
+  const { ref: githubIconRef, triggerProps: githubTriggerProps } =
+    useIconHover();
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -85,17 +91,36 @@ const Navbar = () => {
 
         {/* Right — actions */}
         <div className="hidden md:flex items-center justify-end gap-3">
-          <Link
-            href="https://github.com/Angshuman09/lazyfolio"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="lf-focus group flex items-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) pl-3.5 pr-4 py-2 text-[0.78rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
-          >
-            <Github className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-20 dark:group-hover:fill-yellow-200 dark:group-hover:text-yellow-200 group-hover:fill-yellow-500 group-hover:text-yellow-500" />
-            <span className="tabular-nums">
-              {stars !== null ? stars.toLocaleString() : "—"}
-            </span>
-          </Link>
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="https://github.com/Angshuman09/lazyfolio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="lf-focus group flex items-center gap-2 rounded-full border border-(--lf-border) bg-(--lf-surface) pl-3.5 pr-4 py-2 text-[0.78rem] font-medium text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) transition-colors duration-150"
+                  {...githubTriggerProps}
+                >
+                  <GithubIcon
+                    ref={githubIconRef}
+                    className="h-3.5 w-3.5 group-hover:fill-(--lf-accent-text) group-hover:text-(--lf-accent-text)"
+                  />
+                  <span className="">
+                    {stars !== null ? stars.toLocaleString() : "—"}
+                  </span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                align="end"
+                className="text-[0.72rem] font-medium"
+              >
+                {stars !== null
+                  ? `${stars.toLocaleString()} stars on GitHub`
+                  : "Star us on GitHub"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
           <button
             className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"

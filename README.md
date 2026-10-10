@@ -28,17 +28,6 @@
 
 ---
 
-## Table of Contents
-
-- [What is Lazyfolio](#what-is-lazyfolio)
-- [Preview](#preview)
-- [Getting Started](#getting-started)
-- [Inspiration](#inspiration)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
 ## What is Lazyfolio
 
 Most portfolio sites take an evening (or a weekend) you didn't want to spend picking a layout, wiring up a CMS, and wrestling with deploys. Lazyfolio skips all of that. Pick a template, fill in your story, and you have a live, shareable portfolio with your own link, blog, and analytics in minutes.

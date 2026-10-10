@@ -19,6 +19,7 @@ export const GoogleAuth = ({
     setDisable(true);
     await authClient.signIn.social({
       provider: "google",
+      callbackURL: "/dashboard",
     });
     setIsPending(false);
   };

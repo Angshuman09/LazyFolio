@@ -10,7 +10,6 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen py-16 sm:py-24 px-6 sm:px-8">
       <div className="max-w-3xl mx-auto">
-        {/* Navigation Tabs */}
         <div className="flex items-center gap-1.5 p-1 bg-(--lf-surface) border border-(--lf-border) rounded-full w-fit mb-10">
           <Link
             href="/terms"
@@ -46,7 +45,7 @@ export default function PrivacyPage() {
               1. Overview &amp; Philosophy
             </h2>
             <p>
-              Lazyfolio operates the platform at <code className="bg-(--lf-surface) border border-(--lf-border) px-1.5 py-0.5 rounded font-mono text-xs text-(--lf-ink)">lazyfolio.in</code>, enabling developers and creators to publish portfolios, link trees, and technical blogs.
+              Lazyfolio operates the platform at <span className='font-bold'>lazyfolio.in</span>, enabling developers and creators to publish portfolios, link trees, and technical blogs.
             </p>
             <p>
               Our philosophy is straightforward: your portfolio belongs to you. We do not sell your personal information to third parties, broker your data to advertisers, or track you across the web. The source code is open and verifiable on GitHub.

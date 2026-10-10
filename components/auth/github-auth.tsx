@@ -20,6 +20,7 @@ export const GithubAuth = ({
     setDisable(true);
     await authClient.signIn.social({
       provider: "github",
+      callbackURL: "/dashboard",
     });
     setIsPending(false);
   };

@@ -2,83 +2,10 @@
 
 import { useCreateCheckoutSession } from "@/hooks/subscription";
 import { authClient } from "@/lib/auth/auth-client";
-import { ArrowRight, Check, Loader2, ShieldCheck, X, Zap } from "lucide-react";
+import { ArticlePaywallProps, ArticlePlan } from "@/lib/types/payment";
+import { ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-export type ArticlePlan = "monthly" | "yearly" | "lifetime";
-
-interface PlanConfig {
-  id: ArticlePlan;
-  name: string;
-  tagline: string;
-  price: string;
-  cadence: string;
-  subtext?: string;
-  badge?: string;
-  features: string[];
-  cta: string;
-  popular?: boolean;
-}
-
-const plans: PlanConfig[] = [
-  {
-    id: "monthly",
-    name: "Monthly",
-    tagline: "Pay as you go",
-    price: "$5",
-    cadence: "/ month",
-    subtext: "Flexible billing, cancel anytime",
-    features: [
-      "Unlimited published articles",
-      "Rich markdown & image uploads",
-      "Custom article slugs & SEO",
-      "Cancel anytime in 1 click",
-    ],
-    cta: "Choose Monthly",
-  },
-  {
-    id: "yearly",
-    name: "Yearly",
-    tagline: "Our most popular choice",
-    price: "$39",
-    cadence: "/ year",
-    subtext: "Save 35% compared to monthly (~$3.25/mo)",
-    badge: "Most Popular",
-    features: [
-      "Unlimited published articles",
-      "Rich markdown & image uploads",
-      "Custom article slugs & SEO",
-      "Priority customer support",
-      "Annual discount savings",
-    ],
-    cta: "Choose Yearly",
-    popular: true,
-  },
-  {
-    id: "lifetime",
-    name: "Lifetime",
-    tagline: "Pay once, keep forever",
-    price: "$169",
-    cadence: "one-time",
-    subtext: "Zero recurring fees, yours forever",
-    badge: "Best Long-Term",
-    features: [
-      "Unlimited published articles forever",
-      "Rich markdown & image uploads",
-      "All future article features included",
-      "Lifetime priority support",
-      "No renewals or recurring charges",
-    ],
-    cta: "Choose Lifetime",
-  },
-];
-
-interface ArticlePaywallProps {
-  articleCount?: number;
-  freeLimit?: number;
-  inline?: boolean;
-  onClose?: () => void;
-}
+import { plans } from "@/lib/constants/sections";
 
 export function ArticlePaywall({
   freeLimit = 2,
@@ -114,7 +41,6 @@ export function ArticlePaywall({
           </button>
         )}
 
-        {/* 3 Plans Grid */}
         <div className="grid gap-3.5 lg:grid-cols-3 mb-6">
           {plans.map((plan) => {
             const isPending = checkoutMutation.isPending && pendingPlan === plan.id;
@@ -130,7 +56,7 @@ export function ArticlePaywall({
                 {/* Popular Pill Badge */}
                 {plan.badge && (
                   <div
-                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[0.62rem] font-mono font-semibold uppercase tracking-wider shadow-xs whitespace-nowrap ${plan.popular
+                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-1 rounded-full text-[0.62rem] font-mono font-semibold tracking-wider shadow-xs whitespace-nowrap ${plan.popular
                         ? "bg-(--lf-ink) text-(--lf-bg)"
                         : "bg-(--lf-surface) border border-(--lf-border) text-(--lf-muted)"
                       }`}
@@ -141,7 +67,7 @@ export function ArticlePaywall({
 
                 <div>
                   <div className="flex items-center justify-between gap-2 mt-1 mb-1">
-                    <span className="text-[0.72rem] font-mono uppercase tracking-widest text-(--lf-muted) font-semibold">
+                    <span className="text-[0.72rem] font-mono tracking-widest text-(--lf-muted) font-semibold">
                       {plan.name}
                     </span>
                   </div>

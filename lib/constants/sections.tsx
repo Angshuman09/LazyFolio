@@ -1,5 +1,6 @@
 import { Cookie, Database, Eye, HelpCircle, Server, ShieldCheck, Trash2, Lock, AlertTriangle, Copyright, FileText, Globe, Scale, ShieldAlert, UserCheck } from "lucide-react";
 import type { Prisma } from "@/db/client";
+import { PlanConfig } from "../types/payment";
 
 export const SECTIONS = [
     { id: "overview", label: "Overview & Philosophy", icon: ShieldCheck },
@@ -104,5 +105,59 @@ export const faqs = [
     question: "Can I change templates later?",
     answer:
       "Yes. Your content stays separate from the template, so you can switch styles as your portfolio evolves.",
+  },
+];
+
+
+export const plans: PlanConfig[] = [
+  {
+    id: "monthly",
+    name: "Monthly",
+    tagline: "Pay as you go",
+    price: "$5",
+    cadence: "/ month",
+    subtext: "Flexible billing, cancel anytime",
+    features: [
+      "Unlimited published articles",
+      "Rich markdown & image uploads",
+      "Custom article slugs & SEO",
+      "Cancel anytime in 1 click",
+    ],
+    cta: "Choose Monthly",
+  },
+  {
+    id: "yearly",
+    name: "Yearly",
+    tagline: "Our most popular choice",
+    price: "$39",
+    cadence: "/ year",
+    subtext: "Save 35% compared to monthly (~$3.25/mo)",
+    badge: "Most Popular",
+    features: [
+      "Unlimited published articles",
+      "Rich markdown & image uploads",
+      "Custom article slugs & SEO",
+      "Priority customer support",
+      "Annual discount savings",
+    ],
+    cta: "Choose Yearly",
+    popular: true,
+  },
+  {
+    id: "lifetime",
+    name: "Lifetime",
+    tagline: "Pay once, keep forever",
+    price: "$169",
+    cadence: "one-time",
+    subtext: "Zero recurring fees, yours forever",
+    badge: "Best Long-Term",
+    features: [
+      "Unlimited published articles forever",
+      "Rich markdown & image uploads",
+      "All future article features included",
+      "Lifetime priority support",
+      "No renewals or recurring charges",
+    ],
+    cta: "Choose Lifetime",
   },
 ];

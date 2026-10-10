@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import {
-  ArticlePlan,
   getArticleProductId,
   getDodoConfig,
   getDodoClient,
 } from "@/lib/dodopayments";
+import { ArticlePlan } from "@/lib/types/payment";
 
 const articlePlans = new Set<ArticlePlan>(["monthly", "yearly", "lifetime"]);
 
