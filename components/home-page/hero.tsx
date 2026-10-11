@@ -7,6 +7,8 @@ import { useGetUserProfile } from "@/hooks/profile";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { isReservedUsername } from "@/lib/utils/username";
+import { motion } from "motion/react";
+
 
 const Hero = () => {
   const { data: session, isPending: isSessionLoading } =
@@ -79,7 +81,12 @@ const Hero = () => {
 
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
-      <h1 className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)">
+      <motion.h1
+        initial={{ opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)"
+      >
         <span className="block whitespace-nowrap">
           Make the internet
         </span>
@@ -90,9 +97,14 @@ const Hero = () => {
             <span className="text-(--lf-accent-text)">You Exist.</span>
           </Highlighter>
         </span>
-      </h1>
+      </motion.h1>
 
-      <p className="tracking-wider font-serif-display text-(--lf-muted)">
+      <motion.p
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+        className="tracking-wider font-serif-display text-(--lf-muted)"
+      >
         Build your portfolio in{" "}
         <span className="text-(--lf-tan-text) font-bold">
           <em>minutes</em>
@@ -102,9 +114,14 @@ const Hero = () => {
           <em>scratch </em>
         </span>
         &gt;◡&lt;
-      </p>
+      </motion.p>
 
-      <div className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0">
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0"
+      >
         <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-accent) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
           <span className="hidden sm:inline pl-5 text-[0.75rem] font-mono text-(--lf-dimmed)">
             https://
@@ -120,10 +137,12 @@ const Hero = () => {
             }}
             className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 px-2 sm:px-1 placeholder:text-(--lf-dimmed)"
           />
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             disabled={isLoading}
             onClick={handleSubmitUsername}
-            className="group shrink-0 h-10 sm:h-11 inline-flex items-center gap-2 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] sm:text-[0.8125rem] font-semibold pl-5 pr-2 sm:pr-2.5 hover:opacity-85 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer whitespace-nowrap"
+            className="group shrink-0 h-10 sm:h-11 inline-flex items-center gap-2 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] sm:text-[0.8125rem] font-semibold pl-5 pr-2 sm:pr-2.5 hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer whitespace-nowrap"
           >
             {isClaiming ? "Claiming..." : "claim username"}
             <span
@@ -132,19 +151,31 @@ const Hero = () => {
             >
               ↗
             </span>
-          </button>
+          </motion.button>
         </div>
         <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it&apos;s too late!</p>
-      </div>
+      </motion.div>
 
       <div className="mt-12">
-        <h1 className="font-serif-display text-2xl sm:text-3xl font-normal leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-10">
-        <span className="block w-fit tracking-wide">
-        Everything you need to get things <span className="text-(--lf-accent-text) italic">done</span>
-        </span>
-      </h1>
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="font-serif-display text-2xl sm:text-3xl font-normal leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-10"
+        >
+          <span className="block w-fit tracking-wide">
+            Everything you need to get things <span className="text-(--lf-accent-text) italic">done</span>
+          </span>
+        </motion.h2>
 
-        <div className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]">
+        <motion.div
+          initial={{ opacity: 0, y: 26, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+          className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]"
+        >
           <Image
             src="/apppreview.png"
             alt="Lazyfolio dashboard preview"
@@ -153,7 +184,7 @@ const Hero = () => {
             loading="eager"
             className="rounded-xl w-full"
           />
-        </div>
+        </motion.div>
       </div>
     </section>
   );

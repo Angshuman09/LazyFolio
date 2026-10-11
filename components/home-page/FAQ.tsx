@@ -17,7 +17,8 @@ const faqJsonLd = {
   })),
 };
 
-const bounce = { type: "spring", stiffness: 380, damping: 18 } as const;
+
+export const bounce = { type: "spring", stiffness: 300, damping: 24 } as const;
 
 const listVariants = {
   hidden: {},
@@ -25,7 +26,7 @@ const listVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 18 },
   show: { opacity: 1, y: 0, transition: bounce },
 };
 
@@ -54,9 +55,9 @@ export default function FAQ() {
 
         <div className="text-center mb-10">
           <motion.h2
-            initial={{ opacity: 0, scale: 0.9, y: 16 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
             transition={bounce}
             className="font-serif-display text-3xl sm:text-4xl font-normal leading-tight text-(--lf-ink)"
           >

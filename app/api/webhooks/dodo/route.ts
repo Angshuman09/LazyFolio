@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  ArticlePlan,
   getArticlePlanFromProductId,
   getDodoConfig,
   getDodoClient,
 } from "@/lib/dodopayments";
 import { prisma } from "@/lib/prisma";
 import { SubscriptionStatus } from "@/db/enums";
+import { ArticlePlan } from "@/lib/types/payment";
 
 const articlePlans = new Set<ArticlePlan>(["monthly", "yearly", "lifetime"]);
 

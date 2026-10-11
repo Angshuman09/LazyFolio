@@ -6,6 +6,21 @@ import { ArticlePaywallProps, ArticlePlan } from "@/lib/types/payment";
 import { ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { plans } from "@/lib/constants/sections";
+import { motion, type Variants } from "motion/react";
+import { lightEase } from "@/lib/motion";
+
+const planCardVariants: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.5,
+      ease: lightEase,
+    },
+  }),
+};
 
 export function ArticlePaywall({
   freeLimit = 2,
@@ -42,13 +57,19 @@ export function ArticlePaywall({
         )}
 
         <div className="grid gap-3.5 lg:grid-cols-3 mb-6">
-          {plans.map((plan) => {
+          {plans.map((plan, index) => {
             const isPending = checkoutMutation.isPending && pendingPlan === plan.id;
 
             return (
-              <div
+              <motion.div
                 key={plan.id}
-                className={`relative rounded-xl p-5 flex flex-col justify-between transition-all duration-200 ${plan.popular
+                custom={index}
+                variants={planCardVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-40px" }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className={`relative rounded-xl p-5 flex flex-col justify-between transition-shadow duration-200 ${plan.popular
                     ? "border-2 border-(--lf-ink) bg-(--lf-bg) shadow-md"
                     : "border border-(--lf-border) bg-(--lf-bg) hover:border-(--lf-muted)"
                   }`}
@@ -102,11 +123,13 @@ export function ArticlePaywall({
                   </ul>
                 </div>
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => startCheckout(plan.id)}
                   disabled={checkoutMutation.isPending || isSessionPending}
-                  className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${plan.popular
+                  className={`w-full inline-flex items-center justify-center gap-1.5 px-4 h-9.5 rounded-xl text-[0.78rem] font-semibold cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-sans-body whitespace-nowrap mt-2 ${plan.popular
                       ? "bg-(--lf-ink) text-(--lf-bg) hover:opacity-90 shadow-2xs"
                       : "border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
                     }`}
@@ -122,8 +145,8 @@ export function ArticlePaywall({
                       <ArrowRight size={13} />
                     </>
                   )}
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             );
           })}
         </div>

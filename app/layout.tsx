@@ -57,7 +57,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={cn(geist.variable, serif.variable, bricolage.variable, "antialiased selection:bg-[#FDE047]")}>
+      <body className={cn(geist.variable, serif.variable, bricolage.variable, "antialiased selection:bg-(--lf-accent-text) selection:text-white")}>
         <Toaster position="bottom-right" />
         <Providers>
           {children}
