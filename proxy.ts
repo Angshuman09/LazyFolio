@@ -5,7 +5,6 @@ const RESERVED_PATHS = new Set([
   "api",
   "auth",
   "dashboard",
-  "pricing",
   "privacy",
   "stats",
   "templates",
@@ -15,7 +14,6 @@ const RESERVED_PATHS = new Set([
 const RESERVED_PAGE_PATHS = new Set([
   "auth",
   "dashboard",
-  "pricing",
   "privacy",
   "stats",
   "templates",
@@ -28,7 +26,6 @@ const RESERVED_SUBDOMAINS = new Set([
   "app",
   "admin",
   "stats",
-  "pricing",
   "auth",
   "dashboard",
   "privacy",
@@ -106,6 +103,11 @@ export async function proxy(request: NextRequest) {
   const firstSegment = getFirstPathSegment(pathname);
 
   const isDashboardRoute = pathname.startsWith("/dashboard") || pathname.startsWith("/api/dashboard");
+
+  // Redirect legacy /pricing visits to home
+  if (pathname === "/pricing" || pathname.startsWith("/pricing/") || subdomain === "pricing") {
+    return NextResponse.redirect(new URL("/", rootOrigin));
+  }
 
   if (isDashboardRoute) {
     const sessionRes = await fetch(new URL("/api/auth/get-session", request.url), {

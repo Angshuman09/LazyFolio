@@ -52,6 +52,8 @@ export function TiptapEditor({
   control,
   setValue,
   onClose,
+  isSubscribed,
+  onSupportMe,
 }: MarkdownEditorProps) {
   const values = useWatch({ control, name: `blogs.${index}` });
   const title = values?.title || "";
@@ -107,6 +109,29 @@ export function TiptapEditor({
     ) => {
       if (!editorInstance) return;
 
+      // Image upload requires a supporter account
+      if (!isSubscribed) {
+        toast(
+          (t) => (
+            <span className="text-sm">
+              Image uploads are for supporters.{" "}
+              <button
+                className="font-semibold underline cursor-pointer"
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  onSupportMe?.();
+                }}
+              >
+                Support Lazyfolio →
+              </button>
+            </span>
+          ),
+          { duration: 5000 },
+        );
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        return;
+      }
+
       if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
         toast.error("Only JPEG, PNG, GIF, and WebP images are supported.");
         return;
@@ -133,7 +158,7 @@ export function TiptapEditor({
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [insertImageIntoEditor],
+    [insertImageIntoEditor, isSubscribed, onSupportMe],
   );
 
   const syncImageCleanup = useCallback((currentImages: TiptapImageInfo[]) => {
@@ -374,7 +399,33 @@ export function TiptapEditor({
         </div>
       </header>
 
-      <Toolbar editor={editor} onImageClick={() => fileInputRef.current?.click()} />
+      <Toolbar
+        editor={editor}
+        onImageClick={() => {
+          if (!isSubscribed) {
+            toast(
+              (t) => (
+                <span className="text-sm">
+                  Image uploads are for supporters.{" "}
+                  <button
+                    className="font-semibold underline cursor-pointer"
+                    onClick={() => {
+                      toast.dismiss(t.id);
+                      onSupportMe?.();
+                    }}
+                  >
+                    Support Lazyfolio →
+                  </button>
+                </span>
+              ),
+              { duration: 5000 },
+            );
+            onSupportMe?.();
+            return;
+          }
+          fileInputRef.current?.click();
+        }}
+      />
 
       <input
         ref={fileInputRef}

@@ -9,9 +9,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Plus,
-  AlertCircle,
 } from "lucide-react";
-import Link from "next/link";
+
 import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import {
@@ -33,6 +32,7 @@ export default function BlogsForm({
   maxItems,
   isSubscribed,
   articleUsage,
+  onSupportMe,
 }: Props) {
   const isArticleMode = mode === "INTERNAL";
   const draftSection = isArticleMode ? "articles" : "blogs";
@@ -139,15 +139,12 @@ export default function BlogsForm({
         </h1>
         <p className="text-[0.78rem] text-(--lf-muted) mb-6">
           {isArticleMode
-            ? !isSubscribed
-              ? `Write internal markdown articles for your portfolio blog (${fields.length}/${freeLimit} free used).`
-              : "Write internal markdown articles for your portfolio blog."
+            ? "Write and publish markdown articles directly on your portfolio. Free for everyone."
             : "Add external blog posts and writing links to your portfolio."}
         </p>
 
         {sectionError && (
           <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
-            <AlertCircle size={14} className="shrink-0" />
             <span>{sectionError}</span>
           </div>
         )}
@@ -185,45 +182,26 @@ export default function BlogsForm({
             {isArticleMode ? "New Article" : "New Blog Link"}
           </div>
 
-          {isArticleMode && isLimitReached ? (
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div>
-                <p className="text-[0.78rem] font-medium text-(--lf-ink)">
-                  Free article limit reached ({fields.length} of {freeLimit})
-                </p>
-                <p className="text-[0.72rem] text-(--lf-muted) mt-0.5">
-                  Upgrade for unlimited articles, or delete an existing article to free up space.
-                </p>
-              </div>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center px-4 h-8 rounded-full bg-(--lf-accent-text) text-(--lf-bg) text-[0.76rem] font-semibold cursor-pointer hover:opacity-90 transition-all font-sans-body whitespace-nowrap shadow-2xs"
-              >
-                View pricing
-              </Link>
-            </div>
-          ) : (
-            <button
-              type="button"
-              disabled={typeof maxItems === "number" && fields.length >= maxItems}
-              onClick={() =>
-                append({
-                  type: mode,
-                  title: "",
-                  description: "",
-                  blogLink: "",
-                  content: isArticleMode ? "" : null,
-                  isPublished: false,
-                  isEnabled: true,
-                  slug: null,
-                })
-              }
-              className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Plus size={12} />
-              {isArticleMode ? "Add article" : "Add blog link"}
-            </button>
-          )}
+          <button
+            type="button"
+            disabled={typeof maxItems === "number" && fields.length >= maxItems}
+            onClick={() =>
+              append({
+                type: mode,
+                title: "",
+                description: "",
+                blogLink: "",
+                content: isArticleMode ? "" : null,
+                isPublished: false,
+                isEnabled: true,
+                slug: null,
+              })
+            }
+            className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Plus size={12} />
+            {isArticleMode ? "Add article" : "Add blog link"}
+          </button>
         </div>
       </form>
 
@@ -234,6 +212,8 @@ export default function BlogsForm({
           register={register}
           setValue={setValue}
           onClose={() => setActiveEditorIdx(null)}
+          isSubscribed={isSubscribed}
+          onSupportMe={onSupportMe}
         />
       )}
     </>

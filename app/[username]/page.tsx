@@ -1,23 +1,45 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
+import { PortfolioTracker } from "@/components/portfolios/shared/portfolio-tracker";
 import { parseSkill } from "@/lib/utils/utils";
 import { cacheLife, cacheTag } from "next/cache";
-import { after } from "next/server";
-import { headers } from "next/headers";
 import { publicProfileSelect } from "@/lib/constants/sections";
 import { Metadata } from "next";
+import { cache } from "react";
+import {
+  getProfileFromMemoryCache,
+  setProfileInMemoryCache,
+} from "@/lib/cache/username-filter";
 
+// ISR: re-generate this page in the background at most once every 60 seconds.
+// On-demand revalidation via revalidateProfile() keeps it fresh after saves.
+export const revalidate = 60;
 
-async function getProfileByUsername(username: string) {
+const getProfileByUsername = cache(async (username: string) => {
   "use cache";
-  cacheLife("hours");
+  cacheLife("days");
   cacheTag("profile", `profile-${username}`);
 
-  return prisma.profile.findUnique({
+  // 1. Fast path: check in-memory cache (<1ms)
+  const cached = getProfileFromMemoryCache<Awaited<ReturnType<typeof fetchFromDb>>>(username);
+  if (cached) return cached;
+
+  // 2. Query database
+  return fetchFromDb(username);
+});
+
+async function fetchFromDb(username: string) {
+  const profile = await prisma.profile.findUnique({
     where: { username },
     select: publicProfileSelect,
   });
+
+  if (profile) {
+    setProfileInMemoryCache(username, profile);
+  }
+
+  return profile;
 }
 
 interface PageProps {
@@ -44,7 +66,7 @@ export async function generateMetadata(
   return {
     title: `${name}`,
     description,
-    icons:{icon: profile.avatar || ""},
+    icons: { icon: profile.avatar || "" },
     openGraph: {
       title: `${name}`,
       description,
@@ -61,7 +83,6 @@ export async function generateMetadata(
   };
 }
 
-
 export default async function UserPortfolioPage(props: PageProps) {
   const params = await props.params;
   const username = params?.username;
@@ -76,38 +97,6 @@ export default async function UserPortfolioPage(props: PageProps) {
     notFound();
   }
 
-  const headersList = await headers();
-
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || headersList.get("x-real-ip");
-
-  const country = headersList.get("x-vercel-ip-country");
-  const userAgent = headersList.get("user-agent");
-
-  after(async () => {
-    const rawUrl = process.env.INSIGHTS_SERVICE_URL?.replace(/\/+$/, "");
-    if (!rawUrl) return;
-
-    const endpoint = rawUrl.endsWith("/api/v1") ? `${rawUrl}/track` : `${rawUrl}/api/v1/track`;
-
-    try {
-      await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(ip ? { "x-real-ip": ip } : {}),
-          ...(userAgent ? { "user-agent": userAgent } : {}),
-          ...(country ? { "x-vercel-ip-country": country } : {}),
-        },
-        body: JSON.stringify({
-          profileId: profile.id,
-          eventType: "pageview",
-        }),
-      })
-    } catch (error) {
-      console.error("pageview tracking error:", error);
-    }
-  });
-
   const { user, ...profileData } = profile;
 
   const parsedSkills = (profileData.skills || [])
@@ -121,9 +110,13 @@ export default async function UserPortfolioPage(props: PageProps) {
   };
 
   return (
-    <TemplateRenderer
-      user={user}
-      profile={visibleProfileData}
-    />
+    <>
+      <PortfolioTracker profileId={profile.id} />
+      <TemplateRenderer
+        user={user}
+        profile={visibleProfileData}
+      />
+    </>
   );
 }
+

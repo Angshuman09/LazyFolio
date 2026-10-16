@@ -81,11 +81,8 @@ const Hero = () => {
 
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
-      <motion.h1
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="fade-up fade-up-2 home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)"
+      <h1
+        className="home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)"
       >
         <span className="block whitespace-nowrap">
           Make the internet
@@ -97,12 +94,9 @@ const Hero = () => {
             <span className="text-(--lf-accent-text)">You Exist.</span>
           </Highlighter>
         </span>
-      </motion.h1>
+      </h1>
 
-      <motion.p
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+      <p
         className="tracking-wider font-serif-display text-(--lf-muted)"
       >
         Build your portfolio in{" "}
@@ -114,12 +108,9 @@ const Hero = () => {
           <em>scratch </em>
         </span>
         &gt;◡&lt;
-      </motion.p>
+      </p>
 
-      <motion.div
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      <div
         className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0"
       >
         <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-accent) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
@@ -137,9 +128,7 @@ const Hero = () => {
             }}
             className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 px-2 sm:px-1 placeholder:text-(--lf-dimmed)"
           />
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             disabled={isLoading}
             onClick={handleSubmitUsername}
             className="group shrink-0 h-10 sm:h-11 inline-flex items-center gap-2 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] sm:text-[0.8125rem] font-semibold pl-5 pr-2 sm:pr-2.5 hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer whitespace-nowrap"
@@ -151,10 +140,10 @@ const Hero = () => {
             >
               ↗
             </span>
-          </motion.button>
+          </button>
         </div>
         <p className="mt-3 text-[0.72rem] text-(--lf-muted)">Claim your username before it&apos;s too late!</p>
-      </motion.div>
+      </div>
 
       <div className="mt-12">
         <motion.h2

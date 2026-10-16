@@ -23,6 +23,7 @@ export type Props = {
     maxItems?: number;
     limitMessage?: string;
     isSubscribed?: boolean;
+    onSupportMe?: () => void;
     articleUsage?: {
       count: number;
       freeLimit: number;
@@ -42,4 +43,6 @@ export type MarkdownEditorProps = {
     register: UseFormRegister<BlogsSchema>;
     setValue: UseFormSetValue<BlogsSchema>;
     onClose: () => void;
+    isSubscribed?: boolean;
+    onSupportMe?: () => void;
   };

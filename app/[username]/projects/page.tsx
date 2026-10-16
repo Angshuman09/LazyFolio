@@ -6,15 +6,34 @@ import { cacheLife, cacheTag } from "next/cache";
 import { publicProfileSelect } from "@/lib/constants/sections";
 import type { Metadata } from "next";
 
-async function getProfileByUsername(username: string) {
+import { cache } from "react";
+import {
+  getProfileFromMemoryCache,
+  setProfileInMemoryCache,
+} from "@/lib/cache/username-filter";
+
+const getProfileByUsername = cache(async (username: string) => {
   "use cache";
-  cacheLife("hours");
+  cacheLife("days");
   cacheTag("profile", `profile-${username}`);
 
-  return prisma.profile.findUnique({
+  const cached = getProfileFromMemoryCache<Awaited<ReturnType<typeof fetchFromDb>>>(username);
+  if (cached) return cached;
+
+  return fetchFromDb(username);
+});
+
+async function fetchFromDb(username: string) {
+  const profile = await prisma.profile.findUnique({
     where: { username },
     select: publicProfileSelect,
   });
+
+  if (profile) {
+    setProfileInMemoryCache(username, profile);
+  }
+
+  return profile;
 }
 
 interface PageProps {
@@ -30,7 +49,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const name = profile?.name || username;
 
   return {
-    title: `Projects — ${name}`,
+    title: `Projects | ${name}`,
     description: `Projects and work by ${name} on Lazyfolio.`,
   };
 }

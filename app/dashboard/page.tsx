@@ -15,6 +15,7 @@ import {
   PanelLeftOpen,
   PanelRightClose,
   PanelRightOpen,
+  Heart,
 } from "lucide-react";
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile, useUpdateUserProfile } from "@/hooks/profile";
@@ -76,6 +77,7 @@ import { useSaveStore, DashboardSection } from "@/lib/utils/save-store";
 import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 import { useUnsavedWarning, useTabSwitchGuard } from "@/hooks/use-unsaved-warning";
 import { getPortfolioUrl } from "@/lib/utils/public-url";
+import { SupportMeModal } from "@/components/dashboard/support-me-modal";
 
 function getErrorMessage(error: unknown, fallbackMessage: string) {
   return error instanceof Error ? error.message : fallbackMessage;
@@ -593,6 +595,7 @@ export default function DashboardPage() {
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [supportMeOpen, setSupportMeOpen] = useState(false);
 
   useUnsavedWarning();
   useSaveShortcut(tab);
@@ -818,6 +821,19 @@ export default function DashboardPage() {
 
           <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
 
+          {/* Support Me button */}
+          <button
+            type="button"
+            onClick={() => setSupportMeOpen(true)}
+            className="shrink-0 mx-1 flex items-center justify-center gap-1.5 w-[calc(100%-8px)] h-8 rounded-lg border border-rose-500/30 bg-rose-500/8 text-rose-600 dark:text-rose-400 text-[0.78rem] font-semibold cursor-pointer hover:bg-rose-500/14 hover:border-rose-500/50 transition-all duration-150 font-sans-body"
+            aria-label="Support Lazyfolio"
+          >
+            <Heart size={12} fill="currentColor" />
+            Support me
+          </button>
+
+          <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
+
           <div className="mt-auto shrink-0 border border-(--lf-border) rounded-[10px] p-3.5 bg-(--lf-surface)">
             <div className="text-[0.65rem] text-(--lf-muted) font-mono tracking-widest mb-1.5">
               Your portfolio link
@@ -902,7 +918,7 @@ export default function DashboardPage() {
                 isSubLoading ? (
                   <div className="flex flex-col items-center justify-center py-20 text-(--lf-muted)">
                     <Loader2 size={24} className="animate-spin mb-3 text-(--lf-ink)" />
-                    <p className="text-[0.82rem]">Checking subscription status...</p>
+                    <p className="text-[0.82rem]">Loading...</p>
                   </div>
                 ) : (
                   <>
@@ -917,13 +933,8 @@ export default function DashboardPage() {
                       formRef={formRef}
                       mode="INTERNAL"
                       onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
-                      maxItems={subData?.isActive ? undefined : freeArticleLimit}
                       isSubscribed={subData?.isActive}
-                      articleUsage={{
-                        count: savedArticleCount,
-                        freeLimit: freeArticleLimit,
-                        remaining: Math.max(freeArticleLimit - savedArticleCount, 0),
-                      }}
+                      onSupportMe={() => setSupportMeOpen(true)}
                     />
                   </>
                 )
@@ -1134,6 +1145,10 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {supportMeOpen && (
+        <SupportMeModal onClose={() => setSupportMeOpen(false)} />
       )}
     </div>
   );
