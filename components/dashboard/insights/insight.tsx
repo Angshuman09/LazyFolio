@@ -1,17 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
 import { Eye, Users, MousePointerClick } from "lucide-react";
 import { useGetInsights, RangeKey } from "@/hooks/insights";
+import { CountriesInsight } from "./countries-insight";
+import { ViewsChart } from "./views-chart";
 
 interface InsightsPageProps {
   profile?: { id?: string; username?: string | null } | null;
@@ -25,7 +18,7 @@ const RANGE_OPTIONS: { key: RangeKey; label: string }[] = [
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) font-mono mb-4">
+    <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) mb-4">
       {children}
     </div>
   );
@@ -44,11 +37,11 @@ function StatCard({
     <div className="border border-(--lf-border) rounded-xl px-4 py-3.5 bg-(--lf-surface) transition-colors duration-150 hover:border-(--lf-muted)">
       <div className="flex items-center gap-1.5 text-(--lf-muted) mb-2">
         {icon}
-        <span className="text-[0.68rem] font-semibold tracking-widest font-mono">
+        <span className="text-[0.68rem] font-semibold tracking-widest">
           {label}
         </span>
       </div>
-      <div className="text-[1.5rem] font-serif-display text-(--lf-ink)">{value}</div>
+      <div className="text-[1.5rem] font-sans-body text-(--lf-ink)">{value}</div>
     </div>
   );
 }
@@ -56,14 +49,15 @@ function StatCard({
 function MetricRow({ label, count, total }: { label: string; count: number; total: number }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
   return (
-    <div className="flex items-center justify-between gap-3 py-1.5">
-      <span className="text-[0.8rem] text-(--lf-ink) truncate">{label}</span>
-      <div className="flex items-center gap-2 shrink-0">
-        <div className="w-16 h-1 rounded-full bg-(--lf-border-alpha) overflow-hidden">
-          <div className="h-full bg-(--lf-ink) rounded-full" style={{ width: `${pct}%` }} />
-        </div>
-        <span className="text-[0.72rem] text-(--lf-muted) font-mono w-8 text-right">{pct}%</span>
+    <div className="flex items-center gap-3 py-2">
+      <span className="text-[0.8rem] text-(--lf-ink) truncate w-24 shrink-0">{label}</span>
+      <div className="flex-1 h-1.5 rounded-full bg-(--lf-border-alpha) overflow-hidden">
+        <div
+          className="h-full bg-(--lf-ink) rounded-full transition-all duration-300"
+          style={{ width: `${pct}%` }}
+        />
       </div>
+      <span className="text-[0.72rem] text-(--lf-muted) font-mono w-9 text-right shrink-0">{pct}%</span>
     </div>
   );
 }
@@ -103,8 +97,9 @@ function InsightsSkeleton() {
         ))}
       </div>
       <div className="h-56 rounded-xl bg-(--lf-border-alpha) mb-5" />
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {[0, 1, 2].map((i) => (
+      <div className="h-64 rounded-xl bg-(--lf-border-alpha) mb-5" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {[0, 1].map((i) => (
           <div key={i} className="h-32 rounded-xl bg-(--lf-border-alpha)" />
         ))}
       </div>
@@ -177,66 +172,18 @@ export default function InsightsPage({ profile }: InsightsPageProps) {
             />
           </div>
 
-          <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-5 transition-colors duration-150 hover:border-(--lf-muted)">
-            <SectionLabel>Views over time</SectionLabel>
-            {data.series.every((point) => point.views === 0) ? (
-              <p className="text-[0.78rem] text-(--lf-dimmed) italic py-8 text-center">
-                No visits yet — share your portfolio link to start seeing data here.
-              </p>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <AreaChart data={data.series} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="lf-views" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--lf-ink)" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="var(--lf-ink)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--lf-border-alpha)" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 10, fill: "var(--lf-muted)" }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(value) =>
-                      new Date(value).toLocaleDateString("en", { month: "short", day: "numeric" })
-                    }
-                  />
-                  <YAxis
-                    tick={{ fontSize: 10, fill: "var(--lf-muted)" }}
-                    axisLine={false}
-                    tickLine={false}
-                    width={28}
-                    allowDecimals={false}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      fontSize: 12,
-                      borderRadius: 8,
-                      border: "1px solid var(--lf-border)",
-                      background: "var(--lf-bg)",
-                      color: "var(--lf-ink)",
-                    }}
-                    labelFormatter={(value) =>
-                      new Date(value).toLocaleDateString("en", { month: "short", day: "numeric" })
-                    }
-                  />
-                  <Area type="monotone" dataKey="views" stroke="var(--lf-ink)" fill="url(#lf-views)" strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
+          <ViewsChart series={data.series} range={range} />
+
+          {/* Countries Section: Choropleth World Map & Bar Toggle */}
+          <div className="mb-5">
+            <CountriesInsight countries={data.countries} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <MetricCard
               title="Top Clicks"
               rows={data.clicks.map((c) => ({ label: c.label, count: c.count }))}
               emptyLabel="No link clicks yet"
-            />
-            <MetricCard
-              title="Countries"
-              rows={data.countries.map((c) => ({ label: c.country, count: c.count }))}
-              emptyLabel="No visitors yet"
             />
             <MetricCard
               title="Devices"

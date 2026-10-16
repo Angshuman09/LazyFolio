@@ -113,7 +113,7 @@ export default function DashboardPage() {
       const next = !prev;
       try {
         localStorage.setItem("lf-sidebar-collapsed", String(next));
-      } catch {}
+      } catch { }
       return next;
     });
   }, []);
@@ -123,7 +123,7 @@ export default function DashboardPage() {
       const next = !prev;
       try {
         localStorage.setItem("lf-preview-collapsed", String(next));
-      } catch {}
+      } catch { }
       return next;
     });
   }, []);
@@ -205,7 +205,7 @@ export default function DashboardPage() {
       if (savedSidebar === "true") setIsSidebarCollapsed(true);
       const savedPreview = localStorage.getItem("lf-preview-collapsed");
       if (savedPreview === "true") setIsPreviewCollapsed(true);
-    } catch {}
+    } catch { }
   }, []);
 
   useEffect(() => {
@@ -696,11 +696,10 @@ export default function DashboardPage() {
                 <TooltipTrigger asChild>
                   <button
                     onClick={togglePreview}
-                    className={`hidden lg:inline-flex items-center gap-1.5 px-3 h-8.5 rounded-full border transition-all duration-150 text-[0.75rem] font-medium cursor-pointer ${
-                      isPreviewCollapsed
+                    className={`hidden lg:inline-flex items-center gap-1.5 px-3 h-8.5 rounded-full border transition-all duration-150 text-[0.75rem] font-medium cursor-pointer ${isPreviewCollapsed
                         ? "border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted)"
                         : "border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
-                    }`}
+                      }`}
                     aria-label={isPreviewCollapsed ? "Expand live preview" : "Minimize live preview"}
                   >
                     {isPreviewCollapsed ? <PanelRightOpen size={13} /> : <PanelRightClose size={13} />}
@@ -768,10 +767,9 @@ export default function DashboardPage() {
         <aside
           className={`
             ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-            ${
-              isSidebarCollapsed
-                ? "md:w-0 md:p-0 md:border-r-0 md:opacity-0 md:pointer-events-none md:overflow-hidden"
-                : "md:translate-x-0 md:w-50 md:p-[16px_10px_20px] md:opacity-100 md:pointer-events-auto"
+            ${isSidebarCollapsed
+              ? "md:w-0 md:p-0 md:border-r-0 md:opacity-0 md:pointer-events-none md:overflow-hidden"
+              : "md:translate-x-0 md:w-50 md:p-[16px_10px_20px] md:opacity-100 md:pointer-events-auto"
             }
             fixed md:static z-40 md:z-auto shrink-0 border-r border-(--lf-border-alpha) flex flex-col gap-0.5 top-13 md:top-0 h-[calc(100vh-52px)] bg-(--lf-bg) transition-all duration-200
           `}
@@ -788,15 +786,13 @@ export default function DashboardPage() {
                   key={n.id}
                   disabled={isDisabled}
                   className={`relative flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium cursor-pointer w-full text-left transition-all duration-150 font-sans-body tracking-tight
-                    ${
-                      tab === n.id
-                        ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
-                        : "text-(--lf-muted) bg-transparent hover:text-(--lf-ink) hover:bg-(--lf-accent-soft)"
+                    ${tab === n.id
+                      ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
+                      : "text-(--lf-muted) bg-transparent hover:text-(--lf-ink) hover:bg-(--lf-accent-soft)"
                     }
-                    ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)"
-                        : ""
+                    ${isDisabled
+                      ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)"
+                      : ""
                     }
                   `}
                   onClick={() => {
@@ -808,9 +804,8 @@ export default function DashboardPage() {
                   <span className="flex-1">{n.label}</span>
                   {isDirty && (
                     <span
-                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                        hasError ? "bg-red-500" : "bg-amber-500 animate-pulse"
-                      }`}
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${hasError ? "bg-red-500" : "bg-amber-500 animate-pulse"
+                        }`}
                       title={hasError ? "Save error" : "Unsaved changes"}
                     />
                   )}
@@ -825,10 +820,10 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => setSupportMeOpen(true)}
-            className="shrink-0 mx-1 flex items-center justify-center gap-1.5 w-[calc(100%-8px)] h-8 rounded-lg border border-rose-500/30 bg-rose-500/8 text-rose-600 dark:text-rose-400 text-[0.78rem] font-semibold cursor-pointer hover:bg-rose-500/14 hover:border-rose-500/50 transition-all duration-150 font-sans-body"
+            className="group shrink-0 mx-1 flex items-center justify-center gap-1.5 w-[calc(100%-8px)] h-8 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-300 dark:border-rose-500/30 text-[0.78rem] font-medium cursor-pointer hover:bg-rose-500/20 hover:border-rose-500/40 hover:text-rose-700 dark:hover:text-rose-200 transition-all duration-200 font-sans-body shadow-sm hover:shadow-rose-500/10"
             aria-label="Support Lazyfolio"
           >
-            <Heart size={12} fill="currentColor" />
+            <Heart size={13} className="transition-transform duration-200 group-hover:scale-110" fill="currentColor" />
             Support me
           </button>
 
@@ -853,16 +848,24 @@ export default function DashboardPage() {
         </aside>
 
         <main
-          className={`flex-1 py-6 md:py-8 px-4 sm:px-6 md:px-10 overflow-y-auto h-full transition-all duration-200 ${
-            tab === "insights" || isPreviewCollapsed
-              ? "max-w-4xl mx-auto w-full"
-              : "max-w-full md:max-w-215"
-          }`}
+          className={`flex-1 overflow-y-auto h-full transition-all duration-200 ${tab === "insights"
+              ? "py-4 md:py-5 px-4 sm:px-5 md:px-8"
+              : "py-6 md:py-8 px-4 sm:px-6 md:px-10"
+            }`}
         >
+          {/* Keep <main> full-width so the entire column is scrollable; constrain
+              and center the content in this inner wrapper instead. min-h-full lets
+              tall content stretch the wrapper so <main> always scrolls. */}
+          <div
+            className={`min-h-full ${tab === "insights" || isPreviewCollapsed
+                ? "max-w-4xl mx-auto w-full"
+                : "max-w-full md:max-w-215"
+              }`}
+          >
           {isLoading || isPending ? (
             <DashboardSkeleton />
           ) : !profile?.username && tab !== "profile" ? (
-            <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] text-center max-w-sm mx-auto">
               <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
               <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
               <button onClick={() => changeTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
@@ -946,6 +949,7 @@ export default function DashboardPage() {
               }
             </>
           )}
+          </div>
         </main>
 
         <div
@@ -1031,8 +1035,8 @@ export default function DashboardPage() {
                     key={t.id}
                     disabled={isSaveDisabled}
                     className={`group flex flex-col overflow-hidden rounded-2xl border text-left transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${activeTemplate === t.id
-                        ? "border-(--lf-ink) ring-2 ring-(--lf-ink)/12 bg-(--lf-accent-soft)"
-                        : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted) hover:shadow-md"
+                      ? "border-(--lf-ink) ring-2 ring-(--lf-ink)/12 bg-(--lf-accent-soft)"
+                      : "border-(--lf-border) bg-(--lf-surface) hover:border-(--lf-muted) hover:shadow-md"
                       }`}
                     onClick={() => setActiveTemplate(t.id)}
                   >
@@ -1047,8 +1051,8 @@ export default function DashboardPage() {
                       <div className="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent" />
                       <div
                         className={`absolute left-2.5 top-2.5 w-7 h-7 rounded-full flex items-center justify-center shadow-sm ${activeTemplate === t.id
-                            ? "bg-(--lf-ink) text-(--lf-bg)"
-                            : "bg-(--lf-bg)/85 text-(--lf-muted) border border-(--lf-border-alpha) backdrop-blur-sm"
+                          ? "bg-(--lf-ink) text-(--lf-bg)"
+                          : "bg-(--lf-bg)/85 text-(--lf-muted) border border-(--lf-border-alpha) backdrop-blur-sm"
                           }`}
                       >
                         {activeTemplate === t.id ? (

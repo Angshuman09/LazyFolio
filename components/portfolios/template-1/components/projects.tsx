@@ -34,13 +34,6 @@ const Projects = ({
               key={project.id}
               className="group flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-zinc-900 border border-transparent hover:border-zinc-800/60 transition-all duration-150"
             >
-              {project.name && (
-                <div className="w-7 h-7 rounded-md bg-zinc-800 border border-zinc-700/60 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[10px] font-bold text-zinc-500 select-none">
-                    {project.name[0]}
-                  </span>
-                </div>
-              )}
 
               <div className="flex-1 min-w-0">
                 {(project.name || project.status || project.date) && (
