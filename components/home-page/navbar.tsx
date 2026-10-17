@@ -170,7 +170,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => router.push("/auth")}
-              className="lf-focus group bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem] font-semibold pl-4 pr-1.5 py-1.5 hover:opacity-85 transition-opacity flex items-center gap-2"
+              className="lf-focus group bg-(--lf-ink) rounded-full text-(--lf-surface) text-[0.8rem] font-semibold pl-4 pr-1.5 py-2 hover:opacity-85 transition-opacity flex items-center gap-2"
             >
               Get started
               <span

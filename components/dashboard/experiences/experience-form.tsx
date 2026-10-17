@@ -3,10 +3,10 @@
 import { useEffect, useMemo, RefObject } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { experienceSchema, ExperienceSchema } from "@/lib/schemas/experience";
-import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { ExperienceCard } from "./experience-card";
 import {
   experiencesFromProfile,
@@ -14,6 +14,9 @@ import {
   ExperienceProfile,
 } from "@/lib/utils/experience";
 import { useSectionSave } from "@/hooks/use-section-save";
+import { SectionHeading } from "@/components/dashboard/section-heading";
+import { AddItemPanel } from "@/components/dashboard/add-item-panel";
+import { EmptySectionState } from "@/components/dashboard/empty-section-state";
 
 type Props = {
   profile?: ExperienceProfile;
@@ -32,7 +35,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     reset,
     getValues,
     setValue,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<ExperienceSchema>({
     resolver: zodResolver(experienceSchema),
     defaultValues: initialValues, 
@@ -40,6 +43,13 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
   });
 
   const watchedExperiences = useWatch({ control, name: "experiences" });
+
+  const normalizeDate = (value: string | Date | null | undefined) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+    return date.toISOString().slice(0, 10);
+  };
 
   const isExperienceDirty = useMemo(() => {
     const current = watchedExperiences || [];
@@ -65,8 +75,8 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
             role !== (original.role?.trim() || "") ||
             companyName !== (original.companyName?.trim() || "") ||
             description !== (original.description?.trim() || "") ||
-            startdate !== (original.startdate ? String(original.startdate) : "") ||
-            enddate !== (original.enddate ? String(original.enddate) : "") ||
+            startdate !== normalizeDate(original.startdate) ||
+            enddate !== normalizeDate(original.enddate) ||
             isenable !== (original.isenable ?? true)
           ) {
             return true;
@@ -98,8 +108,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
 
   useEffect(() => {
     if (!profile?.id) return;
-    const cached = readDashboardDraft<ExperienceSchema>("experience", profile.id);
-    reset(cached || experiencesFromProfile(profile.experiences || []));
+    reset(getInitialExperiences({ id: profile.id, experiences: profile.experiences }));
   }, [profile?.id, profile?.experiences, reset]);
 
   useEffect(() => {
@@ -121,12 +130,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
         toast.error("Please fix the highlighted fields before saving.");
       })}
     >
-      <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
-        Experience
-      </h1>
-      <p className="text-[0.78rem] text-(--lf-muted) mb-7">
-        Your professional work history
-      </p>
+      <SectionHeading title="Experience" description="Share the roles and work that shaped your professional path." />
 
       {sectionError && (
         <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
@@ -137,9 +141,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
 
       <div className="mb-4">
         {fields.length === 0 && (
-          <div className="text-[0.78rem] text-(--lf-muted) mb-2.5">
-            No experiences yet. Add one below.
-          </div>
+          <EmptySectionState message="Add roles, organizations, and a short summary of the work you did." />
         )}
 
         {fields.map((f, index) => (
@@ -160,14 +162,10 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
         ))}
       </div>
 
-      <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) border-dashed mt-2">
-        <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-3.5">
-          New Role
-        </div>
-        <button
-          type="button"
-          onClick={() =>
-            append({
+      <AddItemPanel
+        title="Add a role"
+        buttonLabel="Add experience"
+        onClick={() => append({
               id: "",        
               companyName: "",
               role: "",
@@ -175,14 +173,8 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
               enddate: "",
               description: "",
               isenable: true,
-            })
-          }
-          className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
-        >
-          <Plus size={12} />
-          Add experience
-        </button>
-      </div>
+            })}
+      />
     </form>
   );
 }

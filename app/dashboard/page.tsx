@@ -374,7 +374,7 @@ export default function DashboardPage() {
 
   const createExperience = useCreateExperiences();
 
-  const onExperienceSubmit = (data: ExperienceSchema) => {
+  const onExperienceSubmit = async (data: ExperienceSchema) => {
     setIsSaving(true);
 
     if (!profile?.id) {
@@ -405,33 +405,24 @@ export default function DashboardPage() {
       }
     }
 
-    createExperience.mutate(
-      {
+    try {
+      await createExperience.mutateAsync({
         profileId: profile.id,
         experiences: formattedExperience,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Experience updated successfully!", { id: toastId });
-          setIsSaving(false);
-        },
-        onError: (error) => {
-          toast.error(
-            getErrorMessage(
-              error,
-              "Failed to update experience. Please try again.",
-            ),
-            { id: toastId },
-          );
-          setIsSaving(false);
-        },
-      },
-    );
+      });
+      clearDashboardDraft("experience", profile.id);
+      toast.success("Experience updated successfully!", { id: toastId });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to update experience. Please try again."), { id: toastId });
+      throw error;
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const createProjects = useCreateProjects();
 
-  const onSubmitProjects = (data: ProjectsSchema) => {
+  const onSubmitProjects = async (data: ProjectsSchema) => {
     setIsSaving(true);
 
     if (!profile?.id) {
@@ -467,28 +458,19 @@ export default function DashboardPage() {
       }
     }
 
-    createProjects.mutate(
-      {
+    try {
+      await createProjects.mutateAsync({
         profileId: profile.id,
         projects: formattedProjects,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Projects updated successfully!", { id: toastId });
-          setIsSaving(false);
-        },
-        onError: (error) => {
-          toast.error(
-            getErrorMessage(
-              error,
-              "Failed to update projects. Please try again.",
-            ),
-            { id: toastId },
-          );
-          setIsSaving(false);
-        },
-      },
-    );
+      });
+      clearDashboardDraft("projects", profile.id);
+      toast.success("Projects updated successfully!", { id: toastId });
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to update projects. Please try again."), { id: toastId });
+      throw error;
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const createSkills = useCreateSkills();
@@ -697,8 +679,8 @@ export default function DashboardPage() {
                   <button
                     onClick={togglePreview}
                     className={`hidden lg:inline-flex items-center gap-1.5 px-3 h-8.5 rounded-full border transition-all duration-150 text-[0.75rem] font-medium cursor-pointer ${isPreviewCollapsed
-                        ? "border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted)"
-                        : "border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
+                      ? "border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted)"
+                      : "border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) hover:border-(--lf-muted)"
                       }`}
                     aria-label={isPreviewCollapsed ? "Expand live preview" : "Minimize live preview"}
                   >
@@ -820,10 +802,14 @@ export default function DashboardPage() {
           <button
             type="button"
             onClick={() => setSupportMeOpen(true)}
-            className="group shrink-0 mx-1 flex items-center justify-center gap-1.5 w-[calc(100%-8px)] h-8 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-300 dark:border-rose-500/30 text-[0.78rem] font-medium cursor-pointer hover:bg-rose-500/20 hover:border-rose-500/40 hover:text-rose-700 dark:hover:text-rose-200 transition-all duration-200 font-sans-body shadow-sm hover:shadow-rose-500/10"
+            className="group shrink-0 mx-1 flex items-center justify-center gap-2 w-[calc(100%-8px)] h-9 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-ink) text-[0.78rem] font-medium cursor-pointer hover:border-(--lf-muted) hover:bg-(--lf-bg) active:scale-[0.99] transition-all duration-200 font-sans-body"
             aria-label="Support Lazyfolio"
           >
-            <Heart size={13} className="transition-transform duration-200 group-hover:scale-110" fill="currentColor" />
+            <Heart
+              size={13}
+              fill="currentColor"
+              className="text-(--lf-accent-text) transition-transform duration-200 group-hover:scale-110"
+            />
             Support me
           </button>
 
@@ -849,8 +835,8 @@ export default function DashboardPage() {
 
         <main
           className={`flex-1 overflow-y-auto h-full transition-all duration-200 ${tab === "insights"
-              ? "py-4 md:py-5 px-4 sm:px-5 md:px-8"
-              : "py-6 md:py-8 px-4 sm:px-6 md:px-10"
+            ? "py-4 md:py-5 px-4 sm:px-5 md:px-8"
+            : "py-6 md:py-8 px-4 sm:px-6 md:px-10"
             }`}
         >
           {/* Keep <main> full-width so the entire column is scrollable; constrain
@@ -858,97 +844,97 @@ export default function DashboardPage() {
               tall content stretch the wrapper so <main> always scrolls. */}
           <div
             className={`min-h-full ${tab === "insights" || isPreviewCollapsed
-                ? "max-w-4xl mx-auto w-full"
-                : "max-w-full md:max-w-215"
+              ? "max-w-4xl mx-auto w-full"
+              : "max-w-full md:max-w-215"
               }`}
           >
-          {isLoading || isPending ? (
-            <DashboardSkeleton />
-          ) : !profile?.username && tab !== "profile" ? (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] text-center max-w-sm mx-auto">
-              <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
-              <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
-              <button onClick={() => changeTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
-            </div>
-          ) : (
-            <>
-              {tab === "profile" && (
-                <ProfileForm
-                  profile={profile}
-                  formRef={formRef}
-                  session={session}
-                  onSubmit={onProfileSubmit}
-                />
-              )}
+            {isLoading || isPending ? (
+              <DashboardSkeleton />
+            ) : !profile?.username && tab !== "profile" ? (
+              <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] text-center max-w-sm mx-auto">
+                <div className="text-[1.2rem] font-serif-display text-(--lf-ink) mb-2">Username Required</div>
+                <div className="text-[0.85rem] text-(--lf-muted)">Please set your username in the profile tab before adding other information.</div>
+                <button onClick={() => changeTab("profile")} className="mt-5 px-4 py-2 bg-(--lf-ink) text-(--lf-bg) rounded-xl text-[0.8rem] font-semibold cursor-pointer">Go to Profile</button>
+              </div>
+            ) : (
+              <>
+                {tab === "profile" && (
+                  <ProfileForm
+                    profile={profile}
+                    formRef={formRef}
+                    session={session}
+                    onSubmit={onProfileSubmit}
+                  />
+                )}
 
-              {tab === "links" && (
-                <LinksForm
-                  profile={profile}
-                  formRef={formRef}
-                  onSubmit={onLinksSubmit}
-                />
-              )}
-              {tab === "experience" && (
-                <ExperienceForm
-                  profile={profile}
-                  formRef={formRef}
-                  onSubmit={onExperienceSubmit}
-                />
-              )}
-              {tab === "projects" && (
-                <ProjectsForm
-                  profile={profile}
-                  formRef={formRef}
-                  onSubmit={onSubmitProjects}
-                />
-              )}
-              {tab === "skills" && (
-                <SkillsForm
-                  profile={profile}
-                  formRef={formRef}
-                  onSubmit={onSubmitSkills}
-                />
-              )}
-              {tab === "blogs" && (
-                <BlogsForm
-                  profile={profile}
-                  formRef={formRef}
-                  mode="EXTERNAL"
-                  onSubmit={(data) => onSubmitBlogs(data, "EXTERNAL")}
-                />
-              )}
-              {tab === "articles" && (
-                isSubLoading ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-(--lf-muted)">
-                    <Loader2 size={24} className="animate-spin mb-3 text-(--lf-ink)" />
-                    <p className="text-[0.82rem]">Loading...</p>
-                  </div>
-                ) : (
-                  <>
-                    {subData?.isActive ? (
-                      <SubscriptionBadge
-                        subscription={subData.subscription}
-                        planLabel={subData.planLabel}
+                {tab === "links" && (
+                  <LinksForm
+                    profile={profile}
+                    formRef={formRef}
+                    onSubmit={onLinksSubmit}
+                  />
+                )}
+                {tab === "experience" && (
+                  <ExperienceForm
+                    profile={profile}
+                    formRef={formRef}
+                    onSubmit={onExperienceSubmit}
+                  />
+                )}
+                {tab === "projects" && (
+                  <ProjectsForm
+                    profile={profile}
+                    formRef={formRef}
+                    onSubmit={onSubmitProjects}
+                  />
+                )}
+                {tab === "skills" && (
+                  <SkillsForm
+                    profile={profile}
+                    formRef={formRef}
+                    onSubmit={onSubmitSkills}
+                  />
+                )}
+                {tab === "blogs" && (
+                  <BlogsForm
+                    profile={profile}
+                    formRef={formRef}
+                    mode="EXTERNAL"
+                    onSubmit={(data) => onSubmitBlogs(data, "EXTERNAL")}
+                  />
+                )}
+                {tab === "articles" && (
+                  isSubLoading ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-(--lf-muted)">
+                      <Loader2 size={24} className="animate-spin mb-3 text-(--lf-ink)" />
+                      <p className="text-[0.82rem]">Loading...</p>
+                    </div>
+                  ) : (
+                    <>
+                      {subData?.isActive ? (
+                        <SubscriptionBadge
+                          subscription={subData.subscription}
+                          planLabel={subData.planLabel}
+                        />
+                      ) : null}
+                      <BlogsForm
+                        profile={profile}
+                        formRef={formRef}
+                        mode="INTERNAL"
+                        onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
+                        isSubscribed={subData?.isActive}
+                        onSupportMe={() => setSupportMeOpen(true)}
                       />
-                    ) : null}
-                    <BlogsForm
-                      profile={profile}
-                      formRef={formRef}
-                      mode="INTERNAL"
-                      onSubmit={(data) => onSubmitBlogs(data, "INTERNAL")}
-                      isSubscribed={subData?.isActive}
-                      onSupportMe={() => setSupportMeOpen(true)}
-                    />
-                  </>
-                )
-              )}
-              {
-                tab == "insights" && (
-                  <InsightsPage profile={profile} />
-                )
-              }
-            </>
-          )}
+                    </>
+                  )
+                )}
+                {
+                  tab == "insights" && (
+                    <InsightsPage profile={profile} />
+                  )
+                }
+              </>
+            )}
           </div>
         </main>
 

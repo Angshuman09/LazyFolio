@@ -111,12 +111,13 @@ const Hero = () => {
       </p>
 
       <div
-        className="fade-up fade-up-3 w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0"
+        className="w-full max-w-100 mx-auto mb-10 mt-10 px-4 sm:px-0"
       >
-        <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-accent) focus-within:shadow-[0_0_0_4px_var(--lf-accent-soft)] transition-all duration-200">
-          <span className="hidden sm:inline pl-5 text-[0.75rem] font-mono text-(--lf-dimmed)">
+        <div className="flex items-center w-full h-14 rounded-full border border-(--lf-border) bg-(--lf-surface) pr-1.5 sm:pr-2 focus-within:border-(--lf-accent)">
+          <span className="hidden sm:inline pl-5 text-[0.75rem] text-(--lf-dimmed)">
             https://
           </span>
+
           <input
             type="text"
             placeholder="yourname"
@@ -128,12 +129,14 @@ const Hero = () => {
             }}
             className="bg-transparent border-none outline-none font-mono text-[0.8125rem] font-medium text-(--lf-ink) w-full min-w-0 px-2 sm:px-1 placeholder:text-(--lf-dimmed)"
           />
+
           <button
             disabled={isLoading}
             onClick={handleSubmitUsername}
-            className="group shrink-0 h-10 sm:h-11 inline-flex items-center gap-2 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] sm:text-[0.8125rem] font-semibold pl-5 pr-2 sm:pr-2.5 hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity duration-150 cursor-pointer whitespace-nowrap"
+            className="group shrink-0 h-10 sm:h-11 inline-flex items-center gap-2 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.75rem] sm:text-[0.8125rem] font-semibold pl-5 pr-2 sm:pr-2.5 hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer whitespace-nowrap"
           >
             {isClaiming ? "Claiming..." : "claim username"}
+
             <span
               aria-hidden="true"
               className="btn-arrow w-5 h-5 bg-(--lf-bg) text-(--lf-ink) rounded-full inline-flex items-center justify-center text-[10px] font-bold leading-none"

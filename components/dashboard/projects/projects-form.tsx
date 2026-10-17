@@ -8,13 +8,16 @@ import {
 
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import { projectsSchema, ProjectsSchema } from "@/lib/schemas/projects";
 import { readDashboardDraft, writeDashboardDraft, clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { ProfileProject, Props } from "@/lib/types/projects";
 import { ProjectCard } from "./project-card";
 import { useSectionSave } from "@/hooks/use-section-save";
+import { SectionHeading } from "@/components/dashboard/section-heading";
+import { AddItemPanel } from "@/components/dashboard/add-item-panel";
+import { EmptySectionState } from "@/components/dashboard/empty-section-state";
 
 function projectsFromProfile(projects: ProfileProject[] = []): ProjectsSchema {
   return {
@@ -25,17 +28,42 @@ function projectsFromProfile(projects: ProfileProject[] = []): ProjectsSchema {
       githubLink: p.githubLink ?? "",
       projectLink: p.projectLink ?? "",
       techstack: Array.isArray(p.techstack) ? p.techstack.join(", ") : "",
-      enddate: p.enddate ? String(p.enddate) : "",
+      enddate: normalizeDate(p.enddate),
       isenable: p.isenable ?? true,
     })),
   };
 }
 
+function normalizeDate(value: string | Date | null | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toISOString().slice(0, 10);
+}
+
 function getInitialProjects(profile?: { id?: string; projects?: ProfileProject[] }): ProjectsSchema {
-  return (
-    readDashboardDraft<ProjectsSchema>("projects", profile?.id) ||
-    projectsFromProfile(profile?.projects || [])
-  );
+  const saved = projectsFromProfile(profile?.projects || []);
+  const draft = readDashboardDraft<ProjectsSchema>("projects", profile?.id);
+  if (!draft) return saved;
+
+  const normalizeRows = (rows: ProjectsSchema["projects"]) =>
+    (rows || [])
+      .map((row) => ({
+        title: row.title?.trim() || "",
+        description: row.description?.trim() || "",
+        githubLink: row.githubLink?.trim() || "",
+        projectLink: row.projectLink?.trim() || "",
+        techstack: row.techstack?.trim() || "",
+        enddate: normalizeDate(row.enddate),
+        isenable: row.isenable ?? true,
+      }))
+      .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+
+  // Bulk saves recreate database IDs. Ignore an old draft when its content
+  // already matches the server, even if the draft still has blank or old IDs.
+  if (JSON.stringify(normalizeRows(draft.projects)) === JSON.stringify(normalizeRows(saved.projects))) {
+    return saved;
+  }
+  return draft;
 }
 
 export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
@@ -48,7 +76,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     reset,
     setValue,
     getValues,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<ProjectsSchema>({
     resolver: zodResolver(projectsSchema),
     defaultValues: initialValues,
@@ -84,7 +112,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
             githubLink !== (original.githubLink?.trim() || "") ||
             projectLink !== (original.projectLink?.trim() || "") ||
             techstack !== (original.techstack?.trim() || "") ||
-            enddate !== (original.enddate || "") ||
+            enddate !== normalizeDate(original.enddate) ||
             isenable !== (original.isenable ?? true)
           ) {
             return true;
@@ -119,8 +147,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
       return;
     }
 
-    const cachedDraft = readDashboardDraft<ProjectsSchema>("projects", profile.id);
-    reset(cachedDraft || projectsFromProfile(profile.projects || []));
+    reset(getInitialProjects({ id: profile.id, projects: profile.projects }));
   }, [profile?.id, profile?.projects, reset]);
 
   useEffect(() => {
@@ -140,12 +167,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
         toast.error("Please fix the highlighted fields before saving.");
       })}
     >
-      <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
-        Projects
-      </h1>
-      <p className="text-[0.78rem] text-(--lf-muted) mb-7">
-        Showcase what you built
-      </p>
+      <SectionHeading title="Projects" description="Highlight the products, experiments, and ideas you have built." />
 
       {sectionError && (
         <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
@@ -156,9 +178,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
 
       <div className="mb-4">
         {fields.length === 0 && (
-          <div className="text-[0.78rem] text-(--lf-muted) mb-2.5">
-            No projects yet. Add one below.
-          </div>
+          <EmptySectionState message="Add a project with a short description and links to its code or live version." />
         )}
 
         {fields.map((f, index) => (
@@ -179,15 +199,10 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
         ))}
       </div>
 
-      <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) border-dashed mt-2">
-        <div className="text-[0.68rem] font-semibold tracking-widest uppercase text-(--lf-muted) font-mono mb-3.5">
-          New Project
-        </div>
-
-        <button
-          type="button"
-          onClick={() =>
-            append({
+      <AddItemPanel
+        title="Add a project"
+        buttonLabel="Add project"
+        onClick={() => append({
               id: "",
               title: "",
               description: "",
@@ -196,14 +211,8 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
               techstack: "",
               enddate: "",
               isenable: true,
-            })
-          }
-          className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap"
-        >
-          <Plus size={12} />
-          Add project
-        </button>
-      </div>
+            })}
+      />
     </form>
   );
 }

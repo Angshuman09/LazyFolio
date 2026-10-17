@@ -211,7 +211,7 @@ export function SkillCard({
 
     if (!isEditing) {
         return (
-            <div className="group flex items-center justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) w-full">
+            <div className="group flex items-center justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md w-full">
                 <div className="min-w-0">
                     <span className="text-[0.82rem] font-mono text-(--lf-ink) font-medium">
                         {values?.value || <span className="text-(--lf-muted) italic">Unnamed Skill</span>}
@@ -252,7 +252,7 @@ export function SkillCard({
     }
 
     return (
-        <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) w-full">
+        <div className="border border-(--lf-border) rounded-2xl px-5 py-5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md w-full">
             <div className="flex flex-col gap-1.25 mb-3">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                     Skill name

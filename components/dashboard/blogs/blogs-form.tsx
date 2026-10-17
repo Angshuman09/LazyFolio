@@ -7,10 +7,6 @@ import {
   useWatch,
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Plus,
-} from "lucide-react";
-
 import toast from "react-hot-toast";
 import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import {
@@ -23,6 +19,9 @@ import { BlogCard } from "./blog-card";
 import { TiptapEditor } from "./tiptap/TiptapEditor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
 import { useSectionSave } from "@/hooks/use-section-save";
+import { SectionHeading } from "@/components/dashboard/section-heading";
+import { AddItemPanel } from "@/components/dashboard/add-item-panel";
+import { EmptySectionState } from "@/components/dashboard/empty-section-state";
 
 export default function BlogsForm({
   profile,
@@ -134,14 +133,12 @@ export default function BlogsForm({
           toast.error("Please fix the highlighted fields before saving.");
         })}
       >
-        <h1 className="font-serif-display text-[1.4rem] font-medium tracking-tight text-(--lf-ink) mb-1">
-          {isArticleMode ? "Write Article" : "Blogs"}
-        </h1>
-        <p className="text-[0.78rem] text-(--lf-muted) mb-6">
-          {isArticleMode
-            ? "Write and publish markdown articles directly on your portfolio. Free for everyone."
+        <SectionHeading
+          title={isArticleMode ? "Write Article" : "Blogs"}
+          description={isArticleMode
+            ? "Write and publish articles directly on your portfolio."
             : "Add external blog posts and writing links to your portfolio."}
-        </p>
+        />
 
         {sectionError && (
           <div className="mb-5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[0.8rem] flex items-center gap-2">
@@ -151,9 +148,9 @@ export default function BlogsForm({
 
         <div className="mb-4">
           {fields.length === 0 && (
-            <div className="text-[0.78rem] text-(--lf-muted) mb-2.5">
-              {isArticleMode ? "No articles yet. Add one below." : "No blog links yet. Add one below."}
-            </div>
+            <EmptySectionState message={isArticleMode
+              ? "Draft an article to share your ideas and experience with visitors."
+              : "Add links to posts you have published on other platforms."} />
           )}
 
           {fields.map((f, index) => (
@@ -177,16 +174,11 @@ export default function BlogsForm({
           ))}
         </div>
 
-        <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted) border-dashed">
-          <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) font-mono mb-3.5">
-            {isArticleMode ? "New Article" : "New Blog Link"}
-          </div>
-
-          <button
-            type="button"
-            disabled={typeof maxItems === "number" && fields.length >= maxItems}
-            onClick={() =>
-              append({
+        <AddItemPanel
+          title={isArticleMode ? "Add an article" : "Add a blog link"}
+          buttonLabel={isArticleMode ? "Add article" : "Add blog link"}
+          disabled={typeof maxItems === "number" && fields.length >= maxItems}
+          onClick={() => append({
                 type: mode,
                 title: "",
                 description: "",
@@ -195,14 +187,8 @@ export default function BlogsForm({
                 isPublished: false,
                 isEnabled: true,
                 slug: null,
-              })
-            }
-            className="inline-flex items-center gap-1.5 px-[18px] h-[34px] rounded-[20px] bg-(--lf-ink) text-(--lf-bg) text-[0.78rem] font-semibold border-none cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans-body whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Plus size={12} />
-            {isArticleMode ? "Add article" : "Add blog link"}
-          </button>
-        </div>
+              })}
+        />
       </form>
 
       {activeEditorIdx !== null && (

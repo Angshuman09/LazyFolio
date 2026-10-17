@@ -304,7 +304,7 @@ export function LinkCard({
 
   if (!isEditing) {
     return (
-      <div className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-(--lf-border) rounded-xl px-4 py-3 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
+      <div className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
         <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
           <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0">
             <Link2 size={12} className="text-(--lf-muted)" />
@@ -355,7 +355,7 @@ export function LinkCard({
   }
 
   return (
-    <div className="border border-(--lf-border) rounded-xl px-4 sm:px-5 py-4 bg-(--lf-surface) mb-2.5 transition-colors duration-150 hover:border-(--lf-muted)">
+    <div className="border border-(--lf-border) rounded-2xl px-4 sm:px-6 py-5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
       <div className="flex items-start justify-between gap-3.5">
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-3.5">
           <div className="flex flex-col gap-1.25">
