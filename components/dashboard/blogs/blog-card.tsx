@@ -282,7 +282,7 @@ export function BlogCard({
               type="button"
               onClick={onDeleteBlog}
               disabled={deleting}
-              className="inline-flex items-center justify-center w-[28px] h-[28px] rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+              className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
               aria-label="Remove blog post"
             >
               {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
@@ -296,7 +296,7 @@ export function BlogCard({
                 setIsEditing(true);
               }}
               disabled={deleting}
-              className="inline-flex items-center gap-1 px-2.5 h-[28px] rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+              className="inline-flex items-center gap-1 px-3 h-7 rounded-full border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
             >
               <Pencil size={10} />
               Edit
@@ -346,7 +346,7 @@ export function BlogCard({
                 <button
                   type="button"
                   onClick={() => onOpenEditor(index)}
-                  className="inline-flex items-center justify-center gap-2 w-full px-4 h-10 border border-(--lf-border) rounded-lg bg-(--lf-bg) text-(--lf-ink) text-sm font-medium hover:border-(--lf-muted) transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 w-full px-4 h-10 border border-(--lf-border) rounded-full bg-(--lf-bg) text-(--lf-ink) text-sm font-medium hover:border-(--lf-muted) transition-all cursor-pointer"
                 >
                   <BookOpen size={14} className="text-(--lf-muted)" />
                   {values?.content ? "Edit Content" : "Write Content"}
@@ -430,20 +430,22 @@ export function BlogCard({
   
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-1.5">
-            <button
-              type="button"
-              onClick={onDeleteBlog}
-              disabled={deleting}
-              className="inline-flex items-center gap-1.25 px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-[#b91c1c] dark:text-[#f87171] hover:bg-[#b91c1c]/8 dark:hover:bg-[#f87171]/12 text-[0.72rem] cursor-pointer transition-all duration-150"
-            >
-              {deleting ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
-              <span>Delete</span>
-            </button>
+            {normalizedValues.id && (
+              <button
+                type="button"
+                onClick={onDeleteBlog}
+                disabled={deleting}
+                className="inline-flex items-center gap-1.25 px-3 h-7 rounded-full bg-transparent border border-transparent text-[#b91c1c] dark:text-[#f87171] hover:bg-[#b91c1c]/8 dark:hover:bg-[#f87171]/12 text-[0.72rem] cursor-pointer transition-all duration-150"
+              >
+                {deleting ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
+                <span>Delete</span>
+              </button>
+            )}
             <button
               type="button"
               onClick={onCancelEditing}
               disabled={deleting}
-              className="inline-flex items-center gap-[5px] px-2.5 h-[28px] rounded-lg bg-transparent border border-transparent text-(--lf-muted) hover:text-(--lf-ink) text-[0.72rem] cursor-pointer transition-all duration-150"
+              className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) text-[0.72rem] cursor-pointer transition-all duration-150"
             >
               Cancel
             </button>
@@ -452,7 +454,7 @@ export function BlogCard({
             type="button"
             onClick={onDoneEditing}
             disabled={deleting}
-            className="inline-flex items-center gap-1.5 px-3 h-[28px] rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+            className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
           >
             <Check size={11} strokeWidth={2.5} />
             Done

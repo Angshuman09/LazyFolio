@@ -44,7 +44,7 @@ function ToolbarButton({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "inline-flex items-center justify-center w-7 h-7 rounded-md text-[0.8rem] transition-colors duration-100 shrink-0",
+        "inline-flex items-center justify-center w-7 h-7 rounded-full text-[0.8rem] transition-colors duration-100 shrink-0",
         isActive
           ? "bg-(--lf-surface) text-(--lf-ink) shadow-xs font-semibold"
           : "text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface)",
@@ -270,14 +270,14 @@ export function Toolbar({ editor, onImageClick }: ToolbarProps) {
             <button
               type="button"
               onClick={applyLink}
-              className="shrink-0 text-[0.72rem] font-semibold text-(--lf-ink) bg-(--lf-border) hover:bg-(--lf-tan) px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+              className="shrink-0 text-[0.72rem] font-semibold text-(--lf-ink) bg-(--lf-border) hover:bg-(--lf-tan) px-3 py-1 rounded-full transition-colors cursor-pointer"
             >
               Apply
             </button>
             <button
               type="button"
               onClick={cancelLink}
-              className="shrink-0 text-[0.72rem] text-(--lf-muted) hover:text-(--lf-ink) px-1.5 py-1 rounded-lg transition-colors cursor-pointer"
+              className="shrink-0 text-[0.72rem] text-(--lf-muted) hover:text-(--lf-ink) px-2 py-1 rounded-full transition-colors cursor-pointer"
             >
               Cancel
             </button>

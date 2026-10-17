@@ -18,7 +18,7 @@ export function AddItemPanel({ title, buttonLabel, onClick, disabled }: AddItemP
         type="button"
         disabled={disabled}
         onClick={onClick}
-        className="inline-flex h-10 items-center gap-2 rounded-xl bg-(--lf-ink) px-4 text-sm font-semibold text-(--lf-bg) transition hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-45"
+        className="inline-flex h-10 items-center gap-2 rounded-full bg-(--lf-ink) px-4 text-sm font-semibold text-(--lf-bg) transition hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-45"
       >
         <Plus size={15} />
         {buttonLabel}

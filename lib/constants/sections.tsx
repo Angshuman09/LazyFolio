@@ -169,3 +169,29 @@ export const plans: PlanConfig[] = [
     cta: "Support Forever",
   },
 ];
+
+export const navColumns = [
+  {
+    heading: "The Good",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "Features", href: "/#features" },
+      { label: "Templates", href: "/templates" },
+      { label: "FAQ", href: "/#faq" },
+    ],
+  },
+  {
+    heading: "The Boring",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
+  {
+    heading: "The Cool",
+    links: [
+      { label: "X / Twitter", href: "https://x.com/angshuhere" },
+      { label: "GitHub", href: "https://github.com/Angshuman09/lazyfolio" },
+    ],
+  },
+];

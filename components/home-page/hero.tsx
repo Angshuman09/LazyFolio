@@ -154,10 +154,10 @@ const Hero = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="font-serif-display text-2xl sm:text-3xl font-normal leading-tight text-center text-(--lf-ink) w-full flex items-center justify-center mb-10"
+          className="font-serif-display text-3xl sm:text-4xl font-normal leading-tight text-(--lf-ink) flex justify-center pb-7"
         >
           <span className="block w-fit tracking-wide">
-            Everything you need to get things <span className="text-(--lf-accent-text) italic">done</span>
+            Everything you need to get things <span className="text-(--lf-accent-text)">done.</span>
           </span>
         </motion.h2>
 

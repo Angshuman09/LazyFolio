@@ -325,7 +325,7 @@ export function LinkCard({
             type="button"
             onClick={onDeleteLink}
             disabled={deleting || saving}
-            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
+            className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
           >
             {deleting ? <Loader2 size={10} className="animate-spin" /> : <Trash2 size={10} />}
           </button>
@@ -338,7 +338,7 @@ export function LinkCard({
               setIsEditing(true);
             }}
             disabled={deleting || saving}
-            className="inline-flex items-center gap-1 px-2.5 h-7 rounded-lg border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
+            className="inline-flex items-center gap-1 px-3 h-7 rounded-full border border-(--lf-border) bg-transparent text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans"
           >
             <Pencil size={10} />
             Edit
@@ -397,7 +397,7 @@ export function LinkCard({
           type="button"
           onClick={onCancelEditing}
           disabled={saving}
-          className="inline-flex items-center border-slate-400 gap-1.25 px-2.5 h-7 rounded-lg bg-transparent border  text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150"
+          className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
         >
           Cancel
         </button>
@@ -405,7 +405,7 @@ export function LinkCard({
           type="button"
           onClick={onDoneEditing}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3 h-7 rounded-lg bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+          className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
           <Check size={11} strokeWidth={2.5} />
           Done

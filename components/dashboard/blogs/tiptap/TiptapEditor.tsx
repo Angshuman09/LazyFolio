@@ -392,7 +392,7 @@ export function TiptapEditor({
             type="button"
             onClick={onClose}
             aria-label="Close editor"
-            className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-colors cursor-pointer"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-full text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface) transition-colors cursor-pointer"
           >
             <X size={16} />
           </button>

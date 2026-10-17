@@ -39,16 +39,10 @@ const CTA = () => {
           Create a beautiful portfolio, share your favorite links, and publish blogs, all from a single page.
         </motion.p>
 
-        <motion.button
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, delay: 0.24, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+        <button
           onClick={() => router.push("/auth")}
           aria-label="Start building your portfolio for free"
-          className="lf-focus group inline-flex rounded-full items-center gap-2 bg-(--lf-ink) text-(--lf-bg) border border-(--lf-ink) text-[0.88rem] font-semibold px-6 py-3.5 transition-shadow duration-150 hover:opacity-85 hover:shadow-lg hover:shadow-black/10 cursor-pointer"
+          className="group inline-flex rounded-full items-center gap-2 bg-(--lf-ink) text-(--lf-bg) border border-(--lf-ink) text-[0.88rem] font-semibold px-6 py-3.5 cursor-pointer"
         >
           Start for free
           <span
@@ -57,7 +51,7 @@ const CTA = () => {
           >
             ↗
           </span>
-        </motion.button>
+        </button>
       </motion.div>
     </section>
   );

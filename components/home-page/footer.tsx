@@ -1,32 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import FooterWordmark from "./footer-wordmark";
+import { navColumns } from "@/lib/constants/sections";
 const Footer = () => {
-  const navColumns = [
-    {
-      heading: "The Good",
-      links: [
-        { label: "Home", href: "/" },
-        { label: "Features", href: "/#features" },
-        { label: "Templates", href: "/templates" },
-        { label: "FAQ", href: "/#faq" },
-      ],
-    },
-    {
-      heading: "The Boring",
-      links: [
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
-      ],
-    },
-    {
-      heading: "The Cool",
-      links: [
-        { label: "X / Twitter", href: "https://x.com/angshuhere" },
-        { label: "GitHub", href: "https://github.com/Angshuman09/lazyfolio" },
-      ],
-    },
-  ];
+
 
   return (
     <footer
@@ -58,6 +35,7 @@ const Footer = () => {
                     <li key={link.label}>
                       <Link
                         href={link.href}
+                        target={ col.heading === "The Cool" ? "_blank" : ""}
                         className="text-[0.83rem] text-(--lf-muted) hover:text-(--lf-ink) transition-colors duration-150"
                       >
                         {link.label}
