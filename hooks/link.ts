@@ -1,46 +1,35 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteJson, postJson } from "@/lib/utils/request";
+import type { links } from "@/db/client";
 
+type CreateLinkResult = {
+  data?: links;
+};
 
-export function useDeleteLink(){
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: async (linkId: string)=>{
-            const response = await fetch(`/api/dashboard/links/${linkId}`,{
-                method: "DELETE",
-            });
-            const payload = await response.json().catch(() => null);
+export function useDeleteLink() {
+  const queryClient = useQueryClient();
 
-            if(!response.ok) throw new Error(payload?.error || "Failed to delete link");
-            return payload;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
-        }
-    });
-
-    return mutation;
+  return useMutation({
+    mutationFn: (linkId: string) =>
+      deleteJson(`/api/dashboard/links/${linkId}`, "Failed to delete link"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
 }
 
-export function useCreateLink(){
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: async (linkData: unknown)=>{
-            const response = await fetch('/api/dashboard/link',{
-                method: "POST",
-                 headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(linkData),
-            });
-            const payload = await response.json().catch(() => null);
+export function useCreateLink() {
+  const queryClient = useQueryClient();
 
-            if(!response.ok) throw new Error(payload?.error || "Failed to create link");
-            return payload;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
-        }
-    });
-
-    return mutation;
+  return useMutation({
+    mutationFn: (linkData: unknown) =>
+      postJson<CreateLinkResult>(
+        "/api/dashboard/link",
+        linkData,
+        "Failed to create link",
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
 }

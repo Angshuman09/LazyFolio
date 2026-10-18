@@ -12,7 +12,8 @@ import {  type Control,
 } from 'react-hook-form'
 import { Trash2, Pencil, Check, Code2, Github, ExternalLink, Loader2} from 'lucide-react'
 import { useCreateProject, useDeleteProject } from "@/hooks/project";
-import { hasFieldArrayErrors } from "@/lib/utils/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/skills";
+import { toYMD } from "@/lib/utils/date";
 import { useEffect, useState } from 'react';
 import { ProjectsSchema } from '@/lib/schemas/projects';
 import { ProfileProject } from '@/lib/types/projects';
@@ -98,17 +99,6 @@ export function ProjectCard({
     const values = useWatch({ control, name: `projects.${index}` });
     const hasErrors = hasFieldArrayErrors(errors, "projects", index);
 
-    // Helper to normalize any date value to YYYY-MM-DD string
-    const toYMD = (val: string | Date | null | undefined): string => {
-      if (!val) return "";
-      const d = new Date(val);
-      if (isNaN(d.getTime())) return String(val);
-      const y = d.getUTCFullYear();
-      const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-      const day = String(d.getUTCDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
-    };
-
     // Sync savedSnapshot when profile updates (e.g. after global "Save Changes")
     useEffect(() => {
       const profileProject = profile?.projects?.find((p) => p.id === field.id);
@@ -188,17 +178,6 @@ export function ProjectCard({
           },
           profileId: profile.id,
         });
-  
-        const normalizeEnddate = (val: string | null | undefined) => {
-          if (!val) return "";
-          // API returns full ISO datetime; normalize to YYYY-MM-DD for comparison
-          const d = new Date(val);
-          if (isNaN(d.getTime())) return String(val);
-          const y = d.getUTCFullYear();
-          const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-          const day = String(d.getUTCDate()).padStart(2, "0");
-          return `${y}-${m}-${day}`;
-        };
 
         const savedProject = {
           id: payload?.data?.id || normalizedValues.id,
@@ -209,7 +188,7 @@ export function ProjectCard({
           techstack: Array.isArray(payload?.data?.techstack)
             ? payload.data.techstack.join(", ")
             : normalizedValues.techstack,
-          enddate: normalizeEnddate(payload?.data?.enddate) || normalizedValues.enddate,
+          enddate: toYMD(payload?.data?.enddate) || normalizedValues.enddate,
           isenable: payload?.data?.isenable ?? normalizedValues.isenable,
         };
   

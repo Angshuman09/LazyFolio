@@ -1,20 +1,13 @@
 import { z } from "zod";
-
-const stringOrEmpty = (min = 1, max?: number) => {
-  const base = max
-    ? z.string().min(min).max(max)
-    : z.string().min(min);
-
-  return z.union([z.literal(""), base]);
-};
+import { stringOrEmpty } from "./helpers";
 
 const singleExperienceSchema = z.object({
   id: z.string().optional(),
-  companyName: stringOrEmpty(2, 120).optional(),
-  role: stringOrEmpty(2, 120).optional(),
-  startdate: stringOrEmpty(1, 50).optional(),
-  enddate: stringOrEmpty(1, 50).optional(),
-  description: stringOrEmpty(10, 800).optional(),
+  companyName: stringOrEmpty({ min: 2, max: 120 }).optional(),
+  role: stringOrEmpty({ min: 2, max: 120 }).optional(),
+  startdate: stringOrEmpty({ min: 1, max: 50 }).optional(),
+  enddate: stringOrEmpty({ min: 1, max: 50 }).optional(),
+  description: stringOrEmpty({ min: 10, max: 800 }).optional(),
   isenable: z.boolean().optional(),
 });
 

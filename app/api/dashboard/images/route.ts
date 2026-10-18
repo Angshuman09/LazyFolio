@@ -3,6 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function POST(request: NextRequest) {
     const { errorResponse, session } = await verifySession();
@@ -72,7 +73,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ currentprofile: updatedProfile }, { status: 200 });
     }
     catch (error) {
-        console.error('Error updating images:', error);
-        return NextResponse.json({ error: 'Failed to update images' }, { status: 500 });
+        return handleApiError(error, "images/save");
     }
 }

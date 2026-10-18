@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma';
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function DELETE(
   req: NextRequest,
@@ -30,9 +32,10 @@ export async function DELETE(
       select: { id: true }
     });
 
+    revalidateProfile(profile.username);
+
     return NextResponse.json({ message: "experience deleted successfully" }, { status: 200 });
   } catch (error) {
-    console.log("error in deleting an experience: ", error);
-    return NextResponse.json({ message: `error in deleting an experience: ${error}` }, { status: 500 });
+    return handleApiError(error, "experiences/delete");
   }
 }

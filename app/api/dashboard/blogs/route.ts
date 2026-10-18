@@ -5,16 +5,17 @@ import { NextResponse, NextRequest } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
+import { FREE_ARTICLE_LIMIT, PLAN_PRICE_SUMMARY } from "@/lib/constants/plans";
+import { isSubscriptionActive } from "@/lib/subscription";
 import { generateSlug } from "@/lib/utils/blogs";
 import { getPortfolioBlogPath } from "@/lib/utils/public-url";
+import { handleApiError, ApiError } from "@/lib/errors/api";
 import {
   isBlankExternalBlog,
   isBlankInternalBlog,
   validateExternalBlog,
   validateInternalBlog,
 } from "@/lib/utils/validate-dashboard";
-
-const FREE_ARTICLE_LIMIT = 2;
 
 export async function POST(req: NextRequest) {
   const { errorResponse, profile, session } = await verifySessionAndProfile();
@@ -43,16 +44,15 @@ export async function POST(req: NextRequest) {
       const subscription = await prisma.subscription.findUnique({
         where: { userId: session!.user.id },
       });
-      const isActive =
-        subscription?.status === "ACTIVE" &&
-        (!subscription.currentPeriodEnd ||
-          new Date(subscription.currentPeriodEnd) > new Date());
 
-      if (!isActive && nonBlankBlogs.length > FREE_ARTICLE_LIMIT) {
+      if (
+        !isSubscriptionActive(subscription) &&
+        nonBlankBlogs.length > FREE_ARTICLE_LIMIT
+      ) {
         return NextResponse.json(
           {
             error:
-              `Free article access includes up to ${FREE_ARTICLE_LIMIT} articles. Choose the $5/month, $39/year, or $169 lifetime plan to write more.`,
+              `Free article access includes up to ${FREE_ARTICLE_LIMIT} articles. Choose the ${PLAN_PRICE_SUMMARY} plan to write more.`,
           },
           { status: 403 },
         );
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
       if (blog.id) {
         existing = existingBlogs.find((b) => b.id === blog.id) ?? null;
         if (!existing) {
-          throw new Error("Unauthorized access to blog record: " + blog.id);
+          throw new ApiError("Unauthorized access to blog record", 403);
         }
       }
 
@@ -158,10 +158,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ data: results }, { status: 200 });
   } catch (error) {
-    console.error("Error in create blogs api: ", error);
-    return NextResponse.json(
-      { error: "Error in create blogs api" },
-      { status: 500 },
-    );
+    return handleApiError(error, "blogs/save");
   }
 }

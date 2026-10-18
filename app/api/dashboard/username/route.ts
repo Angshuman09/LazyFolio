@@ -2,7 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-import { isReservedUsername } from "@/lib/utils/username";
+import { rewriteBlogLinksOnUsernameChange } from "@/lib/db/blog-links";
+import { isReservedUsername, isValidUsername } from "@/lib/utils/username";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
@@ -13,24 +14,32 @@ export async function POST(req: NextRequest) {
       username?: string;
     };
     const userId = session!.user.id;
+    const normalizedUsername = username?.trim().toLowerCase();
 
-    if (!username) {
+    if (!normalizedUsername) {
       return NextResponse.json(
         { error: "username is required"},
         { status: 400 },
       );
     }
 
-    if (isReservedUsername(username)) {
+    if (!isValidUsername(normalizedUsername)) {
       return NextResponse.json(
-        {error: "username is reserved"},
-        {status: 401}
-      )
+        { error: "Username must be 3-30 lowercase letters, numbers, or hyphens." },
+        { status: 400 }
+      );
+    }
+
+    if (isReservedUsername(normalizedUsername)) {
+      return NextResponse.json(
+        { error: "username is reserved" },
+        { status: 400 }
+      );
     }
 
     const existingUsername = await prisma.profile.findUnique({
       where: {
-        username: username,
+        username: normalizedUsername,
       },
       select: {
         id: true,
@@ -55,11 +64,11 @@ export async function POST(req: NextRequest) {
         userId: userId          
       },
       update: {
-        username: username
+        username: normalizedUsername
       },
       create: {
         userId: userId,         
-        username: username
+        username: normalizedUsername
       },
       select: {
         id: true,
@@ -70,31 +79,11 @@ export async function POST(req: NextRequest) {
 
     const newUsername = updatedProfile.username;
     if (oldUsername && newUsername && oldUsername !== newUsername) {
-      try {
-        const blogsToUpdate = await prisma.blog.findMany({
-          where: {
-            profileId: updatedProfile.id,
-            blogLink: { startsWith: `/${oldUsername}/blogs/` },
-          },
-          select: { id: true, blogLink: true },
-        });
-
-        await Promise.all(
-          blogsToUpdate.map((blog) =>
-            prisma.blog.update({
-              where: { id: blog.id },
-              data: {
-                blogLink: blog.blogLink!.replace(
-                  `/${oldUsername}/blogs/`,
-                  `/${newUsername}/blogs/`
-                ),
-              },
-            })
-          )
-        );
-      } catch (error) {
-        console.error("Failed to update blog links after username change:", error);
-      }
+      await rewriteBlogLinksOnUsernameChange(
+        updatedProfile.id,
+        oldUsername,
+        newUsername,
+      );
 
       revalidateProfile(oldUsername);
     }

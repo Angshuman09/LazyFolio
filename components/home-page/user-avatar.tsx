@@ -1,6 +1,9 @@
-"use client";
+type AvatarUser = {
+  name?: string | null;
+  image?: string | null;
+};
 
-export function UserAvatar({ user }: { user: any }) {
+export function UserAvatar({ user }: { user?: AvatarUser | null }) {
   // console.log(user);
   return (
     <div className="flex items-center gap-2 cursor-pointer">

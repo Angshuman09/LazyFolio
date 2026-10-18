@@ -5,6 +5,7 @@ import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { LinkInput } from "@/lib/constants/apis";
 import { isBlankLink, validateLink } from "@/lib/utils/validate-dashboard";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function POST(req: NextRequest){
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -47,7 +48,6 @@ export async function POST(req: NextRequest){
     return NextResponse.json({data: createLinks}, {status: 200});
     
   } catch (error) {
-    console.log("error in create links api: ", error);
-    return NextResponse.json({error: "error in create link api"},{status: 500})
+    return handleApiError(error, "links/save");
   }
 }

@@ -1,62 +1,85 @@
-import { NextRequest } from 'next/server';
-import { Readable } from 'stream';
-import { cloudinary, deleteFromCloudinary, type UploadApiResponse } from '@/lib/utils/cloudinary';
-import { verifySession } from '@/lib/auth/auth-api';
+import { NextRequest } from "next/server";
+import { Readable } from "stream";
+import {
+  cloudinary,
+  deleteFromCloudinary,
+  userOwnsCloudinaryAsset,
+  type UploadApiResponse,
+} from "@/lib/utils/cloudinary";
+import { verifySession } from "@/lib/auth/auth-api";
+import { apiError, handleApiError } from "@/lib/errors/api";
+import {
+  ALLOWED_IMAGE_TYPES_SET,
+  MAX_IMAGE_SIZE_BYTES,
+} from "@/lib/constants/uploads";
 
-export async function POST(req: NextRequest){
-    const { errorResponse } = await verifySession();
-    if (errorResponse) return errorResponse;
+export async function POST(req: NextRequest) {
+  const { errorResponse } = await verifySession();
+  if (errorResponse) return errorResponse;
 
-    try {
-        const formData = await req.formData();
-        const file = formData.get('file') as File | null;
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
 
-        if(!file){
-            return Response.json({error: 'No file uploaded'}, {status: 400});
-        }
-
-        const bytes = await file?.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        const result = await new Promise<UploadApiResponse>((resolve, reject) => {
-            const uploadStream = cloudinary.uploader.upload_stream(
-                {
-                    folder: "lazyfolio",
-                    resource_type: "auto"
-                },
-                (error, result) => {
-                    if (error || !result) {
-                        reject(error);
-                    } else {
-                        resolve(result);
-                    }
-                }
-            );
-            Readable.from(buffer).pipe(uploadStream);
-        });
-
-        return Response.json({url: result.url, publicId: result.public_id});
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        return Response.json({error: 'Failed to upload image'}, {status: 500});
+    if (!file) {
+      return apiError("No file uploaded", 400);
     }
+
+    if (!ALLOWED_IMAGE_TYPES_SET.has(file.type)) {
+      return apiError("Only JPEG, PNG, GIF, or WebP images are allowed", 400);
+    }
+
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      return apiError("Image must be 10MB or smaller", 400);
+    }
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "lazyfolio",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error || !result) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        },
+      );
+      Readable.from(buffer).pipe(uploadStream);
+    });
+
+    return Response.json({ url: result.url, publicId: result.public_id });
+  } catch (error) {
+    return handleApiError(error, "upload/create");
+  }
 }
 
 export async function DELETE(req: NextRequest) {
-  const { errorResponse } = await verifySession();
+  const { errorResponse, session } = await verifySession();
   if (errorResponse) return errorResponse;
 
   try {
     const { publicId } = (await req.json()) as { publicId?: string };
 
     if (!publicId) {
-      return Response.json({ error: 'Missing publicId' }, { status: 400 });
+      return apiError("Missing publicId", 400);
+    }
+
+    // Only allow deleting assets the authenticated user actually references
+    // (profile avatar/banner or images embedded in their own posts).
+    const isOwner = await userOwnsCloudinaryAsset(session!.user.id, publicId);
+    if (!isOwner) {
+      return apiError("Not authorized to delete this image", 403);
     }
 
     await deleteFromCloudinary(publicId);
-    return Response.json({ message: 'Image deleted successfully' }, { status: 200 });
+    return Response.json({ message: "Image deleted successfully" }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting image:', error);
-    return Response.json({ error: 'Failed to delete image' }, { status: 500 });
+    return handleApiError(error, "upload/delete");
   }
 }

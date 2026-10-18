@@ -43,7 +43,7 @@ interface SaveState {
 
 let savedTimerId: ReturnType<typeof setTimeout> | null = null;
 
-export const useSaveStore = create<SaveState>((set, get) => ({
+export const useSaveStore = create<SaveState>((set) => ({
   dirtyItems: new Set(),
   savingItems: new Set(),
   errors: new Map(),
@@ -142,13 +142,6 @@ export const useSaveStore = create<SaveState>((set, get) => ({
 export const selectDirtyCount = (s: SaveState) => s.dirtyItems.size;
 export const selectIsAnyDirty = (s: SaveState) => s.dirtyItems.size > 0;
 export const selectIsAnySaving = (s: SaveState) => s.savingItems.size > 0;
-export const selectIsSectionDirty = (section: DashboardSection) => (s: SaveState) =>
-  s.dirtyItems.has(section);
-export const selectIsSectionSaving = (section: DashboardSection) => (s: SaveState) =>
-  s.savingItems.has(section);
-export const selectSectionError = (section: DashboardSection) => (s: SaveState) =>
-  s.errors.get(section);
-export const selectDirtySections = (s: SaveState) => Array.from(s.dirtyItems);
 
 export function getGlobalButtonLabel(state: SaveState): string {
   if (state.globalStatus === "saving" || state.savingItems.size > 0) {

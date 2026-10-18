@@ -1,29 +1,6 @@
-import { Cookie, Database, Eye, HelpCircle, Server, ShieldCheck, Trash2, Lock, AlertTriangle, Copyright, FileText, Globe, Scale, ShieldAlert, UserCheck } from "lucide-react";
 import type { Prisma } from "@/db/client";
 import { PlanConfig } from "../types/payment";
-
-export const SECTIONS = [
-    { id: "overview", label: "Overview & Philosophy", icon: ShieldCheck },
-    { id: "data-collection", label: "Data We Collect", icon: Database },
-    { id: "data-usage", label: "How We Use Data", icon: Eye },
-    { id: "third-parties", label: "Third-Party Services", icon: Server },
-    { id: "cookies", label: "Cookies & Storage", icon: Cookie },
-    { id: "data-security", label: "Security & Retention", icon: Lock },
-    { id: "user-rights", label: "Your Rights & Deletion", icon: Trash2 },
-    { id: "contact", label: "Contact & Questions", icon: HelpCircle },
-  ];
-  
-
-export const SECTIONSTerms = [
-    { id: "acceptance", label: "Agreement to Terms", icon: FileText },
-    { id: "user-accounts", label: "Accounts & Usernames", icon: UserCheck },
-    { id: "user-content", label: "Content & Ownership", icon: Copyright },
-    { id: "acceptable-use", label: "Acceptable Use Policy", icon: ShieldAlert },
-    { id: "public-nature", label: "Public Portfolio Visibility", icon: Globe },
-    { id: "disclaimers", label: "Disclaimers & Warranty", icon: AlertTriangle },
-    { id: "liability", label: "Limitation of Liability", icon: Scale },
-    { id: "contact", label: "Modifications & Contact", icon: HelpCircle },
-  ];
+import { PLAN_PRICES } from "./plans";
 
   export const publicProfileSelect = {
     id: true,
@@ -68,29 +45,6 @@ export const SECTIONSTerms = [
     links: { where: { isenable: true } },
   } satisfies Prisma.ProfileSelect;
 
-export const features = [
-    {
-      title: "Full-Featured Tiptap Editor",
-      desc: "Rich typography, image uploads, inline code formatting, and full draft autosaving.",
-    },
-    {
-      title: "Custom Portfolio URLs",
-      desc: "Articles live directly on your personal portfolio under your custom domain or username.",
-    },
-    {
-      title: "Automatic SEO & Social Graph",
-      desc: "Pre-rendered OpenGraph previews and search-engine optimized metadata on every post.",
-    },
-    {
-      title: "Template Synced",
-      desc: "Your articles dynamically mirror your portfolio's selected theme style and dark mode.",
-    },
-    {
-      title: "Reader Engagement Insights",
-      desc: "Track views, click-throughs, and reader retention directly from your dashboard.",
-    },
-];
-
 export const faqs = [
   {
     question: "What is Lazyfolio?",
@@ -125,7 +79,7 @@ export const plans: PlanConfig[] = [
     id: "monthly",
     name: "Monthly",
     tagline: "Chip in each month",
-    price: "$5",
+    price: PLAN_PRICES.monthly,
     cadence: "/ month",
     subtext: "Cancel anytime — no hard feelings",
     features: [
@@ -139,7 +93,7 @@ export const plans: PlanConfig[] = [
     id: "yearly",
     name: "Yearly",
     tagline: "A year of good vibes",
-    price: "$39",
+    price: PLAN_PRICES.yearly,
     cadence: "/ year",
     subtext: "~$3.25/mo — saves you $21 a year",
     badge: "Best value",
@@ -156,7 +110,7 @@ export const plans: PlanConfig[] = [
     id: "lifetime",
     name: "Lifetime",
     tagline: "Once and done",
-    price: "$169",
+    price: PLAN_PRICES.lifetime,
     cadence: "one-time",
     subtext: "Pay once, use forever — no renewals",
     badge: "Forever",

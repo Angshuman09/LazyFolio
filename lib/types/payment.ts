@@ -12,10 +12,3 @@ export interface PlanConfig {
   cta: string;
   popular?: boolean;
 }
-
-export interface ArticlePaywallProps {
-    articleCount?: number;
-    freeLimit?: number;
-    inline?: boolean;
-    onClose?: () => void;
-  }

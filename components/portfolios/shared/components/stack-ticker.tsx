@@ -1,5 +1,3 @@
-"use client";
-
 import type { StackItem, TemplateThemeConfig } from "../types";
 
 type StackTickerProps = {

@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-import { parseOptionalDate } from "@/lib/utils/blogs";
+import { parseOptionalDate } from "@/lib/utils/date";
 import { isBlankExperience, validateExperience } from "@/lib/utils/validate-dashboard";
+import { handleApiError } from "@/lib/errors/api";
 
 
 export async function POST(request: NextRequest) {
@@ -46,12 +47,8 @@ export async function POST(request: NextRequest) {
 
     revalidateProfile(profile.username);
 
-    return NextResponse.json(experience, { status: 200 });
+    return NextResponse.json({ data: experience }, { status: 200 });
   } catch (error) {
-    console.log("Error in experience route", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    return handleApiError(error, "experiences/save");
   }
 }

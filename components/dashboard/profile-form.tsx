@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { profileSchema, ProfileSchema } from "@/lib/schemas/profile";
@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 import { getPortfolioDomainSuffix } from "@/lib/utils/public-url";
 import { isReservedUsername } from "@/lib/utils/username";
-import Image from "next/image";
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -153,39 +152,42 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
 
   const handleSubmitUsername = async () => {
     setLoading(true);
-    const username = getValues("username").trim().toLowerCase();
-    if (!username) {
-      toast.error("Username cannot be empty");
-      setLoading(false);
-      return;
-    }
+    try {
+      const username = getValues("username").trim().toLowerCase();
+      if (!username) {
+        toast.error("Username cannot be empty");
+        return;
+      }
 
-    if (isReservedUsername(username)) {
-      toast(`${username} can't be a username!`, {
-        style: {
-          borderRadius: '10px',
-          background: '#fff3cd',
-          color: '#856404',      
-        },
+      if (isReservedUsername(username)) {
+        toast(`${username} can't be a username!`, {
+          style: {
+            borderRadius: '10px',
+            background: '#fff3cd',
+            color: '#856404',
+          },
+        });
+        return;
+      }
+
+      const response = await fetch("/api/dashboard/username", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, userId: session?.user?.id as string }),
       });
-      setLoading(false)
-      return;
-    }
+      const data = await response.json();
 
-    const response = await fetch("/api/dashboard/username", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, userId: session?.user?.id as string }),
-    });
-    const data = await response.json();
-
-    if (response.ok) {
-      toast.success("Username updated successfully");
-      await queryClient.invalidateQueries({ queryKey: ["profile"] });
-    } else {
-      toast.error(data.error || "Failed to update username");
+      if (response.ok) {
+        toast.success("Username updated successfully");
+        await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      } else {
+        toast.error(data.error || "Failed to update username");
+      }
+    } catch {
+      toast.error("Failed to update username");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSubmitImages = async () => {

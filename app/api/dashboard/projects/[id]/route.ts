@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { apiError, handleApiError } from "@/lib/errors/api";
 
 export async function DELETE(
   request: NextRequest,
@@ -13,10 +15,7 @@ export async function DELETE(
     const { id } = await params;
 
     if (!id) {
-      return NextResponse.json(
-        { error: "Missing project id" },
-        { status: 400 }
-      );
+      return apiError("Missing project id", 400);
     }
 
     const project = await prisma.project.findFirst({
@@ -25,10 +24,7 @@ export async function DELETE(
     });
 
     if (!project) {
-      return NextResponse.json(
-        { error: "Project not found or unauthorized" },
-        { status: 403 }
-      );
+      return apiError("Project not found or unauthorized", 403);
     }
 
     await prisma.project.delete({
@@ -40,6 +36,8 @@ export async function DELETE(
       },
     });
 
+    revalidateProfile(profile.username);
+
     return NextResponse.json(
       {
         message: "Project deleted successfully",
@@ -48,10 +46,6 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting project:", error);
-    return NextResponse.json(
-      { error: "Failed to delete project" },
-      { status: 500 }
-    );
+    return handleApiError(error, "projects/delete");
   }
 }

@@ -1,24 +1,13 @@
-"use client";
-
-import type { ReactNode, ComponentType } from "react";
-import { Sparkles } from "lucide-react";
+import type { ReactNode } from "react";
 import { TemplateThemeConfig } from "../types";
-
-type IconComponent = ComponentType<{
-  size?: number;
-  className?: string;
-  strokeWidth?: number;
-}>;
 
 type SectionHeadingProps = {
   children: ReactNode;
-  icon?: IconComponent;
   config: TemplateThemeConfig;
 };
 
 export function SectionHeading({
   children,
-  icon: Icon = Sparkles,
   config,
 }: SectionHeadingProps) {
   return (

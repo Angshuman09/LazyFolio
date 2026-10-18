@@ -6,6 +6,8 @@ import {
   getDodoClient,
 } from "@/lib/dodopayments";
 import { ArticlePlan } from "@/lib/types/payment";
+import { apiError, handleApiError } from "@/lib/errors/api";
+import { getRequestOrigin } from "@/lib/utils/public-url";
 
 const articlePlans = new Set<ArticlePlan>(["monthly", "yearly", "lifetime"]);
 
@@ -19,41 +21,19 @@ export async function POST(req: NextRequest) {
   const productId = getArticleProductId(requestedPlan);
 
   if (!apiKey) {
-    return NextResponse.json(
-      {
-        error:
-          "DODO_PAYMENTS_API_KEY is not configured in Vercel environment variables. Remember to Redeploy in Vercel after adding keys.",
-      },
-      { status: 500 }
-    );
+    console.error("Dodo checkout failed: DODO_PAYMENTS_API_KEY is not configured");
+    return apiError("Payments are not configured. Please try again later.", 500);
   }
 
   if (!productId) {
-    const envName =
-      requestedPlan === "monthly"
-        ? "DODO_PAYMENTS_ARTICLE_MONTHLY_PRODUCT_ID"
-        : requestedPlan === "yearly"
-          ? "DODO_PAYMENTS_ARTICLE_YEARLY_PRODUCT_ID"
-          : "DODO_PAYMENTS_ARTICLE_LIFETIME_PRODUCT_ID";
-
-    return NextResponse.json(
-      {
-        error:
-          `${envName} is not configured in environment variables.`,
-      },
-      { status: 500 }
+    console.error(
+      `Dodo checkout failed: no product id configured for plan "${requestedPlan}" in ${environment}`,
     );
+    return apiError("Payments are not configured. Please try again later.", 500);
   }
 
   try {
-    const host = req.headers.get("host") || "";
-    const hostname = host.split(":")[0]?.toLowerCase() || "";
-    const port = host.split(":")[1] ? `:${host.split(":")[1]}` : "";
-    const isLocal = hostname.endsWith(".localhost") || hostname === "localhost";
-    const origin =
-      process.env.NEXT_PUBLIC_APP_URL?.trim() ||
-      (isLocal ? `http://localhost${port}` : (process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"));
-
+    const origin = getRequestOrigin(req.nextUrl.origin);
     const returnUrl = `${origin}/dashboard?tab=articles&checkout=success`;
     const client = getDodoClient();
 
@@ -76,10 +56,8 @@ export async function POST(req: NextRequest) {
     });
 
     if (!sessionResponse.checkout_url) {
-      return NextResponse.json(
-        { error: "Failed to generate Dodo checkout URL" },
-        { status: 500 }
-      );
+      console.error("Dodo checkout session created without a checkout_url");
+      return apiError("Failed to start checkout. Please try again.", 500);
     }
 
     return NextResponse.json({
@@ -89,26 +67,22 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     const dodoError = error as { status?: number; message?: string };
 
+    // Log full detail server-side; only surface a stable, actionable message.
     console.error("Dodo checkout session creation failed:", {
       environment,
-      hasApiKey: !!apiKey,
-      apiKeyPrefix: apiKey ? apiKey.substring(0, 6) + "..." : "none",
       productId,
       requestedPlan,
       errorStatus: dodoError.status,
       errorMessage: dodoError.message || error,
     });
 
-    let friendlyMessage = dodoError.message || "Failed to initiate checkout session.";
     if (dodoError.status === 401) {
-      friendlyMessage = `Dodo Payments 401 Unauthorized: Your API key was rejected in '${environment}'. If your key is from the Dodo Test Dashboard, make sure DODO_PAYMENTS_ENVIRONMENT=test_mode is set in Vercel, or verify your key has not expired.`;
+      return apiError(
+        "Payment provider rejected the request. Please try again later.",
+        502,
+      );
     }
 
-    return NextResponse.json(
-      {
-        error: friendlyMessage,
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, "subscription/checkout");
   }
 }

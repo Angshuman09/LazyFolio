@@ -52,11 +52,3 @@ export function getInitialExperiences(profile?: ExperienceProfile): ExperienceSc
     return draft;
   }
 
-export function parseOptionalDate(value: string | null | undefined) {
-    if (!value?.trim()) {
-      return null;
-    }
-  
-    const parsedDate = new Date(value);
-    return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-}

@@ -6,7 +6,6 @@ import {
 } from "../shared/utils";
 import {
   normalizeLinks,
-  normalizeProjects,
   normalizeStack,
 } from "../shared/normalize";
 import { PortfolioNavbar } from "../shared/components/portfolio-navbar";

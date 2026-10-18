@@ -15,6 +15,7 @@ import {
   clearDashboardDraft,
 } from "@/lib/cache/dashboard-drafts";
 import { Props } from "@/lib/types/blogs";
+import { FREE_ARTICLE_LIMIT } from "@/lib/constants/plans";
 import { BlogCard } from "./blog-card";
 import { TiptapEditor } from "./tiptap/TiptapEditor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
@@ -103,7 +104,7 @@ export default function BlogsForm({
     keyName: "fieldId",
   });
 
-  const freeLimit = articleUsage?.freeLimit ?? maxItems ?? 2;
+  const freeLimit = articleUsage?.freeLimit ?? maxItems ?? FREE_ARTICLE_LIMIT;
   const isLimitReached = !isSubscribed && fields.length >= freeLimit;
 
   useEffect(() => {

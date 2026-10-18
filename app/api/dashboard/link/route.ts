@@ -4,6 +4,8 @@ import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { LinkInput } from "@/lib/constants/apis";
 import { LinkType } from "@/db/enums";
 import { validateLink } from "@/lib/utils/validate-dashboard";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 
 export async function POST(request: NextRequest) {
@@ -51,6 +53,7 @@ export async function POST(request: NextRequest) {
                 data: linkData
             });
 
+            revalidateProfile(profile.username);
             return NextResponse.json({ data: updatedLink, message: "Link updated successfully." }, { status: 200 });
         }
 
@@ -68,6 +71,7 @@ export async function POST(request: NextRequest) {
                 },
                 data: linkData
             })
+            revalidateProfile(profile.username);
             return NextResponse.json({ data: updatedLink, message: "Link updated successfully." }, { status: 200 });
         }
 
@@ -75,9 +79,9 @@ export async function POST(request: NextRequest) {
             data: linkData
         });
 
+        revalidateProfile(profile.username);
         return NextResponse.json({ data: createdLink, message: "Link created successfully." }, { status: 201 });
     } catch (error) {        
-        console.error("Error creating link:", error);
-        return NextResponse.json({ error: "An error occurred while creating the link." }, { status: 500 });
+        return handleApiError(error, "link/upsert");
     }
 }

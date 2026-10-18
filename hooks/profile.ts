@@ -22,6 +22,11 @@ export const useGetUserProfile = (userId?: string) => {
   return query;
 };
 
+type ProfileUpdateContext = {
+  previousProfile: unknown;
+  userId: string;
+};
+
 export const useUpdateUserProfile = () => {
   const queryClient = useQueryClient();
 
@@ -45,23 +50,18 @@ export const useUpdateUserProfile = () => {
     onMutate: async (newProfileData: ProfileSchema) => {
       await queryClient.cancelQueries({ queryKey: ["profile", newProfileData.userId] });
       const previousProfile = queryClient.getQueryData(["profile", newProfileData.userId]);
-      queryClient.setQueryData(["profile", newProfileData.userId], (old: any) => {
-        if (!old) return old;
-        return {
-          ...old,
-          ...newProfileData,
-        };
-      });
+      queryClient.setQueryData<ProfileSchema>(
+        ["profile", newProfileData.userId],
+        (old) => (old ? { ...old, ...newProfileData } : old),
+      );
       return { previousProfile, userId: newProfileData.userId };
     },
-    onError: (err, newProfile, context: any) => {
+    onError: (_err, _newProfile, context: ProfileUpdateContext | undefined) => {
       if (context) {
         queryClient.setQueryData(["profile", context.userId], context.previousProfile);
       }
     },
-    onSettled: async (data, error, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ["profile"] });
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["profile"] }),
   });
 
   return mutation;

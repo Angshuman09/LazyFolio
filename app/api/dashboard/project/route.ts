@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
-import { parseOptionalDate } from "@/lib/utils/experience";
+import { parseOptionalDate } from "@/lib/utils/date";
 import { validateProject } from "@/lib/utils/validate-dashboard";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 type ProjectInput = {
   id?: string;
@@ -79,6 +81,8 @@ export async function POST(request: NextRequest) {
         data: projectData,
       });
 
+      revalidateProfile(profile.username);
+
       return NextResponse.json(
         { data: updatedProject, message: "Project updated successfully." },
         { status: 200 }
@@ -89,15 +93,13 @@ export async function POST(request: NextRequest) {
       data: projectData,
     });
 
+    revalidateProfile(profile.username);
+
     return NextResponse.json(
       { data: createdProject, message: "Project created successfully." },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error saving project:", error);
-    return NextResponse.json(
-      { error: "An error occurred while saving the project." },
-      { status: 500 }
-    );
+    return handleApiError(error, "project/save");
   }
 }

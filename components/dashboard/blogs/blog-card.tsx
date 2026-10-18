@@ -4,7 +4,7 @@ import { useDeleteBlog } from '@/hooks/blog';
 import { writeDashboardDraft } from '@/lib/cache/dashboard-drafts';
 import { BlogsSchema } from '@/lib/schemas/blogs';
 import { BlogsProfile } from '@/lib/types/blogs';
-import { hasFieldArrayErrors } from '@/lib/utils/utils';
+import { hasFieldArrayErrors } from '@/lib/utils/skills';
 import { isValidUrl } from '@/lib/utils/links';
 import { getWordCount } from '@/lib/utils/tiptap-content';
 import { BookOpen, Check, ExternalLink, Loader2, Pencil, Trash2 } from 'lucide-react';

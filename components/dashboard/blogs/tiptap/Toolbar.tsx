@@ -18,7 +18,7 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { useCallback, useState } from "react";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 
 interface ToolbarButtonProps {
   onClick: () => void;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 
 export type CloudShaderProps = {
   className?: string;

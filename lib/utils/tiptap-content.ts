@@ -1,3 +1,5 @@
+import { getPublicIdFromCloudinaryUrl } from "@/lib/utils/cloudinary-url";
+
 export type TiptapImageInfo = {
   src: string;
   alt: string;
@@ -12,30 +14,6 @@ export type TiptapImageInfo = {
 export function isTiptapJson(content: string | null | undefined): boolean {
   if (!content) return false;
   return content.trimStart().startsWith("{");
-}
-
-// ---------------------------------------------------------------------------
-// Cloudinary URL helpers (duplicated here to avoid circular deps with blog-images)
-// ---------------------------------------------------------------------------
-
-function getPublicIdFromCloudinaryUrl(url: string): string | null {
-  if (!url || !url.includes("res.cloudinary.com")) return null;
-  const cleanUrl = url.split("?")[0].split("#")[0];
-  const parts = cleanUrl.split("/image/upload/");
-  if (parts.length > 1) {
-    const pathAfterUpload = parts[1];
-    const pathParts = pathAfterUpload.split("/");
-    if (pathParts[0] && pathParts[0].match(/^v\d+$/)) {
-      pathParts.shift();
-    }
-    const joined = pathParts.join("/");
-    const lastDotIndex = joined.lastIndexOf(".");
-    if (lastDotIndex !== -1) {
-      return joined.substring(0, lastDotIndex);
-    }
-    return joined;
-  }
-  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -145,20 +123,4 @@ export function getWordCount(content: string | null | undefined): number {
     .replace(/[#*_~`>]/g, "") // markdown symbols
     .split(/\s+/)
     .filter(Boolean).length;
-}
-
-/** Character count that handles both Tiptap JSON and legacy Markdown content. */
-export function getCharCount(content: string | null | undefined): number {
-  if (!content) return 0;
-
-  if (isTiptapJson(content)) {
-    try {
-      const json = JSON.parse(content) as TiptapNode;
-      return extractTextFromTiptapNode(json).length;
-    } catch {
-      return 0;
-    }
-  }
-
-  return content.length;
 }

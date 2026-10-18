@@ -15,15 +15,11 @@ import {
   type TiptapImageInfo,
 } from "@/lib/utils/tiptap-content";
 import { parseMarkdown } from "@/lib/utils/markdown";
-import type { MarkdownEditorProps } from "@/lib/types/blogs";
-
-const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-];
-const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+import type { TiptapEditorProps } from "@/lib/types/blogs";
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE_BYTES,
+} from "@/lib/constants/uploads";
 
 async function uploadToCloudinary(
   file: File,
@@ -54,7 +50,7 @@ export function TiptapEditor({
   onClose,
   isSubscribed,
   onSupportMe,
-}: MarkdownEditorProps) {
+}: TiptapEditorProps) {
   const values = useWatch({ control, name: `blogs.${index}` });
   const title = values?.title || "";
 

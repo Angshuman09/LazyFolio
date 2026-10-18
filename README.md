@@ -47,82 +47,12 @@ Most portfolio sites take an evening (or a weekend) you didn't want to spend pic
 
 ---
 
-## Getting Started
-
 ### Prerequisites
 
 - Node.js 18 or later
 - A PostgreSQL database
 - A [Cloudinary](https://cloudinary.com) account
 - OAuth credentials from your chosen auth provider(s) (Google, GitHub)
-
-### Installation
-
-**1. Clone the repository**
-
-```bash
-git clone https://github.com/Angshuman09/lazyfolio.git
-cd lazyfolio
-```
-
-**2. Install dependencies**
-
-```bash
-npm install
-```
-
-**3. Configure environment variables**
-
-Copy `.env.example` to `.env` and fill in your own values:
-
-```bash
-cp .env.example .env
-```
-
-```env
-# App
-NODE_ENV=development
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Database
-DATABASE_URL=your-postgres-url
-
-# Auth (better-auth)
-BETTER_AUTH_SECRET=your-better-auth-secret
-BETTER_AUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-
-# Cloudinary (keep the API secret server-side only — do NOT prefix it with NEXT_PUBLIC_)
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloudinary-name
-NEXT_PUBLIC_CLOUDINARY_API_KEY=your-cloudinary-api-key
-CLOUDINARY_API_SECRET=your-cloudinary-api-secret
-```
-
-**4. Run database migrations**
-
-```bash
-npx prisma migrate dev
-```
-
-**5. Start the development server**
-
-```bash
-npm run dev
-```
-
-The app will be available at `http://localhost:3000`.
-
-**6. Build for production**
-
-```bash
-npm run build
-npm start
-```
-
----
 
 ## Inspiration
 
@@ -139,6 +69,16 @@ Lazyfolio is directly inspired by two products that got the philosophy right.
 Contributions are welcome. Open an issue to discuss what you want to change before submitting a pull request. Please keep PRs focused on a single concern.
 
 ---
+
+## Star history
+
+<a href="https://www.star-history.com/?repos=angshuman09%2Flazyfolio&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=angshuman09/lazyfolio&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=angshuman09/lazyfolio&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=angshuman09/lazyfolio&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ## License
 

@@ -37,7 +37,7 @@ export type BlogsProfile = {
   };
 
 
-export type MarkdownEditorProps = {
+export type TiptapEditorProps = {
     index: number;
     control: Control<BlogsSchema>;
     register: UseFormRegister<BlogsSchema>;

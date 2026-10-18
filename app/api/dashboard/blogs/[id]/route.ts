@@ -3,6 +3,8 @@ import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function DELETE(
   request: NextRequest,
@@ -47,15 +49,13 @@ export async function DELETE(
     const publicIds = extractBlogImagePublicIds(blog?.content);
     await Promise.all(publicIds.map((publicId) => deleteFromCloudinary(publicId)));
 
+    revalidateProfile(profile.username);
+
     return NextResponse.json(
       { message: "Blog deleted successfully" },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error deleting blog:", error);
-    return NextResponse.json(
-      { error: "Failed to delete blog" },
-      { status: 500 },
-    );
+    return handleApiError(error, "blogs/delete");
   }
 }

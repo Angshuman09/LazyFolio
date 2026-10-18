@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 import { profileSelect } from "@/lib/constants/apis";
-import { isReservedUsername } from "@/lib/utils/username";
+import { rewriteBlogLinksOnUsernameChange } from "@/lib/db/blog-links";
+import { isReservedUsername, isValidUsername } from "@/lib/utils/username";
 
 
 function optionalString(value: string | null | undefined) {
@@ -74,11 +76,7 @@ export async function GET(request: NextRequest) {
     const skillsIsenable = await getSkillsIsenable(profile.id);
     return NextResponse.json({ ...profile, skillsIsenable }, { status: 200 });
   } catch (error) {
-    console.error("Failed to fetch profile", error);
-    return NextResponse.json(
-      { error: "Failed to fetch profile" },
-      { status: 500 },
-    );
+    return handleApiError(error, "profile/get");
   }
 }
 
@@ -101,8 +99,17 @@ export async function POST(request: NextRequest) {
 
     const targetUserId = session!.user.id;
 
-    if (username) {
-      if (isReservedUsername(username)) {
+    const normalizedUsername = username?.trim().toLowerCase();
+
+    if (normalizedUsername) {
+      if (!isValidUsername(normalizedUsername)) {
+        return NextResponse.json(
+          { error: "Username must be 3-30 lowercase letters, numbers, or hyphens." },
+          { status: 400 }
+        );
+      }
+
+      if (isReservedUsername(normalizedUsername)) {
         return NextResponse.json(
           { error: "Username is reserved" },
           { status: 400 }
@@ -110,7 +117,7 @@ export async function POST(request: NextRequest) {
       }
 
       const existingUser = await prisma.profile.findUnique({
-        where: { username },
+        where: { username: normalizedUsername },
         select: { userId: true },
       });
 
@@ -127,7 +134,7 @@ export async function POST(request: NextRequest) {
       bio: clearableString(bio),
       email: clearableString(email),
       quote: clearableString(quote),
-      username: optionalString(username),
+      username: optionalString(normalizedUsername),
       tagline: clearableString(tagline),
       bookAcall: clearableString(bookAcall),
       themeId: optionalString(themeId),
@@ -152,41 +159,11 @@ export async function POST(request: NextRequest) {
 
     // If the username changed, rewrite internal blog link URLs so old posts
     // remain accessible under the new username path.
-    const newUsername = profile.username;
-    if (
-      oldUsername &&
-      newUsername &&
-      oldUsername !== newUsername
-    ) {
-      try {
-        // Fetch all blogs for this profile that have a stored blogLink
-        const blogsToUpdate = await prisma.blog.findMany({
-          where: {
-            profileId: profile.id,
-            blogLink: { startsWith: `/${oldUsername}/blogs/` },
-          },
-          select: { id: true, blogLink: true },
-        });
-
-        // Replace the old username prefix with the new one in each blogLink
-        await Promise.all(
-          blogsToUpdate.map((blog) =>
-            prisma.blog.update({
-              where: { id: blog.id },
-              data: {
-                blogLink: blog.blogLink!.replace(
-                  `/${oldUsername}/blogs/`,
-                  `/${newUsername}/blogs/`
-                ),
-              },
-            })
-          )
-        );
-      } catch (error) {
-        // Non-critical — log and continue
-        console.error("Failed to update blog links after username change", error);
-      }
-    }
+    await rewriteBlogLinksOnUsernameChange(
+      profile.id,
+      oldUsername,
+      profile.username,
+    );
 
     if (typeof skillsIsenable === "boolean") {
       try {
@@ -214,10 +191,6 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Failed to post profile", error);
-    return NextResponse.json(
-      { error: "Failed to post profile" },
-      { status: 500 }
-    );
+    return handleApiError(error, "profile/save");
   }
 }

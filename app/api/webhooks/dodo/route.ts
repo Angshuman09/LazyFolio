@@ -79,10 +79,22 @@ export async function POST(req: NextRequest) {
           headers: headersList,
           key: webhookKey,
         });
-      } else {
-        // Fallback for development if secret not yet provided
-        console.warn("DODO_PAYMENTS_WEBHOOK_KEY is not set. Unsafe unwrap used.");
+      } else if (process.env.NODE_ENV !== "production") {
+        // Allow unsigned payloads only in local development. In production an
+        // unset key must reject the request — otherwise anyone could forge
+        // subscription events.
+        console.warn(
+          "DODO_PAYMENTS_WEBHOOK_KEY is not set; accepting unsigned webhook in non-production.",
+        );
         event = client.webhooks.unsafeUnwrap(rawBody);
+      } else {
+        console.error(
+          "DODO_PAYMENTS_WEBHOOK_KEY is not configured; rejecting webhook in production.",
+        );
+        return NextResponse.json(
+          { error: "Webhook not configured" },
+          { status: 503 },
+        );
       }
     } catch (err: unknown) {
       console.error("Dodo webhook verification failed:", err instanceof Error ? err.message : err);
@@ -92,7 +104,7 @@ export async function POST(req: NextRequest) {
     const eventType = event.type;
     const data = event.data;
 
-    console.log(`[Dodo Webhook] Received event: ${eventType}`, {
+    console.debug(`[Dodo Webhook] Received event: ${eventType}`, {
       subscription_id: data?.subscription_id,
       customer_id: data?.customer?.customer_id,
     });
@@ -248,11 +260,7 @@ export async function POST(req: NextRequest) {
   } catch (err: unknown) {
     console.error("Error processing Dodo webhook:", err);
     return NextResponse.json(
-      {
-        error:
-          "Webhook handler failed: " +
-          (err instanceof Error ? err.message : "Unknown error"),
-      },
+      { error: "Webhook handler failed" },
       { status: 500 }
     );
   }

@@ -25,14 +25,6 @@ export function getSaveFn(section: DashboardSection): (() => Promise<void>) | un
   return saveRegistry.get(section);
 }
 
-export function getRegisteredSections(): DashboardSection[] {
-  return Array.from(saveRegistry.keys());
-}
-
-export function hasSaveFn(section: DashboardSection): boolean {
-  return saveRegistry.has(section);
-}
-
 export function discardSection(section: DashboardSection, profileId?: string) {
   clearDashboardDraft(section, profileId);
   const discardFn = discardRegistry.get(section);

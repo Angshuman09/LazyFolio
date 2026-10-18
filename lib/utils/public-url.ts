@@ -96,3 +96,30 @@ export function getMainSiteUrl(): string {
   return (process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN).trim().replace(/\/+$/, "");
 }
 
+
+// Derives the app origin for server-side redirects (checkout return URLs,
+// customer-portal return URLs). Prefers explicit env overrides, then the
+// incoming request's origin, then the production default.
+export function getRequestOrigin(fallbackOrigin?: string | null): string {
+  const envUrl =
+    process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+    process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (envUrl) {
+    try {
+      return new URL(envUrl).origin;
+    } catch {
+      // fall through to request origin
+    }
+  }
+
+  if (fallbackOrigin) {
+    try {
+      return new URL(fallbackOrigin).origin;
+    } catch {
+      // fall through to default
+    }
+  }
+
+  return new URL(DEFAULT_SITE_ORIGIN).origin;
+}

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { prisma } from "@/lib/prisma";
 import { getDodoClient } from "@/lib/dodopayments";
+import { apiError, handleApiError } from "@/lib/errors/api";
+import { getRequestOrigin } from "@/lib/utils/public-url";
 
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
@@ -13,16 +15,10 @@ export async function POST(req: NextRequest) {
     });
 
     if (!subscription?.dodoCustomerId) {
-      return NextResponse.json(
-        { error: "No active customer record found for this account." },
-        { status: 404 }
-      );
+      return apiError("No active customer record found for this account.", 404);
     }
 
-    const origin =
-      process.env.NEXT_PUBLIC_APP_URL ||
-      req.nextUrl.origin ||
-      "http://localhost:3000";
+    const origin = getRequestOrigin(req.nextUrl.origin);
 
     const client = getDodoClient();
     const portalSession = await client.customers.customerPortal.create(
@@ -33,22 +29,12 @@ export async function POST(req: NextRequest) {
     );
 
     if (!portalSession?.link) {
-      return NextResponse.json(
-        { error: "Failed to generate customer portal URL" },
-        { status: 500 }
-      );
+      console.error("Dodo customer portal session created without a link");
+      return apiError("Failed to open the customer portal. Please try again.", 500);
     }
 
     return NextResponse.json({ portalUrl: portalSession.link });
-  } catch (error: any) {
-    console.error("Failed to generate Dodo customer portal:", error);
-    return NextResponse.json(
-      {
-        error:
-          error?.message ||
-          "Failed to generate customer portal session.",
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    return handleApiError(error, "subscription/portal");
   }
 }

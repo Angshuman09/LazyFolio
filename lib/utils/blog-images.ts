@@ -1,3 +1,4 @@
+import { getPublicIdFromCloudinaryUrl } from "@/lib/utils/cloudinary-url";
 import {
   isTiptapJson,
   extractPublicIdsFromTiptapJson,
@@ -9,26 +10,6 @@ export type BlogImage = {
   publicId: string;
   markdown: string;
 };
-
-export function getPublicIdFromUrl(url: string): string | null {
-  if (!url || !url.includes("res.cloudinary.com")) return null;
-  const cleanUrl = url.split("?")[0].split("#")[0];
-  const parts = cleanUrl.split("/image/upload/");
-  if (parts.length > 1) {
-    const pathAfterUpload = parts[1];
-    const pathParts = pathAfterUpload.split("/");
-    if (pathParts[0] && pathParts[0].match(/^v\d+$/)) {
-      pathParts.shift();
-    }
-    const joined = pathParts.join("/");
-    const lastDotIndex = joined.lastIndexOf(".");
-    if (lastDotIndex !== -1) {
-      return joined.substring(0, lastDotIndex);
-    }
-    return joined;
-  }
-  return null;
-}
 
 export function createCloudinaryImageMarkdown(
   alt: string,
@@ -68,7 +49,7 @@ export function extractBlogImages(content: string | null | undefined): BlogImage
     if (startIndex !== undefined && !processedIndices.has(startIndex)) {
       const alt = match[1];
       const url = match[2];
-      const publicId = getPublicIdFromUrl(url);
+      const publicId = getPublicIdFromCloudinaryUrl(url);
       if (publicId) {
         images.push({
           alt,

@@ -112,21 +112,6 @@ export const TEMPLATES = [
   },
 ];
 
-export const MOCK_SKILLS = [
-  "TypeScript",
-  "Next.js",
-  "React",
-  "Node.js",
-  "Go",
-  "Prisma",
-  "PostgreSQL",
-  "Docker",
-  "Tailwind CSS",
-  "Redis",
-  "GraphQL",
-  "AWS",
-];
-
 export type Tab = "profile" | "links" | "experience" | "projects" | "skills" | "blogs" | "articles" | "insights";
 
 export const NAV: { id: Tab; label: string}[] = [

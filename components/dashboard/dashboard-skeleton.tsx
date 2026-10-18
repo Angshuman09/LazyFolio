@@ -1,5 +1,3 @@
-'use client'
-
 export function DashboardSkeleton() {
   return (
     <div className="animate-pulse space-y-7 max-w-3xl">

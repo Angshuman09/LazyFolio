@@ -1,47 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteJson } from "@/lib/utils/request";
 
-export const useCreateExperience = () => {
-    const queryClient = useQueryClient();
+export function useDeleteExperience() {
+  const queryClient = useQueryClient();
 
-    const mutation = useMutation({
-        mutationFn: async (data: unknown) => {
-            const response = await fetch('/api/dashboard/experience', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-            const payload = await response.json().catch(() => null);
-
-            if (!response.ok) throw new Error(payload?.error || "Failed to update experience");
-
-            return payload;
-        },
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["profile"] });
-        }
-    });
-
-    return mutation;
-};
-
-export const useDeleteExperience = () => {
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: async (experienceId: string) => {
-            const response = await fetch(`/api/dashboard/experiences/${experienceId}`, {
-                method: "DELETE",
-            });
-            const payload = await response.json().catch(() => null);
-
-            if (!response.ok) throw new Error(payload?.error || "Failed to delete experience");
-            return payload;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["profile"] });
-        }
-    });
-
-    return mutation;
+  return useMutation({
+    mutationFn: (experienceId: string) =>
+      deleteJson(
+        `/api/dashboard/experiences/${experienceId}`,
+        "Failed to delete experience",
+      ),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ThemedPortfolioTemplate,
 } from "./template-rest/template-themed";

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
+import { revalidateProfile } from "@/lib/cache/revalidate";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function DELETE(
   request: NextRequest,
@@ -40,6 +42,8 @@ export async function DELETE(
       },
     });
 
+    revalidateProfile(profile.username);
+
     return NextResponse.json({
       message: "Link deleted successfully",
       data: {
@@ -47,10 +51,6 @@ export async function DELETE(
       },
     }, { status: 200 });
   } catch (error) {
-    console.error("Error deleting link:", error);
-    return NextResponse.json(
-      { error: "Failed to delete link" },
-      { status: 500 }
-    );
+    return handleApiError(error, "links/delete");
   }
 }

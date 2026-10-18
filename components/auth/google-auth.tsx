@@ -1,8 +1,7 @@
 "use client";
 
-import { createAuthClient } from "better-auth/client";
 import { useState } from "react";
-const authClient = createAuthClient();
+import { authClient } from "@/lib/auth/auth-client";
 
 export const GoogleAuth = ({
   disable,

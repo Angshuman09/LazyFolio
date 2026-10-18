@@ -26,7 +26,7 @@ import {
   type Ref,
 } from "react";
 
-import { cn } from "@/lib/utils/utils";
+import { cn } from "@/lib/utils";
 
 /** Layout must happen before paint, but never warn while rendering on the server. */
 const useIsoLayoutEffect =

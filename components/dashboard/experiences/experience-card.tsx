@@ -1,4 +1,5 @@
-import { hasFieldArrayErrors } from "@/lib/utils/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/skills";
+import { toYMD } from "@/lib/utils/date";
 import { useState, useEffect } from "react";
 import {
   useWatch, type Control,
@@ -91,16 +92,6 @@ export function ExperienceCard({
 
   const values = useWatch({ control, name: `experiences.${index}` });
   const hasErrors = hasFieldArrayErrors(errors, "experiences", index);
-
-  const toYMD = (val: string | Date | null | undefined): string => {
-    if (!val) return "";
-    const d = new Date(val as string);
-    if (isNaN(d.getTime())) return String(val);
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(d.getUTCDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  };
 
   useEffect(() => {
     const profileExperience = profile?.experiences?.find((e) => e.id === field.id);

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  USERNAME_PATTERN,
+} from "@/lib/utils/username";
 
 const RESERVED_PATHS = new Set([
   "api",
@@ -32,7 +35,6 @@ const RESERVED_SUBDOMAINS = new Set([
   "terms",
   "templates",
 ]);
-const USERNAME_PATTERN = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
 const PRODUCTION_ROOT_HOSTNAME = "lazyfolio.in";
 
 function getRootHostname(hostname: string) {

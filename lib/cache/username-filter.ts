@@ -109,15 +109,6 @@ export function registerUsernameInFilter(username: string): void {
 }
 
 /**
- * Check if a username might exist using the Bloom filter.
- * Returns false if the username DEFINITELY does not exist.
- */
-export function mayUsernameExist(username: string): boolean {
-  if (!username) return false;
-  return bloomFilter.has(username);
-}
-
-/**
  * Get profile from fast in-memory cache.
  */
 export function getProfileFromMemoryCache<T>(username: string): T | null {

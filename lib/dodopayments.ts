@@ -1,11 +1,6 @@
 import DodoPayments from "dodopayments";
 import { ArticlePlan } from "./types/payment";
-
-const ARTICLE_PLAN_LABELS: Record<ArticlePlan, string> = {
-  monthly: "$5/month",
-  yearly: "$39/year",
-  lifetime: "$169 lifetime",
-};
+import { PLAN_PRICE_LABELS } from "@/lib/constants/plans";
 
 function cleanEnv(value?: string) {
   return (value || "").trim().replace(/^["']|["']$/g, "");
@@ -50,7 +45,7 @@ export function getArticlePlanFromProductId(productId?: string | null): ArticleP
 }
 
 export function getArticlePlanLabel(plan?: ArticlePlan | null) {
-  return plan ? ARTICLE_PLAN_LABELS[plan] : null;
+  return plan ? PLAN_PRICE_LABELS[plan] : null;
 }
 
 export function getDodoClient() {
@@ -66,11 +61,3 @@ export function getDodoClient() {
     environment,
   });
 }
-
-// Lazy proxy for backwards compatibility
-export const dodoClient = new Proxy({} as DodoPayments, {
-  get(_target, prop) {
-    const client = getDodoClient();
-    return (client as unknown as Record<PropertyKey, unknown>)[prop];
-  },
-});

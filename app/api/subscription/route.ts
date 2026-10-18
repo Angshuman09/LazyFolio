@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { prisma } from "@/lib/prisma";
 import { getArticlePlanFromProductId, getArticlePlanLabel } from "@/lib/dodopayments";
-
-const FREE_ARTICLE_LIMIT = 2;
+import { FREE_ARTICLE_LIMIT } from "@/lib/constants/plans";
+import { isSubscriptionActive } from "@/lib/subscription";
+import { handleApiError } from "@/lib/errors/api";
 
 export async function GET() {
   const { errorResponse, session } = await verifySession();
@@ -23,11 +24,7 @@ export async function GET() {
       },
     });
 
-    const isPeriodValid =
-      !subscription?.currentPeriodEnd ||
-      new Date(subscription.currentPeriodEnd) > new Date();
-
-    const isActive = subscription?.status === "ACTIVE" && isPeriodValid;
+    const isActive = isSubscriptionActive(subscription);
     const plan = getArticlePlanFromProductId(subscription?.productId);
 
     return NextResponse.json({
@@ -42,10 +39,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Failed to fetch subscription:", error);
-    return NextResponse.json(
-      { error: "Failed to retrieve subscription status" },
-      { status: 500 }
-    );
+    return handleApiError(error, "subscription/get");
   }
 }

@@ -2,7 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
-import { VisibilityPayload } from "@/lib/utils/utils";
+
+export type VisibilityTarget = "link" | "experience" | "project" | "blog" | "skills";
+
+type VisibilityPayload = {
+  target?: VisibilityTarget;
+  id?: string;
+  isenable?: boolean;
+};
 
 export async function PATCH(request: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -39,16 +46,19 @@ export async function PATCH(request: NextRequest) {
       const link = await prisma.links.findFirst({ where: { id, profileId: profile!.id } });
       if (!link) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
       const result = await prisma.links.update({ where: { id }, data });
+      revalidateProfile(profile!.username);
       return NextResponse.json({ data: result }, { status: 200 });
     } else if (target === "experience") {
       const exp = await prisma.experience.findFirst({ where: { id, profileId: profile!.id } });
       if (!exp) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
       const result = await prisma.experience.update({ where: { id }, data });
+      revalidateProfile(profile!.username);
       return NextResponse.json({ data: result }, { status: 200 });
     } else if (target === "project") {
       const proj = await prisma.project.findFirst({ where: { id, profileId: profile!.id } });
       if (!proj) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
       const result = await prisma.project.update({ where: { id }, data });
+      revalidateProfile(profile!.username);
       return NextResponse.json({ data: result }, { status: 200 });
     } else {
       const blog = await prisma.blog.findFirst({ where: { id, profileId: profile!.id } });

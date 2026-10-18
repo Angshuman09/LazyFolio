@@ -1,5 +1,3 @@
-"use client";
-
 export const TemplatesAnimation = () => (
   <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
     <style>{`

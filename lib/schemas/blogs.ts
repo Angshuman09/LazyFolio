@@ -1,9 +1,5 @@
 import { z } from "zod";
-
-const stringOrEmpty = (max?: number) => {
-  const base = max ? z.string().max(max) : z.string();
-  return z.union([z.literal(""), base]);
-};
+import { stringOrEmpty } from "./helpers";
 
 export const blogsSchema = z.object({
   blogs: z
@@ -11,9 +7,9 @@ export const blogsSchema = z.object({
       z.object({
         id: z.string().optional(),
         type: z.enum(["INTERNAL", "EXTERNAL"]).optional(),
-        title: stringOrEmpty(160).optional(),
-        description: stringOrEmpty(800).optional(),
-        blogLink: stringOrEmpty().optional(),
+        title: stringOrEmpty({ max: 160 }).optional(),
+        description: stringOrEmpty({ max: 800 }).optional(),
+        blogLink: stringOrEmpty({}).optional(),
         content: z.string().optional().nullable(),
         isPublished: z.boolean().optional(),
         isEnabled: z.boolean().optional(),

@@ -1,34 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { clearDashboardDraft } from "@/lib/cache/dashboard-drafts";
+import { postJson } from "@/lib/utils/request";
 
-export const useCreateExperiences = ()=>{
-    const queryClient = useQueryClient();
+export function useCreateExperiences() {
+  const queryClient = useQueryClient();
 
-    const mutation = useMutation({
-        mutationFn: async (data: unknown)=>{
-            const response = await fetch('/api/dashboard/experiences', {
-                method: "POST",
-                 headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-            const payload = await response.json().catch(() => null);
-
-            if(!response.ok) throw new Error(payload?.error || "Failed to update experience");
-
-            return payload;
-        },
-        onSuccess: async (_result, variables) => {
-            const profileId = (variables as { profileId?: unknown } | undefined)?.profileId;
-            if (typeof profileId === "string") {
-                // Clear the draft before the profile refetch so the form resets
-                // from the newly saved server data instead of the old blank-id draft.
-                clearDashboardDraft("experience", profileId);
-            }
-            await queryClient.invalidateQueries({ queryKey: ["profile"] });
-        }
-    });
-
-    return mutation;
-};
+  return useMutation({
+    mutationFn: (data: unknown) =>
+      postJson("/api/dashboard/experiences", data, "Failed to update experience"),
+    onSuccess: async (_result, variables) => {
+      const profileId = (variables as { profileId?: unknown } | undefined)
+        ?.profileId;
+      if (typeof profileId === "string") {
+        // Clear the draft before the profile refetch so the form resets
+        // from the newly saved server data instead of the old blank-id draft.
+        clearDashboardDraft("experience", profileId);
+      }
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+}

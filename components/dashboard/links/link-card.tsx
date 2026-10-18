@@ -11,7 +11,7 @@ import {useWatch, type Control,
 import {useEffect, useState} from 'react';
 import {Trash2, Pencil, Check, Link2, Loader2 } from "lucide-react";
 import { useCreateLink, useDeleteLink } from "@/hooks/link";
-import { hasFieldArrayErrors } from "@/lib/utils/utils";
+import { hasFieldArrayErrors } from "@/lib/utils/skills";
 import { LinksProfile } from "@/lib/utils/links";
 import {isValidUrl} from "@/lib/utils/links";
 import { detectType } from "@/lib/utils/links";
