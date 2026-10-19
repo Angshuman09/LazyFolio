@@ -5,8 +5,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
-import { FREE_ARTICLE_LIMIT, PLAN_PRICE_SUMMARY } from "@/lib/constants/plans";
-import { isSubscriptionActive } from "@/lib/subscription";
 import { generateSlug } from "@/lib/utils/blogs";
 import { getPortfolioBlogPath } from "@/lib/utils/public-url";
 import { handleApiError, ApiError } from "@/lib/errors/api";
@@ -18,7 +16,7 @@ import {
 } from "@/lib/utils/validate-dashboard";
 
 export async function POST(req: NextRequest) {
-  const { errorResponse, profile, session } = await verifySessionAndProfile();
+  const { errorResponse, profile } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
   try {
@@ -39,25 +37,6 @@ export async function POST(req: NextRequest) {
     const nonBlankBlogs = blogs.filter((blog) =>
       isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
     );
-
-    if (isInternal) {
-      const subscription = await prisma.subscription.findUnique({
-        where: { userId: session!.user.id },
-      });
-
-      if (
-        !isSubscriptionActive(subscription) &&
-        nonBlankBlogs.length > FREE_ARTICLE_LIMIT
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              `Free article access includes up to ${FREE_ARTICLE_LIMIT} articles. Choose the ${PLAN_PRICE_SUMMARY} plan to write more.`,
-          },
-          { status: 403 },
-        );
-      }
-    }
 
     for (const blog of nonBlankBlogs) {
       const validation = isInternal

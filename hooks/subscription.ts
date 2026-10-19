@@ -18,11 +18,6 @@ export interface SubscriptionResponse {
   isActive: boolean;
   plan?: "monthly" | "yearly" | "lifetime" | null;
   planLabel?: string | null;
-  articleUsage?: {
-    count: number;
-    freeLimit: number;
-    remaining: number;
-  };
 }
 
 export function useGetSubscription(enabled: boolean = true) {

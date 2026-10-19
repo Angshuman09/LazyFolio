@@ -24,11 +24,6 @@ export type Props = {
     limitMessage?: string;
     isSubscribed?: boolean;
     onSupportMe?: () => void;
-    articleUsage?: {
-      count: number;
-      freeLimit: number;
-      remaining: number;
-    };
   };
 
 export type BlogsProfile = {

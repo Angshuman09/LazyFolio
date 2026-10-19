@@ -8,13 +8,15 @@ import {
 } from "@/lib/utils/cloudinary";
 import { verifySession } from "@/lib/auth/auth-api";
 import { apiError, handleApiError } from "@/lib/errors/api";
+import { prisma } from "@/lib/prisma";
+import { isSubscriptionActive } from "@/lib/subscription";
 import {
   ALLOWED_IMAGE_TYPES_SET,
   MAX_IMAGE_SIZE_BYTES,
 } from "@/lib/constants/uploads";
 
 export async function POST(req: NextRequest) {
-  const { errorResponse } = await verifySession();
+  const { errorResponse, session } = await verifySession();
   if (errorResponse) return errorResponse;
 
   try {
@@ -23,6 +25,22 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return apiError("No file uploaded", 400);
+    }
+
+    // Image uploads are a supporter feature. Only profile images
+    // (avatar/banner) are exempt so free users can still personalize
+    // their account.
+    if (formData.get("purpose") !== "profile") {
+      const subscription = await prisma.subscription.findUnique({
+        where: { userId: session!.user.id },
+      });
+
+      if (!isSubscriptionActive(subscription)) {
+        return apiError(
+          "Image uploads are for supporters. Upgrade to upload images to your articles.",
+          403,
+        );
+      }
     }
 
     if (!ALLOWED_IMAGE_TYPES_SET.has(file.type)) {

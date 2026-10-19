@@ -20,7 +20,6 @@ import {
 import { signOut, authClient } from "@/lib/auth/auth-client";
 import { useGetUserProfile } from "@/hooks/profile";
 import { useGetSubscription } from "@/hooks/subscription";
-import { FREE_ARTICLE_LIMIT } from "@/lib/constants/plans";
 import { SubscriptionBadge } from "@/components/dashboard/articles/subscription-badge";
 import { useRouter } from "next/navigation";
 import { TemplateRenderer } from "@/components/portfolios/template-renderer";
@@ -109,15 +108,6 @@ export default function DashboardPage() {
     isLoading: isSubLoading,
     refetch: refetchSub,
   } = useGetSubscription(!!session?.user?.id);
-  const articleUsage = subData?.articleUsage;
-  const freeArticleLimit = articleUsage?.freeLimit ?? FREE_ARTICLE_LIMIT;
-  const savedArticleCount =
-    articleUsage?.count ??
-    (profile?.blogs || []).filter((blog: { type?: string | null; content?: string | null }) => {
-      const type = blog.type ?? (blog.content === null ? "EXTERNAL" : "INTERNAL");
-      return type === "INTERNAL";
-    }).length;
-  const canUseFreeArticles = !subData?.isActive && savedArticleCount < freeArticleLimit;
   const router = useRouter();
   const isSaveDisabled = isSaving || isLoading || isPending;
   const previewProfile = profile

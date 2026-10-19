@@ -199,6 +199,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       if (avatarFile) {
         const formData = new FormData();
         formData.append("file", avatarFile);
+        formData.append("purpose", "profile");
         const res = await fetch("/api/dashboard/upload", { method: "POST", body: formData });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to upload avatar");
@@ -211,6 +212,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       if (bannerFile) {
         const formData = new FormData();
         formData.append("file", bannerFile);
+        formData.append("purpose", "profile");
         const res = await fetch("/api/dashboard/upload", { method: "POST", body: formData });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to upload banner");
