@@ -14,6 +14,7 @@ import { Template10 } from "./template-10/template-10";
 import { Template11 } from "./template-11/template-11";
 
 import { PortfolioSection } from "./shared/types";
+import { getAvailableSections } from "./shared/sections";
 import { PortfolioSectionProvider } from "./shared/context/portfolio-section-context";
 
 type Template1Props = Parameters<typeof Template1>[0];
@@ -49,6 +50,7 @@ export function TemplateRenderer({
   }, [controlledSection]);
 
   const activeSection = controlledSection ?? internalSection;
+  const availableSections = getAvailableSections(profile);
 
   const handleSectionChange = (newSection: PortfolioSection) => {
     setInternalSection(newSection);
@@ -99,6 +101,7 @@ export function TemplateRenderer({
       onSectionChange={isInteractive ? handleSectionChange : undefined}
       basePath={basePath}
       isInteractive={isInteractive}
+      availableSections={availableSections}
     >
       <div className="w-full h-screen">{renderTemplate()}</div>
     </PortfolioSectionProvider>
