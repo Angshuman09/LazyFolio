@@ -10,6 +10,7 @@ import { isTiptapJson, getWordCount } from "@/lib/utils/tiptap-content";
 import { ArrowLeft, Calendar, BookOpen } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
 import { getPortfolioUrl } from "@/lib/utils/public-url";
+import { getBlogTheme } from "@/components/portfolios/blog-theme";
 
 async function getBlogProfile(username: string) {
   "use cache";
@@ -80,24 +81,26 @@ export default async function PublicBlogPage(props: PageProps) {
     day: "numeric",
   });
 
-  return (
-    <div className="min-h-screen bg-(--lf-bg) text-(--lf-ink) font-sans transition-colors duration-200 noise-overlay relative">
+  // Match the article page to the portfolio's chosen template.
+  const theme = getBlogTheme(profile.themeId);
 
-      <nav className="sticky top-0 z-40 w-full bg-(--lf-bg)/80 backdrop-blur-md border-b border-(--lf-border-alpha) px-6 py-4 flex items-center justify-between">
+  return (
+    <div
+      className={`${theme.pageClass}${theme.noise ? " noise-overlay relative" : ""}`}
+      style={theme.pageStyle}
+    >
+      <nav className={theme.navClass}>
         <Link
           href={getPortfolioUrl(profile.username)}
-          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-(--lf-muted) hover:text-(--lf-ink) transition-colors"
+          className={theme.backLinkClass}
         >
           <ArrowLeft size={14} />
           Back to Profile
         </Link>
 
-        <Link
-          href={getPortfolioUrl(profile.username)}
-          className="flex items-center gap-2 hover:opacity-85 transition-opacity"
-        >
+        <Link href={getPortfolioUrl(profile.username)} className={theme.authorClass}>
           {profile.avatar ? (
-            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-(--lf-border)">
+            <div className={theme.avatarWrapClass}>
               <Image
                 src={profile.avatar}
                 alt={profile.name || "Author"}
@@ -106,17 +109,17 @@ export default async function PublicBlogPage(props: PageProps) {
               />
             </div>
           ) : (
-            <div className="w-6 h-6 rounded-full bg-(--lf-border) flex items-center justify-center text-[10px] font-bold">
+            <div className={theme.avatarFallbackClass}>
               {profile.name?.[0] || "U"}
             </div>
           )}
-          <span className="text-xs font-medium text-(--lf-ink)">{profile.name}</span>
+          <span className={theme.authorNameClass}>{profile.name}</span>
         </Link>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-6 py-14 sm:py-20 relative z-10">
+      <main className={theme.containerClass}>
         <header className="mb-10 text-left">
-          <div className="flex items-center gap-4 text-xs text-(--lf-muted) font-mono mb-4">
+          <div className={theme.metaClass}>
             <span className="flex items-center gap-1">
               <Calendar size={12} />
               {formattedDate}
@@ -128,27 +131,26 @@ export default async function PublicBlogPage(props: PageProps) {
           </div>
 
           {/* Title */}
-          <h1 className="font-serif-display text-4xl sm:text-5xl font-medium tracking-tight text-(--lf-ink) leading-[1.1] mb-5">
+          <h1 className={theme.titleClass}>
             {blog.title || "Untitled Article"}
           </h1>
 
           {/* Description */}
           {blog.description && (
-            <p className="text-[1.05rem] text-(--lf-muted) leading-relaxed mb-6 font-sans italic opacity-85">
-              {blog.description}
-            </p>
+            <p className={theme.descriptionClass}>{blog.description}</p>
           )}
 
-          <div className="w-full h-px bg-(--lf-border) mt-8" />
+          <div className={theme.dividerClass} />
         </header>
 
         {blog.content ? (
           <article
-            className="prose dark:prose-invert font-sans leading-relaxed select-text"
+            className={`lf-article select-text ${theme.articleClass}`}
+            style={theme.articleStyle}
             dangerouslySetInnerHTML={{ __html: previewHtml }}
           />
         ) : (
-          <div className="text-center text-(--lf-muted) italic text-sm py-12">
+          <div className={theme.emptyClass}>
             No content written for this post.
           </div>
         )}

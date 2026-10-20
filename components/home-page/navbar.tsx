@@ -186,7 +186,7 @@ const Navbar = () => {
         {/* Mobile controls */}
         <div className="md:hidden flex items-center justify-end gap-2">
           <button
-            className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-lg border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="lf-focus inline-flex items-center justify-center w-9 h-9 rounded-full border border-(--lf-border) bg-(--lf-surface) text-(--lf-muted) cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >

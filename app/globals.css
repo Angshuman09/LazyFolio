@@ -191,11 +191,10 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 }
 
 .home-hero-title {
-  /* width: min(100%, 14ch); */
   margin-inline: auto;
-  font-size: clamp(3.25rem, 5.5vw, 5.75rem);
-  line-height: 0.94;
-  letter-spacing: 0;
+  font-size: clamp(2.9rem, 5.5vw, 5.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
@@ -213,10 +212,9 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   }
 
   .home-hero-title {
-    width: max-content;
-    max-width: 100%;
-    font-size: clamp(2.5rem, 12vw, 4.5rem);
-    line-height: 0.92;
+    width: 100%;
+    font-size: clamp(2.05rem, 9.4vw, 3.5rem);
+    line-height: 1.1;
   }
 
   /* @media (max-width: 640px) {
@@ -561,4 +559,134 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+/* Public article body */
+.lf-article {
+  color: var(--lf-article-ink, var(--lf-ink));
+  font-family: var(--lf-article-font, inherit);
+  font-size: var(--lf-article-size, 1.0625rem);
+  line-height: var(--lf-article-leading, 1.75);
+  overflow-wrap: anywhere;
+}
+.lf-article > * + * {
+  margin-top: var(--lf-article-space, 1.15rem);
+}
+.lf-article p {
+  margin: 0;
+}
+.lf-article h1,
+.lf-article h2,
+.lf-article h3,
+.lf-article h4 {
+  color: var(--lf-article-heading-ink, var(--lf-article-ink, var(--lf-ink)));
+  font-family: var(
+    --lf-article-heading-font,
+    var(--font-serif-display),
+    Georgia,
+    serif
+  );
+  font-weight: var(--lf-article-heading-weight, 600);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.lf-article h1 {
+  font-size: 1.9em;
+  margin-top: 2em;
+}
+.lf-article h2 {
+  font-size: 1.45em;
+  margin-top: 1.8em;
+}
+.lf-article h3 {
+  font-size: 1.2em;
+  margin-top: 1.6em;
+}
+.lf-article h4 {
+  font-size: 1.05em;
+  margin-top: 1.5em;
+}
+.lf-article strong {
+  color: var(--lf-article-heading-ink, var(--lf-article-ink, var(--lf-ink)));
+  font-weight: 600;
+}
+.lf-article a {
+  color: var(--lf-article-accent, var(--lf-ink));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.lf-article a:hover {
+  opacity: 0.75;
+}
+.lf-article ul,
+.lf-article ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.lf-article ul {
+  list-style: disc;
+}
+.lf-article ol {
+  list-style: decimal;
+}
+.lf-article li {
+  margin-top: 0.35rem;
+}
+.lf-article li > p {
+  margin: 0;
+}
+.lf-article blockquote {
+  border-left: 3px solid var(--lf-article-accent, var(--lf-ink));
+  color: var(--lf-article-muted, var(--lf-article-ink));
+  font-style: italic;
+  padding-left: 1.1rem;
+}
+.lf-article hr {
+  border: 0;
+  border-top: 1px solid var(--lf-article-border, currentColor);
+  opacity: 0.7;
+}
+.lf-article code {
+  background: var(--lf-article-code-bg, rgba(127, 127, 127, 0.12));
+  border-radius: 0.35rem;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  padding: 0.15rem 0.4rem;
+}
+.lf-article pre {
+  background: var(--lf-article-code-bg, rgba(127, 127, 127, 0.12));
+  border: 1px solid var(--lf-article-border, transparent);
+  border-radius: 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  overflow-x: auto;
+  padding: 1.1rem 1.3rem;
+}
+.lf-article pre code {
+  background: transparent;
+  font-size: inherit;
+  padding: 0;
+}
+.lf-article img {
+  border: 1px solid var(--lf-article-border, transparent);
+  border-radius: 0.85rem;
+  display: block;
+  height: auto;
+  margin: 1.5rem auto;
+  max-width: 100%;
+}
+.lf-article table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.lf-article th,
+.lf-article td {
+  border: 1px solid var(--lf-article-border, currentColor);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.lf-article th {
+  color: var(--lf-article-heading-ink, var(--lf-article-ink));
+  font-weight: 600;
 }

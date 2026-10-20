@@ -9,7 +9,6 @@ import Image from "next/image";
 import { isReservedUsername } from "@/lib/utils/username";
 import { motion } from "motion/react";
 
-
 const Hero = () => {
   const { data: session, isPending: isSessionLoading } =
     authClient.useSession();
@@ -81,33 +80,31 @@ const Hero = () => {
 
   return (
     <section className="home-hero max-w-5xl mx-auto px-5 sm:px-8 text-center mt-24 mb-10">
-      <h1
-        className="home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)"
-      >
-        <span className="block whitespace-nowrap">
+      <h1 className="home-hero-title font-serif-display font-normal mb-6 text-(--lf-ink)">
+        <span className="block">
           Make the internet
         </span>
 
-        <span className="block mt-2 whitespace-nowrap">
+        <span className="block">
           know{" "}
-          <Highlighter action="underline" color="var(--lf-accent)">
-            <span className="text-(--lf-accent-text)">You Exist.</span>
+          <Highlighter
+            action="underline"
+            color="var(--lf-accent)"
+            strokeWidth={2}
+            iterations={2}
+            padding={3}
+            animationDuration={900}
+          >
+            <span className="italic text-(--lf-accent-text)">you exist.</span>
           </Highlighter>
         </span>
       </h1>
 
-      <p
-        className="tracking-wider font-serif-display text-(--lf-muted)"
-      >
+      <p className="mx-auto max-w-2xl font-serif-display text-[0.98rem] sm:text-[1.05rem] leading-[1.7] text-balance text-(--lf-muted)">
         Build your portfolio in{" "}
-        <span className="text-(--lf-tan-text) font-bold">
-          <em>minutes</em>
-        </span>
-        , not after hours of tweaking layouts and writing everything from{" "}
-        <span className="text-(--lf-tan-text) font-bold">
-          <em>scratch </em>
-        </span>
-        &gt;◡&lt;
+        <em className="text-(--lf-accent-text)">minutes</em>, not after hours of
+        tweaking layouts and writing everything from{" "}
+        <em className="text-(--lf-accent-text)">scratch</em>.
       </p>
 
       <div
@@ -164,7 +161,6 @@ const Hero = () => {
         <motion.div
           initial={{ opacity: 0, y: 26, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]"
         >

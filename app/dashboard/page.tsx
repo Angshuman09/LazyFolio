@@ -434,7 +434,7 @@ export default function DashboardPage() {
                   <span className="flex-1">{n.label}</span>
                   {isDirty && (
                     <span
-                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${hasError ? "bg-red-500" : "bg-amber-500 animate-pulse"
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${hasError ? "bg-(--lf-accent-text)" : "bg-(--lf-accent-text) animate-pulse"
                         }`}
                       title={hasError ? "Save error" : "Unsaved changes"}
                     />
@@ -487,9 +487,6 @@ export default function DashboardPage() {
             : "py-6 md:py-8 px-4 sm:px-6 md:px-10"
             }`}
         >
-          {/* Keep <main> full-width so the entire column is scrollable; constrain
-              and center the content in this inner wrapper instead. min-h-full lets
-              tall content stretch the wrapper so <main> always scrolls. */}
           <div
             className={`min-h-full ${tab === "insights" || isPreviewCollapsed
               ? "max-w-4xl mx-auto w-full"
