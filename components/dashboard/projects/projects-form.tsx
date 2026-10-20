@@ -58,8 +58,8 @@ function getInitialProjects(profile?: { id?: string; projects?: ProfileProject[]
       }))
       .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
 
-  // Bulk saves recreate database IDs. Ignore an old draft when its content
-  // already matches the server, even if the draft still has blank or old IDs.
+  // Older drafts may contain blank or stale IDs. Ignore an old draft when its
+  // content already matches the server.
   if (JSON.stringify(normalizeRows(draft.projects)) === JSON.stringify(normalizeRows(saved.projects))) {
     return saved;
   }

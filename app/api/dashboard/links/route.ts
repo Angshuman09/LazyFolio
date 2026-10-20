@@ -4,10 +4,20 @@ import { LinkType } from "@/db/enums";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
 import { LinkInput } from "@/lib/constants/apis";
+import { diffCollection } from "@/lib/utils/collection-sync";
 import { isBlankLink, validateLink } from "@/lib/utils/validate-dashboard";
 import { handleApiError } from "@/lib/errors/api";
 
-export async function POST(req: NextRequest){
+function toLinkData(link: LinkInput) {
+  return {
+    type: link.type ?? LinkType.CUSTOM,
+    label: link.label.trim(),
+    url: link.url.trim(),
+    isenable: link.isenable ?? true,
+  };
+}
+
+export async function POST(req: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
@@ -15,8 +25,11 @@ export async function POST(req: NextRequest){
     const { links } = (await req.json()) as {
       links?: LinkInput[];
     };
-    if(!links){
-      return NextResponse.json({error: "field are missing in links form"}, {status: 400});
+    if (!links) {
+      return NextResponse.json(
+        { error: "field are missing in links form" },
+        { status: 400 },
+      );
     }
 
     const profileId = profile!.id;
@@ -29,24 +42,66 @@ export async function POST(req: NextRequest){
       }
     }
 
-    await prisma.links.deleteMany({
-      where: {profileId}
-    })
+    const existingLinks = await prisma.links.findMany({
+      where: { profileId },
+    });
 
-    const createLinks = await prisma.links.createMany({
-      data: nonBlankLinks.map((link)=>({
-        profileId: profileId,
-        type: link.type ?? LinkType.CUSTOM,
-        label: link.label.trim(),
-        url: link.url.trim(),
-        isenable: link.isenable ?? true,
-      }))
-    })
+    const { creates, updates, removedIds } = diffCollection(
+      existingLinks,
+      nonBlankLinks,
+      (existing, link) => {
+        const next = toLinkData(link);
+        return (
+          existing.type === next.type &&
+          existing.label === next.label &&
+          existing.url === next.url &&
+          existing.isenable === next.isenable
+        );
+      },
+    );
+
+    const operations = [
+      ...(removedIds.length
+        ? [
+            prisma.links.deleteMany({
+              where: { profileId, id: { in: removedIds } },
+            }),
+          ]
+        : []),
+      ...updates.map((link) =>
+        prisma.links.update({
+          where: { id: link.id! },
+          data: toLinkData(link),
+        }),
+      ),
+      ...(creates.length
+        ? [
+            prisma.links.createMany({
+              data: creates.map((link) => ({
+                profileId,
+                ...toLinkData(link),
+              })),
+            }),
+          ]
+        : []),
+    ];
+
+    if (operations.length) {
+      await prisma.$transaction(operations);
+    }
 
     revalidateProfile(profile.username);
 
-    return NextResponse.json({data: createLinks}, {status: 200});
-    
+    return NextResponse.json(
+      {
+        data: {
+          created: creates.length,
+          updated: updates.length,
+          deleted: removedIds.length,
+        },
+      },
+      { status: 200 },
+    );
   } catch (error) {
     return handleApiError(error, "links/save");
   }

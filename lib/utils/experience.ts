@@ -44,7 +44,7 @@ export function getInitialExperiences(profile?: ExperienceProfile): ExperienceSc
         }))
         .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
 
-    // Old drafts created before a successful bulk save can contain empty IDs.
+    // Drafts created before incremental saves can contain empty IDs.
     // If their content already matches the server, discard that stale draft.
     if (JSON.stringify(normalizeRows(draft.experiences)) === JSON.stringify(normalizeRows(saved.experiences))) {
       return saved;

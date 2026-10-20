@@ -212,6 +212,7 @@ export function useDashboardSubmits({
 
     const formattedExperience = (data.experiences || [])
       .map((experience) => ({
+        id: experience.id,
         role: experience.role?.trim() || "",
         companyName: experience.companyName?.trim() || "",
         startdate: experience.startdate?.trim() || "",
@@ -258,6 +259,7 @@ export function useDashboardSubmits({
 
     const formattedProjects = (data.projects || [])
       .map((project) => ({
+        id: project.id,
         title: project.title?.trim() || "",
         description: project.description?.trim() || "",
         projectLink: project.projectLink?.trim() || "",

@@ -19,9 +19,12 @@ export function blogsFromProfile(blogs: ProfileBlog[] = []): BlogsSchema {
     };
   }
   
-export function getInitialBlogs(profile?: BlogsProfile): BlogsSchema {
+export function getInitialBlogs(
+  profile?: BlogsProfile,
+  draftSection: "blogs" | "articles" = "blogs",
+): BlogsSchema {
     return (
-      readDashboardDraft<BlogsSchema>("blogs", profile?.id) ||
+      readDashboardDraft<BlogsSchema>(draftSection, profile?.id) ||
       blogsFromProfile(profile?.blogs || [])
     );
   }

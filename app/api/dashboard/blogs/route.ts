@@ -8,12 +8,38 @@ import { BlogInput } from "@/lib/constants/apis";
 import { generateSlug } from "@/lib/utils/blogs";
 import { getPortfolioBlogPath } from "@/lib/utils/public-url";
 import { handleApiError, ApiError } from "@/lib/errors/api";
+import type { Blog } from "@/db/client";
+import type { BlogType } from "@/db/enums";
 import {
   isBlankExternalBlog,
   isBlankInternalBlog,
   validateExternalBlog,
   validateInternalBlog,
 } from "@/lib/utils/validate-dashboard";
+
+type BlogWriteData = {
+  type: BlogType;
+  title: string;
+  description: string | null;
+  blogLink: string | null;
+  content: string | null;
+  isPublished: boolean;
+  isEnabled: boolean;
+  slug: string | null;
+};
+
+function blogMatches(existing: Blog, next: BlogWriteData) {
+  return (
+    existing.type === next.type &&
+    existing.title === next.title &&
+    (existing.description ?? null) === next.description &&
+    (existing.blogLink ?? null) === next.blogLink &&
+    (existing.content ?? null) === next.content &&
+    existing.isPublished === next.isPublished &&
+    existing.isEnabled === next.isEnabled &&
+    (existing.slug ?? null) === next.slug
+  );
+}
 
 export async function POST(req: NextRequest) {
   const { errorResponse, profile } = await verifySessionAndProfile();
@@ -33,13 +59,15 @@ export async function POST(req: NextRequest) {
     }
 
     const profileId = profile!.id;
-    const isInternal = type === "INTERNAL";
+    const isInternalSection = type === "INTERNAL";
     const nonBlankBlogs = blogs.filter((blog) =>
-      isInternal ? !isBlankInternalBlog(blog) : !isBlankExternalBlog(blog),
+      isInternalSection
+        ? !isBlankInternalBlog(blog)
+        : !isBlankExternalBlog(blog),
     );
 
     for (const blog of nonBlankBlogs) {
-      const validation = isInternal
+      const validation = isInternalSection
         ? validateInternalBlog(blog)
         : validateExternalBlog(blog);
 
@@ -51,45 +79,53 @@ export async function POST(req: NextRequest) {
     const existingBlogs = await prisma.blog.findMany({
       where: { profileId, type },
     });
+    const existingById = new Map(existingBlogs.map((blog) => [blog.id, blog]));
 
-    const incomingIds = nonBlankBlogs
-      .map((b) => b.id)
-      .filter(Boolean) as string[];
+    // Validate ownership before deleting anything, otherwise a stale id could
+    // wipe the collection and then fail while saving.
+    const incomingIds = new Set<string>();
+    for (const blog of nonBlankBlogs) {
+      const id = blog.id?.trim();
+      if (!id) continue;
 
-    const deletedBlogs = existingBlogs.filter((blog) => !incomingIds.includes(blog.id));
-    const deletedImageIds = deletedBlogs.flatMap((blog) =>
+      if (!existingById.has(id)) {
+        throw new ApiError(
+          "One or more blogs no longer exist or do not belong to this profile.",
+          403,
+        );
+      }
+
+      incomingIds.add(id);
+    }
+
+    const deletedBlogs = existingBlogs.filter(
+      (blog) => !incomingIds.has(blog.id),
+    );
+    const removedImageIds = deletedBlogs.flatMap((blog) =>
       extractBlogImagePublicIds(blog.content),
     );
 
-    await prisma.blog.deleteMany({
-      where: {
-        profileId,
-        type,
-        NOT: {
-          id: { in: incomingIds },
+    if (deletedBlogs.length) {
+      await prisma.blog.deleteMany({
+        where: {
+          profileId,
+          type,
+          id: { in: deletedBlogs.map((blog) => blog.id) },
         },
-      },
-    });
-
-    await Promise.all(deletedImageIds.map((id) => deleteFromCloudinary(id)));
+      });
+    }
 
     const operations = nonBlankBlogs.map(async (blog) => {
+      const existing = blog.id ? existingById.get(blog.id.trim()) : undefined;
       let slug = blog.slug;
       let blogLink = blog.blogLink?.trim() || null;
       const blogType = blog.type ?? type;
       const isInternal = blogType === "INTERNAL";
 
-      let existing: (typeof existingBlogs)[number] | null = null;
-      if (blog.id) {
-        existing = existingBlogs.find((b) => b.id === blog.id) ?? null;
-        if (!existing) {
-          throw new ApiError("Unauthorized access to blog record", 403);
-        }
-      }
-
       if (isInternal) {
-        if (blog.id) {
-          slug = existing?.slug || slug || generateSlug(blog.title || "untitled");
+        if (existing) {
+          slug =
+            existing.slug || slug || generateSlug(blog.title || "untitled");
         } else {
           slug = slug || generateSlug(blog.title || "untitled");
         }
@@ -97,12 +133,7 @@ export async function POST(req: NextRequest) {
         blogLink = getPortfolioBlogPath(slug);
       }
 
-      const data = {
-        profile: {
-          connect: {
-            id: profileId,
-          },
-        },
+      const data: BlogWriteData = {
         type: blogType,
         title: blog.title?.trim() || "Untitled",
         description: blog.description?.trim() || null,
@@ -113,25 +144,37 @@ export async function POST(req: NextRequest) {
         slug: slug || null,
       };
 
-      if (blog.id) {
+      if (existing) {
+        if (blogMatches(existing, data)) {
+          return existing;
+        }
+
         const updatedBlog = await prisma.blog.update({
-          where: { id: blog.id },
-          data,
+          where: { id: existing.id },
+          data: {
+            ...data,
+            profile: { connect: { id: profileId } },
+          },
         });
-        const existing = existingBlogs.find((b) => b.id === blog.id);
-        const previousIds = extractBlogImagePublicIds(existing?.content);
+        const previousIds = extractBlogImagePublicIds(existing.content);
         const nextIds = extractBlogImagePublicIds(updatedBlog.content);
-        const removedIds = previousIds.filter((id) => !nextIds.includes(id));
-        await Promise.all(removedIds.map((id) => deleteFromCloudinary(id)));
+        removedImageIds.push(
+          ...previousIds.filter((id) => !nextIds.includes(id)),
+        );
         return updatedBlog;
-      } else {
-        return prisma.blog.create({
-          data,
-        });
       }
+
+      return prisma.blog.create({
+        data: {
+          ...data,
+          profile: { connect: { id: profileId } },
+        },
+      });
     });
 
     const results = await Promise.all(operations);
+
+    await Promise.all(removedImageIds.map((id) => deleteFromCloudinary(id)));
 
     revalidateProfile(profile.username);
 

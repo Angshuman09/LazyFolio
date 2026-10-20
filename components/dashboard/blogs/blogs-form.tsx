@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useFieldArray,
   useForm,
@@ -42,8 +42,8 @@ export default function BlogsForm({
     [mode, profile?.blogs],
   );
   const defaultValues = useMemo<BlogsSchema>(
-    () => getInitialBlogs({ ...profile, blogs: sectionBlogs }),
-    [profile, sectionBlogs],
+    () => getInitialBlogs({ ...profile, blogs: sectionBlogs }, draftSection),
+    [profile, sectionBlogs, draftSection],
   );
   const [activeEditorIdx, setActiveEditorIdx] = useState<number | null>(null);
 
@@ -83,6 +83,11 @@ export default function BlogsForm({
     return false;
   }, [watchedBlogs, sectionBlogs, mode]);
 
+  const isBlogsDirtyRef = useRef(isBlogsDirty);
+  useEffect(() => {
+    isBlogsDirtyRef.current = isBlogsDirty;
+  }, [isBlogsDirty]);
+
   const { error: sectionError } = useSectionSave(draftSection, {
     isDirty: isBlogsDirty,
     onSave: async () => {
@@ -108,7 +113,18 @@ export default function BlogsForm({
     }
 
     const cachedDraft = readDashboardDraft<BlogsSchema>(draftSection, profile.id);
-    reset(cachedDraft || blogsFromProfile(sectionBlogs));
+    if (cachedDraft) {
+      reset(cachedDraft);
+      return;
+    }
+
+    // The profile query refetches in the background (e.g. on window focus),
+    // which re-runs this effect even when nothing changed. Never overwrite
+    // in-progress edits with server data, only reset a clean form so
+    // server-computed fields (like generated slugs) stay in sync.
+    if (!isBlogsDirtyRef.current) {
+      reset(blogsFromProfile(sectionBlogs));
+    }
   }, [draftSection, profile?.id, sectionBlogs, reset]);
 
   useEffect(() => {
