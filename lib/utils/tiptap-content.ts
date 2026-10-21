@@ -6,19 +6,11 @@ export type TiptapImageInfo = {
   publicId: string;
 };
 
-// ---------------------------------------------------------------------------
-// Format detection
-// ---------------------------------------------------------------------------
-
 /** Returns true if `content` is serialized Tiptap JSON (starts with `{`). */
 export function isTiptapJson(content: string | null | undefined): boolean {
   if (!content) return false;
   return content.trimStart().startsWith("{");
 }
-
-// ---------------------------------------------------------------------------
-// Tiptap JSON walkers
-// ---------------------------------------------------------------------------
 
 type TiptapNode = {
   type?: string;
@@ -77,10 +69,6 @@ export function extractPublicIdsFromTiptapJson(
   return Array.from(new Set(images.map((img) => img.publicId)));
 }
 
-// ---------------------------------------------------------------------------
-// Word / character count (format-aware)
-// ---------------------------------------------------------------------------
-
 function extractTextFromTiptapNode(node: TiptapNode): string {
   let text = "";
   if (node.text) text += node.text;
@@ -98,6 +86,34 @@ function extractTextFromTiptapNode(node: TiptapNode): string {
     }
   }
   return text;
+}
+
+/** Plain text extraction for descriptions/summaries up to maxLength characters. */
+export function extractPlainText(
+  content: string | null | undefined,
+  maxLength = 160,
+): string {
+  if (!content) return "";
+
+  if (isTiptapJson(content)) {
+    try {
+      const json = JSON.parse(content) as TiptapNode;
+      const text = extractTextFromTiptapNode(json);
+      return text.replace(/\s+/g, " ").trim().slice(0, maxLength);
+    } catch {
+      return "";
+    }
+  }
+
+  return content
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]+`/g, "")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[[^\]]*\]\([^)]*\)/g, "$1")
+    .replace(/[#*_~`>]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
 }
 
 /** Word count that handles both Tiptap JSON and legacy Markdown content. */

@@ -31,7 +31,8 @@ export function useGetSubscription(enabled: boolean = true) {
       return res.json();
     },
     enabled,
-    staleTime: 1000 * 60 * 2, // 2 minutes
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
 

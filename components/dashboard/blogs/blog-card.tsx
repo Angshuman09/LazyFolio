@@ -90,8 +90,9 @@ export function BlogCard({
     });
   
     const values = useWatch({ control, name: `blogs.${index}` });
+    const isInternal = (values?.type ?? mode) === "INTERNAL";
     const hasErrors = hasFieldArrayErrors(errors, "blogs", index);
-    const isEditing = isEditingState || hasErrors;
+    const isEditing = !isInternal && (isEditingState || hasErrors);
     const [deleting, setDeleting] = useState(false);
     const deleteBlog = useDeleteBlog();
     const updateVisibility = useUpdateVisibility();
@@ -251,16 +252,31 @@ export function BlogCard({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
-                  {values?.title || <span className="text-(--lf-muted) italic">Untitled Post</span>}
+                <span
+                  onClick={() => {
+                    if (isInternal) onOpenEditor(index);
+                  }}
+                  className={`text-[0.82rem] font-medium text-(--lf-ink) font-sans ${
+                    isInternal ? "cursor-pointer hover:underline" : ""
+                  }`}
+                >
+                  {values?.title || <span className="text-(--lf-muted) italic">Untitled Story</span>}
                 </span>
-                <span className={`text-[0.65rem] font-mono px-1.5 py-px rounded-md ${
-                  isInternal 
-                    ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20" 
-                    : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
-                }`}>
-                  {isInternal ? "Article" : "External Link"}
-                </span>
+                {isInternal ? (
+                  <span
+                    className={`text-[0.65rem] font-mono px-1.5 py-px rounded-md ${
+                      values?.isPublished
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                    }`}
+                  >
+                    {values?.isPublished ? "Published" : "Draft"}
+                  </span>
+                ) : (
+                  <span className="text-[0.65rem] font-mono px-1.5 py-px rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                    External Link
+                  </span>
+                )}
               </div>
               {values?.description && (
                 <div className="text-[0.72rem] text-(--lf-muted) mt-0.5 line-clamp-2 leading-relaxed">
@@ -290,6 +306,10 @@ export function BlogCard({
             <button
               type="button"
               onClick={() => {
+                if (isInternal) {
+                  onOpenEditor(index);
+                  return;
+                }
                 if (!savedSnapshot) {
                   setSavedSnapshot(normalizedValues);
                 }
@@ -315,8 +335,6 @@ export function BlogCard({
         </div>
       );
     }
-  
-    const isInternal = normalizedValues.type === "INTERNAL";
 
     return (
       <div className="border border-(--lf-border) rounded-2xl px-5 py-5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
@@ -411,6 +429,7 @@ export function BlogCard({
             </>
           )}
   
+          {!isInternal && (
           <div className="flex flex-col gap-1.25 sm:col-span-2">
             <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
               Description
@@ -426,6 +445,7 @@ export function BlogCard({
               </div>
             )}
           </div>
+          )}
         </div>
   
         <div className="flex items-center justify-between mt-4">

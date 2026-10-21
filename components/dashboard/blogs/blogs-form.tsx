@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useFieldArray,
   useForm,
@@ -8,6 +9,7 @@ import {
 } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import { blogsSchema, BlogsSchema } from "@/lib/schemas/blogs";
 import {
   readDashboardDraft,
@@ -16,7 +18,6 @@ import {
 } from "@/lib/cache/dashboard-drafts";
 import { Props } from "@/lib/types/blogs";
 import { BlogCard } from "./blog-card";
-import { TiptapEditor } from "./tiptap/TiptapEditor";
 import { getInitialBlogs, blogsFromProfile } from "@/lib/utils/blogs";
 import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
@@ -34,6 +35,8 @@ export default function BlogsForm({
 }: Props) {
   const isArticleMode = mode === "INTERNAL";
   const draftSection = isArticleMode ? "articles" : "blogs";
+  const router = useRouter();
+
   const sectionBlogs = useMemo(
     () => (profile?.blogs || []).filter((blog) => {
       const type = blog.type ?? (blog.content === null ? "EXTERNAL" : "INTERNAL");
@@ -45,7 +48,6 @@ export default function BlogsForm({
     () => getInitialBlogs({ ...profile, blogs: sectionBlogs }, draftSection),
     [profile, sectionBlogs, draftSection],
   );
-  const [activeEditorIdx, setActiveEditorIdx] = useState<number | null>(null);
 
   const {
     register,
@@ -107,8 +109,16 @@ export default function BlogsForm({
     keyName: "fieldId",
   });
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (!profile?.id) {
+      return;
+    }
+
+    if (isArticleMode) {
+      clearDashboardDraft("articles", profile.id);
+      reset(blogsFromProfile(sectionBlogs));
       return;
     }
 
@@ -118,23 +128,57 @@ export default function BlogsForm({
       return;
     }
 
-    // The profile query refetches in the background (e.g. on window focus),
-    // which re-runs this effect even when nothing changed. Never overwrite
-    // in-progress edits with server data, only reset a clean form so
-    // server-computed fields (like generated slugs) stay in sync.
     if (!isBlogsDirtyRef.current) {
       reset(blogsFromProfile(sectionBlogs));
     }
-  }, [draftSection, profile?.id, sectionBlogs, reset]);
+  }, [draftSection, profile?.id, sectionBlogs, reset, isArticleMode]);
 
   useEffect(() => {
-    if (!profile?.id) return;
+    if (!profile?.id || isArticleMode) return;
     if (isBlogsDirty) {
       writeDashboardDraft(draftSection, profile.id, { blogs: watchedBlogs || [] });
     } else {
       clearDashboardDraft(draftSection, profile.id);
     }
-  }, [draftSection, isBlogsDirty, profile?.id, watchedBlogs]);
+  }, [draftSection, isBlogsDirty, profile?.id, watchedBlogs, isArticleMode]);
+
+  useEffect(() => {
+    if (isArticleMode && profile?.id) {
+      void queryClient.invalidateQueries({ queryKey: ["profile"] });
+    }
+  }, [isArticleMode, profile?.id, queryClient]);
+
+  const [isCreatingArticle, setIsCreatingArticle] = useState(false);
+
+  const handleOpenEditor = (idx: number) => {
+    const blog = getValues(`blogs.${idx}`);
+    if (blog?.id) {
+      router.push(`/dashboard/articles/${blog.id}`);
+    } else {
+      toast.error("Save the article first to open the editor.");
+    }
+  };
+
+  const handleAddArticle = async () => {
+    if (isCreatingArticle) return;
+    setIsCreatingArticle(true);
+    try {
+      const res = await fetch("/api/dashboard/blogs/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: "", content: "" }),
+      });
+      if (!res.ok) throw new Error("Failed to create article");
+      const data = (await res.json()) as { blog: { id: string } };
+      router.push(`/dashboard/articles/${data.blog.id}`);
+    } catch {
+      toast.error("Could not create article. Please try again.");
+      setIsCreatingArticle(false);
+    }
+  };
+
+  void isSubscribed;
+  void onSupportMe;
 
   return (
     <>
@@ -181,39 +225,33 @@ export default function BlogsForm({
               setValue={setValue}
               getValues={getValues}
               reset={reset}
-              onOpenEditor={(idx) => setActiveEditorIdx(idx)}
+              onOpenEditor={handleOpenEditor}
             />
           ))}
         </div>
 
         <AddItemPanel
           title={isArticleMode ? "Add an article" : "Add a blog link"}
-          buttonLabel={isArticleMode ? "Add article" : "Add blog link"}
-          disabled={typeof maxItems === "number" && fields.length >= maxItems}
-          onClick={() => append({
+          buttonLabel={isArticleMode ? (isCreatingArticle ? "Creating…" : "Add article") : "Add blog link"}
+          disabled={(typeof maxItems === "number" && fields.length >= maxItems) || isCreatingArticle}
+          onClick={() => {
+            if (isArticleMode) {
+              void handleAddArticle();
+            } else {
+              append({
                 type: mode,
                 title: "",
                 description: "",
                 blogLink: "",
-                content: isArticleMode ? "" : null,
+                content: null,
                 isPublished: false,
                 isEnabled: true,
                 slug: null,
-              })}
+              });
+            }
+          }}
         />
       </form>
-
-      {activeEditorIdx !== null && (
-        <TiptapEditor
-          index={activeEditorIdx}
-          control={control}
-          register={register}
-          setValue={setValue}
-          onClose={() => setActiveEditorIdx(null)}
-          isSubscribed={isSubscribed}
-          onSupportMe={onSupportMe}
-        />
-      )}
     </>
   );
 }

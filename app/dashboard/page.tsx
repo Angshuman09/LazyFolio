@@ -137,7 +137,7 @@ export default function DashboardPage() {
       }
       if (params.get("checkout") === "success") {
         toast.success("Payment completed! Updating your subscription...", { id: "checkout-success" });
-        refetchSub();
+        fetch("/api/subscription?checkout=success").then(() => refetchSub());
         const newUrl = window.location.pathname + (urlTab ? `?tab=${urlTab}` : "");
         window.history.replaceState({}, "", newUrl);
       }

@@ -1,18 +1,33 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { prisma } from "@/lib/prisma";
 import { getArticlePlanFromProductId, getArticlePlanLabel } from "@/lib/dodopayments";
-import { isSubscriptionActive } from "@/lib/subscription";
+import { isSubscriptionActive, syncSubscriptionWithDodo } from "@/lib/subscription";
 import { handleApiError } from "@/lib/errors/api";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const { errorResponse, session } = await verifySession();
   if (errorResponse || !session) return errorResponse;
 
+  const url = new URL(req.url);
+  const shouldSync =
+    url.searchParams.get("sync") === "true" ||
+    url.searchParams.get("checkout") === "success";
+
   try {
-    const subscription = await prisma.subscription.findUnique({
+    let subscription = await prisma.subscription.findUnique({
       where: { userId: session.user.id },
     });
+
+    if (shouldSync && !isSubscriptionActive(subscription)) {
+      const synced = await syncSubscriptionWithDodo(
+        session.user.id,
+        session.user.email,
+      );
+      if (synced) {
+        subscription = synced;
+      }
+    }
 
     const isActive = isSubscriptionActive(subscription);
     const plan = getArticlePlanFromProductId(subscription?.productId);

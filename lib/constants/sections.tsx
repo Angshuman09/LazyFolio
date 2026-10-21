@@ -49,27 +49,32 @@ export const faqs = [
   {
     question: "What is Lazyfolio?",
     answer:
-      "Lazyfolio is a portfolio builder for developers, designers, writers, and indie makers who want a polished personal site without spending hours tweaking layout.",
-  },
-  {
-    question: "Can I publish articles on my portfolio?",
-    answer:
-      "Yes. Writing articles is completely free — unlimited articles, rich markdown, custom slugs, and SEO included. No account required to start.",
-  },
-  {
-    question: "What does supporting Lazyfolio unlock?",
-    answer:
-      "Supporting unlocks image uploads inside your articles. Writing, publishing, and all other features stay free for everyone forever.",
+    "Lazyfolio is built for developers, designers, writers, and indie hackers who need a clean, professional personal site without spending hours fiddling with layouts or CSS.",
   },
   {
     question: "Do I need to code my portfolio?",
     answer:
-      "No. You can choose a template, add your profile, projects, links, experience, and articles from the dashboard.",
+      "No. You get a sleek, pre-designed layout out of the box so you can focus on adding your projects, writing, and experience rather than building a site from scratch.",
+  },
+  {
+    question: "Why use Lazyfolio if you are a developer?",
+    answer:
+    "Because your time is better spent building real software, not tweaking CSS margins on a personal site for the fourth time this year."
   },
   {
     question: "Can I change templates later?",
     answer:
       "Yes. Your content stays separate from the template, so you can switch styles as your portfolio evolves.",
+  },
+  {
+    question: "Can I publish articles on my portfolio?",
+    answer:
+      "Yes. Writing articles is completely free: unlimited articles, rich markdown and SEO included.",
+  },
+  {
+    question: "What does supporting Lazyfolio unlock?",
+    answer:
+      "Supporting unlocks image uploads inside your articles. Writing, publishing and all other features stay free for everyone forever.",
   },
 ];
 

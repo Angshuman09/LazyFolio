@@ -192,15 +192,15 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 
 .home-hero-title {
   margin-inline: auto;
-  font-size: clamp(2.9rem, 5.5vw, 5.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-size: clamp(3.2rem, 6vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
 @media (min-width: 1440px) {
   .home-hero-title {
-    font-size: 5.75rem;
+    font-size: 6rem;
   }
 }
 
@@ -213,15 +213,9 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 
   .home-hero-title {
     width: 100%;
-    font-size: clamp(2.05rem, 9.4vw, 3.5rem);
-    line-height: 1.1;
+    font-size: clamp(2.35rem, 10vw, 3.75rem);
+    line-height: 1.08;
   }
-
-  /* @media (max-width: 640px) {
-    .home-hero-title {
-      font-size: 1.85rem;
-    }
-  } */
 }
 
  @keyframes fadeUp {
@@ -689,4 +683,17 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 .lf-article th {
   color: var(--lf-article-heading-ink, var(--lf-article-ink));
   font-weight: 600;
+}
+
+/* ── 404 page ───────────────────────────────────────────────────── */
+
+/* Hairline figures (@lucasmarkes/hairline) in the Lazyfolio palette.
+   --hairline-plate must be the exact colour the figure is drawn on. */
+.lf-hairline {
+  --hairline-plate: var(--lf-surface);
+  --hairline-hi: var(--lf-accent); /* what is lit — brand accent */
+  --hairline-edge: var(--lf-ink); /* silhouettes */
+  --hairline-mid: var(--lf-muted); /* every other stroke */
+  --hairline-lo: var(--lf-border); /* what recedes */
+  --hairline-stroke: 0.9;
 }

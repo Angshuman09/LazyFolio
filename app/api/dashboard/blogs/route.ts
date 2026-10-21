@@ -7,6 +7,7 @@ import { revalidateProfile } from "@/lib/cache/revalidate";
 import { BlogInput } from "@/lib/constants/apis";
 import { generateSlug } from "@/lib/utils/blogs";
 import { getPortfolioBlogPath } from "@/lib/utils/public-url";
+import { extractPlainText } from "@/lib/utils/tiptap-content";
 import { handleApiError, ApiError } from "@/lib/errors/api";
 import type { Blog } from "@/db/client";
 import type { BlogType } from "@/db/enums";
@@ -133,10 +134,14 @@ export async function POST(req: NextRequest) {
         blogLink = getPortfolioBlogPath(slug);
       }
 
+      const description = isInternal
+        ? (blog.description?.trim() || extractPlainText(blog.content) || existing?.description || null)
+        : (blog.description?.trim() || null);
+
       const data: BlogWriteData = {
         type: blogType,
         title: blog.title?.trim() || "Untitled",
-        description: blog.description?.trim() || null,
+        description,
         blogLink,
         content: isInternal ? (blog.content ?? "") : null,
         isPublished: isInternal ? (blog.isPublished ?? false) : true,
