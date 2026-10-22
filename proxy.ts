@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import {
   USERNAME_PATTERN,
 } from "@/lib/utils/username";
+import { portfolioExists } from "@/lib/cache/portfolio-lookup";
 
 const RESERVED_PATHS = new Set([
   "api",
@@ -14,11 +15,13 @@ const RESERVED_PATHS = new Set([
   "terms",
 ]);
 
+// Page routes that should always live on the root domain. `/stats` is
+// intentionally excluded: it is the Umami analytics proxy (script + /api/send),
+// so portfolio subdomains must keep serving it locally instead of redirecting.
 const RESERVED_PAGE_PATHS = new Set([
   "auth",
   "dashboard",
   "privacy",
-  "stats",
   "templates",
   "terms",
 ]);
@@ -36,6 +39,10 @@ const RESERVED_SUBDOMAINS = new Set([
   "templates",
 ]);
 const PRODUCTION_ROOT_HOSTNAME = "lazyfolio.in";
+
+// Matches no route in the app, so Next renders `app/not-found.tsx` with a real
+// 404 status. A single-segment path would be swallowed by `[username]`.
+const NOT_FOUND_PATH = "/_lf/404";
 
 function getRootHostname(hostname: string) {
   if (hostname.endsWith(".localhost") || hostname === "localhost") {
@@ -96,6 +103,35 @@ function buildSubdomainUrl(request: NextRequest, username: string, pathname: str
   return url;
 }
 
+function renderNotFound(request: NextRequest) {
+  return NextResponse.rewrite(new URL(NOT_FOUND_PATH, request.url));
+}
+
+/**
+ * Sends a request back to the root domain (or, in the dev environment, renders
+ * the root page in place).
+ *
+ * Next 16 canonicalises `request.url`/`request.nextUrl` to the host the server
+ * was started on (`localhost:3000` when using `*.localhost`). A redirect whose
+ * target has that same origin gets serialised as a relative `Location`, which
+ * loops forever on a custom host. Rewriting avoids the loop while keeping the
+ * production behaviour (real cross-origin redirect) intact.
+ */
+function redirectToRoot(request: NextRequest, pathname: string, rootOrigin: string) {
+  const target = new URL(pathname, rootOrigin);
+  const requestHostname = getRequestHostname(request);
+  const isRootHost = requestHostname === new URL(rootOrigin).hostname;
+
+  // On a subdomain, `request.nextUrl` is canonicalised to the root host in the
+  // dev server. A redirect whose target shares that canonical origin is emitted
+  // as a relative `Location` and loops forever, so render the page in place.
+  if (!isRootHost && target.origin === request.nextUrl.origin) {
+    return NextResponse.rewrite(target);
+  }
+
+  return NextResponse.redirect(target);
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const hostname = getRequestHostname(request);
@@ -108,7 +144,7 @@ export async function proxy(request: NextRequest) {
 
   // Redirect legacy /pricing visits to home
   if (pathname === "/pricing" || pathname.startsWith("/pricing/") || subdomain === "pricing") {
-    return NextResponse.redirect(new URL("/", rootOrigin));
+    return redirectToRoot(request, "/", rootOrigin);
   }
 
   if (isDashboardRoute) {
@@ -124,11 +160,11 @@ export async function proxy(request: NextRequest) {
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      return NextResponse.redirect(new URL("/auth", rootOrigin));
+      return redirectToRoot(request, "/auth", rootOrigin);
     }
   }
 
-  // If the subdomain itself is a reserved page path (e.g. pricing.localhost:3000 -> localhost:3000/pricing)
+  // If the subdomain itself is a reserved page path (e.g. terms.localhost:3000 -> localhost:3000/terms)
   if (subdomain && RESERVED_PAGE_PATHS.has(subdomain)) {
     let targetPath = `/${subdomain}`;
     const cleanSegments = pathname.split("/").filter(Boolean);
@@ -136,40 +172,70 @@ export async function proxy(request: NextRequest) {
     if (nonSubdomainSegments.length > 0) {
       targetPath = `/${subdomain}/${nonSubdomainSegments.join("/")}`;
     }
-    const redirectUrl = new URL(targetPath, rootOrigin);
-    return NextResponse.redirect(redirectUrl);
+    return redirectToRoot(request, targetPath, rootOrigin);
   }
 
   // If the subdomain is 'www', redirect to root
   if (subdomain === "www") {
-    const redirectUrl = new URL(pathname, rootOrigin);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // If on a portfolio subdomain and requesting a reserved app page (e.g. angshu.localhost:3000/pricing -> localhost:3000/pricing)
-  if (subdomain && RESERVED_PAGE_PATHS.has(firstSegment)) {
-    const redirectUrl = new URL(pathname, rootOrigin);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  if (subdomain && !RESERVED_SUBDOMAINS.has(subdomain) && !isReservedPath(pathname)) {
-    const rewriteUrl = request.nextUrl.clone();
-    if (pathname === `/${subdomain}` || pathname.startsWith(`/${subdomain}/`)) {
-      return NextResponse.rewrite(rewriteUrl);
-    }
-    rewriteUrl.pathname = `/${subdomain}${pathname === "/" ? "" : pathname}`;
-    return NextResponse.rewrite(rewriteUrl);
+    return redirectToRoot(request, pathname, rootOrigin);
   }
 
   const isProductionRoot = hostname === PRODUCTION_ROOT_HOSTNAME || hostname === `www.${PRODUCTION_ROOT_HOSTNAME}`;
   const isEnvRoot = hostname === rootHostname || hostname === `www.${rootHostname}`;
   const isRootDomain = isEnvRoot || isProductionRoot;
+
+  const portfolioUsername =
+    subdomain && !RESERVED_SUBDOMAINS.has(subdomain) && USERNAME_PATTERN.test(subdomain)
+      ? subdomain
+      : null;
+
+  // Only real portfolios get subdomain routing. Anything else is a plain 404.
+  if (portfolioUsername) {
+    const exists = await portfolioExists(portfolioUsername);
+
+    if (exists === false) {
+      return renderNotFound(request);
+    }
+
+    // If the lookup failed (`null`) we keep the permissive behaviour and let
+    // the portfolio page render its own not-found state.
+
+    // On a portfolio subdomain, app pages belong to the root domain.
+    if (RESERVED_PAGE_PATHS.has(firstSegment)) {
+      return redirectToRoot(request, pathname, rootOrigin);
+    }
+
+    // API routes and the /stats analytics proxy are served as-is.
+    if (isReservedPath(pathname)) {
+      return NextResponse.next();
+    }
+
+    const rewriteUrl = request.nextUrl.clone();
+    if (pathname === `/${portfolioUsername}` || pathname.startsWith(`/${portfolioUsername}/`)) {
+      return NextResponse.rewrite(rewriteUrl);
+    }
+    rewriteUrl.pathname = `/${portfolioUsername}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.rewrite(rewriteUrl);
+  }
+
+  // A non-reserved subdomain that can never be a portfolio (invalid label).
+  if (subdomain && !RESERVED_SUBDOMAINS.has(subdomain) && !USERNAME_PATTERN.test(subdomain)) {
+    return renderNotFound(request);
+  }
+
+  // Root domain: /username -> username.domain, but only for existing portfolios.
   if (
     isRootDomain &&
     firstSegment &&
     !RESERVED_PATHS.has(firstSegment) &&
     USERNAME_PATTERN.test(firstSegment)
   ) {
+    const exists = await portfolioExists(firstSegment);
+
+    if (exists === false) {
+      return renderNotFound(request);
+    }
+
     const nextPath = pathname.replace(`/${firstSegment}`, "") || "/";
     const redirectRootHostname = isProductionRoot ? PRODUCTION_ROOT_HOSTNAME : rootHostname;
     return NextResponse.redirect(buildSubdomainUrl(request, firstSegment, nextPath, redirectRootHostname));

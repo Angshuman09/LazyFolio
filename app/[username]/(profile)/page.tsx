@@ -6,10 +6,8 @@ import {
   getProfileByUsername,
   toTemplateProps,
   type UsernamePageProps,
-} from "./_data/get-profile";
+} from "../_data/get-profile";
 
-// ISR: re-generate this page in the background at most once every 60 seconds.
-// On-demand revalidation via revalidateProfile() keeps it fresh after saves.
 export const revalidate = 60;
 
 export async function generateMetadata(props: UsernamePageProps): Promise<Metadata> {
@@ -41,7 +39,7 @@ export async function generateMetadata(props: UsernamePageProps): Promise<Metada
           height: 630,
         },
       ],
-      url: `https://lazyfolio.in/${username}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${username}`,
       type: "profile",
     },
   };

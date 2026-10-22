@@ -6,12 +6,12 @@ import Projects from "./components/projects";
 import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
-import ContactInfo from "./components/contactinfo";
 import { PortfolioTemplateProps } from "../shared/types";
 import { addProfileContactLinks, cleanUrl, getBookCallLink, textValue } from "../shared/utils";
 import { normalizeBlogs, normalizeExperiences, normalizeLinks, normalizeProjects, normalizeStack } from "../shared/normalize";
 import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
 import { getMainSiteUrl } from "@/lib/utils/public-url";
+import Link from "next/link";
 
 export function Template1({
   user,
@@ -70,14 +70,9 @@ export function Template1({
               {bookCallLink && (
                 <BookACall name={name} avatar={avatar} bookCallLink={bookCallLink}/>
               )}
-
-              {contactLinks.length > 0 && (
-                <ContactInfo profile={profile} contactLinks={contactLinks}/>
-              )}
-
               <div className="mt-14 pt-6 border-t border-zinc-800/60 flex items-center justify-between">
                 <p className="text-[11px] text-zinc-800">
-                  built with <a href={getMainSiteUrl()} className="text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors">lazyfolio</a>
+                  built with <Link href={getMainSiteUrl()} className="text-zinc-600 hover:text-zinc-400 cursor-pointer transition-colors">lazyfolio</Link>
                 </p>
               </div>
             </>

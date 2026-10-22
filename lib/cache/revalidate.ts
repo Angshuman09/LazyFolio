@@ -1,10 +1,12 @@
 import { revalidateTag, revalidatePath } from "next/cache";
 import { invalidateProfileMemoryCache, registerUsernameInFilter } from "./username-filter";
+import { invalidatePortfolioLookup } from "./portfolio-lookup";
 
 export function revalidateProfile(username?: string | null) {
   if (!username) return;
   try {
     invalidateProfileMemoryCache(username);
+    invalidatePortfolioLookup(username);
     registerUsernameInFilter(username);
     revalidateTag("profile", "max");
     revalidateTag(`profile-${username}`, "max");

@@ -6,14 +6,14 @@ export function DashboardSkeleton() {
         <div className="h-4 bg-(--lf-border) rounded w-2/5"></div>
       </div>
       
-      <div className="h-[72px] bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
+      <div className="h-18 bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <div className="h-[140px] bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
-        <div className="h-[140px] bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
+        <div className="h-35 bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
+        <div className="h-35 bg-(--lf-surface) border border-(--lf-border) rounded-xl"></div>
       </div>
       
-      <div className="h-[320px] bg-(--lf-surface) border border-(--lf-border) rounded-xl mt-7"></div>
+      <div className="h-80 bg-(--lf-surface) border border-(--lf-border) rounded-xl mt-7"></div>
     </div>
   );
 }
@@ -21,7 +21,7 @@ export function DashboardSkeleton() {
 export function TemplateRendererSkeleton() {
   return (
     <div className="min-h-screen bg-(--lf-bg) px-6 py-14 animate-pulse">
-      <div className="mx-auto max-w-[640px] space-y-9">
+      <div className="mx-auto max-w-160 space-y-9">
         <div className="space-y-3">
           <div className="h-4 w-1/2 rounded bg-(--lf-border)" />
           <div className="h-3 w-1/3 rounded bg-(--lf-border)" />

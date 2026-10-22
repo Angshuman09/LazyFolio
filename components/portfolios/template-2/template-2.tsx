@@ -14,7 +14,6 @@ import Projects from "./components/projects";
 import Blogs from "./components/blogs";
 import Stack from "./components/stack";
 import BookACall from "./components/bookacall";
-import ContactLinks from "./components/contact-links";
 import { PortfolioNavbar } from "../shared/components/portfolio-navbar";
 import { getMainSiteUrl } from "@/lib/utils/public-url";
 
@@ -78,8 +77,6 @@ export function Template2({
               <Stack profile={profile} />
 
               <BookACall bookCallLink={bookCallLink} avatar={avatar} name={name} />
-
-              <ContactLinks profile={profile} links={links} />
             </>
           )}
 
