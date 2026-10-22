@@ -247,9 +247,6 @@ export function BlogCard({
       return (
         <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0 mt-0.5">
-              <BookOpen size={12} className="text-(--lf-muted)" />
-            </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span
@@ -262,7 +259,7 @@ export function BlogCard({
                 >
                   {values?.title || <span className="text-(--lf-muted) italic">Untitled Story</span>}
                 </span>
-                {isInternal ? (
+                {isInternal && 
                   <span
                     className={`text-[0.65rem] font-mono px-1.5 py-px rounded-md ${
                       values?.isPublished
@@ -272,25 +269,27 @@ export function BlogCard({
                   >
                     {values?.isPublished ? "Published" : "Draft"}
                   </span>
-                ) : (
-                  <span className="text-[0.65rem] font-mono px-1.5 py-px rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                    External Link
-                  </span>
-                )}
+                }
               </div>
               {values?.description && (
-                <div className="text-[0.72rem] text-(--lf-muted) mt-0.5 line-clamp-2 leading-relaxed">
+                <div className="text-[0.78rem] text-(--lf-muted) mt-1.5 line-clamp-2 leading-relaxed font-sans">
                   {values.description}
                 </div>
               )}
-              <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
-                {!isInternal && values?.blogLink && (
-                  <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
-                    <ExternalLink size={10} />
-                    {values.blogLink}
-                  </span>
-                )}
-              </div>
+              {!isInternal && values?.blogLink && (
+                <div className="mt-2.5">
+                  <a
+                    href={values.blogLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/link inline-flex items-center gap-1.5 text-[0.7rem] font-mono text-(--lf-ink) hover:text-(--lf-accent-text) bg-(--lf-bg) hover:bg-(--lf-accent-soft)/30 border border-(--lf-border) hover:border-(--lf-accent-text)/50 px-2.5 py-1 rounded-md transition-all duration-150 max-w-full"
+                    title={values.blogLink}
+                  >
+                    <ExternalLink size={11} className="text-(--lf-accent-text) shrink-0 transition-transform group-hover/link:translate-x-0.5" />
+                    <span className="truncate">{values.blogLink}</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -345,7 +344,7 @@ export function BlogCard({
             </label>
             <input
               {...register(`blogs.${index}.title`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder={isInternal ? "A title for your blog post" : "My latest article"}
             />
             {errors.blogs?.[index]?.title?.message && (
@@ -411,13 +410,13 @@ export function BlogCard({
             </>
           ) : (
             <>
-              <div className="flex flex-col gap-1.25 mb-1.5">
+              <div className="flex flex-col gap-1.25 sm:col-span-2 mb-1.5">
                 <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">
                   URL
                 </label>
                 <input
                   {...register(`blogs.${index}.blogLink`)}
-                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                  className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
                   placeholder="https://dev.to/you/article"
                 />
                 {errors.blogs?.[index]?.blogLink?.message && (
@@ -436,7 +435,7 @@ export function BlogCard({
             </label>
             <textarea
               {...register(`blogs.${index}.description`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text) min-h-[90px] resize-vertical"
               placeholder="What is this post about?"
             />
             {errors.blogs?.[index]?.description?.message && (
@@ -448,35 +447,21 @@ export function BlogCard({
           )}
         </div>
   
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-1.5">
-            {normalizedValues.id && (
-              <button
-                type="button"
-                onClick={onDeleteBlog}
-                disabled={deleting}
-                className="inline-flex items-center gap-1.25 px-3 h-7 rounded-full bg-transparent border border-transparent text-[#b91c1c] dark:text-[#f87171] hover:bg-[#b91c1c]/8 dark:hover:bg-[#f87171]/12 text-[0.72rem] cursor-pointer transition-all duration-150"
-              >
-                {deleting ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
-                <span>Delete</span>
-              </button>
-            )}
+        <div className="flex items-center justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={onCancelEditing}
               disabled={deleting}
-              className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) text-[0.72rem] cursor-pointer transition-all duration-150"
+              className="inline-flex items-center gap-1.25 px-4.5 h-8 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) hover:text-(--lf-ink) hover:border-(--lf-muted) text-[0.72rem] cursor-pointer transition-all duration-150"
             >
               Cancel
             </button>
-          </div>
           <button
             type="button"
             onClick={onDoneEditing}
             disabled={deleting}
-            className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+            className="inline-flex items-center gap-1.5 px-4.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.82rem] font-semibold cursor-pointer font-sans border-none"
           >
-            <Check size={11} strokeWidth={2.5} />
             Done
           </button>
         </div>

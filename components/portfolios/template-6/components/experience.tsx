@@ -79,7 +79,7 @@ const Experience = ({
                 sectionCtx.onSectionChange("experience");
               }
             }}
-            className="mt-[14px] inline-flex items-center gap-[5px] text-xs font-bold text-[#C4622D] hover:text-[#1A3D2B] transition-colors duration-150"
+            className="mt-3.5 inline-flex items-center gap-1.25 text-xs font-bold text-[#C4622D] hover:text-[#1A3D2B] transition-colors duration-150"
           >
             <span>View all {experiences.length} experience</span>
             <ArrowRight size={11} strokeWidth={2.2} />

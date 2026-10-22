@@ -417,8 +417,8 @@ export default function DashboardPage() {
                   disabled={isDisabled}
                   className={`relative flex items-center pl-4 gap-2.25 px-3 py-2 rounded-lg text-[0.82rem] font-medium cursor-pointer w-full text-left transition-all duration-150 font-sans-body tracking-tight
                     ${tab === n.id
-                      ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold"
-                      : "text-(--lf-muted) bg-transparent hover:text-(--lf-ink) hover:bg-(--lf-accent-soft)"
+                      ? "text-(--lf-ink) bg-(--lf-accent-soft) font-semibold border-l-2 border-(--lf-accent-text)"
+                      : "text-(--lf-muted) bg-transparent hover:text-(--lf-ink) hover:bg-(--lf-accent-soft) border-l-2 border-transparent"
                     }
                     ${isDisabled
                       ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-(--lf-muted)"
@@ -464,10 +464,10 @@ export default function DashboardPage() {
           <div className="h-px bg-(--lf-border-alpha) my-2.5 mx-1 shrink-0" />
 
           <div className="mt-auto shrink-0 border border-(--lf-border) rounded-[10px] p-3.5 bg-(--lf-surface)">
-            <div className="text-[0.65rem] text-(--lf-muted) font-mono tracking-widest mb-1.5">
+            <div className="text-[0.65rem] text-(--lf-muted) tracking-widest mb-1.5">
               Your portfolio link
             </div>
-            <div className="text-[0.75rem] text-(--lf-ink) font-mono mb-2.5 break-all">
+            <div className="text-[0.75rem] text-(--lf-ink) mb-2.5 break-all">
               {profile?.username ? getPortfolioUrl(profile.username) : "your-username.lazyfolio.in"}
             </div>
             <button

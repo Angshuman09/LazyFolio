@@ -697,3 +697,27 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   --hairline-lo: var(--lf-border); /* what recedes */
   --hairline-stroke: 0.9;
 }
+
+/* ── Text Selection & Focus Highlights ────────────────────────── */
+::selection {
+  background-color: var(--lf-accent-text);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: var(--lf-accent-text);
+  color: #ffffff;
+}
+
+input::selection,
+textarea::selection {
+  background-color: var(--lf-accent-text);
+  color: #ffffff;
+}
+
+input::-moz-selection,
+textarea::-moz-selection {
+  background-color: var(--lf-accent-text);
+  color: #ffffff;
+}
+

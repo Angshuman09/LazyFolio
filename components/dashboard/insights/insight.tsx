@@ -48,16 +48,26 @@ function StatCard({
 
 function MetricRow({ label, count, total }: { label: string; count: number; total: number }) {
   const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+  const barWidth = count > 0 ? Math.max(pct, 2) : 0;
+
   return (
-    <div className="flex items-center gap-3 py-2">
-      <span className="text-[0.8rem] text-(--lf-ink) truncate w-24 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 rounded-full bg-(--lf-border-alpha) overflow-hidden">
+    <div className="flex items-center gap-3 py-2 sm:py-2.5 px-2 -mx-2 rounded-lg transition-colors hover:bg-(--lf-bg)/40">
+      <span
+        className="text-[0.82rem] font-medium text-(--lf-ink) truncate w-24 sm:w-28 shrink-0"
+        title={label}
+      >
+        {label}
+      </span>
+      <div className="flex-1 h-5 sm:h-6 rounded-md bg-(--lf-border-alpha)/70 overflow-hidden relative">
         <div
-          className="h-full bg-(--lf-ink) rounded-full transition-all duration-300"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-md transition-all duration-500 ease-out"
+          style={{ width: `${barWidth}%`, backgroundColor: "var(--lf-accent-text)" }}
         />
       </div>
-      <span className="text-[0.72rem] text-(--lf-muted) font-mono w-9 text-right shrink-0">{pct}%</span>
+      <div className="font-mono text-[0.74rem] text-(--lf-muted) text-right shrink-0 min-w-[65px]">
+        <span className="font-semibold text-(--lf-ink)">{count}</span>
+        <span className="text-[0.68rem] text-(--lf-dimmed) ml-1">({pct}%)</span>
+      </div>
     </div>
   );
 }

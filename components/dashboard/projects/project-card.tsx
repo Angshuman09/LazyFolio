@@ -10,7 +10,7 @@ import {  type Control,
     useWatch,
     Controller
 } from 'react-hook-form'
-import { Trash2, Pencil, Check, Code2, Github, ExternalLink, Loader2} from 'lucide-react'
+import { Trash2, Pencil, Check, Code2, Github, ExternalLink, Loader2, Calendar } from 'lucide-react'
 import { useCreateProject, useDeleteProject } from "@/hooks/project";
 import { hasFieldArrayErrors } from "@/lib/utils/skills";
 import { toYMD } from "@/lib/utils/date";
@@ -340,51 +340,61 @@ export function ProjectCard({
       return (
         <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
           <div className="flex items-start gap-3 min-w-0 flex-1">
-            <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0 mt-0.5">
-              <Code2 size={12} className="text-(--lf-muted)" />
-            </div>
             <div className="min-w-0 flex-1">
               <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
                 {values?.title || <span className="text-(--lf-muted) italic">Untitled Project</span>}
               </div>
               {values?.description && (
-                <div className="text-[0.72rem] text-(--lf-muted) mt-0.5 line-clamp-2 leading-relaxed">
+                <div className="text-[0.78rem] text-(--lf-muted) mt-1.5 line-clamp-2 leading-relaxed font-sans">
                   {values.description}
                 </div>
               )}
-              <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
                 {values?.githubLink && (
-                  <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
-                    <Github size={10} />
-                    GitHub
-                  </span>
+                  <a
+                    href={values.githubLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/link inline-flex items-center gap-1.5 text-[0.7rem] font-mono text-(--lf-ink) hover:text-(--lf-accent-text) bg-(--lf-bg) hover:bg-(--lf-accent-soft)/30 border border-(--lf-border) hover:border-(--lf-accent-text)/50 px-2.5 py-1 rounded-md transition-all duration-150"
+                    title={values.githubLink}
+                  >
+                    <Github size={11} className="text-(--lf-accent-text) shrink-0 transition-transform group-hover/link:scale-110" />
+                    <span>GitHub</span>
+                  </a>
                 )}
                 {values?.projectLink && (
-                  <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
-                    <ExternalLink size={10} />
-                    Live
-                  </span>
+                  <a
+                    href={values.projectLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/link inline-flex items-center gap-1.5 text-[0.7rem] font-mono text-(--lf-ink) hover:text-(--lf-accent-text) bg-(--lf-bg) hover:bg-(--lf-accent-soft)/30 border border-(--lf-border) hover:border-(--lf-accent-text)/50 px-2.5 py-1 rounded-md transition-all duration-150"
+                    title={values.projectLink}
+                  >
+                    <ExternalLink size={11} className="text-(--lf-accent-text) shrink-0 transition-transform group-hover/link:translate-x-0.5" />
+                    <span>Live</span>
+                  </a>
                 )}
                 {values?.enddate && (() => {
                   const d = new Date(values.enddate);
                   return !isNaN(d.getTime()) ? (
-                    <span className="inline-flex items-center gap-1 text-[0.68rem] text-(--lf-muted) font-mono">
-                      {d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
+                    <span className="inline-flex items-center gap-1.5 text-[0.68rem] text-(--lf-muted) font-mono bg-(--lf-bg) px-2.5 py-1 rounded-md border border-(--lf-border)">
+                      <Calendar size={11} className="text-(--lf-accent-text) shrink-0" />
+                      <span>{d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}</span>
                     </span>
                   ) : null;
                 })()}
                 {techList.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     {techList.slice(0, 4).map((t: string, i: number) => (
                       <span
                         key={i}
-                        className="px-1.5 py-px rounded-md bg-(--lf-border) text-(--lf-muted) text-[0.65rem] font-mono"
+                        className="inline-flex items-center px-2 py-0.5 rounded-md bg-(--lf-bg) text-(--lf-ink) border border-(--lf-border) text-[0.68rem] font-mono shadow-2xs"
                       >
                         {t}
                       </span>
                     ))}
                     {techList.length > 4 && (
-                      <span className="px-1.5 py-px rounded-md bg-(--lf-border) text-(--lf-muted) text-[0.65rem] font-mono">
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-(--lf-bg) text-(--lf-muted) border border-(--lf-border) text-[0.65rem] font-mono">
                         +{techList.length - 4}
                       </span>
                     )}
@@ -441,7 +451,7 @@ export function ProjectCard({
             </label>
             <input
               {...register(`projects.${index}.title`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="My latest project"
             />
             {errors.projects?.[index]?.title?.message && (
@@ -457,7 +467,7 @@ export function ProjectCard({
             </label>
             <input
               {...register(`projects.${index}.githubLink`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="https://github.com/you/repo"
             />
             {errors.projects?.[index]?.githubLink?.message && (
@@ -473,7 +483,7 @@ export function ProjectCard({
             </label>
             <input
               {...register(`projects.${index}.projectLink`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="https://your-demo.com"
             />
             {errors.projects?.[index]?.projectLink?.message && (
@@ -506,7 +516,7 @@ export function ProjectCard({
             </label>
             <textarea
               {...register(`projects.${index}.description`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text) min-h-[90px] resize-vertical"
               placeholder="What does it do?"
             />
           </div>
@@ -517,18 +527,18 @@ export function ProjectCard({
             </label>
             <input
               {...register(`projects.${index}.techstack`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="Next.js, Prisma, Tailwind"
             />
           </div>
         </div>
   
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-end gap-4 mt-4">
           <button
             type="button"
             onClick={onCancelEditing}
             disabled={saving}
-            className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+            className="inline-flex items-center gap-1.25 px-4.5 h-8 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
           >
             Cancel
           </button>
@@ -536,9 +546,8 @@ export function ProjectCard({
             type="button"
             onClick={onDoneEditing}
             disabled={saving}
-            className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+            className="inline-flex items-center gap-1.5 px-4.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
           >
-            <Check size={11} strokeWidth={2.5} />
             Done
           </button>
         </div>

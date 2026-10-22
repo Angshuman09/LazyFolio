@@ -9,7 +9,7 @@ import {useWatch, type Control,
   type UseFormSetValue,
 } from "react-hook-form";
 import {useEffect, useState} from 'react';
-import {Trash2, Pencil, Check, Link2, Loader2 } from "lucide-react";
+import {Trash2, Pencil, Check, Link2, Loader2, ExternalLink } from "lucide-react";
 import { useCreateLink, useDeleteLink } from "@/hooks/link";
 import { hasFieldArrayErrors } from "@/lib/utils/skills";
 import { LinksProfile } from "@/lib/utils/links";
@@ -304,30 +304,40 @@ export function LinkCard({
 
   if (!isEditing) {
     return (
-      <div className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
-        <div className="flex items-center gap-3 min-w-0 w-full sm:w-auto">
-          <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0">
-            <Link2 size={12} className="text-(--lf-muted)" />
-          </div>
-          <div className="min-w-0">
+      <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
+          <div className="min-w-0 flex-1">
             <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans truncate">
               {values?.label || (
-                <span className="text-(--lf-muted) italic">Untitled</span>
+                <span className="text-(--lf-muted) italic">Untitled Link</span>
               )}
             </div>
-            <div className="text-[0.72rem] text-(--lf-muted) font-mono truncate">
-              {values?.url || "—"}
-            </div>
+            {values?.url ? (
+              <div className="mt-2">
+                <a
+                  href={values.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/link inline-flex items-center gap-1.5 text-[0.7rem] font-mono text-(--lf-ink) hover:text-(--lf-accent-text) bg-(--lf-bg) hover:bg-(--lf-accent-soft)/30 border border-(--lf-border) hover:border-(--lf-accent-text)/50 px-2.5 py-1 rounded-md transition-all duration-150 max-w-full"
+                  title={values.url}
+                >
+                  <ExternalLink size={11} className="text-(--lf-accent-text) shrink-0 transition-transform group-hover/link:translate-x-0.5" />
+                  <span className="truncate">{values.url}</span>
+                </a>
+              </div>
+            ) : (
+              <div className="text-[0.7rem] text-(--lf-dimmed) font-mono mt-1 italic">—</div>
+            )}
           </div>
         </div>
-        <div className="flex items-center justify-end flex-wrap gap-1.5 shrink-0 w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={onDeleteLink}
             disabled={deleting || saving}
             className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-transparent text-(--lf-muted) cursor-pointer hover:text-[#b91c1c] hover:bg-[#b91c1c]/5 hover:border-[#b91c1c]/15 dark:hover:text-[#f87171] dark:hover:bg-[#f87171]/8 dark:hover:border-[#f87171]/20 transition-all duration-150 text-[0.72rem] font-sans"
           >
-            {deleting ? <Loader2 size={10} className="animate-spin" /> : <Trash2 size={10} />}
+            {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
           </button>
           <button
             type="button"
@@ -364,7 +374,7 @@ export function LinkCard({
             </label>
             <input
               {...register(`links.${index}.label`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="X"
             />
             {errors.links?.[index]?.label?.message && (
@@ -380,7 +390,7 @@ export function LinkCard({
             </label>
             <input
               {...register(`links.${index}.url`)}
-              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+              className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
               placeholder="https://x.com/you"
             />
             {errors.links?.[index]?.url?.message && (
@@ -392,12 +402,12 @@ export function LinkCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3.5">
+      <div className="flex items-center justify-end gap-4 mt-3.5">
         <button
           type="button"
           onClick={onCancelEditing}
           disabled={saving}
-          className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+          className="inline-flex items-center gap-1.25 px-4.5 h-8 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
         >
           Cancel
         </button>
@@ -405,9 +415,8 @@ export function LinkCard({
           type="button"
           onClick={onDoneEditing}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+          className="inline-flex items-center gap-1.5 px-4.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          <Check size={11} strokeWidth={2.5} />
           Done
         </button>
       </div>

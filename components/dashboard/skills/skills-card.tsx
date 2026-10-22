@@ -259,7 +259,7 @@ export function SkillCard({
                 </label>
                 <input
                     {...register(`skills.${index}.value`)}
-                    className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+                    className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
                     placeholder="e.g. TypeScript"
                     autoFocus
                 />
@@ -269,12 +269,12 @@ export function SkillCard({
                     </span>
                 )}
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-end gap-4">
                 <button
                     type="button"
                     onClick={onCancelEditing}
                     disabled={saving}
-                    className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+                    className="inline-flex items-center gap-1.25 px-4.5 h-8 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
                 >
                     Cancel
                 </button>
@@ -282,9 +282,8 @@ export function SkillCard({
                     type="button"
                     onClick={onDoneEditing}
                     disabled={saving}
-                    className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+                    className="inline-flex items-center gap-1.5 px-4.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
                 >
-                    <Check size={11} strokeWidth={2.5} />
                     Done
                 </button>
             </div>

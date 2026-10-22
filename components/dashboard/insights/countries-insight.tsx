@@ -151,13 +151,8 @@ export function CountriesInsight({ countries }: CountriesInsightProps) {
     <div className="border border-(--lf-border) rounded-xl px-5 py-4 bg-(--lf-surface) transition-colors duration-150 hover:border-(--lf-muted)">
       {/* Header with Title and View Switcher */}
       <div className="flex items-center justify-between gap-3 mb-3">
-        <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted) font-mono">
+        <div className="text-[0.68rem] font-semibold tracking-widest text-(--lf-muted)">
           Countries
-          {totalCount > 0 && (
-            <span className="ml-2 px-1.5 py-0.5 rounded-full bg-(--lf-border-alpha) text-(--lf-ink) font-normal text-[0.62rem]">
-              {countries.length} {countries.length === 1 ? "country" : "countries"}
-            </span>
-          )}
         </div>
 
         {/* View Toggle Option: Bar vs Graph */}
@@ -242,7 +237,7 @@ export function CountriesInsight({ countries }: CountriesInsightProps) {
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-(--lf-border) bg-(--lf-bg) text-(--lf-ink) font-sans"
                   >
                     <span>{flag}</span>
-                    <span className="truncate max-w-[90px]">{name}</span>
+                    <span className="truncate max-w-22.5">{name}</span>
                     <span className="font-mono text-[0.65rem] text-(--lf-muted)">
                       {c.count}
                     </span>
@@ -258,28 +253,33 @@ export function CountriesInsight({ countries }: CountriesInsightProps) {
         </div>
       ) : (
         /* Bar List View */
-        <div className="flex flex-col divide-y divide-(--lf-border-alpha)">
+        <div className="flex flex-col divide-y divide-(--lf-border-alpha)/60">
           {countries.slice(0, 8).map((row) => {
             const flag = getCountryFlag(row.country);
             const name = formatCountryName(row.country);
             const pct = totalCount > 0 ? Math.round((row.count / totalCount) * 100) : 0;
+            const barWidth = row.count > 0 ? Math.max(pct, 2) : 0;
 
             return (
-              <div key={row.country} className="flex items-center justify-between gap-3 py-1.5">
-                <div className="flex items-center gap-2 min-w-0">
-                  {flag && <span className="text-[0.9rem] leading-none shrink-0">{flag}</span>}
-                  <span className="text-[0.8rem] text-(--lf-ink) truncate">{name}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="w-20 h-1.5 rounded-full bg-(--lf-border-alpha) overflow-hidden">
-                    <div
-                      className="h-full bg-(--lf-ink) rounded-full transition-all duration-300"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                  <span className="text-[0.72rem] text-(--lf-muted) font-mono w-10 text-right">
-                    {row.count} ({pct}%)
+              <div
+                key={row.country}
+                className="flex items-center gap-3 py-2 sm:py-2.5 px-2 -mx-2 rounded-lg transition-colors hover:bg-(--lf-bg)/40"
+              >
+                <div className="flex items-center gap-2 w-28 sm:w-36 shrink-0 min-w-0">
+                  {flag && <span className="text-[0.95rem] leading-none shrink-0">{flag}</span>}
+                  <span className="text-[0.82rem] font-medium text-(--lf-ink) truncate" title={name}>
+                    {name}
                   </span>
+                </div>
+                <div className="flex-1 h-5 sm:h-6 rounded-md bg-(--lf-accent-text) overflow-hidden relative">
+                  <div
+                    className="h-full bg-(--lf-accent-text) rounded-md transition-all duration-500 ease-out"
+                    style={{ width: `${barWidth}%` }}
+                  />
+                </div>
+                <div className="font-mono text-[0.74rem] text-(--lf-muted) text-right shrink-0 min-w-18">
+                  <span className="font-semibold text-(--lf-ink)">{row.count}</span>
+                  <span className="text-[0.68rem] text-(--lf-dimmed) ml-1">({pct}%)</span>
                 </div>
               </div>
             );

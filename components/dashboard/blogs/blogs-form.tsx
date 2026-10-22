@@ -232,7 +232,7 @@ export default function BlogsForm({
 
         <AddItemPanel
           title={isArticleMode ? "Add an article" : "Add a blog link"}
-          buttonLabel={isArticleMode ? (isCreatingArticle ? "Creating…" : "Add article") : "Add blog link"}
+          buttonLabel={isArticleMode ? (isCreatingArticle ? "Creating…" : "Write Something") : "Add blog link"}
           disabled={(typeof maxItems === "number" && fields.length >= maxItems) || isCreatingArticle}
           onClick={() => {
             if (isArticleMode) {

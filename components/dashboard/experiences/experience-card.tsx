@@ -13,7 +13,7 @@ import {
   type UseFormSetValue,
   Controller,
 } from "react-hook-form";
-import { Trash2, Pencil, Check, Briefcase, Loader2 } from 'lucide-react'
+import { Trash2, Pencil, Check, Briefcase, Calendar, Loader2 } from 'lucide-react'
 import { ExperienceSchema } from "@/lib/schemas/experience";
 import { writeDashboardDraft } from "@/lib/cache/dashboard-drafts";
 import { useDeleteExperience } from "@/hooks/experience";
@@ -261,30 +261,51 @@ export function ExperienceCard({
   };
 
   if (!isEditing) {
+    const formatDate = (dateStr?: string | null) => {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      return !isNaN(d.getTime())
+        ? d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })
+        : dateStr;
+    };
+
+    const dateRange = (() => {
+      const start = formatDate(values?.startdate);
+      const end = formatDate(values?.enddate);
+      if (start && end) return `${start} — ${end}`;
+      if (start && !end) return `${start} — Present`;
+      if (!start && end) return end;
+      return null;
+    })();
+
     return (
       <div className="group flex items-start justify-between gap-3 border border-(--lf-border) rounded-2xl px-4 py-3.5 bg-(--lf-surface) mb-3 shadow-sm transition-all duration-200 hover:border-(--lf-accent) hover:shadow-md">
         <div className="flex items-start gap-3 min-w-0 flex-1">
-          <div className="w-7 h-7 rounded-lg bg-(--lf-border) flex items-center justify-center shrink-0 mt-0.5">
-            <Briefcase size={12} className="text-(--lf-muted)" />
-          </div>
           <div className="min-w-0 flex-1">
             <div className="text-[0.82rem] font-medium text-(--lf-ink) font-sans">
               {values?.role || (
                 <span className="text-(--lf-muted) italic">Untitled Role</span>
               )}
             </div>
-            <div className="text-[0.72rem] text-(--lf-muted) font-sans mt-0.5">
-              {values?.companyName || "—"}
-              {(values?.startdate || values?.enddate) && (
-                <span className="ml-2 font-mono opacity-70">
-                  {values.startdate}{" "}
-                  {values.enddate ? `-> ${values.enddate}` : ""}
-                </span>
-              )}
-            </div>
             {values?.description && (
-              <div className="text-[0.72rem] text-(--lf-muted) mt-1 line-clamp-2 leading-relaxed">
+              <div className="text-[0.78rem] text-(--lf-muted) mt-1.5 line-clamp-2 leading-relaxed font-sans">
                 {values.description}
+              </div>
+            )}
+            {(values?.companyName || dateRange) && (
+              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                {values?.companyName && (
+                  <span className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-(--lf-ink) font-sans bg-(--lf-bg) px-2.5 py-1 rounded-md border border-(--lf-border) shadow-2xs">
+                    <Briefcase size={11} className="text-(--lf-accent-text) shrink-0" />
+                    <span>{values.companyName}</span>
+                  </span>
+                )}
+                {dateRange && (
+                  <span className="inline-flex items-center gap-1.5 text-[0.68rem] text-(--lf-muted) font-mono bg-(--lf-bg) px-2.5 py-1 rounded-md border border-(--lf-border)">
+                    <Calendar size={11} className="text-(--lf-accent-text) shrink-0" />
+                    <span>{dateRange}</span>
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -335,7 +356,7 @@ export function ExperienceCard({
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">Role</label>
           <input
             {...register(`experiences.${index}.role`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
             placeholder="e.g. Full Stack Developer"
           />
           {errors.experiences?.[index]?.role?.message && (
@@ -349,7 +370,7 @@ export function ExperienceCard({
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">Company</label>
           <input
             {...register(`experiences.${index}.companyName`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted)"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text)"
             placeholder="e.g. Acme Corp"
           />
           {errors.experiences?.[index]?.companyName?.message && (
@@ -403,7 +424,7 @@ export function ExperienceCard({
           <label className="text-[0.7rem] text-(--lf-muted) font-mono tracking-wider">Description</label>
           <textarea
             {...register(`experiences.${index}.description`)}
-            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-muted) min-h-[90px] resize-vertical"
+            className="bg-(--lf-bg) border border-(--lf-border) rounded-lg px-3 py-2 text-(--lf-ink) text-[0.85rem] outline-none w-full font-sans transition-colors duration-150 focus:border-(--lf-accent-text) min-h-[90px] resize-vertical"
             placeholder="What did you do?"
           />
           {errors.experiences?.[index]?.description?.message && (
@@ -414,12 +435,12 @@ export function ExperienceCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-end gap-4 mt-4">
         <button
           type="button"
           onClick={onCancelEditing}
           disabled={saving}
-          className="inline-flex items-center gap-[5px] px-3 h-7 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
+          className="inline-flex items-center gap-1.25 px-4.5 h-8 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.72rem] cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150"
         >
           Cancel
         </button>
@@ -427,9 +448,8 @@ export function ExperienceCard({
           type="button"
           onClick={onDoneEditing}
           disabled={saving}
-          className="inline-flex items-center gap-1.5 px-3.5 h-7 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
+          className="inline-flex items-center gap-1.5 px-4.5 h-8 rounded-full bg-(--lf-ink) text-(--lf-bg) text-[0.72rem] font-semibold cursor-pointer hover:opacity-82 transition-opacity duration-150 font-sans border-none"
         >
-          <Check size={11} strokeWidth={2.5} />
           Done
         </button>
       </div>
