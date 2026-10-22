@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 
 import { editorExtensions } from "./extensions";
 import { Toolbar } from "./Toolbar";
+import { DeleteImageModal } from "@/components/dashboard/delete-image-modal";
 import {
   isTiptapJson,
   extractImagesFromTiptapJson,
@@ -60,6 +61,8 @@ export function TiptapEditor({
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [deletingPublicId, setDeletingPublicId] = useState<string | null>(null);
+  const [imageToDelete, setImageToDelete] = useState<TiptapImageInfo | null>(null);
+  const [isDeletingImage, setIsDeletingImage] = useState(false);
 
   const [uploadedImages, setUploadedImages] = useState<TiptapImageInfo[]>([]);
 
@@ -313,52 +316,47 @@ export function TiptapEditor({
     };
   }, [editor]);
 
-  const handleDeleteImage = useCallback(
-    async (img: TiptapImageInfo) => {
-      if (!editor) return;
-      if (
-        !window.confirm(
-          "Delete this image from the article and Cloudinary?",
-        )
-      )
-        return;
+  const confirmDeleteImage = useCallback(async () => {
+    if (!editor || !imageToDelete) return;
+    const img = imageToDelete;
 
-      setDeletingPublicId(img.publicId);
-      const toastId = toast.loading("Deleting image...");
+    setIsDeletingImage(true);
+    setDeletingPublicId(img.publicId);
+    const toastId = toast.loading("Deleting image...");
 
-      try {
-        await fetch("/api/dashboard/upload", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ publicId: img.publicId }),
-        });
+    try {
+      await fetch("/api/dashboard/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicId: img.publicId }),
+      });
 
-        deletedPublicIdsRef.current.add(img.publicId);
+      deletedPublicIdsRef.current.add(img.publicId);
 
-        const { state, view } = editor;
-        const tr = state.tr;
-        state.doc.descendants((node, pos) => {
-          if (
-            node.type.name === "image" &&
-            node.attrs["data-public-id"] === img.publicId
-          ) {
-            tr.delete(pos, pos + node.nodeSize);
-            return false;
-          }
-        });
-        view.dispatch(tr);
+      const { state, view } = editor;
+      const tr = state.tr;
+      state.doc.descendants((node, pos) => {
+        if (
+          node.type.name === "image" &&
+          node.attrs["data-public-id"] === img.publicId
+        ) {
+          tr.delete(pos, pos + node.nodeSize);
+          return false;
+        }
+      });
+      view.dispatch(tr);
 
-        toast.success("Image deleted.", { id: toastId });
-      } catch {
-        toast.error("Failed to delete image. Please try again.", {
-          id: toastId,
-        });
-      } finally {
-        setDeletingPublicId(null);
-      }
-    },
-    [editor],
-  );
+      toast.success("Image deleted.", { id: toastId });
+      setImageToDelete(null);
+    } catch {
+      toast.error("Failed to delete image. Please try again.", {
+        id: toastId,
+      });
+    } finally {
+      setIsDeletingImage(false);
+      setDeletingPublicId(null);
+    }
+  }, [editor, imageToDelete]);
 
   const handleFileInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -454,7 +452,7 @@ export function TiptapEditor({
               </span>
               <button
                 type="button"
-                onClick={() => void handleDeleteImage(img)}
+                onClick={() => setImageToDelete(img)}
                 disabled={deletingPublicId === img.publicId}
                 aria-label={`Delete image: ${img.alt || "Image"}`}
                 className="text-(--lf-muted) hover:text-red-500 transition-colors disabled:opacity-40 cursor-pointer"
@@ -482,6 +480,16 @@ export function TiptapEditor({
           )}
         </div>
       </div>
+
+      <DeleteImageModal
+        isOpen={Boolean(imageToDelete)}
+        image={imageToDelete}
+        isDeleting={isDeletingImage}
+        onClose={() => {
+          if (!isDeletingImage) setImageToDelete(null);
+        }}
+        onConfirm={() => void confirmDeleteImage()}
+      />
     </div>
   );
 }

@@ -9,7 +9,8 @@ import {
 import { verifySession } from "@/lib/auth/auth-api";
 import { apiError, handleApiError } from "@/lib/errors/api";
 import { prisma } from "@/lib/prisma";
-import { isSubscriptionActive } from "@/lib/subscription";
+import { isSubscriptionActive, syncSubscriptionWithDodo } from "@/lib/subscription";
+import { getDodoConfig } from "@/lib/dodopayments";
 import {
   ALLOWED_IMAGE_TYPES_SET,
   MAX_IMAGE_SIZE_BYTES,
@@ -31,9 +32,22 @@ export async function POST(req: NextRequest) {
     // (avatar/banner) are exempt so free users can still personalize
     // their account.
     if (formData.get("purpose") !== "profile") {
-      const subscription = await prisma.subscription.findUnique({
+      let subscription = await prisma.subscription.findUnique({
         where: { userId: session!.user.id },
       });
+
+      const { apiKey, environment } = getDodoConfig();
+      if (
+        apiKey &&
+        environment === "test_mode" &&
+        isSubscriptionActive(subscription)
+      ) {
+        const synced = await syncSubscriptionWithDodo(
+          session!.user.id,
+          session!.user.email,
+        );
+        if (synced) subscription = synced;
+      }
 
       if (!isSubscriptionActive(subscription)) {
         return apiError(

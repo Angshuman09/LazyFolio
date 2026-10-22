@@ -111,14 +111,18 @@ export async function POST(req: NextRequest) {
 
     if (
       eventType.startsWith("subscription.") ||
-      eventType.startsWith("payment.")
+      eventType.startsWith("payment.") ||
+      eventType.startsWith("refund.") ||
+      eventType.startsWith("dispute.")
     ) {
-      // Find user ID via metadata or email
+      // Find user ID via metadata, email, subscription ID, or customer ID
       let userId = data?.metadata?.userId as string | undefined;
 
-      if (!userId && data?.customer?.email) {
+      const customerEmail =
+        data?.customer?.email || (data as { email?: string })?.email;
+      if (!userId && customerEmail) {
         const foundUser = await prisma.user.findUnique({
-          where: { email: data.customer.email },
+          where: { email: customerEmail },
           select: { id: true },
         });
         if (foundUser) {
@@ -138,12 +142,24 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      const customerId =
+        data?.customer?.customer_id || data?.customer_id || null;
+
+      if (!userId && customerId) {
+        const existingSub = await prisma.subscription.findFirst({
+          where: { dodoCustomerId: customerId },
+          select: { userId: true },
+        });
+        if (existingSub) {
+          userId = existingSub.userId;
+        }
+      }
+
       if (!userId) {
         console.warn("[Dodo Webhook] Could not associate event with a user:", eventType);
         return NextResponse.json({ received: true, note: "User not found" }, { status: 200 });
       }
 
-      const customerId = data?.customer?.customer_id || data?.customer_id || null;
       const productId = getPrimaryProductId(data);
       const plan = getPlanFromEvent(data, productId);
       const periodStart = data?.previous_billing_date
@@ -246,6 +262,30 @@ export async function POST(req: NextRequest) {
             where: { userId },
             data: {
               status: SubscriptionStatus.EXPIRED,
+            },
+          });
+          break;
+        }
+
+        case "subscription.paused": {
+          await prisma.subscription.updateMany({
+            where: { userId },
+            data: {
+              status: SubscriptionStatus.INACTIVE,
+            },
+          });
+          break;
+        }
+
+        case "refund.succeeded":
+        case "dispute.accepted":
+        case "dispute.lost":
+        case "payment.cancelled":
+        case "payment.failed": {
+          await prisma.subscription.updateMany({
+            where: { userId },
+            data: {
+              status: SubscriptionStatus.INACTIVE,
             },
           });
           break;

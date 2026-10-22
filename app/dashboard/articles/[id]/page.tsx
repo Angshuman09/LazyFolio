@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { editorExtensions } from "@/components/dashboard/blogs/tiptap/extensions";
 import { Toolbar } from "@/components/dashboard/blogs/tiptap/Toolbar";
 import { SupportMeModal } from "@/components/dashboard/support-me-modal";
+import { DeleteImageModal } from "@/components/dashboard/delete-image-modal";
 import {
   isTiptapJson,
   extractImagesFromTiptapJson,
@@ -91,6 +92,8 @@ export default function ArticleEditorPage() {
   const [supportMeOpen, setSupportMeOpen] = useState(false);
 
   const [uploadedImages, setUploadedImages] = useState<TiptapImageInfo[]>([]);
+  const [imageToDelete, setImageToDelete] = useState<TiptapImageInfo | null>(null);
+  const [isDeletingImage, setIsDeletingImage] = useState(false);
   const [deletingPublicId, setDeletingPublicId] = useState<string | null>(null);
   const knownImagesRef = useRef<TiptapImageInfo[]>([]);
   const pendingDeleteTimersRef = useRef<
@@ -482,50 +485,45 @@ export default function ArticleEditorPage() {
     };
   }, [editor, loading]);
 
-  const handleDeleteImage = useCallback(
-    async (img: TiptapImageInfo) => {
-      if (!editor) return;
-      if (
-        !window.confirm(
-          "Delete this image from the article?",
-        )
-      )
-        return;
+  const confirmDeleteImage = useCallback(async () => {
+    if (!editor || !imageToDelete) return;
+    const img = imageToDelete;
 
-      setDeletingPublicId(img.publicId);
-      const toastId = toast.loading("Deleting image…");
+    setIsDeletingImage(true);
+    setDeletingPublicId(img.publicId);
+    const toastId = toast.loading("Deleting image…");
 
-      try {
-        await fetch("/api/dashboard/upload", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ publicId: img.publicId }),
-        });
+    try {
+      await fetch("/api/dashboard/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ publicId: img.publicId }),
+      });
 
-        deletedPublicIdsRef.current.add(img.publicId);
+      deletedPublicIdsRef.current.add(img.publicId);
 
-        const { state, view } = editor;
-        const tr = state.tr;
-        state.doc.descendants((node, pos) => {
-          if (
-            node.type.name === "image" &&
-            node.attrs["data-public-id"] === img.publicId
-          ) {
-            tr.delete(pos, pos + node.nodeSize);
-            return false;
-          }
-        });
-        view.dispatch(tr);
+      const { state, view } = editor;
+      const tr = state.tr;
+      state.doc.descendants((node, pos) => {
+        if (
+          node.type.name === "image" &&
+          node.attrs["data-public-id"] === img.publicId
+        ) {
+          tr.delete(pos, pos + node.nodeSize);
+          return false;
+        }
+      });
+      view.dispatch(tr);
 
-        toast.success("Image deleted.", { id: toastId });
-      } catch {
-        toast.error("Failed to delete image.", { id: toastId });
-      } finally {
-        setDeletingPublicId(null);
-      }
-    },
-    [editor],
-  );
+      toast.success("Image deleted.", { id: toastId });
+      setImageToDelete(null);
+    } catch {
+      toast.error("Failed to delete image.", { id: toastId });
+    } finally {
+      setIsDeletingImage(false);
+      setDeletingPublicId(null);
+    }
+  }, [editor, imageToDelete]);
 
   const handleFileInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -598,15 +596,12 @@ export default function ArticleEditorPage() {
             }`}
           >
             {isTogglingPublish ? (
+              <>
               <Loader2 size={12} className="animate-spin" />
+            </>
             ) : (
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  isPublished ? "bg-emerald-500" : "bg-amber-400"
-                }`}
-              />
-            )}
             <span>{isPublished ? "Published" : "Publish"}</span>
+            )}
           </button>
         </div>
       </header>
@@ -652,7 +647,7 @@ export default function ArticleEditorPage() {
               </span>
               <button
                 type="button"
-                onClick={() => void handleDeleteImage(img)}
+                onClick={() => setImageToDelete(img)}
                 disabled={deletingPublicId === img.publicId}
                 aria-label={`Delete image: ${img.alt || "Image"}`}
                 className="text-(--lf-muted) hover:text-red-500 transition-colors disabled:opacity-40 cursor-pointer"
@@ -683,6 +678,16 @@ export default function ArticleEditorPage() {
         </div>
       </div>
 
+      <DeleteImageModal
+        isOpen={Boolean(imageToDelete)}
+        image={imageToDelete}
+        isDeleting={isDeletingImage}
+        onClose={() => {
+          if (!isDeletingImage) setImageToDelete(null);
+        }}
+        onConfirm={() => void confirmDeleteImage()}
+      />
+
       {supportMeOpen && (
         <SupportMeModal
           onClose={() => {
@@ -691,6 +696,7 @@ export default function ArticleEditorPage() {
               .then((r) => r.json())
               .then((d) => {
                 if (d?.isActive) setIsSubscribed(true);
+                else setIsSubscribed(false);
               })
               .catch(() => {});
           }}

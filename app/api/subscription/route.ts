@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
 import { prisma } from "@/lib/prisma";
-import { getArticlePlanFromProductId, getArticlePlanLabel } from "@/lib/dodopayments";
+import {
+  getArticlePlanFromProductId,
+  getArticlePlanLabel,
+  getDodoConfig,
+} from "@/lib/dodopayments";
 import { isSubscriptionActive, syncSubscriptionWithDodo } from "@/lib/subscription";
 import { handleApiError } from "@/lib/errors/api";
 
@@ -19,7 +23,10 @@ export async function GET(req: NextRequest) {
       where: { userId: session.user.id },
     });
 
-    if (shouldSync && !isSubscriptionActive(subscription)) {
+    const { apiKey, environment } = getDodoConfig();
+    const isTestMode = environment === "test_mode";
+
+    if (apiKey && (shouldSync || isTestMode)) {
       const synced = await syncSubscriptionWithDodo(
         session.user.id,
         session.user.email,
