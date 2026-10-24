@@ -1,28 +1,26 @@
 export type EventType = "pageview" | "click";
 
-export interface TrackPayload{
-    profileId: string,
-    eventType: EventType,
-    label?: string | null
+export const VALID_EVENT_TYPES: readonly EventType[] = ["pageview", "click"] as const;
+
+export function isValidEventType(type: unknown): type is EventType {
+  return typeof type === "string" && (VALID_EVENT_TYPES as readonly string[]).includes(type);
 }
 
-export interface TinybirdEvent{
-    timestamp: string,
-    profile_id: string,
-    event_type: EventType,
-    label: string | null,
-    country: string | null,
-    device: string,
-    visitor_hash?: string
+export interface TrackPayload {
+  profileId: string;
+  eventType: EventType;
+  label?: string | null;
 }
 
-export type RangeKey = "7d" | "30d" | "90d";
-
-export interface InsightData{
-    pageviews: number;
-    uniqueVisitors: number;
-    clicks: {label: string, count: number}[];
-    countries: { country: string; count: number }[];
-  devices: { device: string; count: number }[];
-  series: { date: string; views: number }[];
+export interface TinybirdEvent {
+  timestamp: string;
+  profile_id: string;
+  event_type: EventType;
+  label: string | null;
+  country: string | null;
+  device: string;
+  visitor_hash?: string;
 }
+
+// Re-export insight types for backwards compatibility
+export type { RangeKey, InsightData } from "./insight.model";

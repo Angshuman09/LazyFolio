@@ -52,7 +52,7 @@ export default function TemplatesView() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: lightEase }}
-          className="inline-flex items-center gap-2 text-[0.72rem] tracking-widest text-(--lf-muted) mb-6 px-4 py-1.5"
+          className="inline-flex items-center gap-2 text-[0.72rem] tracking-widest text-(--lf-tan-text) mb-6 px-4 py-1.5"
         >
           11 Templates · Free Forever
         </motion.p>
@@ -64,7 +64,7 @@ export default function TemplatesView() {
           className="font-serif-display text-[2.6rem] sm:text-[3.5rem] font-normal leading-[1.1] tracking-tight text-(--lf-ink) mb-5"
         >
           Find your{" "}
-          <em className="not-italic text-(--lf-tan-text)">perfect</em> style.
+          <em className="not-italic text-(--lf-accent-text)">perfect</em> style.
         </motion.h1>
 
         <motion.p
