@@ -79,9 +79,6 @@ export function TemplatePickerModal({
                   <div className="text-[0.9rem] font-semibold text-(--lf-ink)">
                     {t.label}
                   </div>
-                  <div className="text-[0.76rem] text-(--lf-muted) mt-0.5 leading-snug">
-                    {t.preview}
-                  </div>
                 </div>
               </button>
             ))}
