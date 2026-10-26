@@ -6,8 +6,11 @@ on:
       - main
     paths:
       - "service/tinybird.config.*"
-      - "service/tinybird.json"
       - "service/**/*.ts"
+      - ".github/workflows/tinybird-cd.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.ref }}
 
 env:
   TINYBIRD_TOKEN: ${{ secrets.TINYBIRD_TOKEN }}
@@ -29,4 +32,5 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: service/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run tinybird:deploy
+      - name: Deploy to Tinybird production
+        run: pnpm run tinybird:deploy

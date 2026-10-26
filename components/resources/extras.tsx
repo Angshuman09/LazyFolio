@@ -4,7 +4,6 @@ export const TEMPLATES = [
     id: "1",
     label: "Minimal Light",
     emoji: "01",
-    preview: "Light, simple, minimal",
     description:
       "A clean, paper-white canvas that keeps the focus entirely on your work.",
     tags: ["Light", "Minimal", "Clean"],
@@ -14,7 +13,6 @@ export const TEMPLATES = [
     id: "2",
     label: "Minimal Dark",
     emoji: "02",
-    preview: "Dark, simple, minimal",
     description:
       "Sleek charcoal aesthetic with high contrast typography.",
     tags: ["Dark", "Minimal", "Sharp"],
@@ -24,7 +22,6 @@ export const TEMPLATES = [
     id: "3",
     label: "Airy",
     emoji: "03",
-    preview: "Clean white layout with muted borders",
     description:
       "Generous white space and muted borders create a calm, open feel.",
     tags: ["White", "Spacious", "Calm"],
@@ -34,7 +31,6 @@ export const TEMPLATES = [
     id: "4",
     label: "Editorial",
     emoji: "04",
-    preview: "Serif type, paper texture, oxblood accents",
     description:
       "Inspired by premium print design. Serif headlines, warm paper tones, and deep oxblood accents give your story gravitas.",
     tags: ["Serif", "Warm", "Editorial"],
@@ -44,7 +40,6 @@ export const TEMPLATES = [
     id: "5",
     label: "Terminal",
     emoji: "05",
-    preview: "Dark code-aesthetic with green accents",
     description:
       "Pure hacker energy. Monospace type, phosphor-green accents, and a deep dark background.",
     tags: ["Dark", "Mono", "Techy"],
@@ -54,7 +49,6 @@ export const TEMPLATES = [
     id: "6",
     label: "Glass",
     emoji: "06",
-    preview: "Frosted surfaces with teal and sky tones",
     description:
       "Translucent frosted panels that shimmer with teal and sky. A design that feels futuristic without feeling cold.",
     tags: ["Glass", "Teal", "Futuristic"],
@@ -64,7 +58,6 @@ export const TEMPLATES = [
     id: "7",
     label: "Zine",
     emoji: "07",
-    preview: "Bold borders, bright blocks, poster energy",
     description:
       "Thick borders, bold color blocks, and unapologetic type.",
     tags: ["Bold", "Colorful", "Expressive"],
@@ -74,7 +67,6 @@ export const TEMPLATES = [
     id: "8",
     label: "Graphite",
     emoji: "08",
-    preview: "Dark luxury palette with gold details",
     description:
       "Dark luxury meets quiet ambition. Deep graphite surfaces with hairline gold accents.",
     tags: ["Dark", "Gold", "Luxury"],
@@ -84,7 +76,6 @@ export const TEMPLATES = [
     id: "9",
     label: "Editorial",
     emoji: "09",
-    preview: "Minimal serif, generous whitespace",
     description:
       "Pure editorial restraint. Large serif name, text-only project rows, newspaper article list. Typography-first, zero decoration.",
     tags: ["Minimal", "Serif", "Editorial"],
@@ -94,7 +85,6 @@ export const TEMPLATES = [
     id: "10",
     label: "Developer",
     emoji: "10",
-    preview: "Card-based, bold, clean white",
     description:
       "Centered developer portfolio. Project cards with hover lift, social link pills, and a clean white/gray hierarchy.",
     tags: ["Cards", "Bold", "Developer"],
@@ -104,7 +94,6 @@ export const TEMPLATES = [
     id: "11",
     label: "Résumé",
     emoji: "11",
-    preview: "Two-column editorial, print-ready",
     description:
       "Left sidebar for contact & links. Right column for experience, projects, writing. Suitable for printing as a résumé.",
     tags: ["Resume", "Two-column", "Professional"],

@@ -4,5 +4,6 @@
   ],
   "token": "${TINYBIRD_TOKEN}",
   "baseUrl": "https://api.ap-east-1.aws.tinybird.co",
-  "devMode": "branch"
+  "devMode": "branch",
+  "branch_data_mode": "last_partition"
 }

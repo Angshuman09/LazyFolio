@@ -133,93 +133,51 @@ export default function TemplatesView() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-40px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-14"
         >
           {TEMPLATES.map((t, i) => (
+            // No card box: the preview is the only framed element, text sits
+            // directly on the page background.
             <motion.article
               key={t.id}
               variants={cardVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="group relative flex flex-col rounded-2xl border border-(--lf-border) bg-(--lf-surface) overflow-hidden hover:border-(--lf-muted) hover:shadow-xl transition-shadow duration-300"
+              className="group flex flex-col"
             >
-              {/* Image */}
-              <div className="relative w-full aspect-4/3 overflow-hidden bg-(--lf-border-alpha)">
+              {/* Preview */}
+              <div className="relative w-full aspect-4/3 overflow-hidden rounded-xl border border-(--lf-border) bg-(--lf-surface) transition-colors duration-300">
                 <Image
                   src={t.image}
                   alt={`${t.label} template preview`}
                   fill
                   sizes="(max-width: 640px) 92vw, 45vw"
                   priority={i < 2}
-                  className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+                  className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent" />
-                
-                <div className="absolute top-3 left-3 w-7 h-7 rounded-full bg-(--lf-bg)/85 backdrop-blur-sm border border-(--lf-border-alpha) flex items-center justify-center">
-                  <span className="text-[0.65rem] font-mono font-semibold text-(--lf-muted)">
-                    0{t.id}
-                  </span>
-                </div>
               </div>
 
-              {/* Body */}
-              <div className="p-4 flex flex-col flex-1">
-                <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <h2 className="font-semibold text-[0.95rem] text-(--lf-ink) leading-tight">
+              {/* Text */}
+              <div className="pt-4 flex flex-col">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                  <h2 className="flex items-baseline gap-2.5 font-semibold text-[1rem] text-(--lf-ink) leading-tight">
+                    <span className="text-[0.7rem] font-mono font-normal text-(--lf-muted) opacity-70">
+                      {String(t.id).padStart(2, "0")}
+                    </span>
                     {t.label}
                   </h2>
-                  <span className="shrink-0 text-[0.68rem] font-mono text-(--lf-muted) border border-(--lf-border) rounded-full px-2 py-0.5 leading-none mt-0.5">
-                    {t.preview}
-                  </span>
                 </div>
 
-                <p className="text-[0.78rem] text-(--lf-muted) leading-relaxed flex-1 mb-3">
+                <p className="mt-2 text-[0.82rem] text-(--lf-muted) leading-relaxed max-w-[46ch]">
                   {t.description}
                 </p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5">
+                <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[0.7rem] font-mono text-(--lf-muted) opacity-70">
                   {t.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[0.65rem] font-medium font-mono text-(--lf-muted) bg-(--lf-accent-soft) border border-(--lf-border-alpha) rounded-full px-2 py-0.5"
-                    >
-                      {tag}
-                    </span>
+                    <span key={tag}>{tag}</span>
                   ))}
-                </div>
+                </p>
               </div>
             </motion.article>
           ))}
-        </motion.div>
-      </section>
-
-      <section className="max-w-5xl mx-auto px-5 sm:px-8 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6, ease: lightEase }}
-          className="rounded-2xl border border-(--lf-border) bg-(--lf-surface) px-8 py-12 text-center"
-        >
-          <p className="text-[0.68rem] tracking-widest text-(--lf-muted) mb-3">
-            Ready to go live?
-          </p>
-          <h2 className="font-serif-display text-[1.9rem] sm:text-[2.4rem] font-normal tracking-tight text-(--lf-ink) leading-snug mb-3">
-            Your portfolio deserves a home.
-          </h2>
-          <p className="text-[0.88rem] text-(--lf-muted) max-w-sm mx-auto mb-7 leading-relaxed">
-            Claim your unique link, choose a template, and share your work with
-            the world in under 5 minutes.
-          </p>
-          <Link
-            href="/auth"
-            className="inline-flex items-center gap-2 bg-(--lf-ink) text-(--lf-bg) text-[0.85rem] font-semibold px-6 py-3.5 rounded-full hover:opacity-85 hover:scale-[1.02] active:scale-[0.98] transition-all duration-150"
-          >
-            Claim your link
-            <span className="btn-arrow w-5 h-5 rounded-full bg-(--lf-bg) text-(--lf-ink) inline-flex items-center justify-center text-[9px] font-bold leading-none">
-              ↗
-            </span>
-          </Link>
         </motion.div>
       </section>
     </div>

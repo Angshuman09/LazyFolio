@@ -1,0 +1,36 @@
+name: Tinybird Preview Cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - "service/tinybird.config.*"
+      - "service/**/*.ts"
+      - ".github/workflows/tinybird-preview-cleanup.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+
+env:
+  TINYBIRD_TOKEN: ${{ secrets.TINYBIRD_TOKEN }}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "service"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: service/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Delete preview branch
+        run: pnpm exec tinybird branch delete "tmp_ci_${{ github.head_ref }}"

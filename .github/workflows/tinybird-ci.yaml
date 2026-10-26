@@ -4,8 +4,12 @@ on:
   pull_request:
     paths:
       - "service/tinybird.config.*"
-      - "service/tinybird.json"
       - "service/**/*.ts"
+      - ".github/workflows/tinybird-ci.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
   TINYBIRD_TOKEN: ${{ secrets.TINYBIRD_TOKEN }}
@@ -27,5 +31,5 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: service/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - name: Create preview branch
+      - name: Deploy preview branch
         run: pnpm run tinybird:preview
