@@ -67,8 +67,6 @@ const Footer = () => {
       </div>
 
       <FooterWordmark />
-
-      <div style={{ height: "2rem" }} />
     </footer>
   );
 };

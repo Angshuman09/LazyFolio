@@ -38,7 +38,7 @@ const RESERVED_SUBDOMAINS = new Set([
   "terms",
   "templates",
 ]);
-const PRODUCTION_ROOT_HOSTNAME = "lazyfolio.in";
+const PRODUCTION_ROOT_HOSTNAME = "lazyfolio.me";
 
 // Matches no route in the app, so Next renders `app/not-found.tsx` with a real
 // 404 status. A single-segment path would be swallowed by `[username]`.

@@ -61,7 +61,7 @@ export default function TermsView() {
               1. Agreement to Terms
             </h2>
             <p>
-              By accessing or using Lazyfolio (<strong className="text-(--lf-ink)">&quot;the Service&quot;</strong>), hosted at <code className="bg-(--lf-surface) border border-(--lf-border) px-1.5 py-0.5 rounded font-mono text-xs text-(--lf-ink)">lazyfolio.in</code>, you agree to these Terms of Service.
+              By accessing or using Lazyfolio (<strong className="text-(--lf-ink)">&quot;the Service&quot;</strong>), hosted at <code className="bg-(--lf-surface) border border-(--lf-border) px-1.5 py-0.5 rounded font-mono text-xs text-(--lf-ink)">lazyfolio.me</code>, you agree to these Terms of Service.
             </p>
             <p>
               Lazyfolio is both a hosted application and an open-source project. While the source code is made available under open-source terms, these Terms apply specifically to your access and use of our hosted cloud service.

@@ -1,4 +1,4 @@
-const DEFAULT_SITE_ORIGIN = "https://lazyfolio.in";
+const DEFAULT_SITE_ORIGIN = "https://lazyfolio.me";
 
 function getSiteUrl(siteUrl?: string) {
   return (siteUrl || process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_ORIGIN).replace(/\/+$/, "");
@@ -80,8 +80,8 @@ export function getMainSiteUrl(): string {
       } catch {}
     }
 
-    if (hostname.endsWith(".lazyfolio.in")) {
-      return `${protocol}//lazyfolio.in${port}`;
+    if (hostname.endsWith(".lazyfolio.me")) {
+      return `${protocol}//lazyfolio.me${port}`;
     }
 
     const parts = hostname.split(".");

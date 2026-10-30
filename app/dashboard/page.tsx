@@ -468,7 +468,7 @@ export default function DashboardPage() {
               Your portfolio link
             </div>
             <div className="text-[0.75rem] text-(--lf-ink) mb-2.5 break-all">
-              {profile?.username ? getPortfolioUrl(profile.username) : "your-username.lazyfolio.in"}
+              {profile?.username ? getPortfolioUrl(profile.username) : "your-username.lazyfolio.me"}
             </div>
             <button
               className="inline-flex disabled:cursor-not-allowed disabled:opacity-50 items-center gap-1.5 px-3 h-7.5 rounded-full bg-transparent border border-(--lf-border) text-(--lf-muted) text-[0.75rem] font-medium cursor-pointer hover:text-(--lf-ink) hover:border-(--lf-muted) transition-all duration-150 font-sans-body whitespace-nowrap w-full justify-center"

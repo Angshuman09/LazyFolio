@@ -60,7 +60,7 @@ export default function PrivacyView() {
               1. Overview &amp; Philosophy
             </h2>
             <p>
-              Lazyfolio operates the platform at <span className='font-bold'>lazyfolio.in</span>, enabling developers and creators to publish portfolios, link trees, and technical blogs.
+              Lazyfolio operates the platform at <span className='font-bold'>lazyfolio.me</span>, enabling developers and creators to publish portfolios, link trees, and technical blogs.
             </p>
             <p>
               Our philosophy is straightforward: your portfolio belongs to you. We do not sell your personal information to third parties, broker your data to advertisers, or track you across the web. The source code is open and verifiable on GitHub.

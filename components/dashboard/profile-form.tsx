@@ -285,7 +285,7 @@ export default function ProfileForm({ profile, formRef, onSubmit, session }: Pro
       <section className="mb-6 rounded-xl border border-(--lf-border) bg-(--lf-surface) p-3 sm:p-3.5 transition-colors">
         <div className="flex h-10 w-full items-center overflow-hidden rounded-lg border border-(--lf-border) bg-(--lf-bg) pl-3 pr-1.5 transition-all focus-within:border-(--lf-accent-text) focus-within:ring-1 focus-within:ring-(--lf-accent-text)/20">
           <span className="font-mono text-[0.75rem] text-(--lf-dimmed) select-none shrink-0 font-medium">
-            https://{portfolioDomain || "lazyfolio.in"}/
+            https://{portfolioDomain || "lazyfolio.me"}/
           </span>
           <input
             id="username-input"

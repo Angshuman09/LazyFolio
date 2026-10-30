@@ -2,10 +2,17 @@
  * Fast in-memory Bloom Filter and LRU Profile Cache.
  * 
  * 1. Bloom Filter:
- *    A space-efficient (~8KB) probabilistic data structure to instantly test
+ *    A space-efficient (~128KB) probabilistic data structure to instantly test
  *    whether a subdomain username definitely does NOT exist without querying PostgreSQL.
  *    - If has(username) === false: 100% certainty the user does NOT exist (no false negatives).
  *    - If has(username) === true: user probably exists, proceed to cache/DB.
+ *
+ *    Consumed by `portfolioExists()` in `lib/cache/portfolio-lookup.ts`, which
+ *    seeds the filter with every existing username in the background and
+ *    refreshes it whenever the seed goes stale (negatives are only trusted
+ *    while the seed is fresh). Profile creation/renames in the same process
+ *    keep it immediately fresh via `registerUsernameInFilter` (see
+ *    `lib/cache/revalidate.ts`).
  * 
  * 2. In-Memory Profile Cache:
  *    Keeps hot public profiles in memory with TTL (5 minutes), cutting subdomain
@@ -44,7 +51,10 @@ class BloomFilter {
   private size: number;
   private bits: Uint8Array;
 
-  constructor(size: number = 65536) { // 8 KB = 65,536 bits
+  // 2^20 bits = 128 KB. With 3 hashes this keeps the false-positive rate
+  // under ~2% at 100k usernames (~5% at 8 KB), so negative checks stay
+  // useful as the platform grows while memory cost stays negligible.
+  constructor(size: number = 1 << 20) {
     this.size = size;
     this.bits = new Uint8Array(Math.ceil(size / 8));
   }
@@ -84,6 +94,7 @@ class BloomFilter {
 // Global singleton instances to persist across requests in Node/Edge worker runtime
 const globalStore = globalThis as unknown as {
   __lf_bloom_filter__?: BloomFilter;
+  __lf_bloom_filter_seeded_at__?: number;
   __lf_profile_cache__?: Map<string, { data: unknown; expiresAt: number }>;
 };
 
@@ -106,6 +117,48 @@ export function registerUsernameInFilter(username: string): void {
   if (username) {
     bloomFilter.add(username);
   }
+}
+
+// How long a completed seed keeps negative checks trustworthy. Bloom bits are
+// add-only and in-process, so a portfolio created in ANOTHER instance (or
+// after seeding) would otherwise read as "absent" forever. The seed is
+// refreshed in the background at this cadence, bounding cross-instance
+// staleness for brand-new usernames to this window (same-instance creations
+// register instantly via `registerUsernameInFilter`).
+const NEGATIVE_TRUST_MS = 60 * 1000;
+
+/**
+ * Record that the filter has been fully seeded with every existing username.
+ * Until a *recent* seed completes, negative results must not be trusted (a
+ * real-but-never-rendered username would read as "absent").
+ */
+export function markUsernameFilterSeeded(): void {
+  globalStore.__lf_bloom_filter_seeded_at__ = Date.now();
+}
+
+/**
+ * True when the filter was seeded successfully within `NEGATIVE_TRUST_MS`.
+ * Used by `portfolioExists` to decide when to kick off a background reseed.
+ */
+export function isUsernameFilterSeedFresh(): boolean {
+  const seededAt = globalStore.__lf_bloom_filter_seeded_at__;
+  return Boolean(seededAt) && Date.now() - (seededAt as number) <= NEGATIVE_TRUST_MS;
+}
+
+/**
+ * True only when the filter has a fresh full seed AND the username has no
+ * bits set, i.e. the profile provably does not exist and the caller can skip
+ * PostgreSQL.
+ *
+ * False negatives are impossible for usernames that were added (at seeding or
+ * via `registerUsernameInFilter`); false positives merely fall through to the
+ * normal cache/DB path, so this never produces a wrong answer. Stale seeds
+ * fail open (return false) and defer to the DB.
+ */
+export function usernameDefinitelyAbsent(username: string): boolean {
+  if (!username) return false;
+  if (!isUsernameFilterSeedFresh()) return false;
+  return !bloomFilter.has(username);
 }
 
 /**
