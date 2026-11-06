@@ -199,13 +199,15 @@ const METRICS = [
   { label: "Engagement", w: "64%", d: "0.6s" },
 ];
 
+
+
 export const AnalyticsAnimation = () => (
   <div className="absolute inset-0 flex flex-col gap-4 p-4 sm:p-5" aria-hidden>
     {/* headline stat */}
     <div className="flex items-end justify-between">
       <div>
         <p className="text-[0.7rem] leading-none text-(--lf-muted)">Visitors</p>
-        <p className="font-sans-body mt-1.5 text-[1.7rem] leading-none text-(--lf-ink)">
+        <p className="font-sans mt-1.5 text-[1.7rem] leading-none text-(--lf-ink)">
           12.4k
         </p>
       </div>

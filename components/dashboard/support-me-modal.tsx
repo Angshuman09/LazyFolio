@@ -75,7 +75,7 @@ export function SupportMeModal({ onClose }: SupportMeModalProps) {
           {/* Header */}
           <div className="px-7 pt-9 pb-8 text-center border-b border-(--lf-border-alpha)">
             <div className="w-10 h-10 mx-auto mb-4 rounded-full bg-rose-500/10 flex items-center justify-center">
-              <Heart size={16} className="text-rose-500" fill="currentColor" />
+              <Heart size={16} className="text-(--lf-accent-text)" fill="currentColor" />
             </div>
             <p className="text-[0.75rem] text-(--lf-muted) mb-2">
               Support Lazyfolio
