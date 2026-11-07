@@ -70,7 +70,7 @@ const Projects = ({
 
                   {project.description && (
                     <p
-                      className="text-[13.5px] leading-relaxed mt-1.5 max-w-lg"
+                      className="text-[13.5px] leading-relaxed mt-1.5 max-w-lg line-clamp-2"
                       style={{ color: "#615447" }}
                     >
                       {project.description}

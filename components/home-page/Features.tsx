@@ -185,8 +185,8 @@ const Features = () => {
               >
                 <h3
                   className={[
-                    "font-serif-display leading-snug mb-1.5 text-(--lf-ink)",
-                    tile.wide ? "text-[1.4rem]" : "text-[1.2rem]",
+                    "font-sans leading-snug mb-1.5 text-(--lf-ink)",
+                    // tile.wide ? "text-[1.4rem]" : "text-[1.2rem]",
                   ].join(" ")}
                 >
                   {f.title}

@@ -68,7 +68,7 @@ const Projects = ({
                </div>
 
                {project.description && (
-                 <p className="text-xs leading-[1.75] text-[#3D5247] m-0">
+                 <p className="text-xs leading-[1.75] text-[#3D5247] m-0 line-clamp-2">
                    {project.description}
                  </p>
                )}

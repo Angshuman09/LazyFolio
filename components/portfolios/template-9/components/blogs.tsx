@@ -49,7 +49,7 @@ const Blogs = ({
                     )}
                     {blog.description && (
                       <p
-                        className="text-[12.5px] mt-1 leading-relaxed line-clamp-1"
+                        className="text-[12.5px] mt-1 leading-relaxed line-clamp-2"
                         style={{ color: "#7A6C5D" }}
                       >
                         {blog.description}

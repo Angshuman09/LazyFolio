@@ -5,7 +5,7 @@ export const Divider = () => (
   );
   
 export const SectionHeading = ({ children }: { children: React.ReactNode }) => (
-    <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400 mb-6">
+    <h2 className="text-[12px] font-semibold tracking-[0.2em] text-slate-400 mb-6">
       {children}
     </h2>
   );

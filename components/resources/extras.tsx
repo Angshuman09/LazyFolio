@@ -32,8 +32,8 @@ export const TEMPLATES = [
     label: "Editorial",
     emoji: "04",
     description:
-      "Inspired by premium print design. Serif headlines, warm paper tones, and deep oxblood accents give your story gravitas.",
-    tags: ["Serif", "Warm", "Editorial"],
+      "A focused personal site with a readable introduction, a light project gallery, and quiet details.",
+    tags: ["Light", "Gallery", "Minimal"],
     image: "/styles/template-4.png",
   },
   {
@@ -68,8 +68,8 @@ export const TEMPLATES = [
     label: "Graphite",
     emoji: "08",
     description:
-      "Dark luxury meets quiet ambition. Deep graphite surfaces with hairline gold accents.",
-    tags: ["Dark", "Gold", "Luxury"],
+      "A light technical profile with dot-grid space, ruled sections, pixel type, and concise records.",
+    tags: ["Light", "Mono", "Grid"],
     image: "/styles/template-8.png",
   },
   {

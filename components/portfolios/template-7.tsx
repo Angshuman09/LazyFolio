@@ -57,7 +57,7 @@ const config: TemplateThemeConfig = {
   projectInitialTextClass: "text-[14px] font-black uppercase text-[#241513]",
   projectNameClass: "text-[14px] font-black text-[#241513]",
   projectDescriptionClass:
-    "mt-2 text-[12px] font-semibold leading-6 text-[#5c2d25]",
+    "mt-2 text-[12px] font-semibold leading-6 text-[#5c2d25] line-clamp-2",
   projectTagClass:
     "rounded-md border border-[#241513] bg-[#bae6fd] px-2 py-1 text-[10px] font-black uppercase tracking-[0.06em] text-[#241513]",
   projectActionClass:

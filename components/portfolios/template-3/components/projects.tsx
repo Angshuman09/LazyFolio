@@ -52,7 +52,7 @@ const Projects = ({
                     )}
                   </div>
                   {project.description && (
-                    <p className="text-[12.5px] text-slate-400 leading-relaxed mb-2">
+                    <p className="text-[12.5px] text-slate-400 leading-relaxed mb-2 line-clamp-2">
                       {project.description}
                     </p>
                   )}

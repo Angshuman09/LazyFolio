@@ -29,7 +29,7 @@ export function Template3({
   const bookCallLink = getBookCallLink(profile);
 
   return (
-      <main className="relative min-h-screen bg-white text-slate-700 antialiased selection:bg-slate-100 selection:text-slate-900">
+      <main className="relative min-h-screen bg-white text-slate-700 antialiased selection:bg-slate-100 selection:text-slate-900 font-sans">
         <div className="max-w-170 mx-auto px-6 py-10 sm:py-15">
           <PortfolioNavbar
             currentSection={section}

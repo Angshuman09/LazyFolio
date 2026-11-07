@@ -81,7 +81,7 @@ const Projects = ({
 
                   {project.description && (
                     <p
-                      className="text-[13px] leading-relaxed mt-1 font-mono"
+                      className="text-[13px] leading-relaxed mt-1 font-mono line-clamp-2"
                       style={{ color: "#6B7280" }}
                     >
                       {project.description}

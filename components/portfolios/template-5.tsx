@@ -57,7 +57,7 @@ const config: TemplateThemeConfig = {
     "flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[#1f4d36] bg-[#07110d]",
   projectInitialTextClass: "text-[13px] font-bold uppercase text-[#2ddf7f]",
   projectNameClass: "text-[14px] font-semibold text-[#eafff2]",
-  projectDescriptionClass: "mt-2 text-[12px] leading-6 text-[#9fd9b8]",
+  projectDescriptionClass: "mt-2 text-[12px] leading-6 text-[#9fd9b8] line-clamp-2",
   projectTagClass:
     "rounded border border-[#1f4d36] bg-[#07110d] px-2 py-1 text-[10px] font-medium text-[#86efac]",
   projectActionClass:
