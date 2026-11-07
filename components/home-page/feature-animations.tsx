@@ -200,7 +200,6 @@ const METRICS = [
 ];
 
 
-
 export const AnalyticsAnimation = () => (
   <div className="absolute inset-0 flex flex-col gap-4 p-4 sm:p-5" aria-hidden>
     {/* headline stat */}
