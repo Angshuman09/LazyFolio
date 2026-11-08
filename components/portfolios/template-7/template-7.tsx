@@ -1,7 +1,7 @@
 import {
   ThemedPortfolioTemplate,
-} from "./template-rest/template-themed";
-import { TemplateThemeConfig, ThemedPortfolioProps } from "./shared/types";
+} from "../template-rest/template-themed";
+import { TemplateThemeConfig, ThemedPortfolioProps } from "../shared/types";
 
 const config: TemplateThemeConfig = {
   key: "template7",

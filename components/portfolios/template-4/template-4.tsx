@@ -30,10 +30,10 @@ export function Template4({
           "var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif",
       }}
     >
-      <div className="mx-auto w-full max-w-[576px] px-5 pb-[72px] pt-[82px] max-[620px]:px-[18px] max-[620px]:pb-[52px] max-[620px]:pt-10">
-        <header className="flex items-start justify-between gap-[22px] max-[430px]:flex-col max-[430px]:gap-3">
+      <div className="mx-auto w-full max-w-xl px-5 pb-18 pt-20.5 max-[620px]:px-4.5 max-[620px]:pb-13 max-[620px]:pt-10">
+        <header className="flex items-start justify-between gap-5.5 max-[430px]:flex-col max-[430px]:gap-3">
           <div>
-            <h1 className="m-0 text-[18px] font-medium leading-[1.25] tracking-[-0.025em]">
+            <h1 className="m-0 text-[18px] font-medium leading-tight tracking-tight">
               {name}
             </h1>
             {tagline && (
@@ -45,8 +45,8 @@ export function Template4({
           <PortfolioNavbar
             currentSection={section}
             basePath={basePath}
-            className="flex flex-[0_0_auto] flex-wrap justify-end gap-3.5 pt-[3px] max-[620px]:gap-2.5 max-[430px]:justify-start"
-            itemClassName="text-[13px] leading-[1.3] transition-colors duration-150 max-[620px]:text-[12px]"
+            className="flex flex-[0_0_auto] flex-wrap justify-end gap-3.5 pt-0.75 max-[620px]:gap-2.5 max-[430px]:justify-start"
+            itemClassName="text-[15px] leading-[1.3] transition-colors duration-150 max-[620px]:text-[12px]"
             activeItemClassName="text-[#171719]"
             inactiveItemClassName="text-[#83838c] hover:text-[#171719]"
           />

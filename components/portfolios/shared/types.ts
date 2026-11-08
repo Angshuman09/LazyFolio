@@ -218,3 +218,27 @@ export type PortfolioTemplateProps = {
 };
 
 export type ThemedPortfolioProps = PortfolioTemplateProps;
+
+export type BlogArticleStyle = CSSProperties &
+  Partial<Record<`--lf-article-${string}`, string>>;
+
+export type BlogPageProfile = {
+  name?: string | null;
+  avatar?: string | null;
+  username?: string | null;
+};
+
+export type BlogPageContent = {
+  title?: string | null;
+  description?: string | null;
+  /** Rendered article HTML (from tiptap JSON or markdown). */
+  contentHtml: string;
+  hasContent: boolean;
+  formattedDate: string;
+  wordCount: number;
+};
+
+export type BlogPageProps = {
+  profile: BlogPageProfile;
+  blog: BlogPageContent;
+};

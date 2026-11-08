@@ -25,7 +25,7 @@ export default function About({ profile }: { profile: ProfileData }) {
       </div>
 
       {quote && (
-        <blockquote className="mt-[22px] flex gap-2.5 rounded-[5px] border border-[#e3e4e7] bg-[#fcfcfc] px-3.5 py-[13px] text-[13px] leading-[1.6] text-[#666870] before:text-[20px] before:leading-[0.95] before:text-[#4f79ce] before:content-['›']">
+        <blockquote className="mt-[22px] flex gap-2.5  border border-[#e3e4e7] bg-[#fcfcfc] px-3.5 py-[13px] text-[13px] leading-[1.6] text-[#666870] before:text-[20px] before:leading-[0.95] before:text-[#4f79ce]">
           {quote}
         </blockquote>
       )}

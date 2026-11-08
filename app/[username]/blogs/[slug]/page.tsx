@@ -1,16 +1,12 @@
 
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { parseMarkdown } from "@/lib/utils/markdown";
 import { generateHTML } from "@tiptap/html";
 import { htmlExtensions } from "@/components/dashboard/blogs/tiptap/extensions";
 import { isTiptapJson, getWordCount } from "@/lib/utils/tiptap-content";
-import { ArrowLeft, Calendar, BookOpen } from "lucide-react";
 import { cacheLife, cacheTag } from "next/cache";
-import { getPortfolioUrl } from "@/lib/utils/public-url";
-import { getBlogTheme } from "@/components/portfolios/blog-theme";
+import { BlogRenderer } from "@/components/portfolios/blog-renderer";
 
 async function getBlogProfile(username: string) {
   "use cache";
@@ -81,80 +77,24 @@ export default async function PublicBlogPage(props: PageProps) {
     day: "numeric",
   });
 
-  // Match the article page to the portfolio's chosen template.
-  const theme = getBlogTheme(profile.themeId);
+  const wordCount = blog.content ? getWordCount(blog.content) : 0;
 
   return (
-    <div
-      className={`${theme.pageClass}${theme.noise ? " noise-overlay relative" : ""}`}
-      style={theme.pageStyle}
-    >
-      <nav className={theme.navClass}>
-        <Link
-          href={getPortfolioUrl(profile.username)}
-          className={theme.backLinkClass}
-        >
-          <ArrowLeft size={14} />
-          Back to Profile
-        </Link>
-
-        <Link href={getPortfolioUrl(profile.username)} className={theme.authorClass}>
-          {profile.avatar ? (
-            <div className={theme.avatarWrapClass}>
-              <Image
-                src={profile.avatar}
-                alt={profile.name || "Author"}
-                fill
-                className="object-cover"
-              />
-            </div>
-          ) : (
-            <div className={theme.avatarFallbackClass}>
-              {profile.name?.[0] || "U"}
-            </div>
-          )}
-          <span className={theme.authorNameClass}>{profile.name}</span>
-        </Link>
-      </nav>
-
-      <main className={theme.containerClass}>
-        <header className="mb-10 text-left">
-          <div className={theme.metaClass}>
-            <span className="flex items-center gap-1">
-              <Calendar size={12} />
-              {formattedDate}
-            </span>
-            <span className="flex items-center gap-1">
-              <BookOpen size={12} />
-              {blog.content ? `${getWordCount(blog.content)} words` : "0 words"}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h1 className={theme.titleClass}>
-            {blog.title || "Untitled Article"}
-          </h1>
-
-          {/* Description */}
-          {blog.description && (
-            <p className={theme.descriptionClass}>{blog.description}</p>
-          )}
-
-          <div className={theme.dividerClass} />
-        </header>
-
-        {blog.content ? (
-          <article
-            className={`lf-article select-text ${theme.articleClass}`}
-            style={theme.articleStyle}
-            dangerouslySetInnerHTML={{ __html: previewHtml }}
-          />
-        ) : (
-          <div className={theme.emptyClass}>
-            No content written for this post.
-          </div>
-        )}
-      </main>
-    </div>
+    <BlogRenderer
+      themeId={profile.themeId}
+      profile={{
+        name: profile.name,
+        avatar: profile.avatar,
+        username: profile.username,
+      }}
+      blog={{
+        title: blog.title,
+        description: blog.description,
+        contentHtml: previewHtml,
+        hasContent: Boolean(blog.content),
+        formattedDate,
+        wordCount,
+      }}
+    />
   );
 }
