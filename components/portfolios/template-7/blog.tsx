@@ -67,10 +67,6 @@ export function Template7Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          {blog.description && (
-            <p className="text-[1.05rem] font-semibold text-[#5c2d25] leading-relaxed mb-6">{blog.description}</p>
-          )}
-
           <div className="w-full h-[2px] bg-[#241513] mt-8" />
         </header>
 

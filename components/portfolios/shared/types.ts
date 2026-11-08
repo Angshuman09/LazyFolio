@@ -230,7 +230,6 @@ export type BlogPageProfile = {
 
 export type BlogPageContent = {
   title?: string | null;
-  description?: string | null;
   /** Rendered article HTML (from tiptap JSON or markdown). */
   contentHtml: string;
   hasContent: boolean;

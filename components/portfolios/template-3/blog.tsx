@@ -62,10 +62,6 @@ export function Template3Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          {blog.description && (
-            <p className="text-[1.05rem] text-slate-400 leading-relaxed mb-6 italic">{blog.description}</p>
-          )}
-
           <div className="w-full h-px bg-slate-100 mt-8" />
         </header>
 

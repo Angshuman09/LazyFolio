@@ -82,12 +82,6 @@ export function Template4Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          {blog.description && (
-            <p className="mt-3 text-[16px] leading-[1.4] text-[#6d6d75]">
-              {blog.description}
-            </p>
-          )}
-
           <div className="mt-8 border-t border-[#ececef]" />
         </header>
 

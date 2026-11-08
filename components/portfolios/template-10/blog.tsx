@@ -83,12 +83,6 @@ export function Template10Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          {blog.description && (
-            <p className="font-mono text-[13px] leading-[1.6] text-[#9CA3AF] mb-6">
-              {blog.description}
-            </p>
-          )}
-
           <div className="border-t border-[#F0EBE5]" />
         </header>
 

@@ -5,6 +5,7 @@ import { parseMarkdown } from "@/lib/utils/markdown";
 import { generateHTML } from "@tiptap/html";
 import { htmlExtensions } from "@/components/dashboard/blogs/tiptap/extensions";
 import { isTiptapJson, getWordCount } from "@/lib/utils/tiptap-content";
+import { highlightCodeBlocks } from "@/lib/utils/highlight-code";
 import { cacheLife, cacheTag } from "next/cache";
 import { BlogRenderer } from "@/components/portfolios/blog-renderer";
 
@@ -67,6 +68,9 @@ export default async function PublicBlogPage(props: PageProps) {
     } else {
       previewHtml = await parseMarkdown(blog.content);
     }
+    // Syntax-highlight any raw <pre><code> blocks (tiptap JSON output).
+    // Blocks already highlighted by the markdown pipeline are left as-is.
+    previewHtml = await highlightCodeBlocks(previewHtml);
   }
   
   const date = blog.createdAt;
@@ -89,7 +93,6 @@ export default async function PublicBlogPage(props: PageProps) {
       }}
       blog={{
         title: blog.title,
-        description: blog.description,
         contentHtml: previewHtml,
         hasContent: Boolean(blog.content),
         formattedDate,

@@ -103,12 +103,6 @@ export function Template8Blog({ profile, blog }: BlogPageProps) {
           <h1 className="font-sans-body m-0 text-[30px] font-normal leading-[1.02] tracking-[-0.055em] text-[#22242a] break-words max-[620px]:text-[27px] sm:text-[38px]">
             {blog.title || "Untitled Article"}
           </h1>
-
-          {blog.description && (
-            <p className="mt-2.5 text-[15px] leading-[1.5] text-[#858791] max-[620px]:text-[13px]">
-              {blog.description}
-            </p>
-          )}
         </div>
 
         {/* Hatched section divider */}

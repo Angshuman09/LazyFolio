@@ -62,10 +62,6 @@ export function Template2Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          {blog.description && (
-            <p className="text-[1.05rem] text-zinc-500 leading-relaxed mb-6 italic">{blog.description}</p>
-          )}
-
           <div className="w-full h-px bg-zinc-800 mt-8" />
         </header>
 

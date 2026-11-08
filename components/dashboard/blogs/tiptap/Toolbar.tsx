@@ -17,8 +17,13 @@ import {
   Link as LinkIcon,
   Image as ImageIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { forwardRef, useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ToolbarButtonProps {
   onClick: () => void;
@@ -28,37 +33,71 @@ interface ToolbarButtonProps {
   children: React.ReactNode;
 }
 
-function ToolbarButton({
-  onClick,
-  isActive,
-  disabled,
-  title,
-  children,
-}: ToolbarButtonProps) {
-  return (
-    <button
-      type="button"
-      title={title}
-      aria-label={title}
-      aria-pressed={isActive}
-      disabled={disabled}
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center justify-center w-7 h-7 rounded-full text-[0.8rem] transition-colors duration-100 shrink-0",
-        isActive
-          ? "bg-(--lf-surface) text-(--lf-ink) shadow-xs font-semibold"
-          : "text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface)",
-        "disabled:opacity-30 disabled:cursor-not-allowed",
-      )}
-    >
-      {children}
-    </button>
-  );
-}
+const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
+  function ToolbarButton({ onClick, isActive, disabled, title, children }, ref) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            ref={ref}
+            type="button"
+            aria-label={title}
+            aria-pressed={isActive}
+            disabled={disabled}
+            onClick={onClick}
+            className={cn(
+              "inline-flex items-center justify-center w-7 h-7 rounded-full text-[0.8rem] transition-colors duration-100 shrink-0",
+              isActive
+                ? "bg-(--lf-surface) text-(--lf-ink) shadow-xs font-semibold"
+                : "text-(--lf-muted) hover:text-(--lf-ink) hover:bg-(--lf-surface)",
+              "disabled:opacity-30 disabled:cursor-not-allowed",
+            )}
+          >
+            {children}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" sideOffset={6}>
+          {title}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+);
 
 function Divider() {
   return <div className="w-px h-4 bg-(--lf-border) mx-1 shrink-0" />;
 }
+
+// Languages offered for code blocks. Values are Shiki/TextMate grammar ids.
+const CODE_BLOCK_LANGUAGES: Array<{ label: string; value: string }> = [
+  { label: "Plain text", value: "" },
+  { label: "JavaScript", value: "javascript" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "JSX", value: "jsx" },
+  { label: "TSX", value: "tsx" },
+  { label: "JSON", value: "json" },
+  { label: "HTML", value: "html" },
+  { label: "CSS", value: "css" },
+  { label: "SCSS", value: "scss" },
+  { label: "Bash / Shell", value: "bash" },
+  { label: "Python", value: "python" },
+  { label: "Rust", value: "rust" },
+  { label: "Go", value: "go" },
+  { label: "Java", value: "java" },
+  { label: "C", value: "c" },
+  { label: "C++", value: "cpp" },
+  { label: "C#", value: "csharp" },
+  { label: "SQL", value: "sql" },
+  { label: "YAML", value: "yaml" },
+  { label: "Markdown", value: "markdown" },
+  { label: "Ruby", value: "ruby" },
+  { label: "PHP", value: "php" },
+  { label: "Swift", value: "swift" },
+  { label: "Kotlin", value: "kotlin" },
+  { label: "GraphQL", value: "graphql" },
+  { label: "Dockerfile", value: "dockerfile" },
+  { label: "Diff", value: "diff" },
+];
 
 interface ToolbarProps {
   editor: Editor | null;
@@ -184,6 +223,32 @@ export function Toolbar({ editor, onImageClick }: ToolbarProps) {
         >
           <Code2 size={14} />
         </ToolbarButton>
+
+        {editor?.isActive("codeBlock") && (
+          <select
+            aria-label="Code block language"
+            value={
+              (editor.getAttributes("codeBlock") as { language?: string | null })
+                .language ?? ""
+            }
+            onChange={(e) => {
+              editor
+                .chain()
+                .focus()
+                .updateAttributes("codeBlock", {
+                  language: e.target.value || null,
+                })
+                .run();
+            }}
+            className="h-7 shrink-0 cursor-pointer rounded-full border border-(--lf-border) bg-(--lf-surface) px-2 text-[0.72rem] text-(--lf-ink) outline-none"
+          >
+            {CODE_BLOCK_LANGUAGES.map((lang) => (
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        )}
 
         <Divider />
 
