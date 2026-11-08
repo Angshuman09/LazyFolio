@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row gap-12 md:gap-0 max-w-7xl mx-auto">
 
           <div className="md:w-72 shrink-0 md:pr-16 flex flex-col gap-3">
-            <Image src={"/lflogo.png"} width={30} height={30} alt="logo png"/>
+            <Image src={"/lflogo.webp"} width={30} height={30} alt="logo png"/>
             <span className="font-serif-display text-[1.4rem] font-normal tracking-tight text-(--lf-ink)">
               Lazy<span className="text-(--lf-muted)">folio</span>
             </span>
@@ -60,7 +60,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="hover:text-(--lf-ink) transition-colors underline underline-offset-2 decoration-(--lf-border)"
             >
-              <Image src="/angshuman.png" alt="Angshuman" width={30} height={30} />
+              <Image src="/angshuman.webp" alt="Angshuman" width={30} height={30} />
             </Link>
           </p>
         </div>

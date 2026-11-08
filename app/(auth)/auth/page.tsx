@@ -77,7 +77,7 @@ export default function Auth() {
           >
             <div className="w-12 h-12 rounded-[14px] bg-[#1c1c1e] flex items-center justify-center border border-black/5 dark:border-white/10 group-hover:scale-105 transition-transform duration-200">
               <Image
-                src="/lflogo.png"
+                src="/lflogo.webp"
                 alt="Lazyfolio Logo"
                 width={28}
                 height={28}

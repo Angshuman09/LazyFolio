@@ -27,15 +27,15 @@ export const metadata: Metadata = {
   title: "Lazyfolio",
   description: "Make the internet know You Exist",
   icons: {
-    icon: "/lflogo.png",
+    icon: "/lflogo.webp",
   },
   openGraph:{
     type:"website",
     url: process.env.NEXT_PUBLIC_SITE_URL as string,
-    title: "Lazyfolio - Make the internet know You Exist.",
+    title: "Lazyfolio | Make the internet know You Exist.",
     description: "Build your portfolio in minutes, not after hours of tweaking layouts and writing everything from scratch >◡<",
     siteName:"Lazyfolio",
-    images:[{url:"/graphview.png"}]
+    images:[{url:"/graphview.webp"}]
   }
 };
 

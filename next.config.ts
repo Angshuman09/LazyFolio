@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     useCache: true,
   },
   images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 2678400, // 31 days — local assets rarely change
     remotePatterns: [
       {
         protocol: 'https',

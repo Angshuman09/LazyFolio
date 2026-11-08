@@ -165,12 +165,13 @@ const Hero = () => {
           className="relative rounded-[1.5rem] border border-(--lf-border) bg-(--lf-surface) p-2 sm:p-2.5 shadow-[0_25px_60px_-25px_rgba(0,0,0,0.2)] dark:shadow-[0_25px_60px_-25px_rgba(0,0,0,0.6)]"
         >
           <Image
-            src="/apppreview.png"
+            src="/apppreview.webp"
             alt="Lazyfolio dashboard preview"
-            width={1000}
-            height={1000}
-            loading="eager"
-            className="rounded-xl w-full"
+            width={2940}
+            height={1616}
+            priority
+            sizes="(max-width: 768px) 94vw, (max-width: 1200px) 90vw, 1100px"
+            className="rounded-xl w-full h-auto"
           />
         </motion.div>
       </div>
