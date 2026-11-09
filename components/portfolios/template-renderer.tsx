@@ -103,7 +103,7 @@ export function TemplateRenderer({
       isInteractive={isInteractive}
       availableSections={availableSections}
     >
-      <div className="w-full h-screen">{renderTemplate()}</div>
+      <div className="w-full h-full">{renderTemplate()}</div>
     </PortfolioSectionProvider>
   );
 }

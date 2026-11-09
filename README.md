@@ -49,8 +49,6 @@ Most portfolio sites take an evening (or a weekend) you didn't want to spend pic
 
 ## Quickstart for Contributors
 
-No API keys (Google, GitHub, Cloudinary, Dodo Payments) are required to contribute! Everything runs offline with local mock fallbacks:
-
 ```bash
 git clone https://github.com/Angshuman09/lazyfolio.git
 cd lazyfolio
@@ -59,7 +57,7 @@ npm run setup
 npm run dev
 ```
 
-* **Dev Login**: Visit [http://localhost:3000/auth](http://localhost:3000/auth) and click **"⚡ One-Click Dev Login"** (or use `demo@lazyfolio.dev` / `password123`).
+* **Dev Login**: Visit [http://localhost:3000/auth](http://localhost:3000/auth) and click **"One-Click Dev Login"** (or use `demo@lazyfolio.dev` / `password123`).
 * **Demo Profile**: Visit [http://localhost:3000/demo](http://localhost:3000/demo).
 * See [**`CONTRIBUTING.md`**](./CONTRIBUTING.md) for full details, GitHub Codespaces setup, and script references.
 

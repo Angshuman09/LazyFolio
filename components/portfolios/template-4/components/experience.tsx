@@ -25,7 +25,7 @@ export default function Experience({
       {experiences.length === 0 ? (
         <Empty>Experience will appear here.</Empty>
       ) : (
-        <div className="border-t border-[#ececef]">
+        <div>
           {visible.map((experience) => (
             <article
               key={experience.id}
@@ -42,7 +42,7 @@ export default function Experience({
                           : undefined
                       }
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 transition-colors duration-150 hover:text-[#1b1bff]"
+                      className="inline-flex items-center gap-1 transition-colors duration-150 hover:text-purple-600"
                     >
                       {experience.company}
                       <ArrowUpRight size={13} strokeWidth={1.7} aria-hidden="true" />

@@ -11,7 +11,7 @@ const articleStyle: BlogArticleStyle = {
   "--lf-article-heading-font":
     "var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif",
   "--lf-article-heading-weight": "500",
-  "--lf-article-accent": "#1b1bff",
+  "--lf-article-accent": "#9333ea",
   "--lf-article-border": "#ececef",
   "--lf-article-code-bg": "#f4f4f5",
   "--lf-article-size": "1.125rem",
@@ -27,10 +27,10 @@ export function Template4Blog({ profile, blog }: BlogPageProps) {
 
   return (
     <div
-      className="min-h-screen bg-white text-[#19191b] antialiased selection:bg-[#dedeff] selection:text-[#111114]"
+      className="min-h-screen bg-[#F9F6EE] text-[#19191b] antialiased selection:bg-purple-200 selection:text-[#111114]"
       style={pageStyle}
     >
-      <nav className="sticky top-0 z-40 w-full border-b border-[#ececef] bg-white/85 backdrop-blur-md">
+      <nav className="sticky top-0 z-40 w-full border-b border-[#ececef] bg-[#F9F6EE] backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-xl items-center justify-between gap-4 px-5 py-4">
           <Link
             href={portfolioUrl}
@@ -82,7 +82,7 @@ export function Template4Blog({ profile, blog }: BlogPageProps) {
             {blog.title || "Untitled Article"}
           </h1>
 
-          <div className="mt-8 border-t border-[#ececef]" />
+          <div />
         </header>
 
         {blog.hasContent ? (
@@ -97,7 +97,7 @@ export function Template4Blog({ profile, blog }: BlogPageProps) {
           </div>
         )}
 
-        <footer className="mt-16 border-t border-[#ececef] pt-[18px] text-[12px] text-[#9a9aa1]">
+        <footer className="mt-16 pt-[18px] text-[12px] text-[#9a9aa1]">
           <Link
             href={getMainSiteUrl()}
             target="_blank"

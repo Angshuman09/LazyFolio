@@ -7,7 +7,7 @@ import { normalizeLinks } from "../../shared/normalize";
 import type { ProfileData } from "../../shared/types";
 import { cleanUrl, shouldOpenInNewTab, textValue } from "../../shared/utils";
 
-const footerLinkClass = "inline-flex items-center gap-[5px] text-[14px] text-gray-500 transition-colors duration-150 hover:text-[#1b1bff]";
+const footerLinkClass = "inline-flex items-center gap-[6px] rounded-md px-1 py-1.5 -mx-1 text-[14px] text-gray-500 transition-colors duration-150 hover:text-purple-600";
 
 export default function Footer({ profile }: { profile: ProfileData }) {
   const links = normalizeLinks(profile?.links);
@@ -15,13 +15,13 @@ export default function Footer({ profile }: { profile: ProfileData }) {
   const resume = cleanUrl(profile?.resume);
 
   return (
-    <footer className="mt-[76px] border-t border-[#ececef] pt-[18px]">
+    <footer className="mt-19">
       {(links.length > 0 || email || resume) && (
         <>
-          <span className="mb-2.5 block text-[13px] text-[#85858c]">
+          <span className="mb-3 block text-[13px] text-[#85858c]">
             Elsewhere
           </span>
-          <div className="flex flex-wrap gap-x-3.75 gap-y-1.75">
+          <div className="flex flex-wrap gap-x-5 gap-y-2.5">
             {links.map((link) => (
               <Link
                 key={link.id}
@@ -36,13 +36,13 @@ export default function Footer({ profile }: { profile: ProfileData }) {
               </Link>
             ))}
             {email && (
-              <a href={"mailto:" + email} className={footerLinkClass}>
+              <Link href={"mailto:" + email} className={footerLinkClass}>
                 <Mail size={14} strokeWidth={1.6} aria-hidden="true" />
                 Email
-              </a>
+              </Link>
             )}
             {resume && (
-              <a
+              <Link
                 href={resume}
                 target={shouldOpenInNewTab(resume) ? "_blank" : undefined}
                 rel="noopener noreferrer"
@@ -50,7 +50,7 @@ export default function Footer({ profile }: { profile: ProfileData }) {
               >
                 Résumé
                 <ArrowUpRight size={13} strokeWidth={1.6} aria-hidden="true" />
-              </a>
+              </Link>
             )}
           </div>
         </>

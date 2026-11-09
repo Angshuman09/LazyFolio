@@ -7,7 +7,7 @@ import { Empty, Section } from "./section";
 import { MoreLink } from "./utils";
 
 const actionClass =
-  "inline-flex h-8 w-8 items-center justify-center rounded-md text-[#92929a] transition-colors duration-150 hover:bg-[#f5f5f6] hover:text-[#1b1bff]";
+  "inline-flex h-8 w-8 items-center justify-center rounded-md text-[#92929a] transition-colors duration-150 hover:bg-[#f5f5f6] hover:text-purple-600";
 
 export default function Projects({
   profile,
@@ -24,18 +24,18 @@ export default function Projects({
   if (!showAll && projects.length === 0) return null;
 
   return (
-    <Section id="lf-t4-projects-title" title="Projects">
+    <Section id="lf-t4-projects-title" title="Crafts">
       {projects.length === 0 ? (
         <Empty>Projects will appear here.</Empty>
       ) : (
-        <div className="border-t border-[#ececef]">
+        <div>
           {visible.map((project) => (
             <article
               key={project.id}
               className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 border-b border-[#ececef] py-4"
             >
               <div className="min-w-0">
-                <h3 className="m-0 text-[16px] font-medium leading-[1.35] tracking-[-0.025em] text-[#19191b]">
+                <h3 className="m-0 text-[16px] font-medium leading-[1.35] tracking-tight text-[#19191b]">
                   {project.name || "Untitled project"}
                 </h3>
 

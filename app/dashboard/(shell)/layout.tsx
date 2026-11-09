@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import {
   Sun,
   Moon,
@@ -168,6 +168,14 @@ export default function DashboardShellLayout({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar]);
 
+  // Chrome persists scroll offsets of nested scroll containers per-URL and
+  // restores them on every load. If the sidebar nav was ever scrolled (e.g. on
+  // a short window), "Profile" — the first item — stays clipped behind the top
+  // edge forever. Pin it to the top on mount.
+  useEffect(() => {
+    sidebarScrollRef.current?.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (dark === null) return;
 
@@ -193,6 +201,7 @@ export default function DashboardShellLayout({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const sidebarScrollRef = useRef<HTMLDivElement>(null);
   const {
     applyTemplate,
     onProfileSubmit,
@@ -416,7 +425,10 @@ export default function DashboardShellLayout({
             `}
           >
 
-            <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5">
+            <div
+              ref={sidebarScrollRef}
+              className="lf-sidebar-scroll flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5"
+            >
               {NAV.map((n) => {
                 const isDisabled = !profile?.username && n.id !== "profile";
                 const isDirty = n.id !== "insights" && dirtyItems.has(n.id as DashboardSection);

@@ -24,7 +24,7 @@ export function Template4({
 
   return (
     <main
-      className="min-h-screen bg-white text-[#19191b] antialiased selection:bg-[#dedeff] selection:text-[#111114]"
+      className="min-h-screen bg-[#F9F6EE] text-[#19191b] antialiased selection:bg-purple-200 selection:text-[#111114]"
       style={{
         fontFamily:
           "var(--font-sans), Inter, ui-sans-serif, system-ui, sans-serif",

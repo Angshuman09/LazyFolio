@@ -328,7 +328,11 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* The app surface is var(--lf-bg) everywhere (home, blog, dashboard).
+       Match the body so any void below/around the app root paints as app
+       surface instead of a stray --background black/white bar. */
+    background-color: var(--lf-bg);
+    color: var(--lf-ink);
   }
   html {
     @apply font-sans;
@@ -445,6 +449,16 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   pointer-events: none;
 }
 
+/* Dashboard live-preview pane: the template is embedded in a container
+   that is shorter than the viewport (the dashboard header takes 52px).
+   `h-screen`/`min-h-screen` (100vh) would overflow it; fill the pane instead. */
+.lf-preview-panel .h-screen {
+  height: 100%;
+}
+.lf-preview-panel .min-h-screen {
+  min-height: 100%;
+}
+
 /* Public article body */
 .lf-article {
   color: var(--lf-article-ink, var(--lf-ink));
@@ -456,8 +470,16 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
 .lf-article > * + * {
   margin-top: var(--lf-article-space, 1.15rem);
 }
+/* Spacing between paragraphs mirrors the editor (margin-bottom: 1.15rem).
+   `margin-top: 0` here also beats the `> * + *` rule above for paragraphs,
+   preventing double spacing. */
 .lf-article p {
-  margin: 0;
+  margin: 0 0 var(--lf-article-space, 1.15rem);
+}
+/* tiptap renders blank lines as `<p></p>`, which has zero height by default.
+   Give them a line box so intentional blank-line spacing survives. */
+.lf-article p:empty {
+  min-height: calc(1em * var(--lf-article-leading, 1.75));
 }
 .lf-article h1,
 .lf-article h2,
@@ -575,25 +597,26 @@ html, body, nav, footer, section, div, span, p, h1, h2, h3, a, button {
   font-weight: 600;
 }
 
-/* ── Text Selection & Focus Highlights ────────────────────────── */
-::selection {
-  background-color: var(--lf-accent-text);
-  color: #ffffff;
-}
+@layer base {
+  ::selection {
+    background-color: var(--lf-accent-text);
+    color: #ffffff;
+  }
 
-::-moz-selection {
-  background-color: var(--lf-accent-text);
-  color: #ffffff;
-}
+  ::-moz-selection {
+    background-color: var(--lf-accent-text);
+    color: #ffffff;
+  }
 
-input::selection,
-textarea::selection {
-  background-color: var(--lf-accent-text);
-  color: #ffffff;
-}
+  input::selection,
+  textarea::selection {
+    background-color: var(--lf-accent-text);
+    color: #ffffff;
+  }
 
-input::-moz-selection,
-textarea::-moz-selection {
-  background-color: var(--lf-accent-text);
-  color: #ffffff;
+  input::-moz-selection,
+  textarea::-moz-selection {
+    background-color: var(--lf-accent-text);
+    color: #ffffff;
+  }
 }

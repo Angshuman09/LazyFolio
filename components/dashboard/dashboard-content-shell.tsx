@@ -72,7 +72,7 @@ export function DashboardPreviewPanel({ children }: { children: ReactNode }) {
           </TooltipProvider>
         </div>
 
-        <div className="w-full h-full overflow-y-auto overflow-x-hidden">
+        <div className="lf-preview-panel w-full h-full overflow-y-auto overflow-x-hidden">
           {children}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { getBookCallLink, shouldOpenInNewTab, textValue } from "../../shared/utils";
 import type { ProfileData } from "../../shared/types";
 import { toParagraphs } from "./utils";
+import Link from "next/link";
 
 const bodyText =
   "m-0 max-w-[564px] text-[18px] leading-[1.54] tracking-[-0.022em] max-[620px]:text-[17px]";
@@ -34,23 +35,23 @@ export default function Hero({ profile }: { profile: ProfileData }) {
         <p className={`${bodyText} mt-4`}>
           Want to work together?{" "}
           {bookCallLink && (
-            <a
-              className="text-[#1b1bff] transition-opacity duration-150 hover:opacity-70"
+            <Link
+              className="text-purple-600 transition-opacity duration-150 hover:opacity-70"
               href={bookCallLink}
               target={shouldOpenInNewTab(bookCallLink) ? "_blank" : undefined}
               rel="noopener noreferrer"
             >
               Book a call
-            </a>
+            </Link>
           )}
           {bookCallLink && email && " or "}
           {email && (
-            <a
-              className="text-[#1b1bff] transition-opacity duration-150 hover:opacity-70"
+            <Link
+              className="text-purple-600 transition-opacity duration-150 hover:opacity-70"
               href={"mailto:" + email}
             >
               send an email
-            </a>
+            </Link>
           )}
           .
         </p>

@@ -15,7 +15,7 @@ export function MoreLink({
   const portfolio = usePortfolioSection();
 
   return (
-    <div className="mt-[29px] flex justify-center">
+    <div className="mt-7.25 flex justify-center">
       <Link
         href={href}
         onClick={(event) => {
@@ -24,7 +24,7 @@ export function MoreLink({
             portfolio.onSectionChange(section);
           }
         }}
-        className="inline-flex min-h-[34px] items-center gap-[7px] rounded-[9px] border border-[#e1e1e4] px-3 py-1.5 text-[14px] text-[#2f2f34] transition-colors duration-150 hover:border-[#c9c9cf] hover:bg-[#fafafa]"
+        className="inline-flex min-h-6.5 items-center gap-1.75 text-gray-600 hover:underline hover:text-black"
       >
         {children}
         <ArrowRight size={14} aria-hidden="true" />

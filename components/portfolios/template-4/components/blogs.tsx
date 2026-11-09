@@ -23,16 +23,16 @@ export default function Blogs({
   if (!showAll && blogs.length === 0) return null;
 
   return (
-    <Section id="lf-t4-writing-title" title="Writing">
+    <Section id="lf-t4-writing-title" title="Thoughts">
       {blogs.length === 0 ? (
         <Empty>Writing will appear here.</Empty>
       ) : (
-        <div className="border-t border-[#ececef]">
+        <div>
           {visible.map((blog) => {
             const content = (
               <>
                 <div className="min-w-0">
-                  <h3 className="m-0 text-[16px] font-medium leading-[1.35] tracking-[-0.025em] text-[#19191b] transition-colors duration-150 group-hover:text-[#1b1bff]">
+                  <h3 className="m-0 text-[16px] font-medium leading-[1.35] tracking-[-0.025em] text-[#19191b] transition-colors duration-150 group-hover:text-purple-600">
                     {blog.title || "Untitled article"}
                   </h3>
                   {blog.description && (
