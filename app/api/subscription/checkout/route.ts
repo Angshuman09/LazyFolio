@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/auth-api";
+import { prisma } from "@/lib/prisma";
 import {
   getArticleProductId,
   getDodoConfig,
@@ -19,6 +20,45 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const requestedPlan = articlePlans.has(body?.plan) ? body.plan : "monthly";
   const productId = getArticleProductId(requestedPlan);
+
+  const isMock =
+    !apiKey ||
+    apiKey === "mock" ||
+    apiKey.startsWith("your-") ||
+    !productId ||
+    productId.startsWith("p_your-") ||
+    productId.startsWith("p_mock");
+
+  if (isMock) {
+    const origin = getRequestOrigin(req.nextUrl.origin);
+    const returnUrl = `${origin}/dashboard?tab=articles&checkout=success&mock=true`;
+
+    await prisma.subscription.upsert({
+      where: { userId: session.user.id },
+      create: {
+        userId: session.user.id,
+        dodoSubscriptionId: `mock_sub_${Date.now()}`,
+        dodoCustomerId: `mock_cust_${Date.now()}`,
+        status: "ACTIVE",
+        productId: productId || "p_mock_supporter",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        cancelAtPeriodEnd: false,
+      },
+      update: {
+        status: "ACTIVE",
+        productId: productId || "p_mock_supporter",
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        cancelAtPeriodEnd: false,
+      },
+    });
+
+    return NextResponse.json({
+      checkoutUrl: returnUrl,
+      sessionId: `mock_session_${Date.now()}`,
+    });
+  }
 
   if (!apiKey) {
     console.error("Dodo checkout failed: DODO_PAYMENTS_API_KEY is not configured");

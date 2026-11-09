@@ -2,6 +2,7 @@
 
 import { GoogleAuth } from "@/components/auth/google-auth";
 import { GithubAuth } from "@/components/auth/github-auth";
+import { DevLogin } from "@/components/auth/dev-login";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -101,6 +102,7 @@ export default function Auth() {
           <div className="w-full flex flex-col gap-3">
             <GoogleAuth disable={disable} setDisable={setDisable} />
             <GithubAuth disable={disable} setDisable={setDisable} />
+            <DevLogin disable={disable} setDisable={setDisable} />
           </div>
         </div>
       </main>

@@ -33,7 +33,7 @@ export async function syncSubscriptionWithDodo(
 
   try {
     const { apiKey } = getDodoConfig();
-    if (!apiKey) return null;
+    if (!apiKey || apiKey === "mock" || apiKey.startsWith("your-")) return null;
 
     const client = getDodoClient();
     const customers = await client.customers.list({

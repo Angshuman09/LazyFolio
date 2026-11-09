@@ -68,6 +68,31 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    const isMockCloudinary =
+      !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY === "mock" ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY.startsWith("your-") ||
+      !process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET.startsWith("your-");
+
+    if (isMockCloudinary) {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      await fs.mkdir(uploadsDir, { recursive: true });
+
+      const ext = file.type.split("/")[1] || "png";
+      const publicId = `local_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const fileName = `${publicId}.${ext}`;
+      const filePath = path.join(uploadsDir, fileName);
+
+      await fs.writeFile(filePath, buffer);
+      return Response.json({
+        url: `/uploads/${fileName}`,
+        publicId,
+      });
+    }
+
     const result = await new Promise<UploadApiResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
@@ -107,6 +132,18 @@ export async function DELETE(req: NextRequest) {
     const isOwner = await userOwnsCloudinaryAsset(session!.user.id, publicId);
     if (!isOwner) {
       return apiError("Not authorized to delete this image", 403);
+    }
+
+    if (publicId.startsWith("local_") || publicId.startsWith("mock_")) {
+      const fs = await import("fs/promises");
+      const path = await import("path");
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      const files = await fs.readdir(uploadsDir).catch(() => []);
+      const matched = files.find((f) => f.startsWith(publicId));
+      if (matched) {
+        await fs.unlink(path.join(uploadsDir, matched)).catch(() => {});
+      }
+      return Response.json({ message: "Image deleted successfully" }, { status: 200 });
     }
 
     await deleteFromCloudinary(publicId);
