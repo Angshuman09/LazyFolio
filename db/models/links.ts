@@ -20,8 +20,18 @@ export type linksModel = runtime.Types.Result.DefaultSelection<Prisma.$linksPayl
 
 export type AggregateLinks = {
   _count: LinksCountAggregateOutputType | null
+  _avg: LinksAvgAggregateOutputType | null
+  _sum: LinksSumAggregateOutputType | null
   _min: LinksMinAggregateOutputType | null
   _max: LinksMaxAggregateOutputType | null
+}
+
+export type LinksAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type LinksSumAggregateOutputType = {
+  order: number | null
 }
 
 export type LinksMinAggregateOutputType = {
@@ -31,6 +41,7 @@ export type LinksMinAggregateOutputType = {
   url: string | null
   profileId: string | null
   isenable: boolean | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,6 +53,7 @@ export type LinksMaxAggregateOutputType = {
   url: string | null
   profileId: string | null
   isenable: boolean | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -53,11 +65,20 @@ export type LinksCountAggregateOutputType = {
   url: number
   profileId: number
   isenable: number
+  order: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type LinksAvgAggregateInputType = {
+  order?: true
+}
+
+export type LinksSumAggregateInputType = {
+  order?: true
+}
 
 export type LinksMinAggregateInputType = {
   id?: true
@@ -66,6 +87,7 @@ export type LinksMinAggregateInputType = {
   url?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -77,6 +99,7 @@ export type LinksMaxAggregateInputType = {
   url?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -88,6 +111,7 @@ export type LinksCountAggregateInputType = {
   url?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -131,6 +155,18 @@ export type LinksAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: LinksAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: LinksSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: LinksMinAggregateInputType
@@ -161,6 +197,8 @@ export type linksGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: LinksCountAggregateInputType | true
+  _avg?: LinksAvgAggregateInputType
+  _sum?: LinksSumAggregateInputType
   _min?: LinksMinAggregateInputType
   _max?: LinksMaxAggregateInputType
 }
@@ -172,9 +210,12 @@ export type LinksGroupByOutputType = {
   url: string | null
   profileId: string
   isenable: boolean
+  order: number
   createdAt: Date
   updatedAt: Date
   _count: LinksCountAggregateOutputType | null
+  _avg: LinksAvgAggregateOutputType | null
+  _sum: LinksSumAggregateOutputType | null
   _min: LinksMinAggregateOutputType | null
   _max: LinksMaxAggregateOutputType | null
 }
@@ -204,6 +245,7 @@ export type linksWhereInput = {
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
   isenable?: Prisma.BoolFilter<"links"> | boolean
+  order?: Prisma.IntFilter<"links"> | number
   createdAt?: Prisma.DateTimeFilter<"links"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"links"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
@@ -216,6 +258,7 @@ export type linksOrderByWithRelationInput = {
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
@@ -231,6 +274,7 @@ export type linksWhereUniqueInput = Prisma.AtLeast<{
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
   isenable?: Prisma.BoolFilter<"links"> | boolean
+  order?: Prisma.IntFilter<"links"> | number
   createdAt?: Prisma.DateTimeFilter<"links"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"links"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
@@ -243,11 +287,14 @@ export type linksOrderByWithAggregationInput = {
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.linksCountOrderByAggregateInput
+  _avg?: Prisma.linksAvgOrderByAggregateInput
   _max?: Prisma.linksMaxOrderByAggregateInput
   _min?: Prisma.linksMinOrderByAggregateInput
+  _sum?: Prisma.linksSumOrderByAggregateInput
 }
 
 export type linksScalarWhereWithAggregatesInput = {
@@ -260,6 +307,7 @@ export type linksScalarWhereWithAggregatesInput = {
   url?: Prisma.StringNullableWithAggregatesFilter<"links"> | string | null
   profileId?: Prisma.StringWithAggregatesFilter<"links"> | string
   isenable?: Prisma.BoolWithAggregatesFilter<"links"> | boolean
+  order?: Prisma.IntWithAggregatesFilter<"links"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"links"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"links"> | Date | string
 }
@@ -270,6 +318,7 @@ export type linksCreateInput = {
   label?: string | null
   url?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   profile: Prisma.ProfileCreateNestedOneWithoutLinksInput
@@ -282,6 +331,7 @@ export type linksUncheckedCreateInput = {
   url?: string | null
   profileId: string
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -292,6 +342,7 @@ export type linksUpdateInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.ProfileUpdateOneRequiredWithoutLinksNestedInput
@@ -304,6 +355,7 @@ export type linksUncheckedUpdateInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -315,6 +367,7 @@ export type linksCreateManyInput = {
   url?: string | null
   profileId: string
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -325,6 +378,7 @@ export type linksUpdateManyMutationInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +390,7 @@ export type linksUncheckedUpdateManyInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,8 +412,13 @@ export type linksCountOrderByAggregateInput = {
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type linksAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type linksMaxOrderByAggregateInput = {
@@ -368,6 +428,7 @@ export type linksMaxOrderByAggregateInput = {
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -379,8 +440,13 @@ export type linksMinOrderByAggregateInput = {
   url?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type linksSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type linksCreateNestedManyWithoutProfileInput = {
@@ -429,12 +495,21 @@ export type EnumLinkTypeFieldUpdateOperationsInput = {
   set?: $Enums.LinkType
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type linksCreateWithoutProfileInput = {
   id?: string
   type: $Enums.LinkType
   label?: string | null
   url?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -445,6 +520,7 @@ export type linksUncheckedCreateWithoutProfileInput = {
   label?: string | null
   url?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +561,7 @@ export type linksScalarWhereInput = {
   url?: Prisma.StringNullableFilter<"links"> | string | null
   profileId?: Prisma.StringFilter<"links"> | string
   isenable?: Prisma.BoolFilter<"links"> | boolean
+  order?: Prisma.IntFilter<"links"> | number
   createdAt?: Prisma.DateTimeFilter<"links"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"links"> | Date | string
 }
@@ -495,6 +572,7 @@ export type linksCreateManyProfileInput = {
   label?: string | null
   url?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -505,6 +583,7 @@ export type linksUpdateWithoutProfileInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -515,6 +594,7 @@ export type linksUncheckedUpdateWithoutProfileInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,6 +605,7 @@ export type linksUncheckedUpdateManyWithoutProfileInput = {
   label?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -538,6 +619,7 @@ export type linksSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   url?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -550,6 +632,7 @@ export type linksSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   url?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -562,6 +645,7 @@ export type linksSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   url?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -574,11 +658,12 @@ export type linksSelectScalar = {
   url?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type linksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "label" | "url" | "profileId" | "isenable" | "createdAt" | "updatedAt", ExtArgs["result"]["links"]>
+export type linksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "label" | "url" | "profileId" | "isenable" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["links"]>
 export type linksInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
@@ -601,6 +686,7 @@ export type $linksPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     url: string | null
     profileId: string
     isenable: boolean
+    order: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["links"]>
@@ -1033,6 +1119,7 @@ export interface linksFieldRefs {
   readonly url: Prisma.FieldRef<"links", 'String'>
   readonly profileId: Prisma.FieldRef<"links", 'String'>
   readonly isenable: Prisma.FieldRef<"links", 'Boolean'>
+  readonly order: Prisma.FieldRef<"links", 'Int'>
   readonly createdAt: Prisma.FieldRef<"links", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"links", 'DateTime'>
 }

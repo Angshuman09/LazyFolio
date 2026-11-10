@@ -18,6 +18,8 @@ import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
 import { AddItemPanel } from "@/components/dashboard/add-item-panel";
 import { EmptySectionState } from "@/components/dashboard/empty-section-state";
+import { SortableSection, SortableItem } from "@/components/dashboard/sortable-section";
+import { hasOrderChanged } from "@/lib/utils/collection-order";
 
 function projectsFromProfile(projects: ProfileProject[] = []): ProjectsSchema {
   return {
@@ -55,8 +57,7 @@ function getInitialProjects(profile?: { id?: string; projects?: ProfileProject[]
         techstack: row.techstack?.trim() || "",
         enddate: normalizeDate(row.enddate),
         isenable: row.isenable ?? true,
-      }))
-      .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+      }));
 
   // Older drafts may contain blank or stale IDs. Ignore an old draft when its
   // content already matches the server.
@@ -89,6 +90,15 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     const current = watchedProjects || [];
     const saved = projectsFromProfile(profile?.projects || []).projects || [];
     const savedMap = new Map(saved.map((p) => [p.id, p]));
+
+    if (
+      hasOrderChanged(
+        current.map((item) => item?.id || undefined),
+        saved.map((project) => project.id || undefined),
+      )
+    ) {
+      return true;
+    }
 
     for (const item of current) {
       const title = item.title?.trim() || "";
@@ -136,7 +146,7 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove, insert, move } = useFieldArray({
     control,
     name: "projects",
     keyName: "projectfield",
@@ -181,22 +191,28 @@ export default function ProjectsForm({ profile, formRef, onSubmit }: Props) {
           <EmptySectionState message="Add a project with a short description and links to its code or live version." />
         )}
 
-        {fields.map((f, index) => (
-          <ProjectCard
-            key={f.projectfield}
-            field={f}
-            index={index}
-            control={control}
-            register={register}
-            errors={errors}
-            remove={remove}
-            insert={insert}
-            setValue={setValue}
-            getValues={getValues}
-            reset={reset}
-            profile={profile}
-          />
-        ))}
+        <SortableSection
+          ids={fields.map((f) => f.projectfield)}
+          onReorder={(from, to) => move(from, to)}
+        >
+          {fields.map((f, index) => (
+            <SortableItem key={f.projectfield} id={f.projectfield}>
+              <ProjectCard
+                field={f}
+                index={index}
+                control={control}
+                register={register}
+                errors={errors}
+                remove={remove}
+                insert={insert}
+                setValue={setValue}
+                getValues={getValues}
+                reset={reset}
+                profile={profile}
+              />
+            </SortableItem>
+          ))}
+        </SortableSection>
       </div>
 
       <AddItemPanel

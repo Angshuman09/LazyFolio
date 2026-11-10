@@ -41,8 +41,7 @@ export function getInitialExperiences(profile?: ExperienceProfile): ExperienceSc
           startdate: normalizeDate(row.startdate),
           enddate: normalizeDate(row.enddate),
           isenable: row.isenable ?? true,
-        }))
-        .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
+        }));
 
     // Drafts created before incremental saves can contain empty IDs.
     // If their content already matches the server, discard that stale draft.

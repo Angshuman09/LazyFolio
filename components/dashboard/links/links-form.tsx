@@ -20,6 +20,8 @@ import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
 import { AddItemPanel } from "@/components/dashboard/add-item-panel";
 import { EmptySectionState } from "@/components/dashboard/empty-section-state";
+import { SortableSection, SortableItem } from "@/components/dashboard/sortable-section";
+import { hasOrderChanged } from "@/lib/utils/collection-order";
 
 export default function LinksForm({ profile, formRef, onSubmit }: Props) {
   const initialValues = useMemo(() => getInitialLinks(profile), [profile]);
@@ -43,6 +45,15 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     const current = watchedLinks || [];
     const saved = profile?.links || [];
     const savedMap = new Map(saved.map((l) => [l.id, l]));
+
+    if (
+      hasOrderChanged(
+        current.map((item) => item?.id),
+        saved.map((link) => link.id),
+      )
+    ) {
+      return true;
+    }
 
     for (const item of current) {
       const label = item.label?.trim() || "";
@@ -80,7 +91,7 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove, insert, move } = useFieldArray({
     control,
     name: "links",
     keyName: "fieldId",
@@ -126,22 +137,28 @@ export default function LinksForm({ profile, formRef, onSubmit }: Props) {
           <EmptySectionState message="Add your social profiles, personal site, or other places where people can find your work." />
         )}
 
-        {fields.map((f, index) => (
-          <LinkCard
-            key={f.fieldId}
-            field={f}
-            index={index}
-            control={control}
-            register={register}
-            errors={errors}
-            remove={remove}
-            insert={insert}
-            setValue={setValue}
-            getValues={getValues}
-            reset={reset}
-            profile={profile}
-          />
-        ))}
+        <SortableSection
+          ids={fields.map((f) => f.fieldId)}
+          onReorder={(from, to) => move(from, to)}
+        >
+          {fields.map((f, index) => (
+            <SortableItem key={f.fieldId} id={f.fieldId}>
+              <LinkCard
+                field={f}
+                index={index}
+                control={control}
+                register={register}
+                errors={errors}
+                remove={remove}
+                insert={insert}
+                setValue={setValue}
+                getValues={getValues}
+                reset={reset}
+                profile={profile}
+              />
+            </SortableItem>
+          ))}
+        </SortableSection>
       </div>
 
       <AddItemPanel title="Add another link" buttonLabel="Add link" onClick={() => append({ label: "", url: "", isenable: true })} />

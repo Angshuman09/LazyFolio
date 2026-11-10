@@ -110,6 +110,7 @@ model links {
   profileId String
   profile   Profile  @relation(fields: [profileId], references: [id])
   isenable  Boolean  @default(true)
+  order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -124,6 +125,7 @@ model Experience {
   profileId   String?
   profile     Profile?  @relation(fields: [profileId], references: [id])
   isenable    Boolean   @default(true)
+  order       Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -138,7 +140,7 @@ model Project {
   projectLink String?
   live        Boolean?
   techstack   String[]
-  order       Int?
+  order       Int       @default(0)
   isenable    Boolean   @default(true)
   profileId   String
   profile     Profile?  @relation(fields: [profileId], references: [id])
@@ -160,6 +162,7 @@ model Blog {
   type        BlogType @default(INTERNAL)
 
   blogLink    String?
+  order       Int      @default(0)
 
   content     String?
   slug        String?

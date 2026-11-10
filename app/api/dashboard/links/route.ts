@@ -14,6 +14,7 @@ function toLinkData(link: LinkInput) {
     label: link.label.trim(),
     url: link.url.trim(),
     isenable: link.isenable ?? true,
+    order: link.order ?? 0,
   };
 }
 
@@ -33,7 +34,10 @@ export async function POST(req: NextRequest) {
     }
 
     const profileId = profile!.id;
-    const nonBlankLinks = links.filter((link) => !isBlankLink(link));
+    // Array position in the form is the display order.
+    const nonBlankLinks = links
+      .filter((link) => !isBlankLink(link))
+      .map((link, index) => ({ ...link, order: index }));
 
     for (const link of nonBlankLinks) {
       const validation = validateLink(link);
@@ -55,7 +59,8 @@ export async function POST(req: NextRequest) {
           existing.type === next.type &&
           existing.label === next.label &&
           existing.url === next.url &&
-          existing.isenable === next.isenable
+          existing.isenable === next.isenable &&
+          existing.order === next.order
         );
       },
     );

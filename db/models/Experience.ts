@@ -20,8 +20,18 @@ export type ExperienceModel = runtime.Types.Result.DefaultSelection<Prisma.$Expe
 
 export type AggregateExperience = {
   _count: ExperienceCountAggregateOutputType | null
+  _avg: ExperienceAvgAggregateOutputType | null
+  _sum: ExperienceSumAggregateOutputType | null
   _min: ExperienceMinAggregateOutputType | null
   _max: ExperienceMaxAggregateOutputType | null
+}
+
+export type ExperienceAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type ExperienceSumAggregateOutputType = {
+  order: number | null
 }
 
 export type ExperienceMinAggregateOutputType = {
@@ -33,6 +43,7 @@ export type ExperienceMinAggregateOutputType = {
   description: string | null
   profileId: string | null
   isenable: boolean | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,6 +57,7 @@ export type ExperienceMaxAggregateOutputType = {
   description: string | null
   profileId: string | null
   isenable: boolean | null
+  order: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,11 +71,20 @@ export type ExperienceCountAggregateOutputType = {
   description: number
   profileId: number
   isenable: number
+  order: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type ExperienceAvgAggregateInputType = {
+  order?: true
+}
+
+export type ExperienceSumAggregateInputType = {
+  order?: true
+}
 
 export type ExperienceMinAggregateInputType = {
   id?: true
@@ -74,6 +95,7 @@ export type ExperienceMinAggregateInputType = {
   description?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -87,6 +109,7 @@ export type ExperienceMaxAggregateInputType = {
   description?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +123,7 @@ export type ExperienceCountAggregateInputType = {
   description?: true
   profileId?: true
   isenable?: true
+  order?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -143,6 +167,18 @@ export type ExperienceAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ExperienceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ExperienceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ExperienceMinAggregateInputType
@@ -173,6 +209,8 @@ export type ExperienceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: ExperienceCountAggregateInputType | true
+  _avg?: ExperienceAvgAggregateInputType
+  _sum?: ExperienceSumAggregateInputType
   _min?: ExperienceMinAggregateInputType
   _max?: ExperienceMaxAggregateInputType
 }
@@ -186,9 +224,12 @@ export type ExperienceGroupByOutputType = {
   description: string | null
   profileId: string | null
   isenable: boolean
+  order: number
   createdAt: Date
   updatedAt: Date
   _count: ExperienceCountAggregateOutputType | null
+  _avg: ExperienceAvgAggregateOutputType | null
+  _sum: ExperienceSumAggregateOutputType | null
   _min: ExperienceMinAggregateOutputType | null
   _max: ExperienceMaxAggregateOutputType | null
 }
@@ -220,6 +261,7 @@ export type ExperienceWhereInput = {
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   profileId?: Prisma.StringNullableFilter<"Experience"> | string | null
   isenable?: Prisma.BoolFilter<"Experience"> | boolean
+  order?: Prisma.IntFilter<"Experience"> | number
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
@@ -234,6 +276,7 @@ export type ExperienceOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
@@ -251,6 +294,7 @@ export type ExperienceWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   profileId?: Prisma.StringNullableFilter<"Experience"> | string | null
   isenable?: Prisma.BoolFilter<"Experience"> | boolean
+  order?: Prisma.IntFilter<"Experience"> | number
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
@@ -265,11 +309,14 @@ export type ExperienceOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ExperienceCountOrderByAggregateInput
+  _avg?: Prisma.ExperienceAvgOrderByAggregateInput
   _max?: Prisma.ExperienceMaxOrderByAggregateInput
   _min?: Prisma.ExperienceMinOrderByAggregateInput
+  _sum?: Prisma.ExperienceSumOrderByAggregateInput
 }
 
 export type ExperienceScalarWhereWithAggregatesInput = {
@@ -284,6 +331,7 @@ export type ExperienceScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Experience"> | string | null
   profileId?: Prisma.StringNullableWithAggregatesFilter<"Experience"> | string | null
   isenable?: Prisma.BoolWithAggregatesFilter<"Experience"> | boolean
+  order?: Prisma.IntWithAggregatesFilter<"Experience"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Experience"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Experience"> | Date | string
 }
@@ -296,6 +344,7 @@ export type ExperienceCreateInput = {
   enddate?: Date | string | null
   description?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.ProfileCreateNestedOneWithoutExperiencesInput
@@ -310,6 +359,7 @@ export type ExperienceUncheckedCreateInput = {
   description?: string | null
   profileId?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -322,6 +372,7 @@ export type ExperienceUpdateInput = {
   enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.ProfileUpdateOneWithoutExperiencesNestedInput
@@ -336,6 +387,7 @@ export type ExperienceUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,6 +401,7 @@ export type ExperienceCreateManyInput = {
   description?: string | null
   profileId?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -361,6 +414,7 @@ export type ExperienceUpdateManyMutationInput = {
   enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -374,6 +428,7 @@ export type ExperienceUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -397,8 +452,13 @@ export type ExperienceCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ExperienceAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type ExperienceMaxOrderByAggregateInput = {
@@ -410,6 +470,7 @@ export type ExperienceMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -423,8 +484,13 @@ export type ExperienceMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type ExperienceSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type ExperienceCreateNestedManyWithoutProfileInput = {
@@ -477,6 +543,7 @@ export type ExperienceCreateWithoutProfileInput = {
   enddate?: Date | string | null
   description?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -489,6 +556,7 @@ export type ExperienceUncheckedCreateWithoutProfileInput = {
   enddate?: Date | string | null
   description?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -531,6 +599,7 @@ export type ExperienceScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Experience"> | string | null
   profileId?: Prisma.StringNullableFilter<"Experience"> | string | null
   isenable?: Prisma.BoolFilter<"Experience"> | boolean
+  order?: Prisma.IntFilter<"Experience"> | number
   createdAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Experience"> | Date | string
 }
@@ -543,6 +612,7 @@ export type ExperienceCreateManyProfileInput = {
   enddate?: Date | string | null
   description?: string | null
   isenable?: boolean
+  order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -555,6 +625,7 @@ export type ExperienceUpdateWithoutProfileInput = {
   enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -567,6 +638,7 @@ export type ExperienceUncheckedUpdateWithoutProfileInput = {
   enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -579,6 +651,7 @@ export type ExperienceUncheckedUpdateManyWithoutProfileInput = {
   enddate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -594,6 +667,7 @@ export type ExperienceSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   description?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.Experience$profileArgs<ExtArgs>
@@ -608,6 +682,7 @@ export type ExperienceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   description?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.Experience$profileArgs<ExtArgs>
@@ -622,6 +697,7 @@ export type ExperienceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   description?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.Experience$profileArgs<ExtArgs>
@@ -636,11 +712,12 @@ export type ExperienceSelectScalar = {
   description?: boolean
   profileId?: boolean
   isenable?: boolean
+  order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExperienceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "role" | "startdate" | "enddate" | "description" | "profileId" | "isenable" | "createdAt" | "updatedAt", ExtArgs["result"]["experience"]>
+export type ExperienceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "role" | "startdate" | "enddate" | "description" | "profileId" | "isenable" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["experience"]>
 export type ExperienceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.Experience$profileArgs<ExtArgs>
 }
@@ -665,6 +742,7 @@ export type $ExperiencePayload<ExtArgs extends runtime.Types.Extensions.Internal
     description: string | null
     profileId: string | null
     isenable: boolean
+    order: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["experience"]>
@@ -1099,6 +1177,7 @@ export interface ExperienceFieldRefs {
   readonly description: Prisma.FieldRef<"Experience", 'String'>
   readonly profileId: Prisma.FieldRef<"Experience", 'String'>
   readonly isenable: Prisma.FieldRef<"Experience", 'Boolean'>
+  readonly order: Prisma.FieldRef<"Experience", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Experience", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Experience", 'DateTime'>
 }

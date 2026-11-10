@@ -17,6 +17,11 @@ export async function POST(req: Request) {
     const slug = generateSlug(title);
     const blogLink = getPortfolioBlogPath(slug);
 
+    // New articles are appended at the end of the list.
+    const order = await prisma.blog.count({
+      where: { profileId: profile!.id, type: "INTERNAL" },
+    });
+
     const blog = await prisma.blog.create({
       data: {
         profileId: profile!.id,
@@ -28,6 +33,7 @@ export async function POST(req: Request) {
         slug,
         blogLink,
         description: null,
+        order,
       },
       select: {
         id: true,

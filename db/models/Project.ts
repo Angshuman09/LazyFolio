@@ -232,7 +232,7 @@ export type ProjectGroupByOutputType = {
   projectLink: string | null
   live: boolean | null
   techstack: string[]
-  order: number | null
+  order: number
   isenable: boolean
   profileId: string
   createdAt: Date
@@ -271,7 +271,7 @@ export type ProjectWhereInput = {
   projectLink?: Prisma.StringNullableFilter<"Project"> | string | null
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
-  order?: Prisma.IntNullableFilter<"Project"> | number | null
+  order?: Prisma.IntFilter<"Project"> | number
   isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -288,7 +288,7 @@ export type ProjectOrderByWithRelationInput = {
   projectLink?: Prisma.SortOrderInput | Prisma.SortOrder
   live?: Prisma.SortOrderInput | Prisma.SortOrder
   techstack?: Prisma.SortOrder
-  order?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -308,7 +308,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   projectLink?: Prisma.StringNullableFilter<"Project"> | string | null
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
-  order?: Prisma.IntNullableFilter<"Project"> | number | null
+  order?: Prisma.IntFilter<"Project"> | number
   isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -325,7 +325,7 @@ export type ProjectOrderByWithAggregationInput = {
   projectLink?: Prisma.SortOrderInput | Prisma.SortOrder
   live?: Prisma.SortOrderInput | Prisma.SortOrder
   techstack?: Prisma.SortOrder
-  order?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   isenable?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -349,7 +349,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   projectLink?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   live?: Prisma.BoolNullableWithAggregatesFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
-  order?: Prisma.IntNullableWithAggregatesFilter<"Project"> | number | null
+  order?: Prisma.IntWithAggregatesFilter<"Project"> | number
   isenable?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   profileId?: Prisma.StringWithAggregatesFilter<"Project"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
@@ -365,7 +365,7 @@ export type ProjectCreateInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -381,7 +381,7 @@ export type ProjectUncheckedCreateInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   profileId: string
   createdAt?: Date | string
@@ -397,7 +397,7 @@ export type ProjectUpdateInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -413,7 +413,7 @@ export type ProjectUncheckedUpdateInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -429,7 +429,7 @@ export type ProjectCreateManyInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   profileId: string
   createdAt?: Date | string
@@ -445,7 +445,7 @@ export type ProjectUpdateManyMutationInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -460,7 +460,7 @@ export type ProjectUncheckedUpdateManyInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -586,14 +586,6 @@ export type ProjectUpdatetechstackInput = {
   push?: string | string[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ProjectCreateWithoutProfileInput = {
   id?: string
   title?: string | null
@@ -603,7 +595,7 @@ export type ProjectCreateWithoutProfileInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -618,7 +610,7 @@ export type ProjectUncheckedCreateWithoutProfileInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -662,7 +654,7 @@ export type ProjectScalarWhereInput = {
   projectLink?: Prisma.StringNullableFilter<"Project"> | string | null
   live?: Prisma.BoolNullableFilter<"Project"> | boolean | null
   techstack?: Prisma.StringNullableListFilter<"Project">
-  order?: Prisma.IntNullableFilter<"Project"> | number | null
+  order?: Prisma.IntFilter<"Project"> | number
   isenable?: Prisma.BoolFilter<"Project"> | boolean
   profileId?: Prisma.StringFilter<"Project"> | string
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
@@ -678,7 +670,7 @@ export type ProjectCreateManyProfileInput = {
   projectLink?: string | null
   live?: boolean | null
   techstack?: Prisma.ProjectCreatetechstackInput | string[]
-  order?: number | null
+  order?: number
   isenable?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -693,7 +685,7 @@ export type ProjectUpdateWithoutProfileInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -708,7 +700,7 @@ export type ProjectUncheckedUpdateWithoutProfileInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -723,7 +715,7 @@ export type ProjectUncheckedUpdateManyWithoutProfileInput = {
   projectLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   live?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   techstack?: Prisma.ProjectUpdatetechstackInput | string[]
-  order?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   isenable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -823,7 +815,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     projectLink: string | null
     live: boolean | null
     techstack: string[]
-    order: number | null
+    order: number
     isenable: boolean
     profileId: string
     createdAt: Date

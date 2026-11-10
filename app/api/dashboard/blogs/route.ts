@@ -27,6 +27,7 @@ type BlogWriteData = {
   isPublished: boolean;
   isEnabled: boolean;
   slug: string | null;
+  order: number;
 };
 
 function blogMatches(existing: Blog, next: BlogWriteData) {
@@ -38,7 +39,8 @@ function blogMatches(existing: Blog, next: BlogWriteData) {
     (existing.content ?? null) === next.content &&
     existing.isPublished === next.isPublished &&
     existing.isEnabled === next.isEnabled &&
-    (existing.slug ?? null) === next.slug
+    (existing.slug ?? null) === next.slug &&
+    existing.order === next.order
   );
 }
 
@@ -61,11 +63,14 @@ export async function POST(req: NextRequest) {
 
     const profileId = profile!.id;
     const isInternalSection = type === "INTERNAL";
-    const nonBlankBlogs = blogs.filter((blog) =>
-      isInternalSection
-        ? !isBlankInternalBlog(blog)
-        : !isBlankExternalBlog(blog),
-    );
+    // Array position in the form is the display order.
+    const nonBlankBlogs = blogs
+      .filter((blog) =>
+        isInternalSection
+          ? !isBlankInternalBlog(blog)
+          : !isBlankExternalBlog(blog),
+      )
+      .map((blog, index) => ({ ...blog, order: index }));
 
     for (const blog of nonBlankBlogs) {
       const validation = isInternalSection
@@ -147,6 +152,7 @@ export async function POST(req: NextRequest) {
         isPublished: isInternal ? (blog.isPublished ?? false) : true,
         isEnabled: blog.isEnabled ?? blog.isenable ?? true,
         slug: slug || null,
+        order: blog.order ?? 0,
       };
 
       if (existing) {

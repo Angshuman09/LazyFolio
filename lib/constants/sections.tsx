@@ -20,8 +20,14 @@ import { PLAN_PRICES } from "./plans";
     createdAt: true,
     updatedAt: true,
     user: true,
-    experiences: { where: { isenable: true } },
-    projects: { where: { isenable: true } },
+    experiences: {
+      where: { isenable: true },
+      orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }],
+    },
+    projects: {
+      where: { isenable: true },
+      orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }],
+    },
     blogs: {
       where: {
         isEnabled: true,
@@ -30,6 +36,7 @@ import { PLAN_PRICES } from "./plans";
           { type: "EXTERNAL" },
         ],
       },
+      orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }],
       select: {
         id: true,
         type: true,
@@ -42,7 +49,10 @@ import { PLAN_PRICES } from "./plans";
         createdAt: true,
       },
     },
-    links: { where: { isenable: true } },
+    links: {
+      where: { isenable: true },
+      orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }],
+    },
   } satisfies Prisma.ProfileSelect;
 
 export const faqs = [

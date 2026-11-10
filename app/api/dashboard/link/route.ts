@@ -75,8 +75,13 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ data: updatedLink, message: "Link updated successfully." }, { status: 200 });
         }
 
+        // New links are appended at the end of the list.
+        const order = await prisma.links.count({
+            where: { profileId },
+        });
+
         const createdLink = await prisma.links.create({
-            data: linkData
+            data: { ...linkData, order },
         });
 
         revalidateProfile(profile.username);

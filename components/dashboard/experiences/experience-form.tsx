@@ -17,6 +17,8 @@ import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
 import { AddItemPanel } from "@/components/dashboard/add-item-panel";
 import { EmptySectionState } from "@/components/dashboard/empty-section-state";
+import { SortableSection, SortableItem } from "@/components/dashboard/sortable-section";
+import { hasOrderChanged } from "@/lib/utils/collection-order";
 
 type Props = {
   profile?: ExperienceProfile;
@@ -55,6 +57,15 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     const current = watchedExperiences || [];
     const saved = profile?.experiences || [];
     const savedMap = new Map(saved.map((e) => [e.id, e]));
+
+    if (
+      hasOrderChanged(
+        current.map((item) => item?.id),
+        saved.map((experience) => experience.id),
+      )
+    ) {
+      return true;
+    }
 
     for (const item of current) {
       const role = item.role?.trim() || "";
@@ -100,7 +111,7 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove, insert, move } = useFieldArray({
     control,
     name: "experiences",
     keyName: "experiencefield",
@@ -144,22 +155,28 @@ export default function ExperienceForm({ profile, formRef, onSubmit }: Props) {
           <EmptySectionState message="Add roles, organizations, and a short summary of the work you did." />
         )}
 
-        {fields.map((f, index) => (
-          <ExperienceCard
-            key={f.experiencefield}
-            field={f}
-            index={index}
-            control={control}
-            register={register}
-            errors={errors}
-            remove={remove}
-            getValues={getValues}
-            setValue={setValue}
-            reset={reset}
-            profile={profile}
-            insert={insert}
-          />
-        ))}
+        <SortableSection
+          ids={fields.map((f) => f.experiencefield)}
+          onReorder={(from, to) => move(from, to)}
+        >
+          {fields.map((f, index) => (
+            <SortableItem key={f.experiencefield} id={f.experiencefield}>
+              <ExperienceCard
+                field={f}
+                index={index}
+                control={control}
+                register={register}
+                errors={errors}
+                remove={remove}
+                getValues={getValues}
+                setValue={setValue}
+                reset={reset}
+                profile={profile}
+                insert={insert}
+              />
+            </SortableItem>
+          ))}
+        </SortableSection>
       </div>
 
       <AddItemPanel

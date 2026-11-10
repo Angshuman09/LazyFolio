@@ -17,6 +17,7 @@ import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
 import { AddItemPanel } from "@/components/dashboard/add-item-panel";
 import { EmptySectionState } from "@/components/dashboard/empty-section-state";
+import { SortableSection, SortableItem } from "@/components/dashboard/sortable-section";
 
 type Props = {
   profile?: {
@@ -103,7 +104,7 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove, insert, move } = useFieldArray({
     control,
     name: "skills",
     keyName: "skillfield",
@@ -150,22 +151,28 @@ export default function SkillsForm({ profile, formRef, onSubmit }: Props) {
         )}
 
         <div className="flex w-full flex-col gap-2.5 mb-3">
+        <SortableSection
+          ids={fields.map((f) => f.skillfield)}
+          onReorder={(from, to) => move(from, to)}
+        >
           {fields.map((f, index) => (
-            <SkillCard
-              key={f.skillfield}
-              field={f}
-              index={index}
-              control={control}
-              register={register}
-              errors={errors}
-              remove={remove}
-              insert={insert}
-              setValue={setValue}
-              getValues={getValues}
-              reset={reset}
-              profile={profile}
-            />
+            <SortableItem key={f.skillfield} id={f.skillfield}>
+              <SkillCard
+                field={f}
+                index={index}
+                control={control}
+                register={register}
+                errors={errors}
+                remove={remove}
+                insert={insert}
+                setValue={setValue}
+                getValues={getValues}
+                reset={reset}
+                profile={profile}
+              />
+            </SortableItem>
           ))}
+        </SortableSection>
         </div>
       </div>
 

@@ -11,7 +11,7 @@ import {
 } from "@/lib/utils/validate-dashboard";
 import { handleApiError } from "@/lib/errors/api";
 
-function toExperienceData(experience: SingleExperience) {
+function toExperienceData(experience: SingleExperience & { order?: number }) {
   return {
     companyName: experience.companyName!.trim(),
     role: experience.role!.trim(),
@@ -19,6 +19,7 @@ function toExperienceData(experience: SingleExperience) {
     enddate: parseOptionalDate(experience.enddate),
     description: experience.description?.trim() || null,
     isenable: experience.isenable ?? true,
+    order: experience.order ?? 0,
   };
 }
 
@@ -36,9 +37,10 @@ export async function POST(request: NextRequest) {
     };
 
     const profileId = profile!.id;
-    const nonBlankExperiences = (experiences ?? []).filter(
-      (experience) => !isBlankExperience(experience),
-    );
+    // Array position in the form is the display order.
+    const nonBlankExperiences = (experiences ?? [])
+      .filter((experience) => !isBlankExperience(experience))
+      .map((experience, index) => ({ ...experience, order: index }));
 
     for (const experience of nonBlankExperiences) {
       const validation = validateExperience(experience);
@@ -62,7 +64,8 @@ export async function POST(request: NextRequest) {
           sameDate(existing.startdate, next.startdate) &&
           sameDate(existing.enddate, next.enddate) &&
           existing.description === next.description &&
-          existing.isenable === next.isenable
+          existing.isenable === next.isenable &&
+          existing.order === next.order
         );
       },
     );

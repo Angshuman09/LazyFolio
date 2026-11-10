@@ -20,8 +20,18 @@ export type BlogModel = runtime.Types.Result.DefaultSelection<Prisma.$BlogPayloa
 
 export type AggregateBlog = {
   _count: BlogCountAggregateOutputType | null
+  _avg: BlogAvgAggregateOutputType | null
+  _sum: BlogSumAggregateOutputType | null
   _min: BlogMinAggregateOutputType | null
   _max: BlogMaxAggregateOutputType | null
+}
+
+export type BlogAvgAggregateOutputType = {
+  order: number | null
+}
+
+export type BlogSumAggregateOutputType = {
+  order: number | null
 }
 
 export type BlogMinAggregateOutputType = {
@@ -30,6 +40,7 @@ export type BlogMinAggregateOutputType = {
   description: string | null
   type: $Enums.BlogType | null
   blogLink: string | null
+  order: number | null
   content: string | null
   slug: string | null
   isPublished: boolean | null
@@ -45,6 +56,7 @@ export type BlogMaxAggregateOutputType = {
   description: string | null
   type: $Enums.BlogType | null
   blogLink: string | null
+  order: number | null
   content: string | null
   slug: string | null
   isPublished: boolean | null
@@ -60,6 +72,7 @@ export type BlogCountAggregateOutputType = {
   description: number
   type: number
   blogLink: number
+  order: number
   content: number
   slug: number
   isPublished: number
@@ -71,12 +84,21 @@ export type BlogCountAggregateOutputType = {
 }
 
 
+export type BlogAvgAggregateInputType = {
+  order?: true
+}
+
+export type BlogSumAggregateInputType = {
+  order?: true
+}
+
 export type BlogMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
   type?: true
   blogLink?: true
+  order?: true
   content?: true
   slug?: true
   isPublished?: true
@@ -92,6 +114,7 @@ export type BlogMaxAggregateInputType = {
   description?: true
   type?: true
   blogLink?: true
+  order?: true
   content?: true
   slug?: true
   isPublished?: true
@@ -107,6 +130,7 @@ export type BlogCountAggregateInputType = {
   description?: true
   type?: true
   blogLink?: true
+  order?: true
   content?: true
   slug?: true
   isPublished?: true
@@ -155,6 +179,18 @@ export type BlogAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BlogAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BlogSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BlogMinAggregateInputType
@@ -185,6 +221,8 @@ export type BlogGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: BlogCountAggregateInputType | true
+  _avg?: BlogAvgAggregateInputType
+  _sum?: BlogSumAggregateInputType
   _min?: BlogMinAggregateInputType
   _max?: BlogMaxAggregateInputType
 }
@@ -195,6 +233,7 @@ export type BlogGroupByOutputType = {
   description: string | null
   type: $Enums.BlogType
   blogLink: string | null
+  order: number
   content: string | null
   slug: string | null
   isPublished: boolean
@@ -203,6 +242,8 @@ export type BlogGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: BlogCountAggregateOutputType | null
+  _avg: BlogAvgAggregateOutputType | null
+  _sum: BlogSumAggregateOutputType | null
   _min: BlogMinAggregateOutputType | null
   _max: BlogMaxAggregateOutputType | null
 }
@@ -231,6 +272,7 @@ export type BlogWhereInput = {
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
   type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
+  order?: Prisma.IntFilter<"Blog"> | number
   content?: Prisma.StringNullableFilter<"Blog"> | string | null
   slug?: Prisma.StringNullableFilter<"Blog"> | string | null
   isPublished?: Prisma.BoolFilter<"Blog"> | boolean
@@ -247,6 +289,7 @@ export type BlogOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
@@ -267,6 +310,7 @@ export type BlogWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
   type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
+  order?: Prisma.IntFilter<"Blog"> | number
   content?: Prisma.StringNullableFilter<"Blog"> | string | null
   slug?: Prisma.StringNullableFilter<"Blog"> | string | null
   isPublished?: Prisma.BoolFilter<"Blog"> | boolean
@@ -283,6 +327,7 @@ export type BlogOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  order?: Prisma.SortOrder
   content?: Prisma.SortOrderInput | Prisma.SortOrder
   slug?: Prisma.SortOrderInput | Prisma.SortOrder
   isPublished?: Prisma.SortOrder
@@ -291,8 +336,10 @@ export type BlogOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BlogCountOrderByAggregateInput
+  _avg?: Prisma.BlogAvgOrderByAggregateInput
   _max?: Prisma.BlogMaxOrderByAggregateInput
   _min?: Prisma.BlogMinOrderByAggregateInput
+  _sum?: Prisma.BlogSumOrderByAggregateInput
 }
 
 export type BlogScalarWhereWithAggregatesInput = {
@@ -304,6 +351,7 @@ export type BlogScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
   type?: Prisma.EnumBlogTypeWithAggregatesFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
+  order?: Prisma.IntWithAggregatesFilter<"Blog"> | number
   content?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
   slug?: Prisma.StringNullableWithAggregatesFilter<"Blog"> | string | null
   isPublished?: Prisma.BoolWithAggregatesFilter<"Blog"> | boolean
@@ -319,6 +367,7 @@ export type BlogCreateInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -334,6 +383,7 @@ export type BlogUncheckedCreateInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -349,6 +399,7 @@ export type BlogUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -364,6 +415,7 @@ export type BlogUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -379,6 +431,7 @@ export type BlogCreateManyInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -394,6 +447,7 @@ export type BlogUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -408,6 +462,7 @@ export type BlogUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -438,6 +493,7 @@ export type BlogCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   content?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
@@ -447,12 +503,17 @@ export type BlogCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type BlogAvgOrderByAggregateInput = {
+  order?: Prisma.SortOrder
+}
+
 export type BlogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   content?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
@@ -468,6 +529,7 @@ export type BlogMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
   blogLink?: Prisma.SortOrder
+  order?: Prisma.SortOrder
   content?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   isPublished?: Prisma.SortOrder
@@ -475,6 +537,10 @@ export type BlogMinOrderByAggregateInput = {
   profileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BlogSumOrderByAggregateInput = {
+  order?: Prisma.SortOrder
 }
 
 export type BlogCreateNestedManyWithoutProfileInput = {
@@ -529,6 +595,7 @@ export type BlogCreateWithoutProfileInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -543,6 +610,7 @@ export type BlogUncheckedCreateWithoutProfileInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -586,6 +654,7 @@ export type BlogScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Blog"> | string | null
   type?: Prisma.EnumBlogTypeFilter<"Blog"> | $Enums.BlogType
   blogLink?: Prisma.StringNullableFilter<"Blog"> | string | null
+  order?: Prisma.IntFilter<"Blog"> | number
   content?: Prisma.StringNullableFilter<"Blog"> | string | null
   slug?: Prisma.StringNullableFilter<"Blog"> | string | null
   isPublished?: Prisma.BoolFilter<"Blog"> | boolean
@@ -601,6 +670,7 @@ export type BlogCreateManyProfileInput = {
   description?: string | null
   type?: $Enums.BlogType
   blogLink?: string | null
+  order?: number
   content?: string | null
   slug?: string | null
   isPublished?: boolean
@@ -615,6 +685,7 @@ export type BlogUpdateWithoutProfileInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -629,6 +700,7 @@ export type BlogUncheckedUpdateWithoutProfileInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -643,6 +715,7 @@ export type BlogUncheckedUpdateManyWithoutProfileInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumBlogTypeFieldUpdateOperationsInput | $Enums.BlogType
   blogLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  order?: Prisma.IntFieldUpdateOperationsInput | number
   content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPublished?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -659,6 +732,7 @@ export type BlogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   description?: boolean
   type?: boolean
   blogLink?: boolean
+  order?: boolean
   content?: boolean
   slug?: boolean
   isPublished?: boolean
@@ -675,6 +749,7 @@ export type BlogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   type?: boolean
   blogLink?: boolean
+  order?: boolean
   content?: boolean
   slug?: boolean
   isPublished?: boolean
@@ -691,6 +766,7 @@ export type BlogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   description?: boolean
   type?: boolean
   blogLink?: boolean
+  order?: boolean
   content?: boolean
   slug?: boolean
   isPublished?: boolean
@@ -707,6 +783,7 @@ export type BlogSelectScalar = {
   description?: boolean
   type?: boolean
   blogLink?: boolean
+  order?: boolean
   content?: boolean
   slug?: boolean
   isPublished?: boolean
@@ -716,7 +793,7 @@ export type BlogSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "type" | "blogLink" | "content" | "slug" | "isPublished" | "isEnabled" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["blog"]>
+export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "type" | "blogLink" | "order" | "content" | "slug" | "isPublished" | "isEnabled" | "profileId" | "createdAt" | "updatedAt", ExtArgs["result"]["blog"]>
 export type BlogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
@@ -738,6 +815,7 @@ export type $BlogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     description: string | null
     type: $Enums.BlogType
     blogLink: string | null
+    order: number
     content: string | null
     slug: string | null
     isPublished: boolean
@@ -1174,6 +1252,7 @@ export interface BlogFieldRefs {
   readonly description: Prisma.FieldRef<"Blog", 'String'>
   readonly type: Prisma.FieldRef<"Blog", 'BlogType'>
   readonly blogLink: Prisma.FieldRef<"Blog", 'String'>
+  readonly order: Prisma.FieldRef<"Blog", 'Int'>
   readonly content: Prisma.FieldRef<"Blog", 'String'>
   readonly slug: Prisma.FieldRef<"Blog", 'String'>
   readonly isPublished: Prisma.FieldRef<"Blog", 'Boolean'>

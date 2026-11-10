@@ -169,6 +169,7 @@ export const LinksScalarFieldEnum = {
   url: 'url',
   profileId: 'profileId',
   isenable: 'isenable',
+  order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -185,6 +186,7 @@ export const ExperienceScalarFieldEnum = {
   description: 'description',
   profileId: 'profileId',
   isenable: 'isenable',
+  order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -217,6 +219,7 @@ export const BlogScalarFieldEnum = {
   description: 'description',
   type: 'type',
   blogLink: 'blogLink',
+  order: 'order',
   content: 'content',
   slug: 'slug',
   isPublished: 'isPublished',

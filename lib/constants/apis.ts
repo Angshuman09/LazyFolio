@@ -11,6 +11,7 @@ export type BlogInput = {
     isEnabled?: boolean;
     isenable?: boolean;
     slug?: string | null;
+    order?: number;
   };
 
 
@@ -20,6 +21,7 @@ export type LinkInput = {
     label: string;
     type?: LinkType;
     isenable?: boolean;
+    order?: number;
 }
 
 export const profileSelect = {
@@ -39,8 +41,8 @@ export const profileSelect = {
   bookAcall: true,
   createdAt: true,
   updatedAt: true,
-  experiences: true,
-  projects: true,
-  blogs: true,
-  links: true,
+  experiences: { orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }] },
+  projects: { orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }] },
+  blogs: { orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }] },
+  links: { orderBy: [{ order: "asc" as const }, { createdAt: "asc" as const }] },
 };

@@ -8,7 +8,9 @@ import { diffCollection } from "@/lib/utils/collection-sync";
 import { parseOptionalDate } from "@/lib/utils/date";
 import { isBlankProject, validateProject } from "@/lib/utils/validate-dashboard";
 
-type ProjectInput = NonNullable<ProjectsSchema["projects"]>[number];
+type ProjectInput = NonNullable<ProjectsSchema["projects"]>[number] & {
+  order?: number;
+};
 
 function toProjectData(project: ProjectInput) {
   return {
@@ -19,6 +21,7 @@ function toProjectData(project: ProjectInput) {
     projectLink: project.projectLink?.trim() || null,
     techstack: Array.isArray(project.techstack) ? project.techstack : [],
     isenable: project.isenable ?? true,
+    order: project.order ?? 0,
   };
 }
 
@@ -47,9 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     const profileId = profile!.id;
-    const nonBlankProjects = projects.filter(
-      (project) => !isBlankProject(project),
-    );
+    // Array position in the form is the display order.
+    const nonBlankProjects = projects
+      .filter((project) => !isBlankProject(project))
+      .map((project, index) => ({ ...project, order: index }));
 
     for (const project of nonBlankProjects) {
       const validation = validateProject(project);
@@ -74,7 +78,8 @@ export async function POST(req: NextRequest) {
           existing.githubLink === next.githubLink &&
           existing.projectLink === next.projectLink &&
           sameTechstack(existing.techstack, next.techstack) &&
-          existing.isenable === next.isenable
+          existing.isenable === next.isenable &&
+          existing.order === next.order
         );
       },
     );

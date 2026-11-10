@@ -23,6 +23,8 @@ import { useSectionSave } from "@/hooks/use-section-save";
 import { SectionHeading } from "@/components/dashboard/section-heading";
 import { AddItemPanel } from "@/components/dashboard/add-item-panel";
 import { EmptySectionState } from "@/components/dashboard/empty-section-state";
+import { SortableSection, SortableItem } from "@/components/dashboard/sortable-section";
+import { hasOrderChanged } from "@/lib/utils/collection-order";
 
 export default function BlogsForm({
   profile,
@@ -66,6 +68,16 @@ export default function BlogsForm({
 
   const isBlogsDirty = useMemo(() => {
     if (!watchedBlogs) return false;
+
+    if (
+      hasOrderChanged(
+        watchedBlogs.map((blog) => blog?.id),
+        sectionBlogs.map((blog) => blog?.id),
+      )
+    ) {
+      return true;
+    }
+
     if (watchedBlogs.length !== sectionBlogs.length) return true;
 
     for (let i = 0; i < watchedBlogs.length; i++) {
@@ -103,7 +115,7 @@ export default function BlogsForm({
     },
   });
 
-  const { fields, append, remove, insert } = useFieldArray({
+  const { fields, append, remove, insert, move } = useFieldArray({
     control,
     name: "blogs",
     keyName: "fieldId",
@@ -209,25 +221,31 @@ export default function BlogsForm({
               : "Add links to posts you have published on other platforms."} />
           )}
 
-          {fields.map((f, index) => (
-            <BlogCard
-              key={f.fieldId}
-              field={f}
-              index={index}
-              control={control}
-              register={register}
-              errors={errors}
-              remove={remove}
-              insert={insert}
-              profile={profile}
-              mode={mode}
-              draftSection={draftSection}
-              setValue={setValue}
-              getValues={getValues}
-              reset={reset}
-              onOpenEditor={handleOpenEditor}
-            />
-          ))}
+          <SortableSection
+            ids={fields.map((f) => f.fieldId)}
+            onReorder={(from, to) => move(from, to)}
+          >
+            {fields.map((f, index) => (
+              <SortableItem key={f.fieldId} id={f.fieldId}>
+                <BlogCard
+                  field={f}
+                  index={index}
+                  control={control}
+                  register={register}
+                  errors={errors}
+                  remove={remove}
+                  insert={insert}
+                  profile={profile}
+                  mode={mode}
+                  draftSection={draftSection}
+                  setValue={setValue}
+                  getValues={getValues}
+                  reset={reset}
+                  onOpenEditor={handleOpenEditor}
+                />
+              </SortableItem>
+            ))}
+          </SortableSection>
         </div>
 
         <AddItemPanel

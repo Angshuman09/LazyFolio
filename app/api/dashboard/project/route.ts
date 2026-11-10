@@ -89,8 +89,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // New projects are appended at the end of the list.
+    const order = await prisma.project.count({
+      where: { profileId },
+    });
+
     const createdProject = await prisma.project.create({
-      data: projectData,
+      data: { ...projectData, order },
     });
 
     revalidateProfile(profile.username);
