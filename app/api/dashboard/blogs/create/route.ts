@@ -5,12 +5,32 @@ import { generateSlug } from "@/lib/utils/blogs";
 import { getPortfolioBlogPath } from "@/lib/utils/public-url";
 import { handleApiError } from "@/lib/errors/api";
 import { revalidateProfile } from "@/lib/cache/revalidate";
+import { FREE_ARTICLE_LIMIT } from "@/lib/constants/plans";
+import { isSubscriptionActive } from "@/lib/subscription";
 
 export async function POST(req: Request) {
-  const { errorResponse, profile } = await verifySessionAndProfile();
+  const { errorResponse, session, profile } = await verifySessionAndProfile();
   if (errorResponse) return errorResponse;
 
   try {
+    const subscription = await prisma.subscription.findUnique({
+      where: { userId: session!.user.id },
+    });
+    const hasActiveSub = isSubscriptionActive(subscription);
+
+    const existingInternalCount = await prisma.blog.count({
+      where: { profileId: profile!.id, type: "INTERNAL" },
+    });
+
+    if (!hasActiveSub && existingInternalCount >= FREE_ARTICLE_LIMIT) {
+      return NextResponse.json(
+        {
+          error: `Free accounts are limited to ${FREE_ARTICLE_LIMIT} articles. Upgrade to create unlimited articles.`,
+        },
+        { status: 403 },
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const rawTitle = typeof body.title === "string" ? body.title.trim() : "";
     const title = rawTitle || "Untitled";
@@ -18,9 +38,7 @@ export async function POST(req: Request) {
     const blogLink = getPortfolioBlogPath(slug);
 
     // New articles are appended at the end of the list.
-    const order = await prisma.blog.count({
-      where: { profileId: profile!.id, type: "INTERNAL" },
-    });
+    const order = existingInternalCount;
 
     const blog = await prisma.blog.create({
       data: {

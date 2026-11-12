@@ -20,16 +20,22 @@ export async function POST(req: NextRequest) {
 
     const origin = getRequestOrigin(req.nextUrl.origin);
 
-    if (
-      subscription.dodoCustomerId.startsWith("mock_") ||
-      subscription.dodoCustomerId.startsWith("cust_demo") ||
-      !process.env.DODO_PAYMENTS_API_KEY ||
-      process.env.DODO_PAYMENTS_API_KEY === "mock" ||
-      process.env.DODO_PAYMENTS_API_KEY.startsWith("your-")
-    ) {
+    const isMock =
+      process.env.NODE_ENV !== "production" &&
+      (subscription.dodoCustomerId.startsWith("mock_") ||
+        subscription.dodoCustomerId.startsWith("cust_demo") ||
+        !process.env.DODO_PAYMENTS_API_KEY ||
+        process.env.DODO_PAYMENTS_API_KEY === "mock" ||
+        process.env.DODO_PAYMENTS_API_KEY.startsWith("your-"));
+
+    if (isMock) {
       return NextResponse.json({
         portalUrl: `${origin}/dashboard?tab=articles&portal=mock`,
       });
+    }
+
+    if (!process.env.DODO_PAYMENTS_API_KEY) {
+      return apiError("Payments are not configured. Please try again later.", 500);
     }
 
     const client = getDodoClient();

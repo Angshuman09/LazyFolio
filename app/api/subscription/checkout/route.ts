@@ -21,13 +21,15 @@ export async function POST(req: NextRequest) {
   const requestedPlan = articlePlans.has(body?.plan) ? body.plan : "monthly";
   const productId = getArticleProductId(requestedPlan);
 
+  const isDevelopment = process.env.NODE_ENV !== "production";
   const isMock =
-    !apiKey ||
-    apiKey === "mock" ||
-    apiKey.startsWith("your-") ||
-    !productId ||
-    productId.startsWith("p_your-") ||
-    productId.startsWith("p_mock");
+    isDevelopment &&
+    (!apiKey ||
+      apiKey === "mock" ||
+      apiKey.startsWith("your-") ||
+      !productId ||
+      productId.startsWith("p_your-") ||
+      productId.startsWith("p_mock"));
 
   if (isMock) {
     const origin = getRequestOrigin(req.nextUrl.origin);

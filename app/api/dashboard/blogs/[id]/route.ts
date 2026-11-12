@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
+import { safeDeleteBlogAssets } from "@/lib/utils/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
@@ -177,7 +177,7 @@ export async function DELETE(
     });
 
     const publicIds = extractBlogImagePublicIds(blog?.content);
-    await Promise.all(publicIds.map((publicId) => deleteFromCloudinary(publicId)));
+    await safeDeleteBlogAssets(profile.id, publicIds);
 
     revalidateProfile(profile.username);
 

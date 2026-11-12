@@ -68,12 +68,20 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    const apiKey =
+      process.env.CLOUDINARY_API_KEY ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    const apiSecret =
+      process.env.CLOUDINARY_API_SECRET ||
+      process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+
     const isMockCloudinary =
-      !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY ||
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY === "mock" ||
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY.startsWith("your-") ||
-      !process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET ||
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET.startsWith("your-");
+      process.env.NODE_ENV !== "production" &&
+      (!apiKey ||
+        apiKey === "mock" ||
+        apiKey.startsWith("your-") ||
+        !apiSecret ||
+        apiSecret.startsWith("your-"));
 
     if (isMockCloudinary) {
       const fs = await import("fs/promises");
@@ -81,7 +89,13 @@ export async function POST(req: NextRequest) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       await fs.mkdir(uploadsDir, { recursive: true });
 
-      const ext = file.type.split("/")[1] || "png";
+      const MIME_TO_EXT: Record<string, string> = {
+        "image/jpeg": "jpg",
+        "image/png": "png",
+        "image/gif": "gif",
+        "image/webp": "webp",
+      };
+      const ext = MIME_TO_EXT[file.type] || "png";
       const publicId = `local_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       const fileName = `${publicId}.${ext}`;
       const filePath = path.join(uploadsDir, fileName);

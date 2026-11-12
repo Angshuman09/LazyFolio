@@ -35,12 +35,16 @@ if (
   };
 }
 
+const enableEmailAuth =
+  process.env.NODE_ENV !== "production" ||
+  process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === "true";
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
   emailAndPassword: {
-    enabled: true,
+    enabled: enableEmailAuth,
     requireEmailVerification: false,
   },
   socialProviders,

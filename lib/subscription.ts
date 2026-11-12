@@ -41,8 +41,22 @@ export async function syncSubscriptionWithDodo(
       page_size: 5,
     });
 
-    const customerList = customers.items || [];
+    const existing = await prisma.subscription.findUnique({ where: { userId } });
+    let customerList = customers.items || [];
+
+    // If no customer matched by email, try retrieving by dodoCustomerId if present
+    if (!customerList.length && existing?.dodoCustomerId) {
+      try {
+        const cust = await client.customers.retrieve(existing.dodoCustomerId);
+        if (cust) customerList = [cust];
+      } catch {}
+    }
+
     if (!customerList.length) {
+      // Do not prematurely inactivate an active subscription whose period has not expired yet
+      if (existing && isSubscriptionActive(existing)) {
+        return existing;
+      }
       await prisma.subscription.updateMany({
         where: { userId },
         data: { status: SubscriptionStatus.INACTIVE },

@@ -63,7 +63,7 @@ function remember(username: string, exists: boolean) {
 // username-filter.ts), so this runs a background refresh whenever the seed
 // goes stale. The triggering request pays only its own DB lookup — the seed
 // is never awaited.
-const MAX_SEED_USERNAMES = 250_000;
+const MAX_SEED_USERNAMES = 10_000;
 let seedInFlight: Promise<void> | null = null;
 let seedDisabled = false;
 
@@ -75,6 +75,7 @@ function ensureUsernameFilterSeeded() {
       const rows = await prisma.profile.findMany({
         where: { username: { not: null } },
         select: { username: true },
+        take: MAX_SEED_USERNAMES + 1,
       });
       if (rows.length > MAX_SEED_USERNAMES) {
         // Too large to seed cheaply on every cold start; disable the filter

@@ -123,9 +123,10 @@ export async function POST(req: NextRequest) {
       if (!userId && customerEmail) {
         const foundUser = await prisma.user.findUnique({
           where: { email: customerEmail },
-          select: { id: true },
+          select: { id: true, emailVerified: true },
         });
-        if (foundUser) {
+        // In production, only match if the email is verified or metadata matches
+        if (foundUser && (foundUser.emailVerified || process.env.NODE_ENV !== "production")) {
           userId = foundUser.id;
         }
       }

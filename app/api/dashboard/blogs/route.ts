@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { deleteFromCloudinary } from "@/lib/utils/cloudinary";
+import { safeDeleteBlogAssets } from "@/lib/utils/cloudinary";
 import { extractBlogImagePublicIds } from "@/lib/utils/blog-images";
 import { NextResponse, NextRequest } from "next/server";
 import { verifySessionAndProfile } from "@/lib/auth/auth-api";
@@ -185,7 +185,7 @@ export async function POST(req: NextRequest) {
 
     const results = await Promise.all(operations);
 
-    await Promise.all(removedImageIds.map((id) => deleteFromCloudinary(id)));
+    await safeDeleteBlogAssets(profileId, removedImageIds);
 
     revalidateProfile(profile.username);
 

@@ -10,8 +10,29 @@ function escapeHtml(value: string) {
 
 function escapeAttribute(value: string) {
   return value
+    .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function isValidLinkUrl(url: string): boolean {
+  const trimmed = url.trim().toLowerCase();
+  if (
+    trimmed.startsWith("javascript:") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("vbscript:")
+  ) {
+    return false;
+  }
+  return (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("mailto:") ||
+    trimmed.startsWith("/") ||
+    trimmed.startsWith("#")
+  );
 }
 
 async function highlightCode(code: string, lang?: string) {
@@ -76,7 +97,13 @@ export async function parseMarkdown(md: string): Promise<string> {
   });
 
   // Links: [text](url)
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank' rel='noopener noreferrer' class='underline text-indigo-600 dark:text-indigo-400 hover:opacity-80'>$1</a>");
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, (_, text, url) => {
+    const cleanUrl = url.trim();
+    if (!isValidLinkUrl(cleanUrl)) {
+      return text;
+    }
+    return `<a href="${escapeAttribute(cleanUrl)}" target="_blank" rel="noopener noreferrer" class="underline text-indigo-600 dark:text-indigo-400 hover:opacity-80">${text}</a>`;
+  });
 
   // Inline code AFTER code blocks
   html = html.replace(/`([^`]+)`/g, "<code class='bg-(--lf-border-alpha) rounded px-1.5 py-0.5 text-sm font-mono text-(--lf-ink)'>$1</code>");
