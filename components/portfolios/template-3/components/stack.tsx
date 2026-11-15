@@ -1,38 +1,32 @@
-import React from 'react'
-import { ProfileData } from '../../shared/types';
-import { normalizeStack } from '../../shared/normalize';
-import { Divider, SectionHeading, StackTicker } from './utils';
+import React from "react";
+import { ProfileData } from "../../shared/types";
+import { normalizeStack } from "../../shared/normalize";
+import { SectionHeading, StackTicker } from "./utils";
 
-const Stack = ({profile}:{profile: ProfileData}) => {
+export default function Stack({ profile }: { profile: ProfileData }) {
   const stack = normalizeStack(profile?.skills);
-  return (
-    <>
-    {stack.length > 0 && (
-        <>
-          <Divider />
-          <section>
-            <SectionHeading>Stack</SectionHeading>
-            {stack.length <= 8 ? (
-              <div className="relative overflow-hidden py-2 bg-white flex justify-start flex-wrap gap-2 px-3">
-                {stack.map((tech, i) => (
-                  <div
-                    key={`${tech.name}-${i}`}
-                    className="flex items-center px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-100 shrink-0"
-                  >
-                    <span className="text-[10.5px] text-slate-500 font-medium tracking-wider uppercase">
-                      {tech.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <StackTicker stack={stack} />
-            )}
-          </section>
-        </>
-      )}
-      </>
-  )
-}
 
-export default Stack
+  if (stack.length === 0) return null;
+
+  return (
+    <section className="mt-16 sm:mt-20">
+      <SectionHeading>Stack</SectionHeading>
+      {stack.length <= 8 ? (
+        <div className="flex flex-wrap gap-2">
+          {stack.map((tech, i) => (
+            <div
+              key={`${tech.name}-${i}`}
+              className="flex items-center px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800/80 shrink-0"
+            >
+              <span className="text-[11px] text-neutral-400 font-mono tracking-wider uppercase">
+                {tech.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <StackTicker stack={stack} />
+      )}
+    </section>
+  );
+}

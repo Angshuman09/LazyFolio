@@ -315,9 +315,6 @@ export default function DashboardShellLayout({
             >
               <Layers size={13} />
               Templates
-              <span className="font-mono text-[0.65rem] text-(--lf-muted) opacity-75 px-1.5 py-px rounded-full bg-(--lf-border-alpha)">
-                {TEMPLATES.find((t) => t.id === (profile?.themeId || activeTemplate))?.label}
-              </span>
             </button>
 
             <button

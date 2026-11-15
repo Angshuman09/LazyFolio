@@ -200,74 +200,91 @@ const METRICS = [
 ];
 
 
+const BARS = [34, 48, 40, 58, 46, 66, 54, 72, 62, 80, 70, 92];
+
 export const AnalyticsAnimation = () => (
   <div className="absolute inset-0 flex flex-col gap-4 p-4 sm:p-5" aria-hidden>
-    {/* headline stat */}
-    <div className="flex items-end justify-between">
-      <div>
-        <p className="text-[0.7rem] leading-none text-(--lf-muted)">Visitors</p>
-        <p className="font-sans mt-1.5 text-[1.7rem] leading-none text-(--lf-ink)">
-          12.4k
-        </p>
+    {/* header skeleton (no values) */}
+    <div className="flex items-center justify-between">
+      <div className="space-y-1.5">
+        <div className="fa-t1 h-1.5 w-12 rounded-full" />
+        <div className="fa-t3 h-3 w-20 rounded-full" />
       </div>
-      <span className="text-[0.7rem] text-(--lf-accent-text)">+8.2%</span>
+      <div className="fa-t2 h-4 w-9 rounded-full" />
     </div>
 
-    {/* chart */}
-    <div className="fa-a fa-reveal relative min-h-0 flex-1" style={dly("0s")}>
-      <svg
-        viewBox="0 0 100 40"
-        preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full overflow-visible"
-      >
-        <defs>
-          <linearGradient id="fa-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" style={{ stopColor: "var(--lf-muted)", stopOpacity: 0.28 }} />
-            <stop offset="100%" style={{ stopColor: "var(--lf-muted)", stopOpacity: 0 }} />
-          </linearGradient>
-        </defs>
-        {[10, 20, 30].map((y) => (
-          <line
-            key={y}
-            x1="0"
-            x2="100"
-            y1={y}
-            y2={y}
-            stroke="var(--lf-border)"
-            strokeWidth="1"
-            strokeDasharray="2 4"
+    {/* line chart */}
+    <div className="relative min-h-0 flex-1">
+      <div className="fa-a fa-wipe absolute inset-0" style={dly("0.1s")}>
+        <svg
+          viewBox="0 0 100 40"
+          preserveAspectRatio="none"
+          className="absolute inset-0 h-full w-full overflow-visible"
+        >
+          <defs>
+            <linearGradient id="fa-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" style={{ stopColor: "var(--lf-muted)", stopOpacity: 0.28 }} />
+              <stop offset="100%" style={{ stopColor: "var(--lf-muted)", stopOpacity: 0 }} />
+            </linearGradient>
+          </defs>
+          {[10, 20, 30].map((y) => (
+            <line
+              key={y}
+              x1="0"
+              x2="100"
+              y1={y}
+              y2={y}
+              stroke="var(--lf-border)"
+              strokeWidth="1"
+              strokeDasharray="2 4"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+          <path d={AREA} fill="url(#fa-area)" />
+          <path
+            d={LINE}
+            fill="none"
+            stroke="var(--lf-muted)"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
           />
-        ))}
-        <path d={AREA} fill="url(#fa-area)" />
-        <path
-          d={LINE}
-          fill="none"
-          stroke="var(--lf-muted)"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
+        </svg>
+      </div>
+
+      {/* scan cursor riding the wipe edge */}
       <span
-        className="absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-[1.5px] border-(--lf-accent-text) bg-(--lf-surface)"
-        style={{ left: `${LAST[0]}%`, top: `${(LAST[1] / 40) * 100}%` }}
+        className="fa-a fa-scan absolute inset-y-0 w-px bg-(--lf-accent-text)/60 opacity-0"
+        style={dly("0.1s")}
       />
+
+      {/* end dot + pulse ring */}
+      <span
+        className="absolute size-2 -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${LAST[0]}%`, top: `${(LAST[1] / 40) * 100}%` }}
+      >
+        <span
+          className="fa-a fa-ring absolute inset-0 rounded-full border border-(--lf-accent-text)"
+          style={dly("0.1s")}
+        />
+        <span
+          className="fa-a fa-pop block size-full rounded-full border-[1.5px] border-(--lf-accent-text) bg-(--lf-surface)"
+          style={dly("0.1s")}
+        />
+      </span>
     </div>
 
-    {/* metric rows */}
-    <div className="flex flex-col gap-3">
-      {METRICS.map((m) => (
-        <div key={m.label} className="flex items-center gap-3">
-          <span className="w-16 shrink-0 text-[0.68rem] text-(--lf-muted)">{m.label}</span>
-          <div className="fa-t1 h-1 flex-1 overflow-hidden rounded-full">
-            <div
-              className="fa-a fa-fill fa-t3 h-full rounded-full"
-              style={{ width: m.w, ...dly(m.d) }}
-            />
-          </div>
-        </div>
+    {/* bars */}
+    <div className="flex h-[26%] items-end gap-1.5">
+      {BARS.map((h, i) => (
+        <div
+          key={i}
+          className={`fa-a fa-grow flex-1 rounded-t-sm ${
+            i === BARS.length - 1 ? "fa-acc" : "fa-t2"
+          }`}
+          style={{ height: `${h}%`, ...dly(`${0.9 + i * 0.06}s`) }}
+        />
       ))}
     </div>
   </div>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-//@ts-ignore
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Instrument_Serif, Geist, Bricolage_Grotesque } from "next/font/google";

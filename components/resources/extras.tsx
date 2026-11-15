@@ -20,11 +20,11 @@ export const TEMPLATES = [
   },
   {
     id: "3",
-    label: "Airy",
+    label: "Editorial Dark",
     emoji: "03",
     description:
-      "Generous white space and muted borders create a calm, open feel.",
-    tags: ["White", "Spacious", "Calm"],
+      "An elegant dark canvas inspired by Josh Puckett with serif typography, quiet interactions, and minimal details.",
+    tags: ["Dark", "Editorial", "Minimal"],
     image: "/styles/template-3.webp",
   },
   {

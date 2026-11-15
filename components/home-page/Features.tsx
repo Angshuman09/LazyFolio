@@ -95,7 +95,7 @@ const Features = () => {
         className="font-serif-display text-3xl sm:text-4xl font-normal leading-tight text-(--lf-ink) flex justify-center pb-10"
       >
         <span className="block w-fit tracking-wide">
-          What's <span className="text-(--lf-accent-text)">inside</span>
+          What&apos;s <span className="text-(--lf-accent-text)">inside</span>
         </span>
       </motion.h2>
 
