@@ -18,7 +18,7 @@ export default function Stack({ profile }: { profile: ProfileData }) {
               key={`${tech.name}-${i}`}
               className="flex items-center px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800/80 shrink-0"
             >
-              <span className="text-[11px] text-neutral-400 font-mono tracking-wider uppercase">
+              <span className="text-[11px] text-neutral-400 tracking-wider">
                 {tech.name}
               </span>
             </div>

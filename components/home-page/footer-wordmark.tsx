@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { CloudShader } from "@/components/ui/cloud-shader";
+import { TwilightCloudShader } from "@/components/ui/cloud-shader";
 import { MaskedHeading } from "@/components/ui/masked-heading";
 import { useThemeStore } from "@/lib/utils/theme-store";
 
@@ -58,7 +58,7 @@ const FooterWordmark = () => {
         paddingLeft: "0.03em",
       }}
     >
-      <CloudShader
+      <TwilightCloudShader
         className="min-h-0"
         speed={0.75}
         count={4}

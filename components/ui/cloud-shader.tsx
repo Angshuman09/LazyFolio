@@ -3,19 +3,23 @@
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-export type CloudShaderProps = {
+export type TwilightCloudShaderProps = {
   className?: string;
   children?: React.ReactNode;
   /** Animation speed multiplier. 1 = default drift. */
   speed?: number;
   /** Number of clouds (1-6). */
   count?: number;
-  /** Cloud tint color (hex or rgb string). */
+  /** Warm lit cloud tint color (hex or rgb string). */
   cloudColor?: string;
-  /** Sky color at the top (hex or rgb string). */
+  /** Deep zenith sky color at the top (hex or rgb string). */
   skyTopColor?: string;
-  /** Sky color at the bottom (hex or rgb string). */
+  /** Dusky mid-sky twilight color (hex or rgb string). */
+  skyMidColor?: string;
+  /** Warm horizon sky color at the bottom (hex or rgb string). */
   skyBottomColor?: string;
+  /** Sunset afterglow & rim-light color near the horizon (hex or rgb string). */
+  horizonGlowColor?: string;
 };
 
 const VERT = `
@@ -27,10 +31,10 @@ void main() {
 }
 `;
 
-// Original cloud shader for Aceternity UI.
-// Each cloud is an asymmetric envelope (dome top, flat base) filled with
-// domain-warped billow noise. A second density sample above the pixel
-// approximates self-shadowing. Clouds drift horizontally and wrap around.
+// Twilight cloud shader:
+// Uses a 3-stop zenith-to-horizon twilight gradient, low-angle horizon afterglow,
+// subtle emerging zenith stars, and under-lit cloud self-shadowing where cloud
+// bases catch warm sunset light while upper domes fall into cool indigo shadow.
 const FRAG = `
 precision highp float;
 
@@ -41,7 +45,9 @@ uniform float u_time;
 uniform float u_count;
 uniform vec3 u_cloud;
 uniform vec3 u_skyTop;
+uniform vec3 u_skyMid;
 uniform vec3 u_skyBottom;
+uniform vec3 u_glow;
 
 const mat2 R = mat2(0.80, 0.60, -0.60, 0.80);
 
@@ -103,38 +109,42 @@ float cloudDensity(vec2 p, vec2 c, vec2 r, float seed, float t) {
   return env + (detail - 0.62) * 0.62;
 }
 
-// shades one cloud and blends it over the current color
-vec3 shadeCloud(vec3 color, vec3 sky, vec2 p, vec2 c, vec2 r, float seed, float t, float dist) {
+// shades one twilight cloud (warm under-lit base + cool indigo upper shadow)
+vec3 shadeCloud(vec3 color, vec3 sky, vec2 p, vec2 c, vec2 r, float seed, float t, float dist, vec2 sunPos) {
   float d = cloudDensity(p, c, r, seed, t);
   if (d < 0.02) return color;
 
-  // sample density toward the sun (straight up) for self-shadowing
-  float dUp = cloudDensity(p + vec2(0.0, r.y * 0.55), c, r, seed, t);
-  float occl = clamp((dUp - d) * 1.1 + d * 0.55, 0.0, 1.0);
+  // sample toward the low twilight horizon/sun for under-lit self-shadowing
+  vec2 toSun = normalize(sunPos - p + vec2(0.0001));
+  vec2 sampleOffset = vec2(toSun.x * r.x * 0.25, -r.y * 0.42);
+  float dSun = cloudDensity(p + sampleOffset, c, r, seed, t);
+  float occl = clamp((dSun - d) * 1.15 + d * 0.52, 0.0, 1.0);
 
-  vec3 lit = u_cloud * 1.04;
-  vec3 shadow = mix(u_cloud * 0.60, sky, 0.38);
-  vec3 cloudCol = mix(lit, shadow, occl * 0.85);
+  // lower clouds catch warmer afterglow; higher clouds shift cooler & duskier
+  float heightFactor = clamp(c.y, 0.0, 1.0);
+  vec3 warmLit = mix(u_cloud, u_glow * 1.12, (1.0 - heightFactor) * 0.55);
+  vec3 deepShadow = mix(u_skyMid * 0.65, u_skyTop * 0.85, 0.55);
+  vec3 cloudCol = mix(warmLit, deepShadow, occl * 0.88);
 
   float alpha = smoothstep(0.02, 0.38, d);
 
-  // silver lining on thin edges
+  // golden-rose rim light along thin cloud edges
   float rim = smoothstep(0.02, 0.14, d) * (1.0 - smoothstep(0.14, 0.40, d));
-  cloudCol += rim * 0.10;
+  cloudCol += u_glow * rim * mix(0.28, 0.10, heightFactor);
 
-  // atmospheric perspective: far clouds fade into the sky
-  cloudCol = mix(cloudCol, sky, dist * 0.35);
-  alpha *= mix(1.0, 0.8, dist);
+  // atmospheric perspective: far clouds fade into the twilight sky
+  cloudCol = mix(cloudCol, sky, dist * 0.40);
+  alpha *= mix(1.0, 0.82, dist);
 
   return mix(color, cloudCol, alpha);
 }
 
 // one drifting cloud: horizontal wrap + gentle vertical bob
 vec3 cloudPass(vec3 color, vec3 sky, vec2 p, float aspect, float t,
-               float spd, float phase, float y, vec2 r, float seed, float dist) {
+               float spd, float phase, float y, vec2 r, float seed, float dist, vec2 sunPos) {
   float cx = mix(-r.x - 0.25, aspect + r.x + 0.25, fract(t * spd + phase));
   float cy = y + sin(t * 0.05 + phase * 6.2831) * 0.012;
-  return shadeCloud(color, sky, p, vec2(cx, cy), r, seed, t, dist);
+  return shadeCloud(color, sky, p, vec2(cx, cy), r, seed, t, dist, sunPos);
 }
 
 void main() {
@@ -142,46 +152,62 @@ void main() {
   vec2 p = vec2(v_uv.x * aspect, v_uv.y);
   float t = u_time;
 
-  vec3 sky = mix(u_skyBottom, u_skyTop, v_uv.y);
+  // 3-stop vertical twilight gradient: warm horizon -> dusky violet -> midnight indigo
+  vec3 lowerSky = mix(u_skyBottom, u_skyMid, smoothstep(0.0, 0.42, v_uv.y));
+  vec3 sky = mix(lowerSky, u_skyTop, smoothstep(0.32, 0.95, v_uv.y));
   vec3 color = sky;
 
-  // faint haze band near the horizon
-  color = mix(color, u_skyBottom * 1.06, smoothstep(0.35, 0.0, v_uv.y) * 0.5);
+  // wide sunset afterglow seated low on the horizon
+  vec2 sunPos = vec2(aspect * 0.65, 0.03);
+  vec2 sunDelta = (p - sunPos) * vec2(0.55, 1.8);
+  float sunGlow = exp(-dot(sunDelta, sunDelta) * 3.2);
+  float horizonBand = smoothstep(0.32, 0.0, v_uv.y);
+  color += u_glow * (sunGlow * 0.45 + horizonBand * 0.22);
 
-  // soft sun glow, upper area
-  vec2 sunPos = vec2(aspect * 0.78, 0.92);
-  float sunDist = length(p - sunPos);
-  color += vec3(1.0, 0.95, 0.82) * exp(-sunDist * sunDist * 5.0) * 0.28;
+  // subtle stars emerging in the deep upper twilight sky (occluded by clouds below)
+  float starZone = smoothstep(0.52, 0.90, v_uv.y);
+  if (starZone > 0.01) {
+    vec2 starGrid = floor(p * 140.0);
+    vec2 starUv = fract(p * 140.0) - 0.5;
+    float rnd = hash(starGrid);
+    if (rnd > 0.992) {
+      float twinkle = 0.65 + 0.35 * sin(t * (1.5 + rnd * 4.0) + rnd * 62.8);
+      float dStar = length(starUv);
+      float star = smoothstep(0.28, 0.02, dStar) * twinkle * starZone;
+      color += vec3(0.88, 0.90, 1.0) * star * 0.75;
+    }
+  }
 
-  // thin cirrus streaks, stretched horizontally, high in the sky
-  float cirrusBand = smoothstep(0.55, 0.8, v_uv.y) * (1.0 - smoothstep(0.9, 1.0, v_uv.y));
+  // high cirrus wisps catching the last warm rays of twilight
+  float cirrusBand = smoothstep(0.48, 0.76, v_uv.y) * (1.0 - smoothstep(0.88, 1.0, v_uv.y));
   if (cirrusBand > 0.01) {
     float streak = fbm(vec2(p.x * 1.6 - t * 0.006, p.y * 12.0));
     float wisp = smoothstep(0.52, 0.78, streak) * cirrusBand;
-    color = mix(color, u_cloud * 0.98, wisp * 0.35);
+    vec3 cirrusCol = mix(u_cloud, u_glow, 0.45);
+    color = mix(color, cirrusCol, wisp * 0.32);
   }
 
   // far layer: small, high, slow
   if (u_count > 5.5) {
-    color = cloudPass(color, sky, p, aspect, t, 0.006, 0.10, 0.84, vec2(0.20, 0.10), 43.7, 1.0);
+    color = cloudPass(color, sky, p, aspect, t, 0.006, 0.10, 0.84, vec2(0.20, 0.10), 43.7, 1.0, sunPos);
   }
   if (u_count > 4.5) {
-    color = cloudPass(color, sky, p, aspect, t, 0.008, 0.62, 0.73, vec2(0.24, 0.12), 71.3, 0.85);
+    color = cloudPass(color, sky, p, aspect, t, 0.008, 0.62, 0.73, vec2(0.24, 0.12), 71.3, 0.85, sunPos);
   }
 
   // middle layer
   if (u_count > 3.5) {
-    color = cloudPass(color, sky, p, aspect, t, 0.011, 0.33, 0.60, vec2(0.34, 0.16), 17.3, 0.55);
+    color = cloudPass(color, sky, p, aspect, t, 0.011, 0.33, 0.60, vec2(0.34, 0.16), 17.3, 0.55, sunPos);
   }
   if (u_count > 2.5) {
-    color = cloudPass(color, sky, p, aspect, t, 0.013, 0.80, 0.47, vec2(0.30, 0.15), 29.9, 0.45);
+    color = cloudPass(color, sky, p, aspect, t, 0.013, 0.80, 0.47, vec2(0.30, 0.15), 29.9, 0.45, sunPos);
   }
 
   // near layer: big, low, fast
   if (u_count > 1.5) {
-    color = cloudPass(color, sky, p, aspect, t, 0.016, 0.05, 0.35, vec2(0.46, 0.20), 91.1, 0.15);
+    color = cloudPass(color, sky, p, aspect, t, 0.016, 0.05, 0.35, vec2(0.46, 0.20), 91.1, 0.15, sunPos);
   }
-  color = cloudPass(color, sky, p, aspect, t, 0.020, 0.48, 0.20, vec2(0.56, 0.24), 57.2, 0.0);
+  color = cloudPass(color, sky, p, aspect, t, 0.020, 0.48, 0.20, vec2(0.56, 0.24), 57.2, 0.0, sunPos);
 
   gl_FragColor = vec4(color, 1.0);
 }
@@ -208,7 +234,7 @@ function parseHex(color: string): [number, number, number] {
   if (rgb && rgb.length >= 3) {
     return [Number(rgb[0]) / 255, Number(rgb[1]) / 255, Number(rgb[2]) / 255];
   }
-  return [0.95, 0.95, 0.95];
+  return [0.95, 0.65, 0.55];
 }
 
 function compile(gl: WebGLRenderingContext, type: number, source: string) {
@@ -223,22 +249,26 @@ function compile(gl: WebGLRenderingContext, type: number, source: string) {
   return shader;
 }
 
-export const CloudShader = ({
+export const TwilightCloudShader = ({
   className,
   children,
   speed = 1,
   count = 6,
-  cloudColor = "#fbf8f2",
-  skyTopColor = "#3876ba",
-  skyBottomColor = "#8cbfe8",
-}: CloudShaderProps) => {
+  cloudColor = "#f4a28c",
+  skyTopColor = "#0f162e",
+  skyMidColor = "#382f5c",
+  skyBottomColor = "#c95b4b",
+  horizonGlowColor = "#ff9e5e",
+}: TwilightCloudShaderProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const paramsRef = useRef({
     speed,
     count,
     cloudColor,
     skyTopColor,
+    skyMidColor,
     skyBottomColor,
+    horizonGlowColor,
   });
 
   useEffect(() => {
@@ -247,9 +277,19 @@ export const CloudShader = ({
       count,
       cloudColor,
       skyTopColor,
+      skyMidColor,
       skyBottomColor,
+      horizonGlowColor,
     };
-  }, [speed, count, cloudColor, skyTopColor, skyBottomColor]);
+  }, [
+    speed,
+    count,
+    cloudColor,
+    skyTopColor,
+    skyMidColor,
+    skyBottomColor,
+    horizonGlowColor,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -291,7 +331,9 @@ export const CloudShader = ({
       count: gl.getUniformLocation(program, "u_count"),
       cloud: gl.getUniformLocation(program, "u_cloud"),
       skyTop: gl.getUniformLocation(program, "u_skyTop"),
+      skyMid: gl.getUniformLocation(program, "u_skyMid"),
       skyBottom: gl.getUniformLocation(program, "u_skyBottom"),
+      glow: gl.getUniformLocation(program, "u_glow"),
     };
 
     let frame = 0;
@@ -327,13 +369,17 @@ export const CloudShader = ({
       const elapsed = reduceMotion ? 0 : ((now - start) / 1000) * p.speed;
       const cloud = parseHex(p.cloudColor);
       const skyTop = parseHex(p.skyTopColor);
+      const skyMid = parseHex(p.skyMidColor);
       const skyBottom = parseHex(p.skyBottomColor);
+      const glow = parseHex(p.horizonGlowColor);
 
       gl.uniform1f(loc.time, elapsed);
       gl.uniform1f(loc.count, Math.min(6, Math.max(1, p.count)));
       gl.uniform3f(loc.cloud, cloud[0], cloud[1], cloud[2]);
       gl.uniform3f(loc.skyTop, skyTop[0], skyTop[1], skyTop[2]);
+      gl.uniform3f(loc.skyMid, skyMid[0], skyMid[1], skyMid[2]);
       gl.uniform3f(loc.skyBottom, skyBottom[0], skyBottom[1], skyBottom[2]);
+      gl.uniform3f(loc.glow, glow[0], glow[1], glow[2]);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       frame = requestAnimationFrame(draw);
     };
