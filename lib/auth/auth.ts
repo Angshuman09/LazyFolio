@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { emailOTP } from "better-auth/plugins";
 import { prisma } from "../prisma";
+import { sendOtpEmail } from "../email/email-service";
 
 function isValidConfig(val?: string) {
   if (!val) return false;
@@ -35,19 +37,24 @@ if (
   };
 }
 
-const enableEmailAuth =
-  process.env.NODE_ENV !== "production" ||
-  process.env.NEXT_PUBLIC_ENABLE_DEV_LOGIN === "true";
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
   emailAndPassword: {
-    enabled: enableEmailAuth,
+    enabled: true,
     requireEmailVerification: false,
   },
   socialProviders,
+  plugins: [
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        await sendOtpEmail({ to: email, otp, type });
+      },
+      expiresIn: 300, // 5 minutes
+      otpLength: 6,
+    }),
+  ],
   databaseHooks: {
     user: {
       create: {
